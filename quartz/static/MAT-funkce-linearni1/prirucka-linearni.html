@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lineární funkce — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-linearni.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 class="font-semibold text-sm sm:text-base">Lineární funkce · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Lineární funkce</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Co je lineární funkce</h2>
+<p class="mb-3">Lineární funkce je funkce, kterou lze zapsat předpisem $y = ax + b$, kde $a, b \in \mathbb{R}$ a $x \in \mathbb{R}$ (pokud definiční obor v konkrétním zadání není omezen jinak). Číslo $a$ se nazývá koeficient a udává sklon přímky, číslo $b$ se nazývá absolutní člen. Grafem každé lineární funkce je přímka.</p>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Postup sestrojení grafu lineární funkce</p>
+    <p>Zvolíme dvě různé hodnoty $x$ z definičního oboru, dosazením do předpisu dopočítáme příslušné hodnoty $y$, oba body vyneseme do souřadnicové soustavy a proložíme jimi přímku.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $y = 3x - 2$. Pro $x=0$ vychází $y=-2$, pro $x=2$ vychází $y=4$. Body $[0;-2]$ a $[2;4]$ proložíme přímkou.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Dva speciální případy</h2>
+<p class="mb-3">Koeficienty $a$ a $b$ mohou nabývat i nulové hodnoty, a právě tehdy vzniknou dva důležité speciální typy lineární funkce:</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li><b>$b = 0$</b> → funkce $y = ax$ ($a \neq 0$) se nazývá <b>přímá úměrnost</b>.</li>
+    <li><b>$a = 0$</b> → funkce $y = b$ se nazývá <b>konstantní funkce</b>.</li>
+</ul>
+<p class="mb-3">Pokud $a \neq 0$ i $b \neq 0$, mluvíme o obecné lineární funkci (bez zvláštního jména).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Vlastnosti přímé úměrnosti</h2>
+<p class="mb-3">$f: y = ax$, kde $a \neq 0$, $x \in \mathbb{R}$.</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Definiční obor: $D(f) = \mathbb{R}$, obor hodnot: $H(f) = \mathbb{R}$.</li>
+    <li>Monotónnost: prostá; rostoucí pro $a \gt 0$, klesající pro $a \lt 0$.</li>
+    <li>Omezenost: není omezená ani shora, ani zdola. Extrémy: nemá minimum ani maximum.</li>
+    <li>Parita: přímá úměrnost je vždy <b>lichá</b>.</li>
+    <li>Graf: přímka procházející počátkem $[0;0]$, není rovnoběžná s žádnou osou.</li>
+</ul>
+<p class="mb-3"><b>Příklad:</b> $y = -4x$. Protože $a=-4 \lt 0$, je funkce klesající.</p>
+<div class="warn-box mb-3">
+    <p class="font-semibold mb-1">Obecný důkaz lichosti</p>
+    <p>Pro libovolné $x \in \mathbb{R}$ platí $f(-x) = a\cdot(-x) = -ax = -f(x)$. Tato rovnost platí pro každé $x$, proto je přímá úměrnost vždy lichá funkce (ověření na několika vybraných číslech samo o sobě nic nedokazuje).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Vlastnosti konstantní funkce</h2>
+<p class="mb-3">$f: y = b$, $x \in \mathbb{R}$.</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Definiční obor: $D(f) = \mathbb{R}$, obor hodnot: $H(f) = \{b\}$.</li>
+    <li>Monotónnost: funkce není prostá, a tudíž není ani rostoucí, ani klesající.</li>
+    <li>Omezenost: omezená shora i zdola. Extrémy: minimum i maximum v každém bodě definičního oboru zároveň.</li>
+    <li>Parita: konstantní funkce je vždy <b>sudá</b>.</li>
+    <li>Graf: přímka rovnoběžná s osou $x$, procházející osou $y$ v bodě $b$.</li>
+</ul>
+<div class="warn-box mb-3">
+    <p>Přímka rovnoběžná s osou $x$ je grafem nějaké konstantní funkce. Naproti tomu přímka rovnoběžná s osou $y$ <b>není grafem žádné funkce</b> — jednomu $x$ by odpovídalo nekonečně mnoho hodnot $y$.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Vlastnosti obecné lineární funkce</h2>
+<p class="mb-3">$f: y = ax+b$, kde $a \neq 0$ a $b \neq 0$.</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Definiční obor: $D(f) = \mathbb{R}$, obor hodnot: $H(f) = \mathbb{R}$.</li>
+    <li>Monotónnost: prostá; rostoucí pro $a \gt 0$, klesající pro $a \lt 0$.</li>
+    <li>Omezenost: není omezená ani shora, ani zdola. Extrémy: nemá minimum ani maximum.</li>
+    <li>Parita: není ani sudá, ani lichá.</li>
+    <li>Graf: přímka, která neprochází počátkem a není rovnoběžná s žádnou osou.</li>
+</ul>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Jak koeficienty $a$ a $b$ ovlivňují graf</h2>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Když $b$ zůstává stejné a mění se jen $a$, všechny grafy procházejí <b>stejným bodem $[0;b]$</b> a liší se pouze sklonem.</li>
+    <li>Když $a$ zůstává stejné a mění se jen $b$, jsou všechny grafy <b>navzájem rovnoběžné přímky</b>, procházející různými body $[0;b]$.</li>
+</ul>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Lineární funkce s omezeným definičním oborem</h2>
+<p class="mb-3">Pokud je definiční obor lineární funkce omezený interval, graf není celá přímka, ale jen úsečka ohraničená krajními body intervalu. Obor hodnot i extrémy dopočítáme z hodnot funkce na krajích tohoto intervalu.</p>
+<p class="mb-3"><b>Příklad:</b> $f: y = 2x-1$, $x \in \langle -3;4 \rangle$. $f(-3) = -7$, $f(4) = 7$. Protože $a=2 \gt 0$, je funkce rostoucí, takže $D(f)=\langle-3;4\rangle$ a $H(f)=\langle-7;7\rangle$, minimum je v $x=-3$, maximum v $x=4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Určení předpisu lineární funkce ze dvou bodů</h2>
+<p class="mb-3">Souřadnice obou zadaných bodů $K[x_K;y_K]$ a $L[x_L;y_L]$ dosadíme do obecného předpisu $y=ax+b$, dostaneme soustavu dvou rovnic o dvou neznámých $a,b$, kterou vyřešíme, a nalezené hodnoty dosadíme zpět do $y=ax+b$.</p>
+<p class="mb-3"><b>Příklad:</b> $K[2;-1]$, $L[-1;5]$. $-1 = 2a+b$, $5=-a+b$. Odečtením: $a=-2$, $b=3$. Výsledný předpis: $y=-2x+3$.</p>
+<div class="warn-box mb-3">
+    <p>Pokud mají oba zadané body stejnou souřadnici $x$, soustava nemá řešení ve tvaru $y=ax+b$ — takové body leží na přímce rovnoběžné s osou $y$, která není grafem žádné funkce.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Lineární funkce v praxi</h2>
+<p class="mb-3"><b>a) Přímá úměrnost:</b> Jablka stojí 32 Kč za kilogram. Celková cena $y$ (v Kč) v závislosti na množství $x$ (v kg) je $y=32x$, $x \in \langle 0;\infty)$. Např. pro $x=2{,}5$ kg vychází cena $y=80$ Kč.</p>
+<p class="mb-3"><b>b) Obecná lineární funkce s omezeným oborem:</b> Svíčka je dlouhá 20 cm a hoří rychlostí 0,5 cm za minutu. Výška svíčky v závislosti na čase je $h = 20-0{,}5t$. Svíčka dohoří ($h=0$) po $t=40$ minutách. Graf lze použít oběma směry — ptát se na velikost v daném čase, nebo naopak, ve kterém čase měla svíčka danou velikost.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Shrnutí — jak funkce rozlišit</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Typ</th>
+            <th class="text-left py-1 pr-2">Podmínka</th>
+            <th class="text-left py-1 pr-2">Příklad</th>
+            <th class="text-left py-1 pr-2">Parita</th>
+            <th class="text-left py-1">Graf</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">přímá úměrnost</td><td class="py-1 pr-2">$b=0,\ a\neq0$</td><td class="py-1 pr-2">$y=-4x$</td><td class="py-1 pr-2">lichá</td><td class="py-1">přímka počátkem</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">konstantní funkce</td><td class="py-1 pr-2">$a=0$</td><td class="py-1 pr-2">$y=-\tfrac52$</td><td class="py-1 pr-2">sudá</td><td class="py-1">rovnoběžka s $x$</td></tr>
+        <tr><td class="py-1 pr-2">obecná lin. funkce</td><td class="py-1 pr-2">$a\neq0,\ b\neq0$</td><td class="py-1 pr-2">$y=3x-2$</td><td class="py-1 pr-2">ani sudá, ani lichá</td><td class="py-1">přímka mimo počátek</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">La fonction affine</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Qu'est-ce qu'une fonction affine</h2>
+<p class="mb-3">Une fonction affine est une fonction qui peut s'écrire sous la forme $y = ax + b$, où $a, b \in \mathbb{R}$ et $x \in \mathbb{R}$ (sauf si l'énoncé restreint autrement le domaine de définition). Le nombre $a$ s'appelle le coefficient directeur et donne la pente de la droite, le nombre $b$ est l'ordonnée à l'origine. Le graphe de toute fonction affine est une droite.</p>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Méthode pour tracer le graphe</p>
+    <p>On choisit deux valeurs différentes de $x$ dans le domaine de définition, on calcule les valeurs correspondantes de $y$, on place les deux points dans le repère et on trace la droite qui les relie.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $y = 3x - 2$. Pour $x=0$ on obtient $y=-2$, pour $x=2$ on obtient $y=4$. On relie les points $[0;-2]$ et $[2;4]$ par une droite.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Deux cas particuliers</h2>
+<p class="mb-3">Les coefficients $a$ et $b$ peuvent aussi être nuls — et c'est justement dans ce cas que naissent deux types particuliers de fonction affine :</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li><b>$b = 0$</b> → la fonction $y = ax$ ($a \neq 0$) s'appelle une <b>fonction linéaire</b> (proportionnalité directe).</li>
+    <li><b>$a = 0$</b> → la fonction $y = b$ s'appelle une <b>fonction constante</b>.</li>
+</ul>
+<p class="mb-3">Si $a \neq 0$ et $b \neq 0$, on parle simplement de fonction affine (sans nom particulier).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Propriétés de la fonction linéaire</h2>
+<p class="mb-3">$f: y = ax$, où $a \neq 0$, $x \in \mathbb{R}$.</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Domaine de définition : $D(f) = \mathbb{R}$, ensemble image : $H(f) = \mathbb{R}$.</li>
+    <li>Monotonie : injective ; croissante si $a \gt 0$, décroissante si $a \lt 0$.</li>
+    <li>Caractère borné : non bornée, ni vers le haut ni vers le bas. Extremums : pas de minimum ni de maximum.</li>
+    <li>Parité : une fonction linéaire est toujours <b>impaire</b>.</li>
+    <li>Graphe : droite passant par l'origine $[0;0]$, non parallèle à aucun axe.</li>
+</ul>
+<p class="mb-3"><b>Exemple :</b> $y = -4x$. Comme $a=-4 \lt 0$, la fonction est décroissante.</p>
+<div class="warn-box mb-3">
+    <p class="font-semibold mb-1">Démonstration générale de l'imparité</p>
+    <p>Pour tout $x \in \mathbb{R}$, on a $f(-x) = a\cdot(-x) = -ax = -f(x)$. Cette égalité est vraie pour tout $x$, donc la fonction linéaire est toujours impaire (vérifier sur quelques nombres seulement ne prouve rien).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Propriétés de la fonction constante</h2>
+<p class="mb-3">$f: y = b$, $x \in \mathbb{R}$.</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Domaine de définition : $D(f) = \mathbb{R}$, ensemble image : $H(f) = \{b\}$.</li>
+    <li>Monotonie : la fonction n'est pas injective, donc ni croissante ni décroissante.</li>
+    <li>Caractère borné : bornée, vers le haut comme vers le bas. Extremums : minimum et maximum en chaque point à la fois.</li>
+    <li>Parité : une fonction constante est toujours <b>paire</b>.</li>
+    <li>Graphe : droite parallèle à l'axe $x$, coupant l'axe $y$ au point $b$.</li>
+</ul>
+<div class="warn-box mb-3">
+    <p>Une droite parallèle à l'axe $x$ est le graphe d'une fonction constante. En revanche, une droite parallèle à l'axe $y$ <b>n'est le graphe d'aucune fonction</b> — à une valeur de $x$ correspondrait une infinité de valeurs de $y$.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Propriétés de la fonction affine générale</h2>
+<p class="mb-3">$f: y = ax+b$, où $a \neq 0$ et $b \neq 0$.</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Domaine de définition : $D(f) = \mathbb{R}$, ensemble image : $H(f) = \mathbb{R}$.</li>
+    <li>Monotonie : injective ; croissante si $a \gt 0$, décroissante si $a \lt 0$.</li>
+    <li>Caractère borné : non bornée. Extremums : pas de minimum ni de maximum.</li>
+    <li>Parité : ni paire, ni impaire.</li>
+    <li>Graphe : droite qui ne passe pas par l'origine et n'est parallèle à aucun axe.</li>
+</ul>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Influence des coefficients $a$ et $b$ sur le graphe</h2>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Quand $b$ reste fixe et que seul $a$ change, tous les graphes passent par <b>le même point $[0;b]$</b> et ne diffèrent que par la pente.</li>
+    <li>Quand $a$ reste fixe et que seul $b$ change, les graphes sont des <b>droites parallèles entre elles</b>, passant par des points $[0;b]$ différents.</li>
+</ul>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Fonction affine avec domaine restreint</h2>
+<p class="mb-3">Si le domaine de définition est un intervalle borné, le graphe n'est plus une droite entière, mais un segment délimité par les bornes de l'intervalle. L'ensemble image et les extremums se calculent à partir des valeurs de la fonction aux bornes.</p>
+<p class="mb-3"><b>Exemple :</b> $f: y = 2x-1$, $x \in \langle -3;4 \rangle$. $f(-3) = -7$, $f(4) = 7$. Comme $a=2 \gt 0$, la fonction est croissante, donc $D(f)=\langle-3;4\rangle$ et $H(f)=\langle-7;7\rangle$, le minimum est en $x=-3$, le maximum en $x=4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Déterminer une fonction affine à partir de deux points</h2>
+<p class="mb-3">On substitue les coordonnées des deux points $K[x_K;y_K]$ et $L[x_L;y_L]$ dans la formule générale $y=ax+b$, on obtient un système de deux équations à deux inconnues $a,b$, que l'on résout, puis on substitue les valeurs trouvées dans $y=ax+b$.</p>
+<p class="mb-3"><b>Exemple :</b> $K[2;-1]$, $L[-1;5]$. $-1 = 2a+b$, $5=-a+b$. En soustrayant : $a=-2$, $b=3$. Formule obtenue : $y=-2x+3$.</p>
+<div class="warn-box mb-3">
+    <p>Si les deux points ont la même abscisse, le système n'a pas de solution de la forme $y=ax+b$ — de tels points se trouvent sur une droite parallèle à l'axe $y$, qui n'est le graphe d'aucune fonction.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. La fonction affine en pratique</h2>
+<p class="mb-3"><b>a) Fonction linéaire :</b> Les pommes coûtent 32 Kč le kilogramme. Le prix total $y$ (en Kč) en fonction de la quantité $x$ (en kg) est $y=32x$, $x \in \langle 0;\infty)$. Par exemple, pour $x=2{,}5$ kg, on obtient un prix $y=80$ Kč.</p>
+<p class="mb-3"><b>b) Fonction affine générale avec domaine restreint :</b> Une bougie mesure 20 cm et brûle à une vitesse de 0,5 cm par minute. La hauteur en fonction du temps est $h = 20-0{,}5t$. La bougie est entièrement consumée ($h=0$) après $t=40$ minutes. Le graphique peut être utilisé dans les deux sens — on peut se demander la taille à un instant donné, ou inversement, à quel instant elle avait une taille donnée.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Résumé — comment distinguer les fonctions</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Type</th>
+            <th class="text-left py-1 pr-2">Condition</th>
+            <th class="text-left py-1 pr-2">Exemple</th>
+            <th class="text-left py-1 pr-2">Parité</th>
+            <th class="text-left py-1">Graphe</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">fonction linéaire</td><td class="py-1 pr-2">$b=0,\ a\neq0$</td><td class="py-1 pr-2">$y=-4x$</td><td class="py-1 pr-2">impaire</td><td class="py-1">droite par l'origine</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">fonction constante</td><td class="py-1 pr-2">$a=0$</td><td class="py-1 pr-2">$y=-\tfrac52$</td><td class="py-1 pr-2">paire</td><td class="py-1">parallèle à $x$</td></tr>
+        <tr><td class="py-1 pr-2">fonction affine générale</td><td class="py-1 pr-2">$a\neq0,\ b\neq0$</td><td class="py-1 pr-2">$y=3x-2$</td><td class="py-1 pr-2">ni paire, ni impaire</td><td class="py-1">droite hors origine</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

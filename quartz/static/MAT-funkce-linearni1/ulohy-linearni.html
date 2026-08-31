@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonction affine — Exercices</title>
+    <script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #7c3aed;
+        --secondary: #5b21b6;
+        --bg: #fafaf9;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #f5f3ff;
+        --translation: #64748b;
+    }
+    body {
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    .back-link { display: block; text-align: center; margin-bottom: 1rem; color: var(--translation); font-size: 0.9rem; text-decoration: none; }
+    .back-link:hover { color: var(--primary); }
+    h1 { text-align: center; color: var(--primary); font-size: 2.5rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 2.5rem; }
+    .exercise-card {
+        background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;
+    }
+    .exercise-body { margin-bottom: 18px; font-size: 1.05rem; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .btn { border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+    .btn-translation { background: transparent; color: var(--translation); border: 1px solid var(--translation); }
+    .btn-translation:hover { background: var(--translation); color: #fff; }
+    .btn-solution { background: var(--primary); color: #fff; }
+    .btn-solution:hover { background: var(--secondary); }
+    .content-box { display: none; margin-top: 14px; padding: 15px; border-radius: 6px; font-size: 0.95rem; animation: fadeIn 0.3s ease-in; }
+    .translation-box { background: #f1f5f9; color: #475569; border-left: 4px solid var(--translation); font-style: italic; }
+    .solution-box { background: var(--accent); border-left: 4px solid var(--primary); }
+    .active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    footer { text-align: center; margin-top: 40px; padding: 20px; color: #94a3b8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="rozcestnik-linearni.html" class="back-link">← Rozcestník</a>
+        <h1>Fonction affine</h1>
+        <p class="subtitle">Série de 10 exercices avec solutions et traductions</p>
+
+        <!-- 1 -->
+        <div class="exercise-card">
+            <div class="exercise-header">1. Fonction linéaire ou non ?</div>
+            <div class="exercise-body">
+                Soit la fonction $f: y = 5x$. S'agit-il d'une fonction linéaire, d'une fonction constante, ou d'une fonction affine générale ? Justifie ta réponse.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr1',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol1',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr1" class="content-box translation-box">
+                Je funkce $f: y=5x$ přímou úměrností, konstantní funkcí, nebo obecnou lineární funkcí? Zdůvodni svou odpověď.
+            </div>
+            <div id="sol1" class="content-box solution-box">
+                La formule $y=5x$ correspond à la forme $y=ax$ avec $a=5\neq0$ et $b=0$. Il s'agit donc d'une <b>fonction linéaire</b> (proportionnalité directe).
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="exercise-card">
+            <div class="exercise-header">2. Calcul de valeurs</div>
+            <div class="exercise-body">
+                Soit $f: y = -2x+1$. Calcule $f(3)$ et $f(-3)$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr2',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol2',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr2" class="content-box translation-box">
+                Je dána funkce $f: y=-2x+1$. Vypočítej $f(3)$ a $f(-3)$.
+            </div>
+            <div id="sol2" class="content-box solution-box">
+                $f(3) = -2\cdot3+1 = -5$<br>$f(-3) = -2\cdot(-3)+1 = 7$
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="exercise-card">
+            <div class="exercise-header">3. Trouver a et b à partir de deux points</div>
+            <div class="exercise-body">
+                La droite représentant une fonction affine passe par les points $K[1;4]$ et $L[3;-2]$. Détermine les coefficients $a$ et $b$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr3',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol3',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr3" class="content-box translation-box">
+                Přímka, která je grafem lineární funkce, prochází body $K[1;4]$ a $L[3;-2]$. Urči koeficienty $a$ a $b$.
+            </div>
+            <div id="sol3" class="content-box solution-box">
+                $4 = a+b$ &nbsp; $-2 = 3a+b$<br>En soustrayant : $4-(-2) = a+b-3a-b \Rightarrow 6=-2a \Rightarrow a=-3$, puis $b=4-(-3)=7$.<br>Formule obtenue : $y=-3x+7$. (Vérification : $-3\cdot3+7=-2$ ✓)
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="exercise-card">
+            <div class="exercise-header">4. Domaine restreint</div>
+            <div class="exercise-body">
+                Soit $f: y = -x+5$, $x \in \langle 0;6 \rangle$. Détermine $D(f)$, $H(f)$ et les extremums de $f$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr4',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol4',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr4" class="content-box translation-box">
+                Je dána funkce $f: y=-x+5$, $x \in \langle 0;6 \rangle$. Urči $D(f)$, $H(f)$ a extrémy funkce $f$.
+            </div>
+            <div id="sol4" class="content-box solution-box">
+                $f(0)=5$, $f(6)=-1$. Comme $a=-1\lt0$, la fonction est décroissante.<br>$D(f)=\langle0;6\rangle$, $H(f)=\langle-1;5\rangle$.<br>Le maximum est en $x=0$ (valeur $5$), le minimum en $x=6$ (valeur $-1$).
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="exercise-card">
+            <div class="exercise-header">5. Fonction constante</div>
+            <div class="exercise-body">
+                Soit la fonction constante $f: y = 7$. Quel est son ensemble image $H(f)$ ? Est-elle paire ou impaire ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr5',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol5',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr5" class="content-box translation-box">
+                Je dána konstantní funkce $f: y=7$. Jaký je její obor hodnot $H(f)$? Je sudá, nebo lichá?
+            </div>
+            <div id="sol5" class="content-box solution-box">
+                $H(f) = \{7\}$ — un ensemble à un seul élément. Une fonction constante est toujours <b>paire</b>.
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="exercise-card">
+            <div class="exercise-header">6. Problème concret : location de vélo</div>
+            <div class="exercise-body">
+                La location d'un vélo coûte 3 € de frais fixes, plus 2 € par heure. Écris la fonction donnant le prix $y$ en fonction du nombre d'heures $h$. Combien coûte une location de 4 heures ? Combien d'heures peut-on louer le vélo pour 15 € ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr6',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol6',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr6" class="content-box translation-box">
+                Půjčení kola stojí 3 € fixního poplatku plus 2 € za hodinu. Napiš funkci vyjadřující cenu $y$ v závislosti na počtu hodin $h$. Kolik stojí půjčení na 4 hodiny? Na kolik hodin si lze kolo půjčit za 15 €?
+            </div>
+            <div id="sol6" class="content-box solution-box">
+                $y = 2h+3$.<br>Pour $h=4$ : $y=2\cdot4+3=11$ €.<br>Pour $y=15$ : $15=2h+3 \Rightarrow h=6$ heures.
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="exercise-card">
+            <div class="exercise-header">7. Prouver l'imparité</div>
+            <div class="exercise-body">
+                Démontre que la fonction $f: y = 6x$ est impaire.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr7',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol7',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr7" class="content-box translation-box">
+                Dokaž, že funkce $f: y=6x$ je lichá.
+            </div>
+            <div id="sol7" class="content-box solution-box">
+                Pour tout $x\in\mathbb{R}$, on a $f(-x) = 6\cdot(-x) = -6x = -f(x)$. L'égalité est vraie pour tout $x$, donc la fonction est impaire.
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="exercise-card">
+            <div class="exercise-header">8. Points à même abscisse</div>
+            <div class="exercise-body">
+                On donne deux points $M[2;1]$ et $N[2;5]$. Peut-on trouver une fonction affine dont le graphe passe par ces deux points ? Explique pourquoi.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr8',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol8',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr8" class="content-box translation-box">
+                Jsou dány dva body $M[2;1]$ a $N[2;5]$. Lze najít lineární funkci, jejíž graf prochází těmito dvěma body? Vysvětli proč.
+            </div>
+            <div id="sol8" class="content-box solution-box">
+                Non, c'est impossible. Les deux points ont la même abscisse $x=2$, ils se trouveraient donc sur une droite parallèle à l'axe $y$. Or une telle droite n'est le graphe d'aucune fonction — à une valeur de $x$ correspondrait une infinité de valeurs de $y$.
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="exercise-card">
+            <div class="exercise-header">9. Problème concret : vidange d'une piscine</div>
+            <div class="exercise-body">
+                Une piscine contient 500 litres d'eau. Elle se vide à une vitesse de 25 litres par minute. Écris la fonction $V(t)$ donnant le volume d'eau en fonction du temps $t$ (en minutes). Quel volume reste-t-il après 8 minutes ? Au bout de combien de temps la piscine sera-t-elle vide ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr9',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol9',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr9" class="content-box translation-box">
+                Bazén obsahuje 500 litrů vody. Vyprazdňuje se rychlostí 25 litrů za minutu. Napiš funkci $V(t)$ vyjadřující objem vody v závislosti na čase $t$ (v minutách). Kolik vody zbyde po 8 minutách? Za jak dlouho bude bazén prázdný?
+            </div>
+            <div id="sol9" class="content-box solution-box">
+                $V(t) = 500 - 25t$.<br>Pour $t=8$ : $V(8)=500-200=300$ litres.<br>La piscine est vide quand $V(t)=0$ : $500-25t=0 \Rightarrow t=20$ minutes.
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="exercise-card">
+            <div class="exercise-header">10. Exercice de synthèse</div>
+            <div class="exercise-body">
+                Soit $f: y = 2x-6$. Trouve le point d'intersection du graphe avec l'axe $x$ (le zéro de la fonction) et avec l'axe $y$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr10',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol10',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr10" class="content-box translation-box">
+                Je dána funkce $f: y=2x-6$. Najdi průsečík grafu s osou $x$ (nulový bod funkce) a s osou $y$.
+            </div>
+            <div id="sol10" class="content-box solution-box">
+                Intersection avec l'axe $x$ : $2x-6=0 \Rightarrow x=3$, soit le point $P_x[3;0]$.<br>Intersection avec l'axe $y$ : $f(0)=2\cdot0-6=-6$, soit le point $P_y[0;-6]$.
+            </div>
+        </div>
+
+        <footer>
+            © 2026 – Mathématiques en Français – Exercices sur les Fonctions Affines
+        </footer>
+    </div>
+
+    <script>
+        function toggle(id, btn, openLabel, closeLabel) {
+            const el = document.getElementById(id);
+            const active = el.classList.toggle('active');
+            btn.textContent = active ? closeLabel : openLabel;
+        }
+    </script>
+
+</body>
+</html>

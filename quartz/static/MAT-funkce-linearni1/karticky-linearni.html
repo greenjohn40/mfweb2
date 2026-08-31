@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Lineární funkce / Fonction affine</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-linearni.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Lineární funkce</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je lineární funkce?</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Funkce, kterou lze zapsat předpisem y = ax+b.</p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Matematika / Mathématiques · Lineární funkce
+    </footer>
+
+    <script>
+        const rawData = {
+            cs: [
+                { q: "Jaký je obecný předpis lineární funkce?", a: "$y = ax+b$, kde $a,b \\in \\mathbb{R}$" },
+                { q: "Co je grafem každé lineární funkce?", a: "přímka" },
+                { q: "Kdy je lineární funkce přímou úměrností?", a: "když $b=0$ (a $a\\neq0$)" },
+                { q: "Kdy je lineární funkce konstantní funkcí?", a: "když $a=0$" },
+                { q: "Jaký je předpis přímé úměrnosti?", a: "$y=ax$, kde $a\\neq0$" },
+                { q: "Jaký je předpis konstantní funkce?", a: "$y=b$" },
+                { q: "Jaký je $D(f)$ přímé úměrnosti?", a: "$D(f)=\\mathbb{R}$" },
+                { q: "Jaký je $H(f)$ přímé úměrnosti?", a: "$H(f)=\\mathbb{R}$" },
+                { q: "Jaká je monotónnost přímé úměrnosti pro $a\\gt0$?", a: "rostoucí" },
+                { q: "Jaká je monotónnost přímé úměrnosti pro $a\\lt0$?", a: "klesající" },
+                { q: "Je přímá úměrnost omezená?", a: "ne, není omezená ani shora, ani zdola" },
+                { q: "Jaké má přímá úměrnost extrémy?", a: "žádné — nemá minimum ani maximum" },
+                { q: "Jaká je parita přímé úměrnosti?", a: "vždy lichá" },
+                { q: "Kterým bodem prochází graf přímé úměrnosti?", a: "bodem $[0;0]$ (počátkem)" },
+                { q: "Jaký je $H(f)$ konstantní funkce $y=b$?", a: "$H(f)=\\{b\\}$" },
+                { q: "Je konstantní funkce prostá?", a: "ne" },
+                { q: "Je konstantní funkce omezená?", a: "ano, shora i zdola" },
+                { q: "Jaké má konstantní funkce extrémy?", a: "minimum i maximum v každém bodě $D(f)$" },
+                { q: "Jaká je parita konstantní funkce?", a: "vždy sudá" },
+                { q: "Jaký je graf konstantní funkce?", a: "přímka rovnoběžná s osou $x$" },
+                { q: "Je přímka rovnoběžná s osou $y$ grafem nějaké funkce?", a: "ne, není" },
+                { q: "Jaký je $D(f)$ obecné lineární funkce ($a\\neq0,b\\neq0$)?", a: "$D(f)=\\mathbb{R}$" },
+                { q: "Jaká je parita obecné lineární funkce ($a\\neq0,b\\neq0$)?", a: "ani sudá, ani lichá" },
+                { q: "Prochází graf obecné lineární funkce počátkem?", a: "ne, neprochází" },
+                { q: "Co zůstává stejné, když měníme jen $a$ (při pevném $b$)?", a: "bod $[0;b]$, kterým procházejí všechny grafy" },
+                { q: "Co zůstává stejné, když měníme jen $b$ (při pevném $a$)?", a: "sklon — grafy jsou navzájem rovnoběžné" },
+                { q: "Jak se nazývá koeficient $a$ v předpisu $y=ax+b$?", a: "koeficient (udává sklon přímky)" },
+                { q: "Jak se nazývá koeficient $b$ v předpisu $y=ax+b$?", a: "absolutní člen" },
+                { q: "$y=3x-2$: kolik je $f(0)$?", a: "$f(0)=-2$" },
+                { q: "$y=3x-2$: kolik je $f(2)$?", a: "$f(2)=4$" },
+                { q: "$y=-4x$: kolik je $f(-1)$?", a: "$f(-1)=4$" },
+                { q: "$y=-4x$: kolik je $f(1)$?", a: "$f(1)=-4$" },
+                { q: "$y=-\\tfrac{5}{2}$: jaký je $H(f)$?", a: "$H(f)=\\left\\{-\\tfrac{5}{2}\\right\\}$" },
+                { q: "Jak dokážeme obecně lichost přímé úměrnosti?", a: "ukážeme, že $f(-x)=-f(x)$ pro každé $x\\in\\mathbb{R}$" },
+                { q: "$f:y=2x-1$, $x\\in\\langle-3;4\\rangle$: jaký je $H(f)$?", a: "$H(f)=\\langle-7;7\\rangle$" },
+                { q: "$f:y=2x-1$, $x\\in\\langle-3;4\\rangle$: kde je minimum?", a: "v $x=-3$ (hodnota $-7$)" },
+                { q: "$f:y=2x-1$, $x\\in\\langle-3;4\\rangle$: kde je maximum?", a: "v $x=4$ (hodnota $7$)" },
+                { q: "Jaký je graf funkce s omezeným definičním oborem?", a: "úsečka" },
+                { q: "Jaký je první krok při určování $a,b$ ze dvou bodů?", a: "dosadit souřadnice obou bodů do $y=ax+b$" },
+                { q: "$K[2;-1]$, $L[-1;5]$: jaké vyjdou $a,b$?", a: "$a=-2$, $b=3$" },
+                { q: "Co když mají dva zadané body stejné $x$?", a: "soustava nemá řešení tvaru $y=ax+b$ (jde o přímku rovnoběžnou s osou $y$)" },
+                { q: "Jablka stojí 32 Kč/kg. Kolik stojí 2,5 kg?", a: "$80$ Kč" },
+                { q: "Svíčka: $h=20-0{,}5t$. Za jak dlouho dohoří?", a: "za $40$ minut" },
+                { q: "Svíčka: $h=20-0{,}5t$. Jaká je výška v čase $t=30$ min?", a: "$5$ cm" },
+                { q: "$y=32x$ — o jaký typ funkce jde?", a: "přímou úměrnost" },
+                { q: "$y=20-0{,}5t$ — o jaký typ funkce jde obecně?", a: "obecnou lineární funkci" },
+                { q: "Co je definiční obor $D(f)$?", a: "množina všech přípustných hodnot $x$" },
+                { q: "Co je obor hodnot $H(f)$?", a: "množina všech hodnot, kterých funkce nabývá" },
+                { q: "Je $y=3$ sudá, nebo lichá funkce?", a: "sudá (je to konstantní funkce)" },
+                { q: "Je $y=-4x$ sudá, nebo lichá funkce?", a: "lichá (je to přímá úměrnost)" }
+            ],
+            fr: [
+                { q: "Quelle est la formule générale d'une fonction affine ?", a: "$y = ax+b$, où $a,b \\in \\mathbb{R}$" },
+                { q: "Quel est le graphe de toute fonction affine ?", a: "une droite" },
+                { q: "Quand une fonction affine est-elle une fonction linéaire ?", a: "quand $b=0$ (et $a\\neq0$)" },
+                { q: "Quand une fonction affine est-elle une fonction constante ?", a: "quand $a=0$" },
+                { q: "Quelle est la formule d'une fonction linéaire ?", a: "$y=ax$, où $a\\neq0$" },
+                { q: "Quelle est la formule d'une fonction constante ?", a: "$y=b$" },
+                { q: "Quel est $D(f)$ d'une fonction linéaire ?", a: "$D(f)=\\mathbb{R}$" },
+                { q: "Quel est $H(f)$ d'une fonction linéaire ?", a: "$H(f)=\\mathbb{R}$" },
+                { q: "Quelle est la monotonie d'une fonction linéaire si $a\\gt0$ ?", a: "croissante" },
+                { q: "Quelle est la monotonie d'une fonction linéaire si $a\\lt0$ ?", a: "décroissante" },
+                { q: "Une fonction linéaire est-elle bornée ?", a: "non, elle n'est bornée ni vers le haut ni vers le bas" },
+                { q: "Quels sont les extremums d'une fonction linéaire ?", a: "aucun — pas de minimum ni de maximum" },
+                { q: "Quelle est la parité d'une fonction linéaire ?", a: "toujours impaire" },
+                { q: "Par quel point passe le graphe d'une fonction linéaire ?", a: "par le point $[0;0]$ (l'origine)" },
+                { q: "Quel est $H(f)$ de la fonction constante $y=b$ ?", a: "$H(f)=\\{b\\}$" },
+                { q: "Une fonction constante est-elle injective ?", a: "non" },
+                { q: "Une fonction constante est-elle bornée ?", a: "oui, vers le haut comme vers le bas" },
+                { q: "Quels sont les extremums d'une fonction constante ?", a: "minimum et maximum en chaque point de $D(f)$" },
+                { q: "Quelle est la parité d'une fonction constante ?", a: "toujours paire" },
+                { q: "Quel est le graphe d'une fonction constante ?", a: "une droite parallèle à l'axe $x$" },
+                { q: "Une droite parallèle à l'axe $y$ est-elle le graphe d'une fonction ?", a: "non, elle ne l'est pas" },
+                { q: "Quel est $D(f)$ d'une fonction affine générale ($a\\neq0,b\\neq0$) ?", a: "$D(f)=\\mathbb{R}$" },
+                { q: "Quelle est la parité d'une fonction affine générale ($a\\neq0,b\\neq0$) ?", a: "ni paire, ni impaire" },
+                { q: "Le graphe d'une fonction affine générale passe-t-il par l'origine ?", a: "non" },
+                { q: "Que reste-t-il fixe quand on ne change que $a$ ($b$ fixé) ?", a: "le point $[0;b]$, par lequel passent tous les graphes" },
+                { q: "Que reste-t-il fixe quand on ne change que $b$ ($a$ fixé) ?", a: "la pente — les graphes sont parallèles entre eux" },
+                { q: "Comment appelle-t-on le coefficient $a$ dans $y=ax+b$ ?", a: "coefficient directeur (donne la pente)" },
+                { q: "Comment appelle-t-on le coefficient $b$ dans $y=ax+b$ ?", a: "ordonnée à l'origine" },
+                { q: "$y=3x-2$ : combien vaut $f(0)$ ?", a: "$f(0)=-2$" },
+                { q: "$y=3x-2$ : combien vaut $f(2)$ ?", a: "$f(2)=4$" },
+                { q: "$y=-4x$ : combien vaut $f(-1)$ ?", a: "$f(-1)=4$" },
+                { q: "$y=-4x$ : combien vaut $f(1)$ ?", a: "$f(1)=-4$" },
+                { q: "$y=-\\tfrac{5}{2}$ : quel est $H(f)$ ?", a: "$H(f)=\\left\\{-\\tfrac{5}{2}\\right\\}$" },
+                { q: "Comment démontre-t-on l'imparité d'une fonction linéaire ?", a: "en montrant que $f(-x)=-f(x)$ pour tout $x\\in\\mathbb{R}$" },
+                { q: "$f:y=2x-1$, $x\\in\\langle-3;4\\rangle$ : quel est $H(f)$ ?", a: "$H(f)=\\langle-7;7\\rangle$" },
+                { q: "$f:y=2x-1$, $x\\in\\langle-3;4\\rangle$ : où est le minimum ?", a: "en $x=-3$ (valeur $-7$)" },
+                { q: "$f:y=2x-1$, $x\\in\\langle-3;4\\rangle$ : où est le maximum ?", a: "en $x=4$ (valeur $7$)" },
+                { q: "Quel est le graphe d'une fonction à domaine restreint ?", a: "un segment" },
+                { q: "Quelle est la première étape pour trouver $a,b$ à partir de deux points ?", a: "substituer les coordonnées des deux points dans $y=ax+b$" },
+                { q: "$K[2;-1]$, $L[-1;5]$ : que valent $a,b$ ?", a: "$a=-2$, $b=3$" },
+                { q: "Que se passe-t-il si les deux points ont le même $x$ ?", a: "le système n'a pas de solution $y=ax+b$ (droite parallèle à l'axe $y$)" },
+                { q: "Les pommes coûtent 32 Kč/kg. Combien coûtent 2,5 kg ?", a: "$80$ Kč" },
+                { q: "Bougie : $h=20-0{,}5t$. Au bout de combien de temps est-elle consumée ?", a: "au bout de $40$ minutes" },
+                { q: "Bougie : $h=20-0{,}5t$. Quelle est sa hauteur à $t=30$ min ?", a: "$5$ cm" },
+                { q: "$y=32x$ — de quel type de fonction s'agit-il ?", a: "une fonction linéaire" },
+                { q: "$y=20-0{,}5t$ — de quel type de fonction s'agit-il en général ?", a: "une fonction affine générale" },
+                { q: "Qu'est-ce que le domaine de définition $D(f)$ ?", a: "l'ensemble de toutes les valeurs admissibles de $x$" },
+                { q: "Qu'est-ce que l'ensemble image $H(f)$ ?", a: "l'ensemble de toutes les valeurs prises par la fonction" },
+                { q: "$y=3$ est-elle paire ou impaire ?", a: "paire (c'est une fonction constante)" },
+                { q: "$y=-4x$ est-elle paire ou impaire ?", a: "impaire (c'est une fonction linéaire)" }
+            ]
+        };
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lineární funkce — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .hidden { display: none !important; }
+    .box-zvidave { border-left: 4px solid #0d9488; background: #f0fdfa; }
+    .box-past { border-left: 4px solid #b45309; background: #fffbeb; }
+    .box-souvislosti { border-left: 4px solid #4338ca; background: #eef2ff; }
+    .box-dal { border-left: 4px solid #57534e; background: #f5f5f4; }
+    .lang-btn { transition: transform 0.15s ease; }
+    .lang-btn:active { transform: scale(0.95); }
+    input[type=range] { accent-color: #7c3aed; }
+</style>
+</head>
+<body class="grid-bg text-stone-800">
+
+<header class="sticky top-0 z-50 bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white shadow-lg">
+    <div class="max-w-4xl mx-auto px-5 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-linearni.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 class="font-semibold text-sm sm:text-base">Lineární funkce · Teorie</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="lang-btn bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-4xl mx-auto px-5 py-8 space-y-14">
+
+<section id="sec-uvod">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">1. Co je lineární funkce</h2>
+    <p class="mb-4 leading-relaxed">Lineární funkce je funkce, kterou lze zapsat předpisem</p>
+    <p class="text-center text-xl mb-4">$$y = ax + b$$</p>
+    <p class="mb-4 leading-relaxed">kde $a, b \in \mathbb{R}$ a $x \in \mathbb{R}$ (pokud definiční obor v konkrétním zadání není omezen jinak). Číslo $a$ nazýváme <b>koeficient</b> (udává sklon přímky), číslo $b$ <b>absolutní člen</b>. Grafem každé lineární funkce je <b>přímka</b>.</p>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-4">
+        <p class="font-semibold text-violet-900 mb-2">Vlastní příklad</p>
+        <p class="mb-2">$y = 3x - 2$. Pro sestrojení grafu stačí najít dva body: pro $x=0$ vychází $y=-2$, pro $x=2$ vychází $y=4$. Body $[0;-2]$ a $[2;4]$ proložíme přímkou.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 310 340" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="305" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="305.0" x2="158" y2="305.0" stroke="#57534e" stroke-width="1"/><text x="147" y="308.0" font-size="9" text-anchor="end" fill="#57534e">-5</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line x1="125" y1="305" x2="215" y2="35" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="155" cy="215" r="4" fill="#c026d3"/>
+                <rect x="165" y="197" width="43.2" height="13" fill="white" fill-opacity="0.88" rx="2"/>
+                <text x="165" y="207" font-size="11" text-anchor="start" fill="#c026d3">[0;-2]</text>
+                <circle cx="215" cy="35" r="4" fill="#c026d3"/>
+                <rect x="168.0" y="39" width="37.0" height="13" fill="white" fill-opacity="0.88" rx="2"/>
+                <text x="205" y="49" font-size="11" text-anchor="end" fill="#c026d3">[2;4]</text>
+            </svg>
+        </div>
+    </div>
+
+    <p class="font-semibold text-violet-900 mb-2">Postup sestrojení grafu lineární funkce</p>
+    <ol class="list-decimal list-inside space-y-1 mb-2">
+        <li>Zvolíme dvě různé hodnoty $x$ z definičního oboru.</li>
+        <li>Dosazením do předpisu dopočítáme příslušné hodnoty $y$.</li>
+        <li>Oba body vyneseme do souřadnicové soustavy a proložíme jimi přímku.</li>
+    </ol>
+</section>
+
+<section id="sec-specialni">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">2. Dva speciální případy</h2>
+    <p class="mb-4 leading-relaxed">Koeficienty $a$ a $b$ mohou nabývat i nulové hodnoty — a právě tehdy vzniknou dva důležité speciální typy lineární funkce:</p>
+    <ul class="list-disc list-inside space-y-2 mb-4">
+        <li><b>$b = 0$</b> → funkce $y = ax$ ($a \neq 0$) se nazývá <b>přímá úměrnost</b>.</li>
+        <li><b>$a = 0$</b> → funkce $y = b$ se nazývá <b>konstantní funkce</b>.</li>
+    </ul>
+    <p class="leading-relaxed">Pokud $a \neq 0$ i $b \neq 0$, mluvíme o <i>obecné</i> lineární funkci (bez zvláštního jména).</p>
+
+    <div class="box-zvidave rounded-r-xl p-4 mt-5">
+        <p class="font-semibold text-teal-800 mb-1">💡 Pro zvídavé</p>
+        <p class="text-sm leading-relaxed">Pojem funkce v podobě, jakou dnes používáme, se ustálil až v 18. století — mimo jiné se na tom podílel švýcarský matematik Leonhard Euler, který také zavedl zápis $f(x)$. Slovo „funkce“ jako takové ale pochází ještě od německého matematika a filozofa G. W. Leibnize a bratrů Bernoulliových o něco dříve, kteří jím označovali závislost veličin na proměnné.</p>
+    </div>
+</section>
+
+<section id="sec-prima-umernost">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">3. Vlastnosti přímé úměrnosti</h2>
+    <p class="mb-4">$f: y = ax$, kde $a \neq 0$, $x \in \mathbb{R}$.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mb-4 text-sm">
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Definiční obor:</b> $D(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Obor hodnot:</b> $H(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Monotónnost:</b> prostá; rostoucí pro $a \gt 0$, klesající pro $a \lt 0$, na celém oboru.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Omezenost:</b> není omezená ani shora, ani zdola.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Extrémy:</b> nemá minimum ani maximum.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Parita:</b> přímá úměrnost je vždy <b>lichá</b>.</div>
+    </div>
+    <p class="mb-4 leading-relaxed"><b>Graf:</b> přímka procházející počátkem soustavy souřadnic (bodem $[0;0]$), která není rovnoběžná s žádnou osou. Čím větší $|a|$, tím strměji přímka stoupá nebo klesá.</p>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-4">
+        <p class="font-semibold text-violet-900 mb-2">Vlastní příklad: $y = -4x$</p>
+        <p class="mb-2">Protože $a=-4 \lt 0$, je funkce klesající: $f(-1)=4$, $f(1)=-4$ — s rostoucím $x$ hodnota $y$ klesá. Graf je přímka procházející počátkem.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 310 310" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="275" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line x1="125" y1="35" x2="185" y2="275" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="155" cy="155" r="4" fill="#c026d3"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="box-past rounded-r-xl p-4">
+        <p class="font-semibold text-amber-800 mb-2">⚠ Živý ověřovač — pozor, není to důkaz</p>
+        <p class="text-sm mb-3">Zkus dosadit libovolné číslo $x$ a porovnej $f(x)$ a $f(-x)$ pro funkci $y=-4x$:</p>
+        <div class="flex items-center gap-3 flex-wrap text-sm">
+            <label>Zadej $x$: <input id="parity-x" type="number" value="3" class="border border-stone-300 rounded px-2 py-1 w-20"></label>
+            <button onclick="checkParity()" class="bg-amber-600 text-white px-3 py-1 rounded">Ověřit</button>
+            <span id="parity-result" class="font-mono"></span>
+        </div>
+        <p class="text-xs text-amber-900 mt-3 leading-relaxed">Pozor — ověření na jednom čísle nebo na několika číslech nic nedokazuje, proměnná $x$ probíhá nekonečně mnoho hodnot. Skutečný důkaz vyžaduje obecné (algebraické) dosazení — viz box níže.</p>
+    </div>
+    <div class="bg-stone-50 border border-stone-300 rounded-xl p-4 mt-3 text-sm leading-relaxed">
+        <p class="font-semibold mb-1">Obecný důkaz lichosti přímé úměrnosti</p>
+        <p>Pro libovolné $x \in \mathbb{R}$ platí $f(-x) = a\cdot(-x) = -ax = -f(x)$. Protože tato rovnost platí pro <i>každé</i> $x$ (nejen pro vybraná čísla), je přímá úměrnost vždy lichá funkce.</p>
+    </div>
+</section>
+
+<section id="sec-konstantni">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">4. Vlastnosti konstantní funkce</h2>
+    <p class="mb-4">$f: y = b$, $x \in \mathbb{R}$.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mb-4 text-sm">
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Definiční obor:</b> $D(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Obor hodnot:</b> $H(f) = \{b\}$ — jednoprvková množina.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Monotónnost:</b> funkce není prostá, a tudíž není ani rostoucí, ani klesající.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Omezenost:</b> omezená shora i zdola.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Extrémy:</b> minimum i maximum v každém bodě definičního oboru zároveň.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Parita:</b> konstantní funkce je vždy <b>sudá</b>.</div>
+    </div>
+    <p class="mb-4 leading-relaxed"><b>Graf:</b> přímka rovnoběžná s osou $x$, procházející osou $y$ v bodě $b$.</p>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-4">
+        <p class="font-semibold text-violet-900 mb-2">Vlastní příklad: $y = -\dfrac{5}{2}$</p>
+        <p class="mb-2">Graf je vodorovná přímka procházející bodem $\left[0; -\dfrac{5}{2}\right]$.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 310 310" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="275" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line x1="35" y1="230.0" x2="275" y2="230.0" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="155" cy="230.0" r="4" fill="#c026d3"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="box-past rounded-r-xl p-4">
+        <p class="font-semibold text-amber-800 mb-1">⚠ Pozor na past</p>
+        <p class="text-sm leading-relaxed">Přímka rovnoběžná s osou $x$ je grafem nějaké konstantní funkce. Naproti tomu přímka rovnoběžná s osou $y$ <b>není grafem žádné funkce</b> — jednomu $x$ by odpovídalo nekonečně mnoho hodnot $y$, což definice funkce nedovoluje.</p>
+    </div>
+</section>
+
+<section id="sec-obecna">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">5. Vlastnosti obecné lineární funkce</h2>
+    <p class="mb-4">$f: y = ax+b$, kde $a \neq 0$ a $b \neq 0$.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mb-4 text-sm">
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Definiční obor:</b> $D(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Obor hodnot:</b> $H(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Monotónnost:</b> prostá; rostoucí pro $a \gt 0$, klesající pro $a \lt 0$.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Omezenost:</b> není omezená ani shora, ani zdola.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Extrémy:</b> nemá minimum ani maximum.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Parita:</b> není ani sudá, ani lichá.</div>
+    </div>
+    <p class="mb-4 leading-relaxed"><b>Graf:</b> přímka, která neprochází počátkem soustavy souřadnic a není rovnoběžná s žádnou souřadnicovou osou.</p>
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">Vlastní příklad: $y = 3x-2$</p>
+        <p>Graf je rostoucí přímka procházející bodem $[0;-2]$ (viz graf v úvodu této kapitoly), nikoli počátkem — proto nejde o přímou úměrnost.</p>
+    </div>
+</section>
+
+<section id="sec-koeficienty">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">6. Jak koeficienty $a$ a $b$ ovlivňují graf</h2>
+    <ul class="list-disc list-inside space-y-2 mb-5 leading-relaxed">
+        <li>Když <b>$b$ zůstává stejné</b> a mění se jen $a$, všechny grafy procházejí <b>stejným bodem $[0;b]$</b> a liší se pouze sklonem přímky.</li>
+        <li>Když <b>$a$ zůstává stejné</b> a mění se jen $b$, jsou všechny grafy <b>navzájem rovnoběžné přímky</b> se stejným sklonem, procházející různými body $[0;b]$.</li>
+    </ul>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-5">
+        <p class="font-semibold text-violet-900 mb-2">Živý nástroj: svazek přímek bodem $[0;b]$</p>
+        <p class="text-sm mb-3">Posuvník mění koeficient $a$, $b$ zůstává pevně nastaveno na $2$:</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input id="slider-a" type="range" min="-2" max="2" step="0.5" value="1" oninput="updateFamilyA()" class="w-full">
+            <span id="slider-a-val" class="font-mono text-sm w-28">a = 1, b = 2</span>
+        </div>
+        <div class="flex justify-center">
+            <svg id="svg-family-a" viewBox="0 0 310 310" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="275" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <circle cx="155" cy="95" r="4" fill="#c026d3"/>
+                <line id="family-a-line" x1="35" y1="215" x2="215" y2="35" stroke="#7c3aed" stroke-width="2.5"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">Živý nástroj: rovnoběžné přímky se stejným sklonem</p>
+        <p class="text-sm mb-3">Posuvník mění koeficient $b$, $a$ zůstává pevně nastaveno na $1{,}5$:</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input id="slider-b" type="range" min="-4" max="4" step="0.5" value="0" oninput="updateFamilyB()" class="w-full">
+            <span id="slider-b-val" class="font-mono text-sm w-32">a = 1.5, b = 0</span>
+        </div>
+        <div class="flex justify-center">
+            <svg id="svg-family-b" viewBox="0 0 310 310" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="275" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line id="family-b-line" x1="75.0" y1="275" x2="235.0" y2="35" stroke="#7c3aed" stroke-width="2.5"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section id="sec-omezeny-obor">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">7. Lineární funkce s omezeným definičním oborem</h2>
+    <p class="mb-4 leading-relaxed">Pokud je definiční obor lineární funkce zadán jako omezený interval (ne celé $\mathbb{R}$), graf už není celá přímka, ale jen její <b>úsečka</b> ohraničená krajními body intervalu. Obor hodnot i extrémy dopočítáme z hodnot funkce na krajích tohoto intervalu — u rostoucí funkce je minimum v levém a maximum v pravém krajním bodě, u klesající funkce naopak.</p>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">Vlastní příklad: $f: y = 2x-1$, $x \in \langle -3;4 \rangle$</p>
+        <p class="mb-2">$f(-3) = 2\cdot(-3)-1 = -7 \qquad f(4) = 2\cdot 4 - 1 = 7$</p>
+        <p class="mb-3">Protože $a=2 \gt 0$, je funkce rostoucí, takže $D(f)=\langle-3;4\rangle$ a $H(f)=\langle-7;7\rangle$, minimum nastává v $x=-3$ (hodnota $-7$) a maximum v $x=4$ (hodnota $7$). Graf je úsečka spojující body $[-3;-7]$ a $[4;7]$.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 310 490" class="w-full max-w-sm">
+                <line x1="35" y1="245" x2="275" y2="245" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="455" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="242" x2="35.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="35.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="242" x2="65.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="65.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="242" x2="95.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="95.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="242" x2="125.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="125.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="242" x2="185.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="185.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="242" x2="215.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="215.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="242" x2="245.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="245.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="242" x2="275.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="275.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="455.0" x2="158" y2="455.0" stroke="#57534e" stroke-width="1"/><text x="147" y="458.0" font-size="9" text-anchor="end" fill="#57534e">-7</text>
+                <line x1="152" y1="425.0" x2="158" y2="425.0" stroke="#57534e" stroke-width="1"/><text x="147" y="428.0" font-size="9" text-anchor="end" fill="#57534e">-6</text>
+                <line x1="152" y1="395.0" x2="158" y2="395.0" stroke="#57534e" stroke-width="1"/><text x="147" y="398.0" font-size="9" text-anchor="end" fill="#57534e">-5</text>
+                <line x1="152" y1="365.0" x2="158" y2="365.0" stroke="#57534e" stroke-width="1"/><text x="147" y="368.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="335.0" x2="158" y2="335.0" stroke="#57534e" stroke-width="1"/><text x="147" y="338.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="305.0" x2="158" y2="305.0" stroke="#57534e" stroke-width="1"/><text x="147" y="308.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="155.0" x2="158" y2="155.0" stroke="#57534e" stroke-width="1"/><text x="147" y="158.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">5</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">6</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">7</text>
+                <line x1="65" y1="455" x2="275" y2="35" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="65" cy="455" r="4" fill="#c026d3"/>
+                <rect x="73" y="455" width="49.4" height="13" fill="white" fill-opacity="0.88" rx="2"/>
+                <text x="73" y="465" font-size="11" text-anchor="start" fill="#c026d3">[-3;-7]</text>
+                <circle cx="275" cy="35" r="4" fill="#c026d3"/>
+                <rect x="230.0" y="15" width="37.0" height="13" fill="white" fill-opacity="0.88" rx="2"/>
+                <text x="267" y="25" font-size="11" text-anchor="end" fill="#c026d3">[4;7]</text>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section id="sec-dva-body">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">8. Určení předpisu lineární funkce ze dvou bodů</h2>
+    <p class="mb-3 leading-relaxed">Pokud známe dva body $K[x_K;y_K]$ a $L[x_L;y_L]$, kterými prochází graf lineární funkce, můžeme dopočítat koeficienty $a,b$:</p>
+    <ol class="list-decimal list-inside space-y-1 mb-4">
+        <li>Souřadnice bodu $K$ dosadíme do obecného předpisu $y=ax+b$ — dostaneme první rovnici.</li>
+        <li>Totéž provedeme s bodem $L$ — dostaneme druhou rovnici.</li>
+        <li>Získáme soustavu dvou rovnic o dvou neznámých $a,b$, kterou vyřešíme.</li>
+        <li>Nalezené $a,b$ dosadíme zpět do $y=ax+b$.</li>
+    </ol>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-5">
+        <p class="font-semibold text-violet-900 mb-2">Vlastní příklad: $K[2;-1]$, $L[-1;5]$</p>
+        <p class="mb-2">$$-1 = 2a+b \qquad 5=-a+b$$</p>
+        <p class="mb-2">Odečtením rovnic: $-1-5 = 2a+b-(-a+b) \Rightarrow -6=3a \Rightarrow a=-2$, dosazením $b=-1-2\cdot(-2)=3$.</p>
+        <p>Výsledný předpis: $y=-2x+3$. (Ověření: $f(2)=-2\cdot2+3=-1$ ✓, $f(-1)=-2\cdot(-1)+3=5$ ✓.)</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">Živý nástroj: najdi předpis ze dvou vlastních bodů</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 text-sm">
+            <label>$x_K$: <input id="pt-xk" type="number" value="2" class="border border-stone-300 rounded px-2 py-1 w-full"></label>
+            <label>$y_K$: <input id="pt-yk" type="number" value="-1" class="border border-stone-300 rounded px-2 py-1 w-full"></label>
+            <label>$x_L$: <input id="pt-xl" type="number" value="-1" class="border border-stone-300 rounded px-2 py-1 w-full"></label>
+            <label>$y_L$: <input id="pt-yl" type="number" value="5" class="border border-stone-300 rounded px-2 py-1 w-full"></label>
+        </div>
+        <button onclick="solveTwoPoints()" class="bg-violet-700 text-white px-4 py-1.5 rounded mb-3">Vypočítat předpis</button>
+        <p id="two-points-result" class="font-mono text-sm"></p>
+    </div>
+
+    <div class="box-past rounded-r-xl p-4 mt-5">
+        <p class="font-semibold text-amber-800 mb-1">⚠ Pozor na past</p>
+        <p class="text-sm leading-relaxed">Pokud mají oba zadané body stejnou souřadnici $x$ (tzn. $x_K = x_L$), soustava nemá řešení ve tvaru $y=ax+b$ — takové body totiž neleží na grafu žádné funkce, ale na přímce rovnoběžné s osou $y$.</p>
+    </div>
+</section>
+
+<section id="sec-praxe">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">9. Lineární funkce v praxi</h2>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-5">
+        <p class="font-semibold text-violet-900 mb-2">a) Přímá úměrnost — nákup jablek</p>
+        <p class="mb-2">Jablka stojí 32 Kč za kilogram. Celková cena $y$ (v Kč) v závislosti na množství $x$ (v kg) je</p>
+        <p class="mb-2">$$y=32x, \quad x \in \langle 0;\infty)$$</p>
+        <p class="mb-3">Např. pro $x = 2{,}5$ kg vychází cena $y = 80$ Kč.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 340 280" class="w-full max-w-sm">
+                <line x1="35" y1="245.0" x2="305" y2="245.0" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="245" x2="35.0" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="84.09" y1="242.0" x2="84.09" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="84.09" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="133.18" y1="242.0" x2="133.18" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="133.18" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="182.27" y1="242.0" x2="182.27" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="182.27" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="231.36" y1="242.0" x2="231.36" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="231.36" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="280.45" y1="242.0" x2="280.45" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="280.45" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">5</text>
+                <line x1="32.0" y1="198.33" x2="38.0" y2="198.33" stroke="#57534e" stroke-width="1"/><text x="27.0" y="201.33" font-size="9" text-anchor="end" fill="#57534e">40</text>
+                <line x1="32.0" y1="151.67" x2="38.0" y2="151.67" stroke="#57534e" stroke-width="1"/><text x="27.0" y="154.67" font-size="9" text-anchor="end" fill="#57534e">80</text>
+                <line x1="32.0" y1="105.0" x2="38.0" y2="105.0" stroke="#57534e" stroke-width="1"/><text x="27.0" y="108.0" font-size="9" text-anchor="end" fill="#57534e">120</text>
+                <line x1="32.0" y1="58.33" x2="38.0" y2="58.33" stroke="#57534e" stroke-width="1"/><text x="27.0" y="61.33" font-size="9" text-anchor="end" fill="#57534e">160</text>
+                <line x1="35.0" y1="245.0" x2="280.45" y2="58.33" stroke="#7c3aed" stroke-width="2.5"/>
+                <line x1="157.73" y1="245.0" x2="157.73" y2="151.67" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <line x1="157.73" y1="151.67" x2="35.0" y2="151.67" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <circle cx="157.73" cy="245.0" r="4" fill="#dc2626"/>
+                <circle cx="157.73" cy="151.67" r="4" fill="#dc2626"/>
+                <circle cx="35.0" cy="151.67" r="4" fill="#dc2626"/>
+                <text x="280" y="270" font-size="10" fill="#57534e" text-anchor="middle">x (kg)</text>
+                <text x="15" y="40" font-size="10" fill="#57534e" text-anchor="start">y (Kč)</text>
+            </svg>
+        </div>
+        <p class="text-xs text-stone-500 mt-2 text-center">Nezávisle proměnná je množství (osa $x$), závisle proměnná je cena (osa $y$) — cena se odvíjí od množství, ne naopak.</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">b) Obecná lineární funkce s omezeným oborem — hořící svíčka</p>
+        <p class="mb-2">Svíčka je dlouhá 20 cm a hoří rychlostí 0,5 cm za minutu. Výška svíčky v závislosti na čase je</p>
+        <p class="mb-2">$$h = 20-0{,}5t$$</p>
+        <p class="mb-3">kde $t$ je čas v minutách. Svíčka dohoří ($h=0$), když $20-0{,}5t=0$, tedy $t=40$ minut.</p>
+        <p class="mb-3">V grafu je vyznačena velikost svíčky v čase $t=30$ min. Graf lze použít „oběma směry“ — můžeme se ptát na velikost svíčky v konkrétním čase, nebo obráceně, ve kterém čase měla svíčka určitou velikost.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 340 280" class="w-full max-w-sm">
+                <line x1="35" y1="245.0" x2="305" y2="245.0" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="245" x2="35.0" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="65.0" y1="242.0" x2="65.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="65.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">5</text>
+                <line x1="95.0" y1="242.0" x2="95.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="95.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">10</text>
+                <line x1="125.0" y1="242.0" x2="125.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="125.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">15</text>
+                <line x1="155.0" y1="242.0" x2="155.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="155.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">20</text>
+                <line x1="185.0" y1="242.0" x2="185.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="185.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">25</text>
+                <line x1="215.0" y1="242.0" x2="215.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="215.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">30</text>
+                <line x1="245.0" y1="242.0" x2="245.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="245.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">35</text>
+                <line x1="275.0" y1="242.0" x2="275.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="275.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">40</text>
+                <line x1="305.0" y1="242.0" x2="305.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="305.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">45</text>
+                <line x1="32.0" y1="197.27" x2="38.0" y2="197.27" stroke="#57534e" stroke-width="1"/><text x="27.0" y="200.27" font-size="9" text-anchor="end" fill="#57534e">5</text>
+                <line x1="32.0" y1="149.55" x2="38.0" y2="149.55" stroke="#57534e" stroke-width="1"/><text x="27.0" y="152.55" font-size="9" text-anchor="end" fill="#57534e">10</text>
+                <line x1="32.0" y1="101.82" x2="38.0" y2="101.82" stroke="#57534e" stroke-width="1"/><text x="27.0" y="104.82" font-size="9" text-anchor="end" fill="#57534e">15</text>
+                <line x1="32.0" y1="54.09" x2="38.0" y2="54.09" stroke="#57534e" stroke-width="1"/><text x="27.0" y="57.09" font-size="9" text-anchor="end" fill="#57534e">20</text>
+                <line x1="35.0" y1="54.09" x2="275.0" y2="245.0" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="275.0" cy="245.0" r="4" fill="#c026d3"/>
+                <line x1="215.0" y1="245.0" x2="215.0" y2="197.27" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <line x1="215.0" y1="197.27" x2="35.0" y2="197.27" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <circle cx="215.0" cy="245.0" r="4" fill="#dc2626"/>
+                <circle cx="215.0" cy="197.27" r="4" fill="#dc2626"/>
+                <circle cx="35.0" cy="197.27" r="4" fill="#dc2626"/>
+                <text x="295" y="270" font-size="10" fill="#57534e" text-anchor="middle">t (min)</text>
+                <text x="8" y="20" font-size="10" fill="#57534e" text-anchor="start">h (cm)</text>
+            </svg>
+        </div>
+    </div>
+
+    <div class="box-souvislosti rounded-r-xl p-4 mt-5">
+        <p class="font-semibold text-indigo-800 mb-1">🔗 Souvislosti</p>
+        <p class="text-sm leading-relaxed">Lineární závislost se v praxi objevuje všude tam, kde jedna veličina roste (nebo klesá) o stále stejné množství s každou jednotkou druhé veličiny — typicky rovnoměrný pohyb ve fyzice ($s = v \cdot t + s_0$), náklady na provoz s pevnou a proměnnou složkou v ekonomii, nebo třeba lineární tarify za data a minuty u mobilních operátorů.</p>
+    </div>
+</section>
+
+<section id="sec-shrnuti">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">10. Shrnutí — jak funkce rozlišit</h2>
+    <div class="overflow-x-auto mb-5">
+        <table class="w-full text-sm bg-white rounded-xl border border-violet-200 overflow-hidden">
+            <thead class="bg-violet-100 text-violet-900">
+                <tr>
+                    <th class="p-2 text-left">Typ</th>
+                    <th class="p-2 text-left">Podmínka</th>
+                    <th class="p-2 text-left">Příklad</th>
+                    <th class="p-2 text-left">Parita</th>
+                    <th class="p-2 text-left">Graf</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-t border-stone-200">
+                    <td class="p-2">přímá úměrnost</td>
+                    <td class="p-2">$b=0,\ a\neq0$</td>
+                    <td class="p-2">$y=-4x$</td>
+                    <td class="p-2">lichá</td>
+                    <td class="p-2">přímka počátkem</td>
+                </tr>
+                <tr class="border-t border-stone-200 bg-stone-50">
+                    <td class="p-2">konstantní funkce</td>
+                    <td class="p-2">$a=0$</td>
+                    <td class="p-2">$y=-\tfrac52$</td>
+                    <td class="p-2">sudá</td>
+                    <td class="p-2">rovnoběžka s $x$</td>
+                </tr>
+                <tr class="border-t border-stone-200">
+                    <td class="p-2">obecná lin. funkce</td>
+                    <td class="p-2">$a\neq0,\ b\neq0$</td>
+                    <td class="p-2">$y=3x-2$</td>
+                    <td class="p-2">ani sudá, ani lichá</td>
+                    <td class="p-2">přímka mimo počátek</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="box-dal rounded-r-xl p-4">
+        <p class="font-semibold text-stone-700 mb-1">📌 Co bude dál</p>
+        <p class="text-sm leading-relaxed">V další sadě materiálů se naučíme, jak se dá graf lineární funkce využít k <b>grafickému řešení lineárních rovnic a nerovnic</b> — tedy jak z obrázku dvou přímek přímo vyčíst řešení rovnice nebo nerovnice, bez počítání. Později se podíváme i na funkce s <b>absolutní hodnotou</b>, kde se lineární „kousky“ grafu lámou.</p>
+    </div>
+</section>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-4xl mx-auto px-5 py-8 space-y-14">
+
+<section id="sec-uvod">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">1. Qu'est-ce qu'une fonction affine</h2>
+    <p class="mb-4 leading-relaxed">Une fonction affine est une fonction qui peut s'écrire sous la forme</p>
+    <p class="text-center text-xl mb-4">$$y = ax + b$$</p>
+    <p class="mb-4 leading-relaxed">où $a, b \in \mathbb{R}$ et $x \in \mathbb{R}$ (sauf si l'énoncé restreint autrement le domaine de définition). Le nombre $a$ s'appelle le <b>coefficient directeur</b> (il donne la pente de la droite), le nombre $b$ est l'<b>ordonnée à l'origine</b>. Le graphe de toute fonction affine est une <b>droite</b>.</p>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-4">
+        <p class="font-semibold text-violet-900 mb-2">Exemple personnel</p>
+        <p class="mb-2">$y = 3x - 2$. Pour tracer le graphe, il suffit de trouver deux points : pour $x=0$ on obtient $y=-2$, pour $x=2$ on obtient $y=4$. On relie les points $[0;-2]$ et $[2;4]$ par une droite.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 310 340" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="305" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="305.0" x2="158" y2="305.0" stroke="#57534e" stroke-width="1"/><text x="147" y="308.0" font-size="9" text-anchor="end" fill="#57534e">-5</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line x1="125" y1="305" x2="215" y2="35" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="155" cy="215" r="4" fill="#c026d3"/>
+                <rect x="165" y="197" width="43.2" height="13" fill="white" fill-opacity="0.88" rx="2"/>
+                <text x="165" y="207" font-size="11" text-anchor="start" fill="#c026d3">[0;-2]</text>
+                <circle cx="215" cy="35" r="4" fill="#c026d3"/>
+                <rect x="168.0" y="39" width="37.0" height="13" fill="white" fill-opacity="0.88" rx="2"/>
+                <text x="205" y="49" font-size="11" text-anchor="end" fill="#c026d3">[2;4]</text>
+            </svg>
+        </div>
+    </div>
+
+    <p class="font-semibold text-violet-900 mb-2">Méthode pour tracer le graphe d'une fonction affine</p>
+    <ol class="list-decimal list-inside space-y-1 mb-2">
+        <li>On choisit deux valeurs différentes de $x$ dans le domaine de définition.</li>
+        <li>On calcule les valeurs correspondantes de $y$ en les substituant dans la formule.</li>
+        <li>On place les deux points dans le repère et on trace la droite qui les relie.</li>
+    </ol>
+</section>
+
+<section id="sec-specialni">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">2. Deux cas particuliers</h2>
+    <p class="mb-4 leading-relaxed">Les coefficients $a$ et $b$ peuvent aussi être nuls — et c'est justement dans ce cas que naissent deux types particuliers de fonction affine :</p>
+    <ul class="list-disc list-inside space-y-2 mb-4">
+        <li><b>$b = 0$</b> → la fonction $y = ax$ ($a \neq 0$) s'appelle une <b>fonction linéaire</b> (proportionnalité directe).</li>
+        <li><b>$a = 0$</b> → la fonction $y = b$ s'appelle une <b>fonction constante</b>.</li>
+    </ul>
+    <p class="leading-relaxed">Si $a \neq 0$ et $b \neq 0$, on parle simplement de fonction affine (sans nom particulier).</p>
+
+    <div class="box-zvidave rounded-r-xl p-4 mt-5">
+        <p class="font-semibold text-teal-800 mb-1">💡 Pour les curieux</p>
+        <p class="text-sm leading-relaxed">La notion de fonction telle que nous l'utilisons aujourd'hui s'est stabilisée au XVIII<sup>e</sup> siècle — le mathématicien suisse Leonhard Euler y a notamment contribué en introduisant la notation $f(x)$. Le mot « fonction » lui-même remonte un peu plus tôt au mathématicien et philosophe allemand G. W. Leibniz ainsi qu'aux frères Bernoulli, qui l'utilisaient pour désigner la dépendance d'une grandeur par rapport à une variable.</p>
+    </div>
+</section>
+
+<section id="sec-prima-umernost">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">3. Propriétés de la fonction linéaire</h2>
+    <p class="mb-4">$f: y = ax$, où $a \neq 0$, $x \in \mathbb{R}$.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mb-4 text-sm">
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Domaine de définition :</b> $D(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Ensemble image :</b> $H(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Monotonie :</b> injective ; croissante si $a \gt 0$, décroissante si $a \lt 0$, sur tout le domaine.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Caractère borné :</b> non bornée, ni vers le haut ni vers le bas.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Extremums :</b> pas de minimum ni de maximum.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Parité :</b> une fonction linéaire est toujours <b>impaire</b>.</div>
+    </div>
+    <p class="mb-4 leading-relaxed"><b>Graphe :</b> droite passant par l'origine du repère (le point $[0;0]$), qui n'est parallèle à aucun axe. Plus $|a|$ est grand, plus la droite monte ou descend rapidement.</p>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-4">
+        <p class="font-semibold text-violet-900 mb-2">Exemple personnel : $y = -4x$</p>
+        <p class="mb-2">Comme $a=-4 \lt 0$, la fonction est décroissante : $f(-1)=4$, $f(1)=-4$ — quand $x$ augmente, $y$ diminue. Le graphe est une droite passant par l'origine.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 310 310" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="275" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line x1="125" y1="35" x2="185" y2="275" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="155" cy="155" r="4" fill="#c026d3"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="box-past rounded-r-xl p-4">
+        <p class="font-semibold text-amber-800 mb-2">⚠ Outil interactif — attention, ce n'est pas une preuve</p>
+        <p class="text-sm mb-3">Essaie de substituer un nombre quelconque $x$ et compare $f(x)$ et $f(-x)$ pour $y=-4x$ :</p>
+        <div class="flex items-center gap-3 flex-wrap text-sm">
+            <label>Saisis $x$ : <input id="parity-x-fr" type="number" value="3" class="border border-stone-300 rounded px-2 py-1 w-20"></label>
+            <button onclick="checkParityFr()" class="bg-amber-600 text-white px-3 py-1 rounded">Vérifier</button>
+            <span id="parity-result-fr" class="font-mono"></span>
+        </div>
+        <p class="text-xs text-amber-900 mt-3 leading-relaxed">Attention — vérifier sur un ou quelques nombres ne prouve rien, la variable $x$ parcourt une infinité de valeurs. Une vraie démonstration nécessite une substitution générale (algébrique) — voir l'encadré ci-dessous.</p>
+    </div>
+    <div class="bg-stone-50 border border-stone-300 rounded-xl p-4 mt-3 text-sm leading-relaxed">
+        <p class="font-semibold mb-1">Démonstration générale de l'imparité</p>
+        <p>Pour tout $x \in \mathbb{R}$, on a $f(-x) = a\cdot(-x) = -ax = -f(x)$. Comme cette égalité est vraie pour <i>tout</i> $x$ (pas seulement pour des nombres choisis), la fonction linéaire est toujours impaire.</p>
+    </div>
+</section>
+
+<section id="sec-konstantni">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">4. Propriétés de la fonction constante</h2>
+    <p class="mb-4">$f: y = b$, $x \in \mathbb{R}$.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mb-4 text-sm">
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Domaine de définition :</b> $D(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Ensemble image :</b> $H(f) = \{b\}$ — ensemble à un seul élément.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Monotonie :</b> la fonction n'est pas injective, donc ni croissante ni décroissante.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Caractère borné :</b> bornée, vers le haut comme vers le bas.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Extremums :</b> minimum et maximum en chaque point du domaine à la fois.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Parité :</b> une fonction constante est toujours <b>paire</b>.</div>
+    </div>
+    <p class="mb-4 leading-relaxed"><b>Graphe :</b> droite parallèle à l'axe $x$, coupant l'axe $y$ au point $b$.</p>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-4">
+        <p class="font-semibold text-violet-900 mb-2">Exemple personnel : $y = -\dfrac{5}{2}$</p>
+        <p class="mb-2">Le graphe est une droite horizontale passant par le point $\left[0; -\dfrac{5}{2}\right]$.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 310 310" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="275" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line x1="35" y1="230.0" x2="275" y2="230.0" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="155" cy="230.0" r="4" fill="#c026d3"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="box-past rounded-r-xl p-4">
+        <p class="font-semibold text-amber-800 mb-1">⚠ Attention au piège</p>
+        <p class="text-sm leading-relaxed">Une droite parallèle à l'axe $x$ est le graphe d'une fonction constante. En revanche, une droite parallèle à l'axe $y$ <b>n'est le graphe d'aucune fonction</b> — à une valeur de $x$ correspondrait alors une infinité de valeurs de $y$, ce que la définition d'une fonction interdit.</p>
+    </div>
+</section>
+
+<section id="sec-obecna">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">5. Propriétés de la fonction affine générale</h2>
+    <p class="mb-4">$f: y = ax+b$, où $a \neq 0$ et $b \neq 0$.</p>
+    <div class="grid sm:grid-cols-2 gap-3 mb-4 text-sm">
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Domaine de définition :</b> $D(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Ensemble image :</b> $H(f) = \mathbb{R}$</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Monotonie :</b> injective ; croissante si $a \gt 0$, décroissante si $a \lt 0$.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Caractère borné :</b> non bornée, ni vers le haut ni vers le bas.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Extremums :</b> pas de minimum ni de maximum.</div>
+        <div class="bg-white rounded-lg border border-stone-200 p-3"><b>Parité :</b> ni paire, ni impaire.</div>
+    </div>
+    <p class="mb-4 leading-relaxed"><b>Graphe :</b> droite qui ne passe pas par l'origine du repère et n'est parallèle à aucun des deux axes.</p>
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">Exemple personnel : $y = 3x-2$</p>
+        <p>Le graphe est une droite croissante passant par le point $[0;-2]$ (voir le graphe au début de ce chapitre), et non par l'origine — il ne s'agit donc pas d'une fonction linéaire.</p>
+    </div>
+</section>
+
+<section id="sec-koeficienty">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">6. Influence des coefficients $a$ et $b$ sur le graphe</h2>
+    <ul class="list-disc list-inside space-y-2 mb-5 leading-relaxed">
+        <li>Quand <b>$b$ reste fixe</b> et que seul $a$ change, tous les graphes passent par <b>le même point $[0;b]$</b> et ne diffèrent que par la pente de la droite.</li>
+        <li>Quand <b>$a$ reste fixe</b> et que seul $b$ change, les graphes sont des <b>droites parallèles entre elles</b>, de même pente, passant par des points $[0;b]$ différents.</li>
+    </ul>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-5">
+        <p class="font-semibold text-violet-900 mb-2">Outil interactif : faisceau de droites passant par $[0;b]$</p>
+        <p class="text-sm mb-3">Le curseur change le coefficient $a$, $b$ reste fixé à $2$ :</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input id="slider-a-fr" type="range" min="-2" max="2" step="0.5" value="1" oninput="updateFamilyAFr()" class="w-full">
+            <span id="slider-a-val-fr" class="font-mono text-sm w-28">a = 1, b = 2</span>
+        </div>
+        <div class="flex justify-center">
+            <svg id="svg-family-a-fr" viewBox="0 0 310 310" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="275" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <circle cx="155" cy="95" r="4" fill="#c026d3"/>
+                <line id="family-a-line-fr" x1="35" y1="215" x2="215" y2="35" stroke="#7c3aed" stroke-width="2.5"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">Outil interactif : droites parallèles de même pente</p>
+        <p class="text-sm mb-3">Le curseur change le coefficient $b$, $a$ reste fixé à $1{,}5$ :</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input id="slider-b-fr" type="range" min="-4" max="4" step="0.5" value="0" oninput="updateFamilyBFr()" class="w-full">
+            <span id="slider-b-val-fr" class="font-mono text-sm w-32">a = 1.5, b = 0</span>
+        </div>
+        <div class="flex justify-center">
+            <svg id="svg-family-b-fr" viewBox="0 0 310 310" class="w-full max-w-sm">
+                <line x1="35" y1="155" x2="275" y2="155" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="275" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="152" x2="35.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="35.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="152" x2="65.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="65.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="152" x2="95.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="95.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="152" x2="125.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="125.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="152" x2="185.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="185.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="152" x2="215.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="215.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="152" x2="245.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="245.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="152" x2="275.0" y2="158" stroke="#57534e" stroke-width="1"/><text x="275.0" y="170" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="245.0" x2="158" y2="245.0" stroke="#57534e" stroke-width="1"/><text x="147" y="248.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line id="family-b-line-fr" x1="75.0" y1="275" x2="235.0" y2="35" stroke="#7c3aed" stroke-width="2.5"/>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section id="sec-omezeny-obor">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">7. Fonction affine avec domaine de définition restreint</h2>
+    <p class="mb-4 leading-relaxed">Si le domaine de définition d'une fonction affine est un intervalle borné (pas tout $\mathbb{R}$), le graphe n'est plus une droite entière, mais seulement un <b>segment</b> délimité par les extrémités de l'intervalle. L'ensemble image et les extremums se calculent alors à partir des valeurs de la fonction aux bornes de cet intervalle — pour une fonction croissante, le minimum est à la borne gauche et le maximum à la borne droite ; pour une fonction décroissante, c'est l'inverse.</p>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">Exemple personnel : $f: y = 2x-1$, $x \in \langle -3;4 \rangle$</p>
+        <p class="mb-2">$f(-3) = 2\cdot(-3)-1 = -7 \qquad f(4) = 2\cdot 4 - 1 = 7$</p>
+        <p class="mb-3">Comme $a=2 \gt 0$, la fonction est croissante, donc $D(f)=\langle-3;4\rangle$ et $H(f)=\langle-7;7\rangle$, le minimum est atteint en $x=-3$ (valeur $-7$) et le maximum en $x=4$ (valeur $7$). Le graphe est le segment reliant les points $[-3;-7]$ et $[4;7]$.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 310 490" class="w-full max-w-sm">
+                <line x1="35" y1="245" x2="275" y2="245" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="155" y1="455" x2="155" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="242" x2="35.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="35.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">-4</text>
+                <line x1="65.0" y1="242" x2="65.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="65.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">-3</text>
+                <line x1="95.0" y1="242" x2="95.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="95.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">-2</text>
+                <line x1="125.0" y1="242" x2="125.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="125.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">-1</text>
+                <line x1="185.0" y1="242" x2="185.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="185.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="215.0" y1="242" x2="215.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="215.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="245.0" y1="242" x2="245.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="245.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="275.0" y1="242" x2="275.0" y2="248" stroke="#57534e" stroke-width="1"/><text x="275.0" y="260" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="152" y1="455.0" x2="158" y2="455.0" stroke="#57534e" stroke-width="1"/><text x="147" y="458.0" font-size="9" text-anchor="end" fill="#57534e">-7</text>
+                <line x1="152" y1="425.0" x2="158" y2="425.0" stroke="#57534e" stroke-width="1"/><text x="147" y="428.0" font-size="9" text-anchor="end" fill="#57534e">-6</text>
+                <line x1="152" y1="395.0" x2="158" y2="395.0" stroke="#57534e" stroke-width="1"/><text x="147" y="398.0" font-size="9" text-anchor="end" fill="#57534e">-5</text>
+                <line x1="152" y1="365.0" x2="158" y2="365.0" stroke="#57534e" stroke-width="1"/><text x="147" y="368.0" font-size="9" text-anchor="end" fill="#57534e">-4</text>
+                <line x1="152" y1="335.0" x2="158" y2="335.0" stroke="#57534e" stroke-width="1"/><text x="147" y="338.0" font-size="9" text-anchor="end" fill="#57534e">-3</text>
+                <line x1="152" y1="305.0" x2="158" y2="305.0" stroke="#57534e" stroke-width="1"/><text x="147" y="308.0" font-size="9" text-anchor="end" fill="#57534e">-2</text>
+                <line x1="152" y1="275.0" x2="158" y2="275.0" stroke="#57534e" stroke-width="1"/><text x="147" y="278.0" font-size="9" text-anchor="end" fill="#57534e">-1</text>
+                <line x1="152" y1="215.0" x2="158" y2="215.0" stroke="#57534e" stroke-width="1"/><text x="147" y="218.0" font-size="9" text-anchor="end" fill="#57534e">1</text>
+                <line x1="152" y1="185.0" x2="158" y2="185.0" stroke="#57534e" stroke-width="1"/><text x="147" y="188.0" font-size="9" text-anchor="end" fill="#57534e">2</text>
+                <line x1="152" y1="155.0" x2="158" y2="155.0" stroke="#57534e" stroke-width="1"/><text x="147" y="158.0" font-size="9" text-anchor="end" fill="#57534e">3</text>
+                <line x1="152" y1="125.0" x2="158" y2="125.0" stroke="#57534e" stroke-width="1"/><text x="147" y="128.0" font-size="9" text-anchor="end" fill="#57534e">4</text>
+                <line x1="152" y1="95.0" x2="158" y2="95.0" stroke="#57534e" stroke-width="1"/><text x="147" y="98.0" font-size="9" text-anchor="end" fill="#57534e">5</text>
+                <line x1="152" y1="65.0" x2="158" y2="65.0" stroke="#57534e" stroke-width="1"/><text x="147" y="68.0" font-size="9" text-anchor="end" fill="#57534e">6</text>
+                <line x1="152" y1="35.0" x2="158" y2="35.0" stroke="#57534e" stroke-width="1"/><text x="147" y="38.0" font-size="9" text-anchor="end" fill="#57534e">7</text>
+                <line x1="65" y1="455" x2="275" y2="35" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="65" cy="455" r="4" fill="#c026d3"/>
+                <rect x="73" y="455" width="49.4" height="13" fill="white" fill-opacity="0.88" rx="2"/>
+                <text x="73" y="465" font-size="11" text-anchor="start" fill="#c026d3">[-3;-7]</text>
+                <circle cx="275" cy="35" r="4" fill="#c026d3"/>
+                <rect x="230.0" y="15" width="37.0" height="13" fill="white" fill-opacity="0.88" rx="2"/>
+                <text x="267" y="25" font-size="11" text-anchor="end" fill="#c026d3">[4;7]</text>
+            </svg>
+        </div>
+    </div>
+</section>
+
+<section id="sec-dva-body">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">8. Déterminer une fonction affine à partir de deux points</h2>
+    <p class="mb-3 leading-relaxed">Si l'on connaît deux points $K[x_K;y_K]$ et $L[x_L;y_L]$ par lesquels passe le graphe d'une fonction affine, on peut calculer les coefficients $a,b$ :</p>
+    <ol class="list-decimal list-inside space-y-1 mb-4">
+        <li>On substitue les coordonnées de $K$ dans la formule générale $y=ax+b$ — on obtient une première équation.</li>
+        <li>On fait de même avec le point $L$ — on obtient une deuxième équation.</li>
+        <li>On obtient un système de deux équations à deux inconnues $a,b$, que l'on résout.</li>
+        <li>On substitue les valeurs trouvées de $a,b$ dans $y=ax+b$.</li>
+    </ol>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-5">
+        <p class="font-semibold text-violet-900 mb-2">Exemple personnel : $K[2;-1]$, $L[-1;5]$</p>
+        <p class="mb-2">$$-1 = 2a+b \qquad 5=-a+b$$</p>
+        <p class="mb-2">En soustrayant les équations : $-1-5 = 2a+b-(-a+b) \Rightarrow -6=3a \Rightarrow a=-2$, puis $b=-1-2\cdot(-2)=3$.</p>
+        <p>Formule obtenue : $y=-2x+3$. (Vérification : $f(2)=-2\cdot2+3=-1$ ✓, $f(-1)=-2\cdot(-1)+3=5$ ✓.)</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">Outil interactif : trouve la formule à partir de deux points</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3 text-sm">
+            <label>$x_K$ : <input id="pt-xk-fr" type="number" value="2" class="border border-stone-300 rounded px-2 py-1 w-full"></label>
+            <label>$y_K$ : <input id="pt-yk-fr" type="number" value="-1" class="border border-stone-300 rounded px-2 py-1 w-full"></label>
+            <label>$x_L$ : <input id="pt-xl-fr" type="number" value="-1" class="border border-stone-300 rounded px-2 py-1 w-full"></label>
+            <label>$y_L$ : <input id="pt-yl-fr" type="number" value="5" class="border border-stone-300 rounded px-2 py-1 w-full"></label>
+        </div>
+        <button onclick="solveTwoPointsFr()" class="bg-violet-700 text-white px-4 py-1.5 rounded mb-3">Calculer la formule</button>
+        <p id="two-points-result-fr" class="font-mono text-sm"></p>
+    </div>
+
+    <div class="box-past rounded-r-xl p-4 mt-5">
+        <p class="font-semibold text-amber-800 mb-1">⚠ Attention au piège</p>
+        <p class="text-sm leading-relaxed">Si les deux points ont la même abscisse (c'est-à-dire $x_K = x_L$), le système n'a pas de solution de la forme $y=ax+b$ — de tels points ne se trouvent pas sur le graphe d'une fonction, mais sur une droite parallèle à l'axe $y$.</p>
+    </div>
+</section>
+
+<section id="sec-praxe">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">9. La fonction affine en pratique</h2>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5 mb-5">
+        <p class="font-semibold text-violet-900 mb-2">a) Fonction linéaire — achat de pommes</p>
+        <p class="mb-2">Les pommes coûtent 32 Kč le kilogramme. Le prix total $y$ (en Kč) en fonction de la quantité $x$ (en kg) est</p>
+        <p class="mb-2">$$y=32x, \quad x \in \langle 0;\infty)$$</p>
+        <p class="mb-3">Par exemple, pour $x = 2{,}5$ kg, on obtient un prix $y = 80$ Kč.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 340 280" class="w-full max-w-sm">
+                <line x1="35" y1="245.0" x2="305" y2="245.0" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="245" x2="35.0" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="84.09" y1="242.0" x2="84.09" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="84.09" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">1</text>
+                <line x1="133.18" y1="242.0" x2="133.18" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="133.18" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">2</text>
+                <line x1="182.27" y1="242.0" x2="182.27" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="182.27" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">3</text>
+                <line x1="231.36" y1="242.0" x2="231.36" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="231.36" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">4</text>
+                <line x1="280.45" y1="242.0" x2="280.45" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="280.45" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">5</text>
+                <line x1="32.0" y1="198.33" x2="38.0" y2="198.33" stroke="#57534e" stroke-width="1"/><text x="27.0" y="201.33" font-size="9" text-anchor="end" fill="#57534e">40</text>
+                <line x1="32.0" y1="151.67" x2="38.0" y2="151.67" stroke="#57534e" stroke-width="1"/><text x="27.0" y="154.67" font-size="9" text-anchor="end" fill="#57534e">80</text>
+                <line x1="32.0" y1="105.0" x2="38.0" y2="105.0" stroke="#57534e" stroke-width="1"/><text x="27.0" y="108.0" font-size="9" text-anchor="end" fill="#57534e">120</text>
+                <line x1="32.0" y1="58.33" x2="38.0" y2="58.33" stroke="#57534e" stroke-width="1"/><text x="27.0" y="61.33" font-size="9" text-anchor="end" fill="#57534e">160</text>
+                <line x1="35.0" y1="245.0" x2="280.45" y2="58.33" stroke="#7c3aed" stroke-width="2.5"/>
+                <line x1="157.73" y1="245.0" x2="157.73" y2="151.67" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <line x1="157.73" y1="151.67" x2="35.0" y2="151.67" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <circle cx="157.73" cy="245.0" r="4" fill="#dc2626"/>
+                <circle cx="157.73" cy="151.67" r="4" fill="#dc2626"/>
+                <circle cx="35.0" cy="151.67" r="4" fill="#dc2626"/>
+                <text x="280" y="270" font-size="10" fill="#57534e" text-anchor="middle">x (kg)</text>
+                <text x="15" y="40" font-size="10" fill="#57534e" text-anchor="start">y (Kč)</text>
+            </svg>
+        </div>
+        <p class="text-xs text-stone-500 mt-2 text-center">La variable indépendante est la quantité (axe $x$), la variable dépendante est le prix (axe $y$) — le prix dépend de la quantité, et non l'inverse.</p>
+    </div>
+
+    <div class="bg-white rounded-xl border border-violet-200 p-5">
+        <p class="font-semibold text-violet-900 mb-2">b) Fonction affine générale avec domaine restreint — bougie qui brûle</p>
+        <p class="mb-2">Une bougie mesure 20 cm et brûle à une vitesse de 0,5 cm par minute. La hauteur de la bougie en fonction du temps est</p>
+        <p class="mb-2">$$h = 20-0{,}5t$$</p>
+        <p class="mb-3">où $t$ est le temps en minutes. La bougie est entièrement consumée ($h=0$) lorsque $20-0{,}5t=0$, soit $t=40$ minutes.</p>
+        <p class="mb-3">Le graphique indique la taille de la bougie au temps $t=30$ min. Le graphique peut être utilisé « dans les deux sens » : on peut se demander quelle est la taille de la bougie à un instant donné, ou inversement, à quel instant la bougie avait une taille donnée.</p>
+        <div class="flex justify-center">
+            <svg viewBox="0 0 340 280" class="w-full max-w-sm">
+                <line x1="35" y1="245.0" x2="305" y2="245.0" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="35.0" y1="245" x2="35.0" y2="35" stroke="#57534e" stroke-width="1.5"/>
+                <line x1="65.0" y1="242.0" x2="65.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="65.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">5</text>
+                <line x1="95.0" y1="242.0" x2="95.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="95.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">10</text>
+                <line x1="125.0" y1="242.0" x2="125.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="125.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">15</text>
+                <line x1="155.0" y1="242.0" x2="155.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="155.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">20</text>
+                <line x1="185.0" y1="242.0" x2="185.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="185.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">25</text>
+                <line x1="215.0" y1="242.0" x2="215.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="215.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">30</text>
+                <line x1="245.0" y1="242.0" x2="245.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="245.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">35</text>
+                <line x1="275.0" y1="242.0" x2="275.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="275.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">40</text>
+                <line x1="305.0" y1="242.0" x2="305.0" y2="248.0" stroke="#57534e" stroke-width="1"/><text x="305.0" y="260.0" font-size="9" text-anchor="middle" fill="#57534e">45</text>
+                <line x1="32.0" y1="197.27" x2="38.0" y2="197.27" stroke="#57534e" stroke-width="1"/><text x="27.0" y="200.27" font-size="9" text-anchor="end" fill="#57534e">5</text>
+                <line x1="32.0" y1="149.55" x2="38.0" y2="149.55" stroke="#57534e" stroke-width="1"/><text x="27.0" y="152.55" font-size="9" text-anchor="end" fill="#57534e">10</text>
+                <line x1="32.0" y1="101.82" x2="38.0" y2="101.82" stroke="#57534e" stroke-width="1"/><text x="27.0" y="104.82" font-size="9" text-anchor="end" fill="#57534e">15</text>
+                <line x1="32.0" y1="54.09" x2="38.0" y2="54.09" stroke="#57534e" stroke-width="1"/><text x="27.0" y="57.09" font-size="9" text-anchor="end" fill="#57534e">20</text>
+                <line x1="35.0" y1="54.09" x2="275.0" y2="245.0" stroke="#7c3aed" stroke-width="2.5"/>
+                <circle cx="275.0" cy="245.0" r="4" fill="#c026d3"/>
+                <line x1="215.0" y1="245.0" x2="215.0" y2="197.27" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <line x1="215.0" y1="197.27" x2="35.0" y2="197.27" stroke="#78716c" stroke-width="1.2" stroke-dasharray="4,3"/>
+                <circle cx="215.0" cy="245.0" r="4" fill="#dc2626"/>
+                <circle cx="215.0" cy="197.27" r="4" fill="#dc2626"/>
+                <circle cx="35.0" cy="197.27" r="4" fill="#dc2626"/>
+                <text x="295" y="270" font-size="10" fill="#57534e" text-anchor="middle">t (min)</text>
+                <text x="8" y="20" font-size="10" fill="#57534e" text-anchor="start">h (cm)</text>
+            </svg>
+        </div>
+    </div>
+
+    <div class="box-souvislosti rounded-r-xl p-4 mt-5">
+        <p class="font-semibold text-indigo-800 mb-1">🔗 Liens avec d'autres domaines</p>
+        <p class="text-sm leading-relaxed">Une dépendance linéaire apparaît en pratique partout où une grandeur augmente (ou diminue) d'une quantité constante à chaque unité d'une autre grandeur — typiquement le mouvement uniforme en physique ($s = v \cdot t + s_0$), les coûts d'exploitation avec une part fixe et une part variable en économie, ou encore les forfaits linéaires de données et de minutes chez les opérateurs mobiles.</p>
+    </div>
+</section>
+
+<section id="sec-shrnuti">
+    <h2 class="text-2xl font-bold text-violet-900 mb-3">10. Résumé — comment distinguer les fonctions</h2>
+    <div class="overflow-x-auto mb-5">
+        <table class="w-full text-sm bg-white rounded-xl border border-violet-200 overflow-hidden">
+            <thead class="bg-violet-100 text-violet-900">
+                <tr>
+                    <th class="p-2 text-left">Type</th>
+                    <th class="p-2 text-left">Condition</th>
+                    <th class="p-2 text-left">Exemple</th>
+                    <th class="p-2 text-left">Parité</th>
+                    <th class="p-2 text-left">Graphe</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-t border-stone-200">
+                    <td class="p-2">fonction linéaire</td>
+                    <td class="p-2">$b=0,\ a\neq0$</td>
+                    <td class="p-2">$y=-4x$</td>
+                    <td class="p-2">impaire</td>
+                    <td class="p-2">droite par l'origine</td>
+                </tr>
+                <tr class="border-t border-stone-200 bg-stone-50">
+                    <td class="p-2">fonction constante</td>
+                    <td class="p-2">$a=0$</td>
+                    <td class="p-2">$y=-\tfrac52$</td>
+                    <td class="p-2">paire</td>
+                    <td class="p-2">parallèle à $x$</td>
+                </tr>
+                <tr class="border-t border-stone-200">
+                    <td class="p-2">fonction affine générale</td>
+                    <td class="p-2">$a\neq0,\ b\neq0$</td>
+                    <td class="p-2">$y=3x-2$</td>
+                    <td class="p-2">ni paire, ni impaire</td>
+                    <td class="p-2">droite hors origine</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="box-dal rounded-r-xl p-4">
+        <p class="font-semibold text-stone-700 mb-1">📌 La suite</p>
+        <p class="text-sm leading-relaxed">Dans la prochaine série de documents, nous apprendrons comment utiliser le graphe d'une fonction affine pour la <b>résolution graphique d'équations et d'inéquations linéaires</b> — c'est-à-dire comment lire directement la solution sur le dessin de deux droites, sans calcul. Plus tard, nous étudierons aussi les fonctions avec <b>valeur absolue</b>, où les « morceaux » linéaires du graphe se brisent.</p>
+    </div>
+</section>
+
+</main>
+</div>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+// --- parity live checker (CZ) ---
+function fPrima(x){ return -4*x; }
+function fmtSigned(n){
+    n = Math.round(n*1000)/1000;
+    return (n >= 0 ? '' : '') + n;
+}
+function checkParity(){
+    const x = parseFloat(document.getElementById('parity-x').value);
+    if (isNaN(x)) return;
+    const fx = fPrima(x);
+    const fmx = fPrima(-x);
+    document.getElementById('parity-result').textContent =
+        'f(' + fmtSigned(x) + ') = ' + fmtSigned(fx) + ',  f(' + fmtSigned(-x) + ') = ' + fmtSigned(fmx) +
+        '  → ' + (fmx === -fx ? 'f(-x) = -f(x) ✓ (pro toto x)' : 'nesedí — zkontroluj výpočet');
+}
+function checkParityFr(){
+    const x = parseFloat(document.getElementById('parity-x-fr').value);
+    if (isNaN(x)) return;
+    const fx = fPrima(x);
+    const fmx = fPrima(-x);
+    document.getElementById('parity-result-fr').textContent =
+        'f(' + fmtSigned(x) + ') = ' + fmtSigned(fx) + ',  f(' + fmtSigned(-x) + ') = ' + fmtSigned(fmx) +
+        '  → ' + (fmx === -fx ? 'f(-x) = -f(x) ✓ (pour ce x)' : 'incohérent — vérifie le calcul');
+}
+
+// --- coefficient family sliders ---
+// shared window for both graphs: x,y in [-4,4], ox=155, oy=155, s=30 (equal x/y scale)
+const FAM_OX = 155, FAM_OY = 155, FAM_S = 30, FAM_MIN = -4, FAM_MAX = 4;
+
+// Clip the line y = a*x + b to the square window [xmin,xmax] x [ymin,ymax].
+// Returns the two visible endpoints [x1,y1,x2,y2] in MATH coordinates, or null if the
+// line does not cross the window at all (should not happen for our slider ranges).
+function clipLineToWindow(a, b, xmin, xmax, ymin, ymax){
+    const candidates = [];
+    for (const x of [xmin, xmax]){
+        const y = a*x + b;
+        if (y >= ymin - 1e-9 && y <= ymax + 1e-9) candidates.push([x, y]);
+    }
+    if (a !== 0){
+        for (const y of [ymin, ymax]){
+            const x = (y - b) / a;
+            if (x >= xmin - 1e-9 && x <= xmax + 1e-9) candidates.push([x, y]);
+        }
+    }
+    const uniq = [];
+    for (const p of candidates){
+        if (!uniq.some(q => Math.abs(q[0]-p[0]) < 1e-6 && Math.abs(q[1]-p[1]) < 1e-6)) uniq.push(p);
+    }
+    if (uniq.length < 2) return null;
+    uniq.sort((p, q) => p[0] - q[0]);
+    return [uniq[0][0], uniq[0][1], uniq[uniq.length-1][0], uniq[uniq.length-1][1]];
+}
+
+function pxA(a){
+    const clipped = clipLineToWindow(a, 2, FAM_MIN, FAM_MAX, FAM_MIN, FAM_MAX);
+    if (!clipped) return null;
+    const [x1,y1,x2,y2] = clipped;
+    return [FAM_OX+x1*FAM_S, FAM_OY-y1*FAM_S, FAM_OX+x2*FAM_S, FAM_OY-y2*FAM_S];
+}
+function updateFamilyA(){
+    const a = parseFloat(document.getElementById('slider-a').value);
+    const px = pxA(a);
+    const line = document.getElementById('family-a-line');
+    if (px){
+        const [x1,y1,x2,y2] = px;
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.style.display = '';
+    } else {
+        line.style.display = 'none';
+    }
+    document.getElementById('slider-a-val').textContent = 'a = ' + a + ', b = 2';
+}
+function updateFamilyAFr(){
+    const a = parseFloat(document.getElementById('slider-a-fr').value);
+    const px = pxA(a);
+    const line = document.getElementById('family-a-line-fr');
+    if (px){
+        const [x1,y1,x2,y2] = px;
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.style.display = '';
+    } else {
+        line.style.display = 'none';
+    }
+    document.getElementById('slider-a-val-fr').textContent = 'a = ' + a + ', b = 2';
+}
+function pxB(b){
+    const clipped = clipLineToWindow(1.5, b, FAM_MIN, FAM_MAX, FAM_MIN, FAM_MAX);
+    if (!clipped) return null;
+    const [x1,y1,x2,y2] = clipped;
+    return [FAM_OX+x1*FAM_S, FAM_OY-y1*FAM_S, FAM_OX+x2*FAM_S, FAM_OY-y2*FAM_S];
+}
+function updateFamilyB(){
+    const b = parseFloat(document.getElementById('slider-b').value);
+    const px = pxB(b);
+    const line = document.getElementById('family-b-line');
+    if (px){
+        const [x1,y1,x2,y2] = px;
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.style.display = '';
+    } else {
+        line.style.display = 'none';
+    }
+    document.getElementById('slider-b-val').textContent = 'a = 1.5, b = ' + b;
+}
+function updateFamilyBFr(){
+    const b = parseFloat(document.getElementById('slider-b-fr').value);
+    const px = pxB(b);
+    const line = document.getElementById('family-b-line-fr');
+    if (px){
+        const [x1,y1,x2,y2] = px;
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.style.display = '';
+    } else {
+        line.style.display = 'none';
+    }
+    document.getElementById('slider-b-val-fr').textContent = 'a = 1.5, b = ' + b;
+}
+
+// --- two point solver ---
+function solveTwoPointsCore(xk,yk,xl,yl){
+    if (xk === xl && yk === yl) return {error: 'same'};
+    if (xk === xl) return {error: 'vertical'};
+    const a = (yl - yk) / (xl - xk);
+    const b = yk - a*xk;
+    return {a: Math.round(a*1000)/1000, b: Math.round(b*1000)/1000};
+}
+function fmtEq(a,b){
+    let s = 'y = ';
+    if (a === 1) s += 'x';
+    else if (a === -1) s += '-x';
+    else s += a + 'x';
+    if (b > 0) s += ' + ' + b;
+    else if (b < 0) s += ' - ' + Math.abs(b);
+    return s;
+}
+function solveTwoPoints(){
+    const xk = parseFloat(document.getElementById('pt-xk').value);
+    const yk = parseFloat(document.getElementById('pt-yk').value);
+    const xl = parseFloat(document.getElementById('pt-xl').value);
+    const yl = parseFloat(document.getElementById('pt-yl').value);
+    const res = solveTwoPointsCore(xk,yk,xl,yl);
+    const out = document.getElementById('two-points-result');
+    if (res.error === 'same'){
+        out.textContent = 'Zadal jsi dvakrát stejný bod — chybí ti druhý, různý bod, se kterým se dá spočítat sklon přímky.';
+        return;
+    }
+    if (res.error === 'vertical'){
+        out.textContent = 'Body mají stejné x (ale jiné y) — nejde o funkci (přímka rovnoběžná s osou y).';
+        return;
+    }
+    out.textContent = 'a = ' + res.a + ',  b = ' + res.b + '   →   ' + fmtEq(res.a, res.b);
+}
+function solveTwoPointsFr(){
+    const xk = parseFloat(document.getElementById('pt-xk-fr').value);
+    const yk = parseFloat(document.getElementById('pt-yk-fr').value);
+    const xl = parseFloat(document.getElementById('pt-xl-fr').value);
+    const yl = parseFloat(document.getElementById('pt-yl-fr').value);
+    const res = solveTwoPointsCore(xk,yk,xl,yl);
+    const out = document.getElementById('two-points-result-fr');
+    if (res.error === 'same'){
+        out.textContent = 'Tu as saisi deux fois le même point — il manque un second point différent pour calculer la pente.';
+        return;
+    }
+    if (res.error === 'vertical'){
+        out.textContent = 'Les points ont la même abscisse (mais une ordonnée différente) — ce n\'est pas une fonction (droite parallèle à l\'axe y).';
+        return;
+    }
+    out.textContent = 'a = ' + res.a + ',  b = ' + res.b + '   →   ' + fmtEq(res.a, res.b);
+}
+
+// initialize interactive graphs to match slider defaults on page load
+document.addEventListener('DOMContentLoaded', function(){
+    updateFamilyA();
+    updateFamilyAFr();
+    updateFamilyB();
+    updateFamilyBFr();
+});
+</script>
+
+</body>
+</html>
