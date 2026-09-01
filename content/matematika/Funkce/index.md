@@ -9,7 +9,7 @@ LINEÁRNÍ FUNKCE<br>
 <a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a><br>
 <a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Absolutní hodnota</a><p>
 
-KVADRATICKÁ FUNKCE<br>
+<H2>KVADRATICKÁ FUNKCE</H2><br>
 <a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Kvadratická funkce</a><br>
 <a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a><p>
 
