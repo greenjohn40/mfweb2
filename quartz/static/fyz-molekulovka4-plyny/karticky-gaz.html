@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Struktura a vlastnosti plynů / Structure et propriétés des gaz</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col font-sans">
+
+    <header class="bg-cyan-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Struktura a vlastnosti plynů</h1>
+        <p class="text-cyan-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-cyan-700 text-cyan-700 font-bold hover:bg-cyan-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-cyan-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je ideální (dokonalý) plyn?</p>
+                </div>
+                <div class="card-face card-back bg-cyan-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Zjednodušený model plynu se třemi předpoklady o molekulách.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-cyan-700 text-white rounded-lg hover:bg-cyan-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-cyan-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Fyzika / Physique
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const rawData = {
+            cs: [
+                { q: "Co je ideální (dokonalý) plyn?", a: "Zjednodušený model plynu se třemi předpoklady o molekulách." },
+                { q: "Jaký je první předpoklad modelu ideálního plynu?", a: "Rozměry molekul jsou zanedbatelné vzhledem k jejich středním vzdálenostem." },
+                { q: "Jaký je druhý předpoklad modelu ideálního plynu?", a: "Vzájemné působení molekul neexistuje (kromě velmi krátkých srážek)." },
+                { q: "Jaký je třetí předpoklad modelu ideálního plynu?", a: "Srážky molekul jsou dokonale pružné." },
+                { q: "Čemu se rovná vnitřní energie ideálního plynu?", a: "U = Ek (protože Ep = 0)." },
+                { q: "Co popisuje Maxwellovo rozdělení?", a: "Rozdělení molekul plynu podle rychlosti." },
+                { q: "Co je vp v Maxwellově rozdělení?", a: "Nejpravděpodobnější rychlost." },
+                { q: "Co je vk v Maxwellově rozdělení?", a: "Střední kvadratická rychlost." },
+                { q: "Jaký je vzorec pro střední kvadratickou rychlost vk?", a: "vk = √(3kT/m₀)." },
+                { q: "Jaká je hodnota Boltzmannovy konstanty k?", a: "k = 1,38 · 10⁻²³ J/K." },
+                { q: "Čím je způsoben tlak ideálního plynu?", a: "Nárazy molekul na stěny nádoby." },
+                { q: "Jaký je vzorec pro tlak ideálního plynu?", a: "p = (1/3)(N/V)m₀vk²." },
+                { q: "Co vyjadřuje stavová rovnice ideálního plynu?", a: "Vztah mezi stavovými veličinami p, V, T." },
+                { q: "Jak zní stavová rovnice v obecném tvaru?", a: "p₁V₁/T₁ = p₂V₂/T₂ = konst." },
+                { q: "Jaká je hodnota molární plynové konstanty Rm?", a: "Rm = 8,31 J·K⁻¹mol⁻¹." },
+                { q: "Co je molární hmotnost látky?", a: "Hmotnost jednoho molu látky." },
+                { q: "Co je mol?", a: "Látkové množství obsahující tolik entit, kolik je atomů v 12 g uhlíku ¹²C." },
+                { q: "Jaká je hodnota Avogadrovy konstanty NA?", a: "NA = 6,022 · 10²³ mol⁻¹." },
+                { q: "Jak se nazývá děj probíhající při konstantní teplotě?", a: "Izotermický děj." },
+                { q: "Jak zní Boyleův–Mariottův zákon?", a: "p₁V₁ = p₂V₂ (při T = konst.)." },
+                { q: "Při izotermickém ději platí ΔU=0. Co z toho plyne pro Q a W'?", a: "Q = W' (teplo přijaté plynem = práce vykonaná plynem)." },
+                { q: "Jak se nazývá děj probíhající při konstantním objemu?", a: "Izochorický děj." },
+                { q: "Jak zní Charlesův zákon?", a: "p₁/T₁ = p₂/T₂ (při V = konst.)." },
+                { q: "Kdo byl Jacques Charles?", a: "Francouzský fyzik a vynálezce, první, kdo vzlétl s vodíkovým balónem (1783)." },
+                { q: "Při izochorickém ději je W'=0. Čemu se pak rovná teplo Q?", a: "Q = ΔU = cV·m·ΔT." },
+                { q: "Jak se nazývá děj probíhající při konstantním tlaku?", a: "Izobarický děj." },
+                { q: "Jak zní Gay-Lussacův zákon?", a: "V₁/T₁ = V₂/T₂ (při p = konst.)." },
+                { q: "Jaký vztah platí mezi cp a cV?", a: "cp > cV vždy." },
+                { q: "Jak se nazývá děj, při kterém Q=0?", a: "Adiabatický děj." },
+                { q: "Jak zní Poissonův zákon?", a: "p₁V₁^κ = p₂V₂^κ." },
+                { q: "Co je Poissonova konstanta κ?", a: "κ = cp/cV." },
+                { q: "Při adiabatickém ději platí Q=0. Čemu se pak rovná ΔU?", a: "ΔU = W' (změna vnitřní energie se rovná práci)." },
+                { q: "Uveďte příklad adiabatického děje z praxe.", a: "Zahřívání pumpičky na kolo při kompresi vzduchu." },
+                { q: "Jaký je vzorec pro práci plynu při stálém tlaku?", a: "W' = p·ΔV." },
+                { q: "Čemu se rovná práce plynu při proměnném tlaku?", a: "Obsahu plochy pod křivkou p = f(V)." },
+                { q: "Co je kruhový (cyklický) děj?", a: "Posloupnost přeměn, po jejímž konci se soustava vrátí do počátečního stavu." },
+                { q: "Jaká je změna vnitřní energie ΔU za celý kruhový děj?", a: "ΔU = 0." },
+                { q: "Jak vypočítáme práci plynu za jeden cyklus?", a: "W' = Q₁ − Q₂." },
+                { q: "Jaký je vzorec pro tepelnou účinnost η kruhového děje?", a: "η = W'/Q₁ = 1 − Q₂/Q₁." },
+                { q: "Co říká Carnotovo tvrzení?", a: "Koná-li stroj práci během cyklu, musí si vyměňovat teplo se dvěma zdroji o různé teplotě." },
+                { q: "Co říká Clausiovo tvrzení?", a: "Teplo nemůže samovolně přejít z chladnějšího tělesa na teplejší." },
+                { q: "Co říká Kelvinovo–Planckovo tvrzení?", a: "Nelze sestrojit stroj konající práci jen z tepla čerpaného z jediného zdroje." },
+                { q: "Uveďte příklad tepelného stroje přeměňujícího teplo na práci.", a: "Parní stroj nebo spalovací motor." },
+                { q: "Uveďte příklad tepelného stroje přeměňujícího práci na chlad.", a: "Lednička nebo klimatizace." },
+                { q: "Co je střední volná dráha částice?", a: "Průměrná vzdálenost, kterou částice urazí mezi dvěma srážkami." },
+                { q: "Výpočet: Plyn má p₁=2·10⁵ Pa, V₁=4 l. Jaký bude objem V₂ při p₂=1·10⁵ Pa (T=konst.)?", a: "V₂ = 8 l." },
+                { q: "Výpočet: Plyn má p₁=1·10⁵ Pa, V₁=6 l. Jaký bude tlak p₂ při V₂=3 l (T=konst.)?", a: "p₂ = 2·10⁵ Pa." },
+                { q: "Výpočet: Plyn má p₁=1·10⁵ Pa při T₁=200 K. Jaký bude tlak p₂ při T₂=400 K (V=konst.)?", a: "p₂ = 2·10⁵ Pa." },
+                { q: "Výpočet: Plyn má V₁=2 l při T₁=200 K. Jaký bude objem V₂ při T₂=400 K (p=konst.)?", a: "V₂ = 4 l." },
+                { q: "Výpočet: Plyn má V₁=5 l při T₁=250 K. Jaký bude objem V₂ při T₂=100 K (p=konst.)?", a: "V₂ = 2 l." }
+            
+            ],
+            fr: [
+                { q: "Qu'est-ce que le gaz idéal (parfait) ?", a: "Un modèle simplifié d'un gaz reposant sur trois hypothèses sur les molécules." },
+                { q: "Quelle est la première hypothèse du modèle du gaz idéal ?", a: "Les dimensions des molécules sont négligeables par rapport à leurs distances moyennes." },
+                { q: "Quelle est la deuxième hypothèse du modèle du gaz idéal ?", a: "Les interactions entre molécules sont inexistantes (sauf lors de collisions très brèves)." },
+                { q: "Quelle est la troisième hypothèse du modèle du gaz idéal ?", a: "Les collisions entre molécules sont parfaitement élastiques." },
+                { q: "À quoi est égale l'énergie interne d'un gaz idéal ?", a: "U = Ek (car Ep = 0)." },
+                { q: "Que décrit la distribution de Maxwell ?", a: "La distribution des molécules d'un gaz selon leur vitesse." },
+                { q: "Qu'est-ce que vp dans la distribution de Maxwell ?", a: "La vitesse la plus probable." },
+                { q: "Qu'est-ce que vk dans la distribution de Maxwell ?", a: "La vitesse quadratique moyenne." },
+                { q: "Quelle est la formule de la vitesse quadratique moyenne vk ?", a: "vk = √(3kT/m₀)." },
+                { q: "Quelle est la valeur de la constante de Boltzmann k ?", a: "k = 1,38 · 10⁻²³ J/K." },
+                { q: "Qu'est-ce qui cause la pression d'un gaz idéal ?", a: "Les chocs des molécules contre les parois du récipient." },
+                { q: "Quelle est la formule de la pression du gaz idéal ?", a: "p = (1/3)(N/V)m₀vk²." },
+                { q: "Qu'exprime l'équation d'état du gaz idéal ?", a: "La relation entre les grandeurs d'état p, V, T." },
+                { q: "Quelle est la forme générale de l'équation d'état ?", a: "p₁V₁/T₁ = p₂V₂/T₂ = const." },
+                { q: "Quelle est la valeur de la constante molaire des gaz Rm ?", a: "Rm = 8,31 J·K⁻¹mol⁻¹." },
+                { q: "Qu'est-ce que la masse molaire d'une substance ?", a: "La masse d'une mole de cette substance." },
+                { q: "Qu'est-ce qu'une mole ?", a: "La quantité de matière contenant autant d'entités qu'il y a d'atomes dans 12 g de carbone ¹²C." },
+                { q: "Quelle est la valeur de la constante d'Avogadro NA ?", a: "NA = 6,022 · 10²³ mol⁻¹." },
+                { q: "Comment appelle-t-on le processus à température constante ?", a: "Le processus isotherme." },
+                { q: "Comment s'énonce la loi de Boyle-Mariotte ?", a: "p₁V₁ = p₂V₂ (à T = const.)." },
+                { q: "Lors d'un processus isotherme, ΔU=0. Qu'en déduit-on pour Q et W' ?", a: "Q = W' (la chaleur absorbée par le gaz égale le travail effectué par le gaz)." },
+                { q: "Comment appelle-t-on le processus à volume constant ?", a: "Le processus isochore." },
+                { q: "Comment s'énonce la loi de Charles ?", a: "p₁/T₁ = p₂/T₂ (à V = const.)." },
+                { q: "Qui était Jacques Charles ?", a: "Physicien et inventeur français, premier à faire voler un ballon à hydrogène (1783)." },
+                { q: "Lors d'un processus isochore, W'=0. À quoi est alors égale la chaleur Q ?", a: "Q = ΔU = cV·m·ΔT." },
+                { q: "Comment appelle-t-on le processus à pression constante ?", a: "Le processus isobare." },
+                { q: "Comment s'énonce la loi de Gay-Lussac ?", a: "V₁/T₁ = V₂/T₂ (à p = const.)." },
+                { q: "Quelle relation existe entre cp et cV ?", a: "cp > cV toujours." },
+                { q: "Comment appelle-t-on le processus où Q=0 ?", a: "Le processus adiabatique." },
+                { q: "Comment s'énonce la loi de Poisson ?", a: "p₁V₁^κ = p₂V₂^κ." },
+                { q: "Qu'est-ce que la constante de Poisson κ ?", a: "κ = cp/cV." },
+                { q: "Lors d'un processus adiabatique, Q=0. À quoi est alors égale ΔU ?", a: "ΔU = W' (la variation d'énergie interne égale le travail)." },
+                { q: "Donnez un exemple pratique de processus adiabatique.", a: "L'échauffement d'une pompe à vélo lors de la compression de l'air." },
+                { q: "Quelle est la formule du travail du gaz à pression constante ?", a: "W' = p·ΔV." },
+                { q: "À quoi est égal le travail du gaz à pression variable ?", a: "À l'aire sous la courbe p = f(V)." },
+                { q: "Qu'est-ce qu'un processus cyclique ?", a: "Une suite de transformations à l'issue de laquelle le système revient à son état initial." },
+                { q: "Quelle est la variation d'énergie interne ΔU sur un cycle complet ?", a: "ΔU = 0." },
+                { q: "Comment calcule-t-on le travail du gaz sur un cycle ?", a: "W' = Q₁ − Q₂." },
+                { q: "Quelle est la formule du rendement thermique η d'un cycle ?", a: "η = W'/Q₁ = 1 − Q₂/Q₁." },
+                { q: "Que dit l'énoncé de Carnot ?", a: "Si une machine fournit du travail au cours d'un cycle, elle échange nécessairement de la chaleur avec deux sources de températures différentes." },
+                { q: "Que dit l'énoncé de Clausius ?", a: "La chaleur ne peut pas passer spontanément d'un corps froid vers un corps chaud." },
+                { q: "Que dit l'énoncé de Kelvin-Planck ?", a: "On ne peut construire de machine produisant du travail à partir de la chaleur d'une seule source." },
+                { q: "Donnez un exemple de machine thermique transformant la chaleur en travail.", a: "La machine à vapeur ou le moteur à explosion." },
+                { q: "Donnez un exemple de machine thermique transformant le travail en froid.", a: "Le réfrigérateur ou le climatiseur." },
+                { q: "Qu'est-ce que le libre parcours moyen d'une particule ?", a: "La distance moyenne parcourue par une particule entre deux collisions." },
+                { q: "Calcul : Un gaz a p₁=2·10⁵ Pa, V₁=4 l. Quel sera le volume V₂ à p₂=1·10⁵ Pa (T=const.) ?", a: "V₂ = 8 l." },
+                { q: "Calcul : Un gaz a p₁=1·10⁵ Pa, V₁=6 l. Quelle sera la pression p₂ à V₂=3 l (T=const.) ?", a: "p₂ = 2·10⁵ Pa." },
+                { q: "Calcul : Un gaz a p₁=1·10⁵ Pa à T₁=200 K. Quelle sera la pression p₂ à T₂=400 K (V=const.) ?", a: "p₂ = 2·10⁵ Pa." },
+                { q: "Calcul : Un gaz a V₁=2 l à T₁=200 K. Quel sera le volume V₂ à T₂=400 K (p=const.) ?", a: "V₂ = 4 l." },
+                { q: "Calcul : Un gaz a V₁=5 l à T₁=250 K. Quel sera le volume V₂ à T₂=100 K (p=const.) ?", a: "V₂ = 2 l." }
+            
+            ]
+        };
+
+        // ========== KÓD FLASHCARD ==========
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.textContent = data.q;
+            aText.textContent = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-cyan-700', 'text-cyan-700');
+            btnFr.classList.remove('border-cyan-700', 'text-cyan-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-cyan-700', 'text-cyan-700');
+            btnCs.classList.remove('border-cyan-700', 'text-cyan-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

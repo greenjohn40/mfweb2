@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktura a vlastnosti plynů / Structure et propriétés des gaz</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 720px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        .MathJax_Display { margin: 1em 0; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: left; }
+        th { background: #f5f5f5; }
+        .law-box { background: #f0f9ff; border-left: 4px solid #0369a1; padding: 12px 16px; margin: 1rem 0; border-radius: 6px; }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Struktura a vlastnosti plynů</h1>
+        <p><strong>Předmět:</strong> Fyzika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola (pokročilejší učivo)
+        </p>
+
+        <h2>1. Model ideálního plynu</h2>
+        <p><strong>Ideální (dokonalý) plyn</strong> je zjednodušený model plynu, u kterého platí tři předpoklady:</p>
+        <ol>
+            <li>rozměry molekul jsou zanedbatelné vzhledem k jejich středním vzdálenostem,</li>
+            <li>vzájemné působení molekul neexistuje (kromě velmi krátkých srážek) — proto $E_p = 0$ a vnitřní energie $U = E_k$,</li>
+            <li>srážky molekul jsou dokonale pružné (elastické).</li>
+        </ol>
+        <p>Většina reálných plynů se za normálních podmínek ($0\,^\circ\text{C}$, $1\,\text{atm}$) chová přibližně jako ideální plyn.</p>
+
+        <h3>Maxwellovo rozdělení rychlostí</h3>
+        <p>Molekuly plynu se nepohybují všechny stejnou rychlostí — jejich rychlosti se řídí tzv. <strong>Maxwellovým rozdělením</strong>. Křivka $f(v)$ udává, jak je pravděpodobné, že náhodně vybraná molekula má danou rychlost. S rostoucí teplotou se maximum křivky posouvá k vyšším rychlostem a křivka se zplošťuje (rychlosti jsou rozprostřeny do širšího intervalu).</p>
+        <p>Na křivce rozlišujeme:</p>
+        <ul>
+            <li>$v_p$ — <strong>nejpravděpodobnější rychlost</strong> (odpovídá maximu křivky),</li>
+            <li>$v_k$ — <strong>střední kvadratickou rychlost</strong>.</li>
+        </ul>
+
+        <h3>Střední kvadratická rychlost</h3>
+        <p>Kdyby všechny molekuly plynu měly stejnou rychlost $v_k$, celková kinetická energie souboru molekul by se nezměnila. Energie jedné molekuly je pak:</p>
+        $$ E_0 = \frac{1}{2}m_0v_k^2 = \frac{3}{2}kT $$
+        <p>kde $m_0$ je hmotnost jedné molekuly plynu, $T$ termodynamická teplota a $k$ Boltzmannova konstanta ($k = 1{,}38\cdot10^{-23}\,\text{J/K}$). Odtud vyjádříme střední kvadratickou rychlost:</p>
+        $$ v_k = \sqrt{\frac{3kT}{m_0}} $$
+
+        <h4>Vzorový příklad 1</h4>
+        <p><strong>Zadání:</strong> Najděte střední kvadratickou rychlost molekul kyslíku $\text{O}_2$ při teplotě a) $-100\,^\circ\text{C}$, b) $0\,^\circ\text{C}$, c) $100\,^\circ\text{C}$. (Molární hmotnost kyslíku $M_m = 32\,\text{g/mol} = 32\cdot10^{-3}\,\text{kg/mol}$.)</p>
+        <p><strong>Řešení:</strong></p>
+        <ol>
+            <li>Hmotnost jedné molekuly: $m_0 = \dfrac{M_m}{N_A} = \dfrac{32\cdot10^{-3}}{6{,}022\cdot10^{23}} \approx 5{,}31\cdot10^{-26}\,\text{kg}$</li>
+            <li>Převedeme teploty na kelviny: a) $T=173{,}15\,\text{K}$, b) $T=273{,}15\,\text{K}$, c) $T=373{,}15\,\text{K}$</li>
+            <li>Dosadíme do vzorce $v_k=\sqrt{3kT/m_0}$:
+                <ul>
+                    <li>a) $v_k \approx 367\,\text{m/s}$</li>
+                    <li>b) $v_k \approx 461\,\text{m/s}$</li>
+                    <li>c) $v_k \approx 539\,\text{m/s}$</li>
+                </ul>
+            </li>
+        </ol>
+        <p><strong>Odpověď:</strong> Se zvyšující se teplotou roste i střední kvadratická rychlost molekul — což odpovídá tomu, že rychlejší pohyb částic znamená vyšší teplotu.</p>
+
+        <h2>2. Tlak ideálního plynu</h2>
+        <p>Tlak plynu vzniká nárazy molekul na stěny nádoby. I při konstantní teplotě tlak v čase mírně kolísá (fluktuuje) kolem ustálené hodnoty, protože jde o statistický důsledek velkého počtu jednotlivých srážek.</p>
+        <p><strong>Rovnice tlaku ideálního plynu:</strong></p>
+        $$ p = \frac{1}{3}\frac{N}{V}m_0v_k^2 $$
+        <p>kde $N$ je počet molekul plynu, $V$ objem plynu, $m_0$ hmotnost jedné molekuly a $v_k$ střední kvadratická rychlost.</p>
+
+        <h2>3. Stavová rovnice ideálního plynu</h2>
+        <p><strong>Stavové veličiny</strong> popisují stav plynu: tlak $p$, objem $V$, termodynamická teplota $T$, počet molekul $N$, hmotnost $m$, látkové množství $n$, molární hmotnost $M_m$.</p>
+        <p><strong>Stavová rovnice</strong> vyjadřuje vztah mezi těmito veličinami a lze ji psát v několika ekvivalentních tvarech:</p>
+        $$ pV = NkT \qquad pV = nR_mT \qquad pV = \frac{m}{M_m}R_mT $$
+        <p>kde $R_m = 8{,}31\,\text{J}\cdot\text{K}^{-1}\text{mol}^{-1}$ je molární plynová konstanta. Pro dva stavy téhož množství plynu platí obecně:</p>
+        $$ \frac{p_1V_1}{T_1} = \frac{p_2V_2}{T_2} = \text{konst.} $$
+
+        <h3>Mol a Avogadrova konstanta</h3>
+        <p><strong>Molární hmotnost</strong> látky je hmotnost jednoho molu látky. <strong>Mol</strong> je látkové množství soustavy obsahující právě $6{,}02214076\cdot10^{23}$ elementárních entit (atomů, molekul, iontů...). Od roku 2019 je toto číslo pevně stanovenou hodnotou Avogadrovy konstanty a mol definuje přímo; dříve byl mol vázán na počet atomů ve $12$ gramech uhlíku $^{12}\text{C}$, čemuž toto číslo i dnes přibližně odpovídá.</p>
+        <p>Jeden mol libovolné látky obsahuje $N_A = 6{,}022\cdot10^{23}$ elementárních entit — toto číslo se nazývá <strong>Avogadrova konstanta</strong>, na počest italského fyzika a chemika Amedea Avogadra (1776–1856).</p>
+
+        <h2>4. Čtyři stavové změny ideálního plynu</h2>
+        <p>Ze stavové rovnice odvodíme čtyři speciální (izo-)děje, kdy jedna ze stavových veličin zůstává konstantní.</p>
+
+        <h3>a) Izotermický děj ($T=\text{konst.}$)</h3>
+        <div class="law-box">
+            <strong>Boyleův–Mariottův zákon:</strong> $p_1V_1 = p_2V_2$
+        </div>
+        <p>Grafem závislosti $p$ na $V$ je hyperbola (izoterma). Podle 1. termodynamického zákona ($Q=\Delta U+W'$) platí, že $T=\text{konst.} \Rightarrow \Delta U=0 \Rightarrow Q=W'$: teplo přijaté plynem se beze zbytku mění na práci vykonanou plynem.</p>
+
+        <h3>b) Izochorický děj ($V=\text{konst.}$)</h3>
+        <div class="law-box">
+            <strong>Charlesův zákon:</strong> $\dfrac{p_1}{T_1} = \dfrac{p_2}{T_2}$
+        </div>
+        <p>Grafem je svislá úsečka (izochora). Protože se objem nemění, plyn nekoná práci ($W'=0$), a proto $Q=\Delta U = c_V\cdot m\cdot\Delta T$, kde $c_V$ je měrná tepelná kapacita plynu při stálém objemu.</p>
+
+        <h3>c) Izobarický děj ($p=\text{konst.}$)</h3>
+        <div class="law-box">
+            <strong>Gay-Lussacův zákon:</strong> $\dfrac{V_1}{T_1} = \dfrac{V_2}{T_2}$
+        </div>
+        <p>Grafem je vodorovná úsečka (izobara). Přijaté teplo se dělí mezi změnu vnitřní energie a vykonanou práci: $Q = \Delta U + W' = c_p\cdot m\cdot\Delta T$, kde $c_p$ je měrná tepelná kapacita při stálém tlaku. Vždy platí $c_p > c_V$ (při stálém tlaku se část tepla „spotřebuje“ navíc na práci rozpínání).</p>
+
+        <h3>d) Adiabatický děj ($Q=0$)</h3>
+        <div class="law-box">
+            <strong>Poissonův zákon:</strong> $p_1V_1^\kappa = p_2V_2^\kappa$, kde $\kappa = \dfrac{c_p}{c_V}$ (Poissonova konstanta)
+        </div>
+        <p>Plyn je tepelně izolován od okolí, takže $\Delta U = W'$. Adiabata má v diagramu p-V strmější průběh než izoterma. Při adiabatické kompresi teplota plynu roste (okolí koná práci na plynu), při adiabatické expanzi teplota klesá (plyn koná práci na okolí). Typickým příkladem je zahřívání pumpičky na kolo nebo tzv. efekt föhnu v meteorologii.</p>
+
+        <h2>5. Práce ideálního plynu</h2>
+        <p>Při stálém tlaku je práce plynu:</p>
+        $$ W' = p\cdot\Delta V $$
+        <p>Je-li $\Delta V>0$ (plyn se rozpíná), plyn koná práci ($W'>0$); je-li $\Delta V<0$ (plyn se stlačuje), práce je vykonána na plynu ($W'<0$). Graficky práci při stálém tlaku znázorňuje obsah obdélníku pod izobarou v diagramu p-V. Při proměnném tlaku je práce rovna obsahu plochy pod křivkou $p=f(V)$.</p>
+
+        <h2>6. Kruhový (cyklický) děj a tepelné stroje</h2>
+        <p><strong>Kruhový děj</strong> je posloupnost přeměn, po jejímž konci se soustava vrátí do počátečního stavu. V diagramu p-V ho znázorňuje uzavřená křivka a platí $\Delta U = 0$ za celý cyklus.</p>
+        <p>Během cyklu plyn přijme teplo $Q_1$ z teplého zdroje a odevzdá teplo $Q_2$ chladiči ($Q_1>Q_2$); rozdíl se přemění na práci:</p>
+        $$ W' = Q_1 - Q_2 $$
+        <p><strong>Tepelná účinnost</strong> cyklu:</p>
+        $$ \eta = \frac{W'}{Q_1} = 1-\frac{Q_2}{Q_1} \qquad (\eta < 1 \text{ vždy!}) $$
+
+        <h3>Druhý zákon termodynamiky</h3>
+        <ul>
+            <li><strong>Carnotovo tvrzení:</strong> koná-li stroj práci během cyklu, musí si vyměňovat teplo se dvěma zdroji o různé teplotě.</li>
+            <li><strong>Clausiovo tvrzení:</strong> teplo nemůže samovolně přejít z chladnějšího tělesa na teplejší.</li>
+            <li><strong>Kelvinovo–Planckovo tvrzení:</strong> nelze sestrojit stroj, který by po dokončení cyklu konal práci jen z tepla čerpaného z jediného zdroje (tzv. perpetuum mobile 2. druhu neexistuje).</li>
+        </ul>
+        <p>Tepelné stroje buď <strong>přeměňují teplo na práci</strong> (parní stroj, spalovací motor), nebo <strong>přeměňují práci na teplo/chlad</strong> (lednička, klimatizace, tepelné čerpadlo).</p>
+
+        <h2>7. Vzorový příklad 2 — Boyleův–Mariottův zákon</h2>
+        <p><strong>Zadání:</strong> Plyn o objemu $V_1 = 3\,\text{l}$ a tlaku $p_1 = 1\cdot10^5\,\text{Pa}$ je izotermicky stlačen na tlak $p_2 = 3\cdot10^5\,\text{Pa}$. Jaký je nový objem $V_2$?</p>
+        <p><strong>Řešení:</strong> Protože jde o izotermický děj, platí $p_1V_1=p_2V_2$, tedy:</p>
+        $$ V_2 = \frac{p_1V_1}{p_2} = \frac{1\cdot10^5 \cdot 3}{3\cdot10^5} = 1\,\text{l} $$
+        <p><strong>Odpověď:</strong> Nový objem plynu je $1$ litr.</p>
+
+        <h2>8. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Ideální plyn:</strong> zanedbatelné rozměry molekul, žádné interakce mimo srážek, dokonale pružné srážky.</li>
+            <li><strong>$v_k=\sqrt{3kT/m_0}$</strong> — střední kvadratická rychlost roste s teplotou.</li>
+            <li><strong>Stavová rovnice:</strong> $\dfrac{p_1V_1}{T_1}=\dfrac{p_2V_2}{T_2}$, resp. $pV=nR_mT$.</li>
+            <li><strong>Čtyři děje:</strong> izotermický (Boyle–Mariotte, $pV=\text{konst.}$), izochorický (Charles, $p/T=\text{konst.}$), izobarický (Gay-Lussac, $V/T=\text{konst.}$), adiabatický (Poisson, $pV^\kappa=\text{konst.}$).</li>
+            <li><strong>Práce plynu:</strong> $W'=p\Delta V$ (při stálém tlaku); obecně obsah plochy pod křivkou $p(V)$.</li>
+            <li><strong>Kruhový děj:</strong> $\Delta U=0$, $W'=Q_1-Q_2$, účinnost $\eta=1-Q_2/Q_1<1$.</li>
+            <li><strong>2. zákon termodynamiky:</strong> teplo samovolně neputuje z chladnějšího na teplejší; nelze sestrojit stroj čerpající práci z jediného zdroje tepla.</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>Structure et propriétés des gaz</h1>
+        <p><strong>Matière :</strong> Physique
+            <strong>Niveau :</strong> Lycée (notions avancées)
+        </p>
+
+        <h2>1. Le modèle du gaz idéal</h2>
+        <p>Le <strong>gaz idéal (parfait)</strong> est un modèle simplifié d'un gaz, reposant sur trois hypothèses :</p>
+        <ol>
+            <li>les dimensions des molécules sont négligeables par rapport à leurs distances moyennes,</li>
+            <li>les interactions entre molécules sont inexistantes (sauf lors de collisions très brèves) — donc $E_p = 0$ et l'énergie interne $U = E_k$,</li>
+            <li>les collisions entre molécules sont parfaitement élastiques.</li>
+        </ol>
+        <p>La plupart des gaz réels se comportent approximativement comme un gaz idéal dans les conditions normales ($0\,^\circ\text{C}$, $1\,\text{atm}$).</p>
+
+        <h3>Distribution de Maxwell des vitesses</h3>
+        <p>Les molécules d'un gaz ne se déplacent pas toutes à la même vitesse — leurs vitesses suivent la <strong>distribution de Maxwell</strong>. La courbe $f(v)$ indique la probabilité qu'une molécule choisie au hasard ait une vitesse donnée. Lorsque la température augmente, le maximum de la courbe se déplace vers des vitesses plus élevées et la courbe s'aplatit (les vitesses sont réparties sur un intervalle plus large).</p>
+        <p>Sur la courbe, on distingue :</p>
+        <ul>
+            <li>$v_p$ — la <strong>vitesse la plus probable</strong> (correspond au maximum de la courbe),</li>
+            <li>$v_k$ — la <strong>vitesse quadratique moyenne</strong>.</li>
+        </ul>
+
+        <h3>Vitesse quadratique moyenne</h3>
+        <p>Si toutes les molécules du gaz avaient la même vitesse $v_k$, l'énergie cinétique totale de l'ensemble des molécules ne changerait pas. L'énergie d'une molécule est alors :</p>
+        $$ E_0 = \frac{1}{2}m_0v_k^2 = \frac{3}{2}kT $$
+        <p>où $m_0$ est la masse d'une molécule du gaz, $T$ la température thermodynamique et $k$ la constante de Boltzmann ($k = 1{,}38\cdot10^{-23}\,\text{J/K}$). On en déduit la vitesse quadratique moyenne :</p>
+        $$ v_k = \sqrt{\frac{3kT}{m_0}} $$
+
+        <h4>Exemple type 1</h4>
+        <p><strong>Énoncé :</strong> Trouver la vitesse quadratique moyenne des molécules d'oxygène $\text{O}_2$ à la température de a) $-100\,^\circ\text{C}$, b) $0\,^\circ\text{C}$, c) $100\,^\circ\text{C}$. (Masse molaire de l'oxygène $M_m = 32\,\text{g/mol} = 32\cdot10^{-3}\,\text{kg/mol}$.)</p>
+        <p><strong>Solution :</strong></p>
+        <ol>
+            <li>Masse d'une molécule : $m_0 = \dfrac{M_m}{N_A} = \dfrac{32\cdot10^{-3}}{6{,}022\cdot10^{23}} \approx 5{,}31\cdot10^{-26}\,\text{kg}$</li>
+            <li>Conversion des températures en kelvins : a) $T=173{,}15\,\text{K}$, b) $T=273{,}15\,\text{K}$, c) $T=373{,}15\,\text{K}$</li>
+            <li>Substitution dans $v_k=\sqrt{3kT/m_0}$ :
+                <ul>
+                    <li>a) $v_k \approx 367\,\text{m/s}$</li>
+                    <li>b) $v_k \approx 461\,\text{m/s}$</li>
+                    <li>c) $v_k \approx 539\,\text{m/s}$</li>
+                </ul>
+            </li>
+        </ol>
+        <p><strong>Réponse :</strong> La vitesse quadratique moyenne des molécules augmente avec la température, ce qui correspond au fait qu'un mouvement plus rapide des particules signifie une température plus élevée.</p>
+
+        <h2>2. Pression du gaz idéal</h2>
+        <p>La pression d'un gaz résulte des chocs des molécules contre les parois du récipient. Même à température constante, la pression fluctue légèrement dans le temps autour d'une valeur stable, car il s'agit d'une conséquence statistique d'un grand nombre de collisions individuelles.</p>
+        <p><strong>Équation de pression du gaz idéal :</strong></p>
+        $$ p = \frac{1}{3}\frac{N}{V}m_0v_k^2 $$
+        <p>où $N$ est le nombre de molécules du gaz, $V$ le volume du gaz, $m_0$ la masse d'une molécule et $v_k$ la vitesse quadratique moyenne.</p>
+
+        <h2>3. Équation d'état du gaz idéal</h2>
+        <p>Les <strong>grandeurs d'état</strong> décrivent l'état du gaz : pression $p$, volume $V$, température thermodynamique $T$, nombre de molécules $N$, masse $m$, quantité de matière $n$, masse molaire $M_m$.</p>
+        <p>L'<strong>équation d'état</strong> exprime la relation entre ces grandeurs et peut s'écrire sous plusieurs formes équivalentes :</p>
+        $$ pV = NkT \qquad pV = nR_mT \qquad pV = \frac{m}{M_m}R_mT $$
+        <p>où $R_m = 8{,}31\,\text{J}\cdot\text{K}^{-1}\text{mol}^{-1}$ est la constante molaire des gaz. Pour deux états d'une même quantité de gaz, on a en général :</p>
+        $$ \frac{p_1V_1}{T_1} = \frac{p_2V_2}{T_2} = \text{const.} $$
+
+        <h3>La mole et la constante d'Avogadro</h3>
+        <p>La <strong>masse molaire</strong> d'une substance est la masse d'une mole de cette substance. La <strong>mole</strong> est la quantité de matière d'un système contenant exactement $6{,}02214076\cdot10^{23}$ entités élémentaires (atomes, molécules, ions...). Depuis 2019, ce nombre est la valeur fixée de la constante d'Avogadro et définit directement la mole ; auparavant, la mole était liée au nombre d'atomes contenus dans $12$ grammes de carbone $^{12}\text{C}$, ce qui reste aujourd'hui encore approximativement exact.</p>
+        <p>Une mole de toute substance contient $N_A = 6{,}022\cdot10^{23}$ entités élémentaires — ce nombre est appelé <strong>constante d'Avogadro</strong>, en l'honneur du physicien et chimiste italien Amedeo Avogadro (1776–1856).</p>
+
+        <h2>4. Les quatre transformations d'état du gaz idéal</h2>
+        <p>À partir de l'équation d'état, on déduit quatre processus particuliers, pour lesquels l'une des grandeurs d'état reste constante.</p>
+
+        <h3>a) Processus isotherme ($T=\text{const.}$)</h3>
+        <div class="law-box">
+            <strong>Loi de Boyle-Mariotte :</strong> $p_1V_1 = p_2V_2$
+        </div>
+        <p>Le graphique de $p$ en fonction de $V$ est une hyperbole (isotherme). Selon la première loi de la thermodynamique ($Q=\Delta U+W'$), on a $T=\text{const.} \Rightarrow \Delta U=0 \Rightarrow Q=W'$ : la chaleur absorbée par le gaz se transforme intégralement en travail effectué par le gaz.</p>
+
+        <h3>b) Processus isochore ($V=\text{const.}$)</h3>
+        <div class="law-box">
+            <strong>Loi de Charles :</strong> $\dfrac{p_1}{T_1} = \dfrac{p_2}{T_2}$
+        </div>
+        <p>Le graphique est un segment vertical (isochore). Le volume ne changeant pas, le gaz n'effectue aucun travail ($W'=0$), donc $Q=\Delta U = c_V\cdot m\cdot\Delta T$, où $c_V$ est la chaleur spécifique du gaz à volume constant.</p>
+
+        <h3>c) Processus isobare ($p=\text{const.}$)</h3>
+        <div class="law-box">
+            <strong>Loi de Gay-Lussac :</strong> $\dfrac{V_1}{T_1} = \dfrac{V_2}{T_2}$
+        </div>
+        <p>Le graphique est un segment horizontal (isobare). La chaleur reçue se répartit entre la variation d'énergie interne et le travail effectué : $Q = \Delta U + W' = c_p\cdot m\cdot\Delta T$, où $c_p$ est la chaleur spécifique à pression constante. On a toujours $c_p > c_V$ (à pression constante, une partie supplémentaire de la chaleur est « consommée » par le travail de dilatation).</p>
+
+        <h3>d) Processus adiabatique ($Q=0$)</h3>
+        <div class="law-box">
+            <strong>Loi de Poisson :</strong> $p_1V_1^\kappa = p_2V_2^\kappa$, où $\kappa = \dfrac{c_p}{c_V}$ (constante de Poisson)
+        </div>
+        <p>Le gaz est thermiquement isolé du milieu extérieur, donc $\Delta U = W'$. L'adiabate a une pente plus abrupte que l'isotherme dans le diagramme p-V. Lors d'une compression adiabatique, la température du gaz augmente (le milieu extérieur effectue un travail sur le gaz) ; lors d'une détente adiabatique, la température diminue (le gaz effectue un travail sur le milieu extérieur). Un exemple typique est l'échauffement d'une pompe à vélo ou l'effet de foehn en météorologie.</p>
+
+        <h2>5. Travail du gaz idéal</h2>
+        <p>À pression constante, le travail du gaz est :</p>
+        $$ W' = p\cdot\Delta V $$
+        <p>Si $\Delta V>0$ (le gaz se dilate), le gaz effectue un travail ($W'>0$) ; si $\Delta V<0$ (le gaz se comprime), le travail est effectué sur le gaz ($W'<0$). Graphiquement, le travail à pression constante correspond à l'aire du rectangle sous l'isobare dans le diagramme p-V. À pression variable, le travail est égal à l'aire sous la courbe $p=f(V)$.</p>
+
+        <h2>6. Processus cyclique et machines thermiques</h2>
+        <p>Un <strong>processus cyclique</strong> est une suite de transformations à l'issue de laquelle le système revient à son état initial. Dans le diagramme p-V, il est représenté par une courbe fermée, et l'on a $\Delta U = 0$ sur le cycle complet.</p>
+        <p>Pendant le cycle, le gaz absorbe une chaleur $Q_1$ d'une source chaude et cède une chaleur $Q_2$ à un réfrigérant ($Q_1>Q_2$) ; la différence se transforme en travail :</p>
+        $$ W' = Q_1 - Q_2 $$
+        <p><strong>Rendement thermique</strong> du cycle :</p>
+        $$ \eta = \frac{W'}{Q_1} = 1-\frac{Q_2}{Q_1} \qquad (\eta < 1 \text{ toujours !}) $$
+
+        <h3>Deuxième principe de la thermodynamique</h3>
+        <ul>
+            <li><strong>Énoncé de Carnot :</strong> si une machine fournit du travail au cours d'un cycle, elle échange nécessairement de la chaleur avec deux sources de températures différentes.</li>
+            <li><strong>Énoncé de Clausius :</strong> la chaleur ne peut pas passer spontanément d'un corps froid vers un corps chaud.</li>
+            <li><strong>Énoncé de Kelvin-Planck :</strong> on ne peut construire de machine qui, au bout d'un cycle, produit du travail en empruntant de la chaleur à une seule source (le « mouvement perpétuel de deuxième espèce » n'existe pas).</li>
+        </ul>
+        <p>Les machines thermiques soit <strong>transforment la chaleur en travail</strong> (machine à vapeur, moteur à explosion), soit <strong>transforment le travail en chaleur/froid</strong> (réfrigérateur, climatiseur, pompe à chaleur).</p>
+
+        <h2>7. Exemple type 2 — loi de Boyle-Mariotte</h2>
+        <p><strong>Énoncé :</strong> Un gaz de volume $V_1 = 3\,\text{l}$ et de pression $p_1 = 1\cdot10^5\,\text{Pa}$ est comprimé de manière isotherme jusqu'à une pression $p_2 = 3\cdot10^5\,\text{Pa}$. Quel est le nouveau volume $V_2$ ?</p>
+        <p><strong>Solution :</strong> Il s'agit d'un processus isotherme, donc $p_1V_1=p_2V_2$, d'où :</p>
+        $$ V_2 = \frac{p_1V_1}{p_2} = \frac{1\cdot10^5 \cdot 3}{3\cdot10^5} = 1\,\text{l} $$
+        <p><strong>Réponse :</strong> Le nouveau volume du gaz est de $1$ litre.</p>
+
+        <h2>8. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Gaz idéal :</strong> dimensions moléculaires négligeables, aucune interaction hors collisions, collisions parfaitement élastiques.</li>
+            <li><strong>$v_k=\sqrt{3kT/m_0}$</strong> — la vitesse quadratique moyenne augmente avec la température.</li>
+            <li><strong>Équation d'état :</strong> $\dfrac{p_1V_1}{T_1}=\dfrac{p_2V_2}{T_2}$, soit $pV=nR_mT$.</li>
+            <li><strong>Quatre processus :</strong> isotherme (Boyle-Mariotte, $pV=\text{const.}$), isochore (Charles, $p/T=\text{const.}$), isobare (Gay-Lussac, $V/T=\text{const.}$), adiabatique (Poisson, $pV^\kappa=\text{const.}$).</li>
+            <li><strong>Travail du gaz :</strong> $W'=p\Delta V$ (à pression constante) ; en général, aire sous la courbe $p(V)$.</li>
+            <li><strong>Processus cyclique :</strong> $\Delta U=0$, $W'=Q_1-Q_2$, rendement $\eta=1-Q_2/Q_1<1$.</li>
+            <li><strong>2e principe de la thermodynamique :</strong> la chaleur ne va jamais spontanément du froid vers le chaud ; on ne peut construire de machine puisant du travail à une seule source de chaleur.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang) {
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (lang === 'cs') {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else if (lang === 'fr') {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangGaz', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangGaz');
+            if (saved === 'fr') { setLanguage('fr'); } else { setLanguage('cs'); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs'); });
+            btnFr.addEventListener('click', function() { setLanguage('fr'); });
+        })();
+    </script>
+
+</body>
+</html>

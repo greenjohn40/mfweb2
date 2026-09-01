@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Struktura a vlastnosti kapalin / Structure et propriétés des liquides</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col font-sans">
+
+    <header class="bg-blue-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Struktura a vlastnosti kapalin</h1>
+        <p class="text-blue-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-blue-700 text-blue-700 font-bold hover:bg-blue-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-blue-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je poloměr molekulového působení r<sub>m</sub>?</p>
+                </div>
+                <div class="card-face card-back bg-blue-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Vzdálenost, od které jsou přitažlivé síly mezi molekulami kapaliny zanedbatelné.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-blue-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Fyzika / Physique
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const rawData = {
+            cs: [
+                { q: "Co je poloměr molekulového působení r<sub>m</sub>?", a: "Vzdálenost, od které jsou přitažlivé síly mezi molekulami kapaliny zanedbatelné (řádově 10⁻⁹ m)." },
+                { q: "Co je sféra molekulového působení?", a: "Kulová oblast o poloměru r<sub>m</sub> kolem molekuly, ve které se uplatňují mezimolekulární síly." },
+                { q: "Čemu se rovná výslednice sil na molekulu, jejíž sféra působení je celá uvnitř kapaliny?", a: "Nule – síly od okolních molekul se navzájem vyruší." },
+                { q: "Kam směřuje výsledná síla F<sub>V</sub> na molekulu v povrchové vrstvě?", a: "Kolmo k volné hladině, dovnitř kapaliny." },
+                { q: "Co je povrchová vrstva kapaliny?", a: "Vrstva molekul, jejichž vzdálenost od volné hladiny je menší než r<sub>m</sub>." },
+                { q: "Jaká je přibližná tloušťka povrchové vrstvy?", a: "Přibližně 10⁻⁹ m." },
+                { q: "Co je povrchová energie E<sub>S</sub>?", a: "Energie povrchové vrstvy kapaliny; je součástí vnitřní energie kapaliny." },
+                { q: "Proč mají molekuly v povrchové vrstvě větší potenciální energii?", a: "Protože přemístění molekuly do povrchové vrstvy vyžaduje práci proti síle F<sub>V</sub>." },
+                { q: "Jak zní vztah mezi změnou povrchové energie a změnou plochy povrchu?", a: "ΔE<sub>S</sub> = σ·ΔS." },
+                { q: "Co je povrchové napětí σ?", a: "Fyzikální veličina udávající poměr povrchové síly (nebo energie) k délce (nebo ploše); závisí na kapalině, prostředí a teplotě." },
+                { q: "Jaká je jednotka povrchového napětí?", a: "N·m⁻¹ (ekvivalentně J·m⁻²)." },
+                { q: "Jak závisí povrchové napětí na teplotě?", a: "S rostoucí teplotou povrchové napětí klesá." },
+                { q: "Jaké je přibližné povrchové napětí vody při pokojové teplotě?", a: "Přibližně 73 mN/m." },
+                { q: "Jaké je přibližné povrchové napětí rtuti?", a: "Přibližně 486 mN/m." },
+                { q: "Proč mají volné kapky kulový tvar?", a: "Protože koule má ze všech těles daného objemu nejmenší povrch, což odpovídá minimální povrchové energii." },
+                { q: "Výpočet: Kolik kapiček o poloměru r splyne v jednu kapku o poloměru R (ze zachování objemu)?", a: "n = (R/r)³." },
+                { q: "Co je povrchová síla F?", a: "Síla, kterou napjatý povrch kapaliny (např. blána) působí na tělesa na svém okraji; F = σl." },
+                { q: "Jak zní vztah pro povrchovou sílu F v závislosti na délce hranice l?", a: "F = σl." },
+                { q: "Proč je při zavěšení závaží na tyčku v mýdlové bláně potřeba počítat se dvěma plochami?", a: "Protože blána má dvě plochy (přední a zadní), takže 2F = F<sub>G</sub>." },
+                { q: "Jaký je vztah W = ΔE<sub>S</sub> při posunutí tyčky o Δx v mýdlové bláně?", a: "2F·Δx = σ·2l·Δx, odkud F = σl." },
+                { q: "Co se stane s nití volně položenou na mýdlové bláně, protrhneme-li blánu uvnitř smyčky?", a: "Nit se napne do kruhového tvaru (kružnice uzavírá největší plochu při daném obvodu)." },
+                { q: "Proč se odkapávající kapka nakonec utrhne z trubice?", a: "Protože tíha kapky nakonec překoná povrchovou sílu, která ji drží na okraji trubice." },
+                { q: "Co je tenzid (povrchově aktivní látka)?", a: "Látka, která po rozpuštění v kapalině výrazně snižuje její povrchové napětí." },
+                { q: "Jaký je meniskus vody ve skleněné nádobě?", a: "Konkávní (dutý) – voda smáčí stěny." },
+                { q: "Jaký je meniskus rtuti ve skleněné nádobě?", a: "Konvexní (vypuklý) – rtuť nesmáčí stěny." },
+                { q: "Které síly se zanedbávají při analýze rovnováhy molekuly na rozhraní kapalina–stěna–vzduch?", a: "Síla od vzduchu F<sub>3</sub> a tíha molekuly F<sub>G</sub>." },
+                { q: "Jaká podmínka určuje tvar (konkávní/konvexní) hladiny u stěny?", a: "Výsledná síla F<sub>V</sub> = F<sub>1</sub>+F<sub>2</sub> musí být v rovnováze kolmá k volné hladině." },
+                { q: "Co je úhel smáčení (styčný úhel) ϑ?", a: "Úhel mezi povrchem kapaliny a stěnou nádoby v místě jejich styku." },
+                { q: "Pro jaký rozsah úhlu ϑ je hladina konkávní (kapalina smáčí stěny)?", a: "0 ≤ ϑ < π/2." },
+                { q: "Pro jaký rozsah úhlu ϑ je hladina konvexní (kapalina nesmáčí stěny)?", a: "π/2 < ϑ ≤ π." },
+                { q: "Co je kapilarita?", a: "Jev vzestupu nebo poklesu hladiny kapaliny v úzké trubici (kapiláře) vůči volné hladině v širší nádobě." },
+                { q: "Kdy kapalina v kapiláře vystoupá nad volnou hladinu?", a: "Když kapalina smáčí stěny kapiláry (např. voda ve skle)." },
+                { q: "Kdy kapalina v kapiláře klesne pod volnou hladinu?", a: "Když kapalina nesmáčí stěny kapiláry (např. rtuť ve skle)." },
+                { q: "Jaký je vzorec pro kapilární tlak p<sub>k</sub>?", a: "p<sub>k</sub> = 2σ/R, kde R je vnitřní poloměr kapiláry." },
+                { q: "Jaký je vzorec pro výšku kapilárního vzestupu (poklesu) h?", a: "h = 2σ/(ρgR)." },
+                { q: "Jak závisí výška kapilárního vzestupu h na poloměru trubice R?", a: "Nepřímo úměrně – čím tenčí kapilára, tím vyšší vzestup." },
+                { q: "Uveďte příklad kapilarity z běžného života.", a: "Vzlínání vody do utěrky, vlhkosti do zdí, nebo kapaliny vlásečnicemi rostlin." },
+                { q: "Výpočet: Jaký je vnitřní poloměr kapiláry, vystoupí-li voda do výšky h=2,0 cm (σ=73 mN/m)?", a: "R ≈ 0,74 mm, tedy d ≈ 1,5 mm." },
+                { q: "Výpočet: Jaký je celkový tlak v bublině o průměru 1 μm v hloubce 5 m pod vodou (p<sub>a</sub>=1000 hPa, σ=73 mN/m)?", a: "p ≈ 0,44 MPa." },
+                { q: "Proč je u velmi malé bubliny kapilární tlak dominantní složkou celkového tlaku?", a: "Protože kapilární tlak je nepřímo úměrný poloměru, a ten je u malé bubliny extrémně malý." },
+                { q: "Jakou strukturu má molekula tenzidu a jak souvisí se snížením σ?", a: "Má hydrofilní hlavu a hydrofobní ocas; hromadí se v povrchové vrstvě a oslabuje mezimolekulární síly." },
+                { q: "Jak zní vzorec pro objemovou roztažnost kapalin?", a: "V = V₀(1 + β·Δt)." },
+                { q: "Co vyjadřuje součinitel β v rovnici objemové roztažnosti?", a: "Teplotní součinitel objemové roztažnosti kapaliny (jednotka K⁻¹)." },
+                { q: "Jaké je přibližné β pro vodu při 20 °C?", a: "Přibližně 2,1·10⁻⁴ K⁻¹." },
+                { q: "Jaké je přibližné β pro ethanol?", a: "Přibližně 1,1·10⁻³ K⁻¹." },
+                { q: "Co je anomálie vody?", a: "Mezi 0 °C a přibližně 4 °C se voda při zahřívání smršťuje místo aby se roztahovala." },
+                { q: "Při jaké teplotě má voda největší hustotu?", a: "Přibližně při 4 °C (přesněji 3,98 °C)." },
+                { q: "Jak anomálie vody chrání vodní organismy v zimě?", a: "Nejhustší voda (≈4 °C) klesá ke dnu, zatímco led se tvoří na povrchu, takže jezero nezamrzá do dna." },
+                { q: "Na jakém principu fungují kapalinové (rtuťové, lihové) teploměry?", a: "Objemová roztažnost kapaliny je mnohem větší než roztažnost skleněné nádobky, takže posun hladiny odpovídá roztažnosti kapaliny." },
+                { q: "Výpočet: O kolik se zvětší objem 1,0 cm³ ethanolu při ohřátí o 20 K (β≈1,1·10⁻³ K⁻¹)?", a: "ΔV ≈ 0,022 cm³." }
+            ],
+            fr: [
+                { q: "Qu'est-ce que le rayon d'action moléculaire r<sub>m</sub> ?", a: "La distance à partir de laquelle les forces attractives entre molécules d'un liquide sont négligeables (de l'ordre de 10⁻⁹ m)." },
+                { q: "Qu'est-ce que la sphère d'action moléculaire ?", a: "La région sphérique de rayon r<sub>m</sub> autour d'une molécule, où s'exercent les forces intermoléculaires." },
+                { q: "À quoi est égale la résultante des forces sur une molécule dont la sphère d'action est entièrement à l'intérieur du liquide ?", a: "À zéro – les forces des molécules voisines s'annulent mutuellement." },
+                { q: "Vers où est orientée la force résultante F<sub>V</sub> sur une molécule de la couche superficielle ?", a: "Perpendiculairement à la surface libre, vers l'intérieur du liquide." },
+                { q: "Qu'est-ce que la couche superficielle d'un liquide ?", a: "La couche de molécules dont la distance à la surface libre est inférieure à r<sub>m</sub>." },
+                { q: "Quelle est l'épaisseur approximative de la couche superficielle ?", a: "Environ 10⁻⁹ m." },
+                { q: "Qu'est-ce que l'énergie superficielle E<sub>S</sub> ?", a: "L'énergie de la couche superficielle du liquide ; elle fait partie de l'énergie interne du liquide." },
+                { q: "Pourquoi les molécules de la couche superficielle ont-elles une énergie potentielle plus grande ?", a: "Parce que déplacer une molécule vers la couche superficielle exige un travail contre la force F<sub>V</sub>." },
+                { q: "Quelle est la relation entre la variation de l'énergie superficielle et la variation de l'aire de surface ?", a: "ΔE<sub>S</sub> = σ·ΔS." },
+                { q: "Qu'est-ce que la tension superficielle σ ?", a: "Grandeur physique donnant le rapport de la force (ou de l'énergie) superficielle à la longueur (ou à l'aire) ; elle dépend du liquide, du milieu et de la température." },
+                { q: "Quelle est l'unité de la tension superficielle ?", a: "N·m⁻¹ (équivalent à J·m⁻²)." },
+                { q: "Comment la tension superficielle dépend-elle de la température ?", a: "Elle diminue quand la température augmente." },
+                { q: "Quelle est la tension superficielle approximative de l'eau à température ambiante ?", a: "Environ 73 mN/m." },
+                { q: "Quelle est la tension superficielle approximative du mercure ?", a: "Environ 486 mN/m." },
+                { q: "Pourquoi les gouttes libres ont-elles une forme sphérique ?", a: "Parce que la sphère possède la plus petite surface parmi tous les solides de volume donné, ce qui correspond à l'énergie superficielle minimale." },
+                { q: "Calcul : Combien de gouttelettes de rayon r fusionnent en une goutte de rayon R (conservation du volume) ?", a: "n = (R/r)³." },
+                { q: "Qu'est-ce que la force superficielle F ?", a: "La force qu'exerce la surface tendue d'un liquide (ex. une pellicule) sur les objets à son bord ; F = σl." },
+                { q: "Quelle est la relation entre la force superficielle F et la longueur de la frontière l ?", a: "F = σl." },
+                { q: "Pourquoi faut-il compter deux surfaces lorsqu'on suspend un poids à une tige dans une pellicule de savon ?", a: "Parce que la pellicule a deux faces (avant et arrière), donc 2F = F<sub>G</sub>." },
+                { q: "Quelle est la relation W = ΔE<sub>S</sub> lors du déplacement de la tige de Δx dans la pellicule de savon ?", a: "2F·Δx = σ·2l·Δx, d'où F = σl." },
+                { q: "Que se passe-t-il avec un fil posé librement sur une pellicule de savon si l'on crève la pellicule à l'intérieur de la boucle ?", a: "Le fil se tend en forme circulaire (le cercle referme la plus grande aire pour un périmètre donné)." },
+                { q: "Pourquoi une goutte qui s'égoutte finit-elle par se détacher du tube ?", a: "Parce que le poids de la goutte finit par dépasser la force superficielle qui la retient au bord du tube." },
+                { q: "Qu'est-ce qu'un tensioactif (substance tensioactive) ?", a: "Une substance qui, dissoute dans un liquide, abaisse fortement sa tension superficielle." },
+                { q: "Quel est le ménisque de l'eau dans un récipient en verre ?", a: "Concave – l'eau mouille les parois." },
+                { q: "Quel est le ménisque du mercure dans un récipient en verre ?", a: "Convexe – le mercure ne mouille pas les parois." },
+                { q: "Quelles forces néglige-t-on dans l'analyse de l'équilibre d'une molécule à la frontière liquide–paroi–air ?", a: "La force de l'air F<sub>3</sub> et le poids de la molécule F<sub>G</sub>." },
+                { q: "Quelle condition détermine la forme (concave/convexe) de la surface près de la paroi ?", a: "La force résultante F<sub>V</sub> = F<sub>1</sub>+F<sub>2</sub> doit, à l'équilibre, être perpendiculaire à la surface libre." },
+                { q: "Qu'est-ce que l'angle de mouillage (angle de contact) ϑ ?", a: "L'angle entre la surface du liquide et la paroi du récipient à leur point de contact." },
+                { q: "Pour quel intervalle de ϑ la surface est-elle concave (le liquide mouille les parois) ?", a: "0 ≤ ϑ < π/2." },
+                { q: "Pour quel intervalle de ϑ la surface est-elle convexe (le liquide ne mouille pas les parois) ?", a: "π/2 < ϑ ≤ π." },
+                { q: "Qu'est-ce que la capillarité ?", a: "Le phénomène d'élévation ou d'abaissement du niveau d'un liquide dans un tube étroit (capillaire) par rapport à la surface libre dans un récipient plus large." },
+                { q: "Quand un liquide monte-t-il dans une capillaire au-dessus de la surface libre ?", a: "Quand le liquide mouille les parois de la capillaire (par exemple l'eau dans le verre)." },
+                { q: "Quand un liquide descend-il dans une capillaire au-dessous de la surface libre ?", a: "Quand le liquide ne mouille pas les parois de la capillaire (par exemple le mercure dans le verre)." },
+                { q: "Quelle est la formule de la pression capillaire p<sub>k</sub> ?", a: "p<sub>k</sub> = 2σ/R, où R est le rayon intérieur de la capillaire." },
+                { q: "Quelle est la formule de la hauteur d'élévation (ou d'abaissement) capillaire h ?", a: "h = 2σ/(ρgR)." },
+                { q: "Comment la hauteur d'élévation capillaire h dépend-elle du rayon du tube R ?", a: "Inversement – plus la capillaire est fine, plus l'élévation est importante." },
+                { q: "Donnez un exemple de capillarité de la vie courante.", a: "L'ascension de l'eau dans un torchon, de l'humidité dans les murs, ou d'un liquide dans les fibres capillaires des plantes." },
+                { q: "Calcul : Quel est le rayon intérieur d'une capillaire si l'eau y monte à h=2,0 cm (σ=73 mN/m) ?", a: "R ≈ 0,74 mm, soit d ≈ 1,5 mm." },
+                { q: "Calcul : Quelle est la pression totale dans une bulle de diamètre 1 μm à 5 m sous l'eau (p<sub>a</sub>=1000 hPa, σ=73 mN/m) ?", a: "p ≈ 0,44 MPa." },
+                { q: "Pourquoi la pression capillaire est-elle la composante dominante pour une très petite bulle ?", a: "Parce que la pression capillaire est inversement proportionnelle au rayon, qui est extrêmement petit pour une petite bulle." },
+                { q: "Quelle est la structure d'une molécule de tensioactif et son lien avec la baisse de σ ?", a: "Elle possède une tête hydrophile et une queue hydrophobe ; elle s'accumule dans la couche superficielle et affaiblit les forces intermoléculaires." },
+                { q: "Quelle est la formule de la dilatation volumique des liquides ?", a: "V = V₀(1 + β·Δt)." },
+                { q: "Que représente le coefficient β dans l'équation de dilatation volumique ?", a: "Le coefficient de dilatation volumique thermique du liquide (unité K⁻¹)." },
+                { q: "Quelle est la valeur approximative de β pour l'eau à 20 °C ?", a: "Environ 2,1·10⁻⁴ K⁻¹." },
+                { q: "Quelle est la valeur approximative de β pour l'éthanol ?", a: "Environ 1,1·10⁻³ K⁻¹." },
+                { q: "Qu'est-ce que l'anomalie de l'eau ?", a: "Entre 0 °C et environ 4 °C, l'eau se contracte en se réchauffant au lieu de se dilater." },
+                { q: "À quelle température l'eau a-t-elle sa masse volumique maximale ?", a: "Environ 4 °C (plus précisément 3,98 °C)." },
+                { q: "Comment l'anomalie de l'eau protège-t-elle les organismes aquatiques en hiver ?", a: "L'eau la plus dense (≈4 °C) reste au fond, tandis que la glace se forme en surface, empêchant le lac de geler jusqu'au fond." },
+                { q: "Sur quel principe reposent les thermomètres à liquide (mercure, alcool) ?", a: "La dilatation volumique du liquide est bien plus grande que celle du réservoir en verre, donc le déplacement du niveau correspond à la dilatation du liquide." },
+                { q: "Calcul : De combien augmente le volume de 1,0 cm³ d'éthanol chauffé de 20 K (β≈1,1·10⁻³ K⁻¹) ?", a: "ΔV ≈ 0,022 cm³." }
+            ]
+        };
+
+        // ========== KÓD FLASHCARD ==========
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-blue-700', 'text-blue-700');
+            btnFr.classList.remove('border-blue-700', 'text-blue-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-blue-700', 'text-blue-700');
+            btnCs.classList.remove('border-blue-700', 'text-blue-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

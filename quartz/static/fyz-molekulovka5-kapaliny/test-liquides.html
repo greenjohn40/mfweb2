@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Struktura a vlastnosti kapalin (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-blue-700">
+            <h1 class="text-3xl font-bold text-blue-800 mb-4">Fyzikální kvíz: Struktura a vlastnosti kapalin</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-blue-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (povrchové napětí, kapilarita, roztažnost).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-blue-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-blue-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-blue-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-blue-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+        const N_THEORY = 4;
+        const N_MATH = 6;
+
+        // ======== POMOCNÉ FUNKCE ========
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            if (Math.abs(x) < 1 && x !== 0) {
+                let s = x.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+                return s;
+            }
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ======== TEORETICKÉ OTÁZKY ========
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Jaký je řád velikosti poloměru molekulového působení r<sub>m</sub>?", a: "Přibližně 10⁻⁹ m (1 nm)", o: ["Přibližně 10⁻⁹ m (1 nm)", "Přibližně 10⁻³ m (1 mm)", "Přibližně 10⁻¹² m (1 pm)", "Přibližně 10⁻⁶ m (1 μm)"], h: "Jde o vzdálenost, od které jsou mezimolekulární síly zanedbatelné.", e: "Poloměr molekulového působení r<sub>m</sub> je řádově 10⁻⁹ m (1 nanometr)." }, fr: { q: "Quel est l'ordre de grandeur du rayon d'action moléculaire r<sub>m</sub> ?", a: "Environ 10⁻⁹ m (1 nm)", o: ["Environ 10⁻⁹ m (1 nm)", "Environ 10⁻³ m (1 mm)", "Environ 10⁻¹² m (1 pm)", "Environ 10⁻⁶ m (1 μm)"], h: "Il s'agit de la distance à partir de laquelle les forces intermoléculaires sont négligeables.", e: "Le rayon d'action moléculaire r<sub>m</sub> est de l'ordre de 10⁻⁹ m (1 nanomètre)." } },
+            { id: 't2', type: 'concept', cs: { q: "Jak souvisí změna povrchové energie ΔE<sub>S</sub> se změnou plochy povrchu ΔS?", a: "ΔE<sub>S</sub> = σ · ΔS", o: ["ΔE<sub>S</sub> = σ · ΔS", "ΔE<sub>S</sub> = σ / ΔS", "ΔE<sub>S</sub> = σ + ΔS", "ΔE<sub>S</sub> = σ² · ΔS"], h: "σ je konstanta úměrnosti — povrchové napětí.", e: "Změna povrchové energie je přímo úměrná změně plochy povrchu: ΔE<sub>S</sub> = σ·ΔS, kde σ je povrchové napětí." }, fr: { q: "Comment la variation de l'énergie superficielle ΔE<sub>S</sub> est-elle liée à la variation de l'aire ΔS ?", a: "ΔE<sub>S</sub> = σ · ΔS", o: ["ΔE<sub>S</sub> = σ · ΔS", "ΔE<sub>S</sub> = σ / ΔS", "ΔE<sub>S</sub> = σ + ΔS", "ΔE<sub>S</sub> = σ² · ΔS"], h: "σ est la constante de proportionnalité — la tension superficielle.", e: "La variation de l'énergie superficielle est directement proportionnelle à la variation de l'aire : ΔE<sub>S</sub> = σ·ΔS, où σ est la tension superficielle." } },
+            { id: 't3', type: 'concept', cs: { q: "Jak zní vzorec pro povrchovou sílu F působící podél hranice délky l?", a: "F = σl", o: ["F = σl", "F = σ/l", "F = σl²", "F = 2σl"], h: "Odvozeno z rovnosti práce a přírůstku povrchové energie.", e: "Povrchová síla je přímo úměrná délce hranice: F = σl, odtud také σ = F/l." }, fr: { q: "Quelle est la formule de la force superficielle F le long d'une frontière de longueur l ?", a: "F = σl", o: ["F = σl", "F = σ/l", "F = σl²", "F = 2σl"], h: "Déduit de l'égalité entre le travail et l'accroissement de l'énergie superficielle.", e: "La force superficielle est directement proportionnelle à la longueur de la frontière : F = σl, d'où aussi σ = F/l." } },
+            { id: 't4', type: 'concept', cs: { q: "Jaký meniskus tvoří voda ve skleněné nádobě?", a: "Konkávní (dutý) — voda smáčí stěny", o: ["Konkávní (dutý) — voda smáčí stěny", "Konvexní (vypuklý) — voda nesmáčí stěny", "Rovinný — bez zakřivení", "Vlnitý — nepravidelný tvar"], h: "Voda patří mezi kapaliny, které smáčí skleněné stěny.", e: "Voda smáčí sklo, proto je meniskus konkávní (dutý), s úhlem smáčení 0 ≤ ϑ < π/2." }, fr: { q: "Quel ménisque forme l'eau dans un récipient en verre ?", a: "Concave — l'eau mouille les parois", o: ["Concave — l'eau mouille les parois", "Convexe — l'eau ne mouille pas les parois", "Plan — sans courbure", "Ondulé — forme irrégulière"], h: "L'eau fait partie des liquides qui mouillent les parois de verre.", e: "L'eau mouille le verre, donc le ménisque est concave, avec un angle de mouillage 0 ≤ ϑ < π/2." } },
+            { id: 't5', type: 'concept', cs: { q: "Jaký meniskus tvoří rtuť ve skleněné nádobě?", a: "Konvexní (vypuklý) — rtuť nesmáčí stěny", o: ["Konvexní (vypuklý) — rtuť nesmáčí stěny", "Konkávní (dutý) — rtuť smáčí stěny", "Rovinný — bez zakřivení", "Stejný jako u vody"], h: "Rtuť patří mezi kapaliny, které nesmáčí skleněné stěny.", e: "Rtuť nesmáčí sklo, proto je meniskus konvexní (vypuklý), s úhlem smáčení π/2 < ϑ ≤ π." }, fr: { q: "Quel ménisque forme le mercure dans un récipient en verre ?", a: "Convexe — le mercure ne mouille pas les parois", o: ["Convexe — le mercure ne mouille pas les parois", "Concave — le mercure mouille les parois", "Plan — sans courbure", "Identique à celui de l'eau"], h: "Le mercure fait partie des liquides qui ne mouillent pas les parois de verre.", e: "Le mercure ne mouille pas le verre, donc le ménisque est convexe, avec un angle de mouillage π/2 < ϑ ≤ π." } },
+            { id: 't6', type: 'concept', cs: { q: "Jak zní vzorec pro kapilární tlak p<sub>k</sub>?", a: "p<sub>k</sub> = 2σ/R", o: ["p<sub>k</sub> = 2σ/R", "p<sub>k</sub> = σ/(2R)", "p<sub>k</sub> = σR", "p<sub>k</sub> = 4σ/R²"], h: "R je vnitřní poloměr kapiláry (nebo poloměr křivosti menisku).", e: "Kapilární tlak je přímo úměrný povrchovému napětí a nepřímo úměrný poloměru: p<sub>k</sub> = 2σ/R." }, fr: { q: "Quelle est la formule de la pression capillaire p<sub>k</sub> ?", a: "p<sub>k</sub> = 2σ/R", o: ["p<sub>k</sub> = 2σ/R", "p<sub>k</sub> = σ/(2R)", "p<sub>k</sub> = σR", "p<sub>k</sub> = 4σ/R²"], h: "R est le rayon intérieur de la capillaire (ou le rayon de courbure du ménisque).", e: "La pression capillaire est directement proportionnelle à la tension superficielle et inversement proportionnelle au rayon : p<sub>k</sub> = 2σ/R." } },
+            { id: 't7', type: 'concept', cs: { q: "Jak závisí výška kapilárního vzestupu h na vnitřním poloměru trubice R?", a: "Nepřímo úměrně — čím tenčí trubice, tím vyšší vzestup", o: ["Nepřímo úměrně — čím tenčí trubice, tím vyšší vzestup", "Přímo úměrně — čím tenčí trubice, tím nižší vzestup", "Vůbec nezávisí na poloměru", "Kvadraticky úměrně poloměru"], h: "Vyjdi ze vzorce h = 2σ/(ρgR).", e: "Ze vzorce h = 2σ/(ρgR) plyne, že výška h je nepřímo úměrná poloměru R — v tenčích kapilárách kapalina vystoupá (nebo klesne) výše." }, fr: { q: "Comment la hauteur d'élévation capillaire h dépend-elle du rayon intérieur du tube R ?", a: "Inversement proportionnelle — plus le tube est fin, plus l'élévation est grande", o: ["Inversement proportionnelle — plus le tube est fin, plus l'élévation est grande", "Directement proportionnelle — plus le tube est fin, plus l'élévation est faible", "Elle ne dépend pas du rayon", "Proportionnelle au carré du rayon"], h: "Pars de la formule h = 2σ/(ρgR).", e: "D'après la formule h = 2σ/(ρgR), la hauteur h est inversement proportionnelle au rayon R — dans les tubes plus fins, le liquide monte (ou descend) davantage." } },
+            { id: 't8', type: 'concept', cs: { q: "Při jaké přibližné teplotě má voda největší hustotu (anomálie vody)?", a: "Přibližně 4 °C", o: ["Přibližně 4 °C", "Přibližně 0 °C", "Přibližně 25 °C", "Přibližně 100 °C"], h: "Mezi 0 °C a touto teplotou se voda při zahřívání naopak smršťuje.", e: "Voda má svou největší hustotu přibližně při 4 °C (přesněji 3,98 °C) — jde o tzv. anomálii vody." }, fr: { q: "À quelle température approximative l'eau a-t-elle sa densité maximale (anomalie de l'eau) ?", a: "Environ 4 °C", o: ["Environ 4 °C", "Environ 0 °C", "Environ 25 °C", "Environ 100 °C"], h: "Entre 0 °C et cette température, l'eau se contracte au contraire en se réchauffant.", e: "L'eau a sa densité maximale à environ 4 °C (plus précisément 3,98 °C) — c'est ce qu'on appelle l'anomalie de l'eau." } },
+            { id: 't9', type: 'concept', cs: { q: "Co dělá tenzid (povrchově aktivní látka) rozpuštěný ve vodě?", a: "Výrazně snižuje povrchové napětí vody", o: ["Výrazně snižuje povrchové napětí vody", "Výrazně zvyšuje povrchové napětí vody", "Nemá na povrchové napětí žádný vliv", "Mění vodu na led"], h: "Molekula tenzidu má hydrofilní hlavu a hydrofobní ocas.", e: "Tenzidy (např. mýdlo) se hromadí v povrchové vrstvě a oslabují mezimolekulární síly, čímž výrazně snižují povrchové napětí σ." }, fr: { q: "Que fait un tensioactif dissous dans l'eau ?", a: "Il abaisse fortement la tension superficielle de l'eau", o: ["Il abaisse fortement la tension superficielle de l'eau", "Il augmente fortement la tension superficielle de l'eau", "Il n'a aucun effet sur la tension superficielle", "Il transforme l'eau en glace"], h: "Une molécule de tensioactif possède une tête hydrophile et une queue hydrophobe.", e: "Les tensioactifs (par ex. le savon) s'accumulent dans la couche superficielle et affaiblissent les forces intermoléculaires, ce qui abaisse fortement la tension superficielle σ." } },
+            { id: 't10', type: 'concept', cs: { q: "Co se stane s odkapávající kapkou z trubice ve chvíli, kdy se utrhne?", a: "Její tíha právě překonala povrchovou sílu, která ji držela", o: ["Její tíha právě překonala povrchovou sílu, která ji držela", "Povrchové napětí kapaliny náhle kleslo na nulu", "Kapka dosáhla maximální možné teploty", "Trubice se rozšířila"], h: "Porovnej, jak roste tíha kapky s tím, jak zůstává přibližně stejná povrchová síla F=σl.", e: "Kapka roste, dokud její tíha F<sub>G</sub> nepřekoná povrchovou sílu F=σ·2πr, která ji drží na okraji trubice; pak se utrhne." }, fr: { q: "Que se passe-t-il pour une goutte qui s'égoutte d'un tube au moment où elle se détache ?", a: "Son poids vient de dépasser la force superficielle qui la retenait", o: ["Son poids vient de dépasser la force superficielle qui la retenait", "La tension superficielle du liquide vient de tomber à zéro", "La goutte a atteint la température maximale possible", "Le tube s'est élargi"], h: "Compare la façon dont le poids de la goutte augmente alors que la force superficielle F=σl reste à peu près constante.", e: "La goutte grossit jusqu'à ce que son poids F<sub>G</sub> dépasse la force superficielle F=σ·2πr qui la retient au bord du tube ; elle se détache alors." } }
+        ];
+
+        // ======== VÝPOČETNÍ ÚLOHY ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Kapalina s povrchovým napětím σ = {sigma} mN/m vystoupá v kapiláře o vnitřním poloměru R = {R} mm. Do jaké výšky h (v mm)? (ρ = 1000 kg/m³, g = 9,81 m/s²)", h: "h = 2σ/(ρgR).", e: "h = 2·{sigma}·10⁻³ ÷ (1000 · 9,81 · {R}·10⁻³) = {res} mm." },
+                fr: { q: "Un liquide de tension superficielle σ = {sigma} mN/m monte dans une capillaire de rayon intérieur R = {R} mm. À quelle hauteur h (en mm) ? (ρ = 1000 kg/m³, g = 9,81 m/s²)", h: "h = 2σ/(ρgR).", e: "h = 2·{sigma}·10⁻³ ÷ (1000 · 9,81 · {R}·10⁻³) = {res} mm." },
+                params: () => { const sigma = randChoice([40,50,60,73,90]); const R = randChoice([0.5,1.0,1.5,2.0]); return { sigma, R }; },
+                solve: (p) => { const res = (2*(p.sigma*1e-3))/(1000*9.81*(p.R*1e-3))*1000; return { res, unit: 'mm', correct: fmt(res) + ' mm' }; } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Voda (σ = {sigma} mN/m) vystoupá v kapiláře do výšky h = {h} cm nad hladinu v širší nádobě. Jaký je vnitřní poloměr R kapiláry (v mm)? (ρ = 1000 kg/m³, g = 9,81 m/s²)", h: "R = 2σ/(ρgh).", e: "R = 2·{sigma}·10⁻³ ÷ (1000 · 9,81 · {h}·10⁻²) = {res} mm." },
+                fr: { q: "De l'eau (σ = {sigma} mN/m) monte dans une capillaire à une hauteur h = {h} cm au-dessus de la surface dans un récipient plus large. Quel est le rayon intérieur R de la capillaire (en mm) ? (ρ = 1000 kg/m³, g = 9,81 m/s²)", h: "R = 2σ/(ρgh).", e: "R = 2·{sigma}·10⁻³ ÷ (1000 · 9,81 · {h}·10⁻²) = {res} mm." },
+                params: () => { const sigma = randChoice([30,40,50,60,73,90]); const h = randChoice([0.5,1.0,1.5,2.0,3.0]); return { sigma, h }; },
+                solve: (p) => { const res = (2*(p.sigma*1e-3))/(1000*9.81*(p.h/100))*1000; return { res, unit: 'mm', correct: fmt(res) + ' mm' }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Mýdlová blána (σ = {sigma} mN/m) je napjatá v rámu s pohyblivou tyčkou o délce l = {l} cm. Jak velká je povrchová síla F (v mN) na jedné ploše blány?", h: "F = σl (pozor na převod cm na m).", e: "F = {sigma}·10⁻³ · {l}·10⁻² = {res} mN." },
+                fr: { q: "Une pellicule de savon (σ = {sigma} mN/m) est tendue dans un cadre avec une tige mobile de longueur l = {l} cm. Quelle est la force superficielle F (en mN) sur une seule face de la pellicule ?", h: "F = σl (attention à convertir cm en m).", e: "F = {sigma}·10⁻³ · {l}·10⁻² = {res} mN." },
+                params: () => { const sigma = randChoice([20,25,30,50,73]); const l = randChoice([2,4,5,8,10]); return { sigma, l }; },
+                solve: (p) => { const res = (p.sigma*1e-3)*(p.l/100)*1000; return { res, unit: 'mN', correct: fmt(res) + ' mN' }; } },
+            { id: 'm4', type: 'math',
+                cs: { q: "Kapalina o objemu V₀ = {V0} cm³ a součiniteli objemové roztažnosti β = {beta} · 10⁻⁴ K⁻¹ se ohřeje o Δt = {dT} K. O kolik se zvětší její objem ΔV (v cm³)?", h: "ΔV = V₀·β·Δt.", e: "ΔV = {V0} · {beta}·10⁻⁴ · {dT} = {res} cm³." },
+                fr: { q: "Un liquide de volume V₀ = {V0} cm³ et de coefficient de dilatation volumique β = {beta} · 10⁻⁴ K⁻¹ est chauffé de Δt = {dT} K. De combien augmente son volume ΔV (en cm³) ?", h: "ΔV = V₀·β·Δt.", e: "ΔV = {V0} · {beta}·10⁻⁴ · {dT} = {res} cm³." },
+                params: () => { const V0 = randChoice([1,2,5,10,20]); const beta = randChoice([2.1,7,11,18.2]); const dT = randChoice([10,20,30,50]); return { V0, beta, dT }; },
+                solve: (p) => { const res = p.V0*(p.beta*1e-4)*p.dT; return { res, unit: 'cm³', correct: fmt(res) + ' cm³' }; } },
+            { id: 'm5', type: 'math',
+                cs: { q: "Vzduchová bublina o vnitřním poloměru R = {R} μm je v kapalině s povrchovým napětím σ = {sigma} mN/m. Jaký je kapilární tlak p<sub>k</sub> (v kPa)?", h: "p<sub>k</sub> = 2σ/R (pozor na převod μm na m).", e: "p<sub>k</sub> = 2·{sigma}·10⁻³ ÷ ({R}·10⁻⁶) = {res} kPa." },
+                fr: { q: "Une bulle d'air de rayon intérieur R = {R} μm se trouve dans un liquide de tension superficielle σ = {sigma} mN/m. Quelle est la pression capillaire p<sub>k</sub> (en kPa) ?", h: "p<sub>k</sub> = 2σ/R (attention à convertir μm en m).", e: "p<sub>k</sub> = 2·{sigma}·10⁻³ ÷ ({R}·10⁻⁶) = {res} kPa." },
+                params: () => { const sigma = randChoice([25,50,73,90]); const R = randChoice([0.5,1,2,5,10]); return { sigma, R }; },
+                solve: (p) => { const res = (2*(p.sigma*1e-3))/(p.R*1e-6)/1000; return { res, unit: 'kPa', correct: fmt(res) + ' kPa' }; } },
+            { id: 'm6', type: 'math',
+                cs: { q: "Povrch kapaliny se zvětší o ΔS = {dS} cm² (povrchové napětí σ = {sigma} mN/m). Jaká je změna povrchové energie ΔE<sub>S</sub> (v μJ)?", h: "ΔE<sub>S</sub> = σ·ΔS (pozor na převod cm² na m²).", e: "ΔE<sub>S</sub> = {sigma}·10⁻³ · {dS}·10⁻⁴ = {res} μJ." },
+                fr: { q: "La surface d'un liquide augmente de ΔS = {dS} cm² (tension superficielle σ = {sigma} mN/m). Quelle est la variation de l'énergie superficielle ΔE<sub>S</sub> (en μJ) ?", h: "ΔE<sub>S</sub> = σ·ΔS (attention à convertir cm² en m²).", e: "ΔE<sub>S</sub> = {sigma}·10⁻³ · {dS}·10⁻⁴ = {res} μJ." },
+                params: () => { const sigma = randChoice([25,50,73,90]); const dS = randChoice([1,2,5,10,20]); return { sigma, dS }; },
+                solve: (p) => { const res = (p.sigma*1e-3)*(p.dS*1e-4)*1e6; return { res, unit: 'μJ', correct: fmt(res) + ' μJ' }; } },
+            { id: 'm7', type: 'math',
+                cs: { q: "Mýdlová blána (σ = {sigma} mN/m) je napjatá v rámu s pohyblivou tyčkou o délce l = {l} cm. Jakou maximální hmotnost m (v gramech) lze na tyčku zavěsit? (blána má dvě plochy)", h: "F = σl na každé ploše; F<sub>G</sub> = 2F = mg.", e: "F = {sigma}·10⁻³ · {l}·10⁻² N; F<sub>G</sub> = 2F; m = F<sub>G</sub>/g = {res} g." },
+                fr: { q: "Une pellicule de savon (σ = {sigma} mN/m) est tendue dans un cadre avec une tige mobile de longueur l = {l} cm. Quelle masse maximale m (en grammes) peut-on suspendre à la tige ? (la pellicule a deux faces)", h: "F = σl sur chaque face ; F<sub>G</sub> = 2F = mg.", e: "F = {sigma}·10⁻³ · {l}·10⁻² N ; F<sub>G</sub> = 2F ; m = F<sub>G</sub>/g = {res} g." },
+                params: () => { const sigma = randChoice([20,25,30,50,73]); const l = randChoice([2,4,5,8,10]); return { sigma, l }; },
+                solve: (p) => { const F = (p.sigma*1e-3)*(p.l/100); const res = (2*F/9.81)*1000; return { res, unit: 'g', correct: fmt(res) + ' g' }; } },
+            { id: 'm8', type: 'math',
+                cs: { q: "Kapka vody odkapává z trubice o vnitřním poloměru r = {r} mm (σ = {sigma} mN/m). Jaká je hmotnost m (v mg) kapky ve chvíli odtržení? (F<sub>G</sub> = F = σ·2πr)", h: "Kapka se utrhne, když tíha F<sub>G</sub> = mg dosáhne povrchové síly F = σ·2πr po celém obvodu trubice.", e: "F = {sigma}·10⁻³ · 2π · {r}·10⁻³ N; m = F/g = {res} mg." },
+                fr: { q: "Une goutte d'eau s'égoutte d'un tube de rayon intérieur r = {r} mm (σ = {sigma} mN/m). Quelle est la masse m (en mg) de la goutte au moment où elle se détache ? (F<sub>G</sub> = F = σ·2πr)", h: "La goutte se détache lorsque son poids F<sub>G</sub> = mg atteint la force superficielle F = σ·2πr sur toute la circonférence du tube.", e: "F = {sigma}·10⁻³ · 2π · {r}·10⁻³ N ; m = F/g = {res} mg." },
+                params: () => { const sigma = randChoice([25,30,50,73,90]); const r = randChoice([0.5,1.0,1.5,2.0]); return { sigma, r }; },
+                solve: (p) => { const F = (p.sigma*1e-3)*2*Math.PI*(p.r*1e-3); const res = (F/9.81)*1e6; return { res, unit: 'mg', correct: fmt(res) + ' mg' }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<N_THEORY; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<N_MATH; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(sol[k] !== undefined ? sol[k] : p[k]));
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    obj.o = [sol.correct, mk(val*2), mk(val/2), mk(val*10)];
+                };
+                inject(q); inject(tr);
+            }
+
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-blue-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-blue-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Vlastnosti kapalin i francouzština ti jdou skvěle.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat vzorce pro povrchové napětí a kapilaritu.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat – zaměř se na povrchovou sílu, kapilární tlak a jejich vzorce.";
+                overallIcon = "🔍";
+            }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako povrchová vrstva, meniskus či anomálie vody.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si sféru molekulového působení, smáčení a tvar menisku.");
+            if (mathPercent >= 70) strengths.push("Výpočty s povrchovým napětím a kapilaritou ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si vzorce F=σl, p<sub>k</sub>=2σ/R, h=2σ/(ρgR) a V=V₀(1+βΔt).");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní vztahy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování povrchového napětí, povrchové síly a kapilárního tlaku – projdi si příručku a vzorové příklady.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o pevných látkách.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení vzorců pro kapaliny.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek ve francouzštině)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

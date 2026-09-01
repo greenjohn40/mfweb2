@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktura a vlastnosti kapalin – Rozcestník</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        .mindmap-container {
+            position: relative;
+            min-height: 800px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        .node {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+        .node:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+        }
+        .pos-5:hover {
+            transform: translateX(-50%) scale(1.05);
+        }
+        .central-node {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 50%;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 15px -3px rgba(29,78,216,0.4);
+            z-index: 20;
+        }
+        .category-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            color: #64748b;
+        }
+        .link-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1rem;
+            width: 240px;
+            text-decoration: none;
+            color: #1e293b;
+        }
+        .line-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .connector {
+            stroke: #cbd5e1;
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 5;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+        .flag { display: inline-block; margin-right: 0.5rem; }
+
+        /* Desktop positions – 5 uzlů */
+        @media (min-width: 1024px) {
+            .pos-1 { position: absolute; top: 10%; left: 15%; }
+            .pos-2 { position: absolute; top: 10%; right: 15%; }
+            .pos-3 { position: absolute; top: 40%; left: 5%; }
+            .pos-4 { position: absolute; top: 40%; right: 5%; }
+            .pos-5 { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); }
+        }
+        /* Mobile layout */
+        @media (max-width: 1023px) {
+            .mindmap-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .central-node {
+                margin-bottom: 3rem;
+                width: 180px;
+                height: 180px;
+            }
+            .pos-1, .pos-2, .pos-3, .pos-4, .pos-5 {
+                position: static !important;
+                margin-bottom: 1rem;
+                transform: none !important;
+            }
+            .pos-5:hover {
+                transform: scale(1.05) !important;
+            }
+            .line-svg { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="max-w-7xl mx-auto px-4 py-12">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl font-extrabold text-slate-900 mb-4">Struktura a vlastnosti kapalin</h1>
+        <p class="text-lg text-slate-600">Interaktivní rozcestník studijních materiálů (CZ/FR)</p>
+    </header>
+
+    <div class="mindmap-container" id="mindmap">
+        <!-- SVG čáry -->
+        <svg class="line-svg" id="svg-canvas"></svg>
+
+        <!-- Centrální uzel -->
+        <div class="central-node shadow-2xl" id="center">
+            <div>STRUKTURA<br>KAPALIN</div>
+        </div>
+
+        <!-- 1. Interaktivní grafický přehled (CZ/FR) -->
+        <a href="teorie-liquides.html" target="_blank" class="node link-card pos-1" data-node="1">
+            <div class="category-label">Vizuální přehled</div>
+            <div class="font-bold"><span class="flag">🇨🇿/🇫🇷</span>Interaktivní přehled (CZ/FR)</div>
+            <div class="text-xs mt-2 text-blue-700">Otevřít materiál →</div>
+        </a>
+
+        <!-- 2. Studijní příručka (CZ/FR) -->
+        <a href="prirucka-liquides.html" target="_blank" class="node link-card pos-2" data-node="2">
+            <div class="category-label">Studijní text</div>
+            <div class="font-bold"><span class="flag">🇨🇿/🇫🇷</span>Příručka (CZ/FR)</div>
+            <div class="text-xs mt-2 text-blue-700">Číst více →</div>
+        </a>
+
+        <!-- 3. Bilingvní kartičky -->
+        <a href="karticky-liquides.html" target="_blank" class="node link-card pos-3" data-node="3">
+            <div class="category-label">Procvičování</div>
+            <div class="font-bold"><span class="flag">🇨🇿/🇫🇷</span>Bilingvní kartičky</div>
+            <div class="text-xs mt-2 text-blue-700">Spustit Flashcards →</div>
+        </a>
+
+        <!-- 4. Úlohy s překladem -->
+        <a href="ulohy-liquides.html" target="_blank" class="node link-card pos-4" data-node="4">
+            <div class="category-label">Aplikace</div>
+            <div class="font-bold">Úlohy s překladem</div>
+            <div class="text-xs mt-1 text-slate-500">FR ↔ CZ, povrchové napětí a kapilarita</div>
+            <div class="text-xs mt-2 text-blue-700">Řešit úlohy →</div>
+        </a>
+
+        <!-- 5. Interaktivní test -->
+        <a href="test-liquides.html" target="_blank" class="node link-card pos-5 border-blue-200 bg-blue-50" data-node="5">
+            <div class="category-label text-blue-600">Evaluace</div>
+            <div class="font-bold">Interaktivní test</div>
+            <div class="text-xs mt-1 text-slate-500">CLIL: fyzika + francouzština, s analýzou výkonu</div>
+            <div class="text-xs mt-2 text-blue-700">Zahájit test →</div>
+        </a>
+    </div>
+
+    <footer class="mt-20 pt-8 border-t border-slate-200 text-center text-slate-500 text-sm">
+        Metodický materiál pro výuku fyziky a CLIL.
+    </footer>
+</div>
+
+<script>
+    function drawConnections() {
+        if (window.innerWidth < 1024) return;
+        const svg = document.getElementById('svg-canvas');
+        const center = document.getElementById('center');
+        const nodes = document.querySelectorAll('.node');
+        const containerRect = document.getElementById('mindmap').getBoundingClientRect();
+        const centerRect = center.getBoundingClientRect();
+        const centerX = centerRect.left + centerRect.width / 2 - containerRect.left;
+        const centerY = centerRect.top + centerRect.height / 2 - containerRect.top;
+        svg.innerHTML = '';
+        nodes.forEach(node => {
+            const nodeRect = node.getBoundingClientRect();
+            const nodeX = nodeRect.left + nodeRect.width / 2 - containerRect.left;
+            const nodeY = nodeRect.top + nodeRect.height / 2 - containerRect.top;
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const midX = (centerX + nodeX) / 2;
+            path.setAttribute("d", `M ${centerX} ${centerY} Q ${midX} ${centerY} ${nodeX} ${nodeY}`);
+            path.setAttribute("class", "connector");
+            svg.appendChild(path);
+        });
+    }
+    window.addEventListener('load', drawConnections);
+    window.addEventListener('resize', drawConnections);
+</script>
+
+</body>
+</html>

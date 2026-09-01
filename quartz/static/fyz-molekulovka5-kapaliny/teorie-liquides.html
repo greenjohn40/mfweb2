@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Struktura a vlastnosti kapalin / Structure et propriétés des liquides</title>
+<script src="https://cdn.tailwindcss.com/"></script>
+<style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #cbd5e1; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #2563eb; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #dc2626; }
+    @media (max-width: 640px) {
+        .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; }
+    }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .badge { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.05em; padding:2px 10px; border-radius:9999px; }
+    figure.photo { margin:0; }
+    figure.photo img { border-radius:.75rem; border:1px solid #e2e8f0; width:100%; object-fit:cover; background:#0f172a; }
+    .photo-cap { font-size:.8rem; color:#64748b; margin-top:.4rem; text-align:center; }
+    .formula-box { font-family: 'Cambria Math', Georgia, serif; }
+    .diagram-box svg { max-width: 100%; height: auto; }
+</style>
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-blue-800 to-indigo-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-blue-200 text-sm font-semibold tracking-wider uppercase">
+            <span>💧 Molekulová fyzika a termika</span><span>•</span><span>Část 2.3</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Struktura a vlastnosti kapalin</h1>
+        <p class="text-lg md:text-xl text-blue-50 max-w-3xl leading-relaxed">
+            Povrchová vrstva, povrchová energie a napětí, povrchová síla, jevy na rozhraní kapalina–pevná látka, kapilarita a teplotní objemová roztažnost kapalin.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('cz-povrchova')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Povrchová vrstva</span>
+        <span onclick="scrollToId('cz-energie')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Povrchová energie</span>
+        <span onclick="scrollToId('cz-sila')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Povrchová síla</span>
+        <span onclick="scrollToId('cz-smaceni')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Smáčení, meniskus</span>
+        <span onclick="scrollToId('cz-kapilarita')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Kapilarita</span>
+        <span onclick="scrollToId('cz-roztaznost')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Teplotní roztažnost</span>
+        <span onclick="scrollToId('cz-tenzidy')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Tenzidy</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- POVRCHOVÁ VRSTVA -->
+    <section id="cz-povrchova" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Povrchová vrstva kapalin</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-4"><strong>Pokusy:</strong> volná hladina kapaliny se chová jako pružná (elastická) blána.</p>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <figure class="photo"><img src="images-liquides/paperclips_water_surface.jpg" alt="Kancelářské sponky na hladině vody"><figcaption class="photo-cap">Drobné předměty (sponky) položené na hladinu vody v plné nádobě.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/water_strider.jpg" alt="Bruslařka na hladině vody"><figcaption class="photo-cap">Bruslařka (vodní hmyz) nebo lehká mince se udrží na volné hladině.</figcaption></figure>
+            </div>
+            <p class="text-slate-600 text-sm">Povrch kapaliny se chová, jako by byl pokryt tenkou napjatou blánou.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Sféra molekulového působení</h3>
+            <p class="text-slate-700 mb-4">Molekuly kapaliny na sebe navzájem působí přitažlivými silami, jejichž velikost s rostoucí vzdáleností klesá — od jisté vzdálenosti jsou tyto síly zanedbatelné. Tato vzdálenost se nazývá <strong>poloměr molekulového působení</strong> $r_m$ (řádově $r_m \approx 10^{-9}\,\text{m} = 1\,\text{nm}$) a kulová oblast o tomto poloměru se nazývá <strong>sféra molekulového působení</strong>.</p>
+            <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="640" height="220" fill="#eff6ff" rx="12"/>
+                <rect x="20" y="20" width="600" height="150" fill="#bfdbfe" opacity="0.5"/>
+                <line x1="20" y1="20" x2="620" y2="20" stroke="#1e3a8a" stroke-width="2"/>
+                <text x="30" y="45" font-size="15" fill="#1e3a8a" font-weight="bold">volná hladina</text>
+                <circle cx="200" cy="110" r="45" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="4"/>
+                <circle cx="200" cy="110" r="5" fill="#1e3a8a"/>
+                <text x="185" y="167" font-size="13" fill="#1e3a8a">molekula uvnitř</text>
+                <g stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrow)">
+                    <line x1="200" y1="110" x2="230" y2="80"/>
+                    <line x1="200" y1="110" x2="170" y2="80"/>
+                    <line x1="200" y1="110" x2="230" y2="140"/>
+                    <line x1="200" y1="110" x2="170" y2="140"/>
+                    <line x1="200" y1="110" x2="245" y2="110"/>
+                    <line x1="200" y1="110" x2="155" y2="110"/>
+                </g>
+                <text x="140" y="200" font-size="13" fill="#334155">výslednice sil = 0</text>
+
+                <circle cx="430" cy="45" r="45" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/>
+                <circle cx="430" cy="45" r="5" fill="#b91c1c"/>
+                <g stroke="#b91c1c" stroke-width="2" marker-end="url(#arrow2)">
+                    <line x1="430" y1="45" x2="460" y2="20"/>
+                    <line x1="430" y1="45" x2="400" y2="20"/>
+                    <line x1="430" y1="45" x2="460" y2="65"/>
+                    <line x1="430" y1="45" x2="400" y2="65"/>
+                </g>
+                <line x1="430" y1="45" x2="430" y2="115" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrow2)"/>
+                <text x="440" y="130" font-size="13" fill="#b91c1c" font-weight="bold">Fv</text>
+                <text x="470" y="30" font-size="13" fill="#334155">molekula blíž</text>
+                <text x="470" y="46" font-size="13" fill="#334155">než rm od hladiny</text>
+                <defs>
+                    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1e3a8a"/></marker>
+                    <marker id="arrow2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#b91c1c"/></marker>
+                </defs>
+            </svg>
+            <p class="text-slate-600 text-sm mt-3">Je-li sféra molekulového působení dané molekuly celá uvnitř kapaliny, jsou přitažlivé síly od okolních molekul rozloženy souměrně a jejich výslednice je nulová. Je-li molekula blíže k volné hladině než $r_m$, sféra zasahuje i do vzduchu (kde je molekul mnohem méně), a proto výsledná síla $\vec F_V$ na tuto molekulu <strong>není nulová</strong> — směřuje kolmo k volné hladině <strong>dovnitř kapaliny</strong>.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Povrchová vrstva</h3>
+            <p class="text-slate-700 mb-3"><strong>Povrchová vrstva</strong> kapaliny je tvořena molekulami, jejichž vzdálenost od volné hladiny je menší než $r_m$. Každá molekula v této vrstvě je přitahována výslednou silou $\vec F_V$ směřující do kapaliny.</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-3">tloušťka povrchové vrstvy $\approx r_m \approx 10^{-9}\,\text{m}$</p>
+        </div>
+    </section>
+
+    <!-- POVRCHOVÁ ENERGIE -->
+    <section id="cz-energie" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Povrchová energie a povrchové napětí</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3">Přemístíme-li molekulu z nitra kapaliny do povrchové vrstvy, musíme vykonat práci proti síle $\vec F_V$ (ta míří opačně, tedy dovnitř kapaliny). Molekuly v povrchové vrstvě proto mají oproti molekulám uvnitř kapaliny <strong>větší potenciální energii</strong>.</p>
+            <p class="text-slate-700"><strong>Povrchová energie</strong> $E_S$ je energie povrchové vrstvy kapaliny — je součástí celkové vnitřní energie kapaliny.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Povrchové napětí σ</h3>
+            <p class="text-slate-700 mb-3">Uvažujme kapalinu téhož objemu v různých nádobách — velikost volné hladiny (povrchu) $S$ může být v každé nádobě jiná, a tedy i povrchová energie $E_S$ je jiná. Platí</p>
+            <p class="text-center formula-box text-2xl bg-blue-100 rounded-xl py-4 mb-4">$\Delta E_S = \sigma \cdot \Delta S$</p>
+            <p class="text-slate-700 mb-2">kde $\sigma$ je <strong>povrchové napětí</strong> — závisí na druhu kapaliny, na okolním prostředí (s jakou látkou kapalina sousedí) a na teplotě (s rostoucí teplotou povrchové napětí klesá).</p>
+            <p class="text-slate-600 text-sm">Jednotka: $[\sigma] = \text{N}\cdot\text{m}^{-1} = \text{J}\cdot\text{m}^{-2}$ (energie na jednotku plochy).</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Orientační hodnoty povrchového napětí (pokojová teplota)</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Kapalina (rozhraní se vzduchem)</th><th class="py-2">σ (mN·m⁻¹)</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">voda (20 °C)</td><td>≈ 73</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">rtuť (20 °C)</td><td>≈ 486</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">ethanol (líh)</td><td>≈ 22</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">mýdlový roztok</td><td>≈ 25–30</td></tr>
+                    <tr><td class="py-1.5 pr-4">olej (rostlinný)</td><td>≈ 32</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p class="text-slate-500 text-xs mt-2 italic">Hodnoty jsou přibližné a slouží k porovnání řádů veličin.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Kapalina směřuje k minimální povrchové energii</h3>
+            <p class="text-slate-700 mb-4">Kapalina se snaží zmenšit svůj povrch na nejmenší možnou velikost, což odpovídá minimální povrchové energii. Proto volné kapky (mlha, rosa, kapky deště) mají <strong>kulový tvar</strong> — koule má ze všech těles daného objemu nejmenší povrch.</p>
+            <div class="grid sm:grid-cols-3 gap-4">
+                <figure class="photo"><img src="images-liquides/water_drop_splash.jpg" alt="Kapka vody po dopadu"><figcaption class="photo-cap">Kapka se i po nárazu vrací ke kulovému tvaru.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/water_drop_forming.jpg" alt="Tvořící se kapka vody"><figcaption class="photo-cap">Kapka odkapávající z trubice.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/water_drop_leaf.jpg" alt="Kapka na listu"><figcaption class="photo-cap">Kapka rosy na listu.</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+            <p class="font-semibold text-amber-900 mb-2">Řešený příklad:</p>
+            <p class="text-slate-700 text-sm mb-2">Drobné kapičky mlhy o poloměru $r = 2{,}0\ \mu\text{m}$ splynou v jedinou kapku o poloměru $R = 2{,}0\,\text{mm}$. Určete změnu povrchové energie. ($\sigma = 73\,\text{mN}\cdot\text{m}^{-1}$)</p>
+            <p class="text-slate-600 text-sm">Řešení: Nejprve určíme, kolik malých kapiček tvoří jednu velkou kapku. Uvědomíme si, že objem všech malých kapek (jejich počet označíme $n$) je roven objemu velké kapky. Objem $n$ malých kapiček je $n\cdot \frac{4}{3}\pi r^3$, objem velké kapky je $\frac{4}{3}\pi R^3$.<br>
+            Z rovnosti objemů (po vykrácení $\frac{4}{3}\pi$) plyne $n r^3 = R^3$, z čehož vychází $n = (R/r)^3 = 10^9$ kapiček (jedna miliarda). <br>
+            Dále určíme změnu povrchové energie podle vztahu $\Delta E_S = \sigma \Delta S$, kde $\Delta S$ je rozdíl povrchu všech malých kapiček a jedné velké kapky. Celkový povrch $n$ malých kapiček je $n\cdot 4\pi r^2$, povrch velké kapky je $4\pi R^2$. Takže:<br>
+            $\Delta E_S = \sigma(4\pi R^2 - n\cdot4\pi r^2) \approx -3{,}7\,\text{mJ}$ — povrchová energie se <strong>zmenší</strong> (uvolní se jako teplo), protože jedna velká kapka má mnohem menší celkový povrch než miliarda drobných kapiček stejného celkového objemu.</p>
+        </div>
+    </section>
+
+    <!-- POVRCHOVÁ SÍLA -->
+    <section id="cz-sila" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Povrchová síla</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <p class="text-slate-700 mb-4">Mýdlová blána napnutá v drátěném rámu s pohyblivou tyčkou se snaží zmenšit svůj povrch a posouvá tyčku dovnitř rámu. Na tyčku působí <strong>povrchová síla</strong> $\vec F$, kolmá na tyčku a tečná k povrchu blány.</p>
+            <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="320" height="260" fill="#eff6ff" rx="12"/>
+                <rect x="70" y="30" width="140" height="170" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+                <line x1="70" y1="30" x2="70" y2="200" stroke="#1e3a8a" stroke-width="4"/>
+                <line x1="210" y1="30" x2="210" y2="200" stroke="#1e3a8a" stroke-width="4"/>
+                <line x1="70" y1="200" x2="210" y2="200" stroke="#334155" stroke-width="5"/>
+                <circle cx="70" cy="200" r="4" fill="#334155"/>
+                <circle cx="210" cy="200" r="4" fill="#334155"/>
+                <line x1="140" y1="200" x2="140" y2="150" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrowF)"/>
+                <text x="150" y="165" font-size="16" fill="#b91c1c" font-weight="bold">F</text>
+                <text x="90" y="20" font-size="13" fill="#334155">pohyblivá tyčka (délka l)</text>
+                <defs><marker id="arrowF" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#b91c1c"/></marker></defs>
+            </svg>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Odvození vzorce pro povrchovou sílu</h3>
+            <p class="text-slate-700 mb-3">Zavěsíme-li na tyčku (délky $l$) závaží o tíze $F_G$, blána má <strong>dva povrchy</strong> (přední a zadní), takže v rovnováze:</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-3 mb-4">$2F = F_G \;\Rightarrow\; F = \dfrac{F_G}{2}$</p>
+            <p class="text-slate-700 mb-3">Posuneme-li tyčku o $\Delta x$, vykonaná práce $W = 2F\Delta x$ se rovná přírůstku povrchové energie obou ploch blány $\Delta E_S = \sigma \cdot 2l\Delta x$:</p>
+            <p class="text-center formula-box text-lg bg-slate-100 rounded-lg py-3 mb-3">$2F\Delta x = \sigma \cdot 2l\Delta x$</p>
+            <p class="text-center formula-box text-2xl bg-blue-100 rounded-xl py-4 mb-3">$F = \sigma l$</p>
+            <p class="text-slate-700">Povrchová síla je tedy přímo úměrná délce $l$ hranice, podél které povrch působí. Odtud plyne i definiční vztah pro povrchové napětí:</p>
+            <p class="text-center formula-box text-xl bg-cyan-100 rounded-xl py-3 mt-3">$\sigma = \dfrac{F}{l}$</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Pokusy s mýdlovou blánou</h3>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <figure class="photo"><img src="images-liquides/soap_film_thread.jpg" alt="Tenká nit na mýdlové blaně"><figcaption class="photo-cap">Tenká nit volně položená na mýdlové blaně (blána je na obou stranách nitě).</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/soap_film_loop_circle.jpg" alt="Kruhová smyčka po protržení blány"><figcaption class="photo-cap">Po protržení blány uvnitř smyčky se nit napne do kruhového tvaru.</figcaption></figure>
+            </div>
+            <p class="text-slate-700 text-sm">Dokud je blána vně i uvnitř smyčky, síly na nit z obou stran se navzájem vyruší a nit zůstává volná. Protrhneme-li blánu uvnitř smyčky, působí na nit už jen povrchová síla vnější blány — ta se smršťuje a táhne nit do tvaru, který uzavírá největší možnou plochu při daném obvodu, tedy do <strong>kružnice</strong>.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Odkapávání z kapiláry</h3>
+            <div class="grid md:grid-cols-[1fr_200px] gap-4 items-center">
+                <p class="text-slate-700 text-sm">Tíha rostoucí kapky se postupně zvětšuje, zatímco povrchová síla, která kapku drží na okraji trubice, je úměrná obvodu kapiláry ($F=\sigma l = \sigma\cdot 2\pi r$) a zůstává přibližně stejná. Kapka se utrhne ve chvíli, kdy tíha $F_G$ překoná tuto sílu.</p>
+                <figure class="photo"><img src="images-liquides/water_drop_forming.jpg" alt="Odkapávající kapka z trubice"></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- SMÁČENÍ, MENISKUS -->
+    <section id="cz-smaceni" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Jevy na rozhraní kapalina – pevná látka</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">V blízkosti stěny nádoby (kde se stýká kapalina, pevná látka a vzduch) je volná hladina zakřivená.</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-liquides/meniscus_water_glass.jpg" alt="Konkávní meniskus voda–sklo"><figcaption class="photo-cap"><strong>Voda – sklo:</strong> hladina je konkávní (dutá) — voda smáčí stěny.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/meniscus_mercury_glass.jpg" alt="Konvexní meniskus rtuť–sklo"><figcaption class="photo-cap"><strong>Rtuť – sklo:</strong> hladina je konvexní (vypuklá) — rtuť stěny nesmáčí.</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Síly na molekulu na rozhraní kapalina – stěna – vzduch</h3>
+            <p class="text-slate-700 mb-4">Na molekulu kapaliny u stěny působí: $\vec F_1$ – výslednice sil od kapaliny, $\vec F_2$ – výslednice sil od stěny, $\vec F_3$ – výslednice sil od vzduchu, $\vec F_G$ – tíha molekuly. Protože $F_1, F_2 \gg F_G, F_3$, síly $F_G$ a $F_3$ zanedbáme. Výsledná síla $\vec F_V = \vec F_1 + \vec F_2$ musí být v rovnováze kolmá k volné hladině — tato podmínka určuje, zda je hladina konkávní, nebo konvexní.</p>
+            <div class="grid sm:grid-cols-2 gap-6">
+                <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="260" height="220" fill="#eff6ff" rx="12"/>
+                    <line x1="60" y1="10" x2="60" y2="210" stroke="#1e3a8a" stroke-width="4"/>
+                    <path d="M 60 90 Q 100 60 240 60" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                    <path d="M 60 90 Q 100 60 240 60 L 240 210 L 60 210 Z" fill="#bfdbfe" opacity="0.6"/>
+                    <circle cx="65" cy="88" r="5" fill="#b91c1c"/>
+                    <line x1="65" y1="88" x2="30" y2="120" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#a3)"/>
+                    <text x="10" y="140" font-size="13" fill="#b91c1c" font-weight="bold">Fv</text>
+                    <text x="80" y="30" font-size="13" fill="#334155">konkávní (voda)</text>
+                    <defs><marker id="a3" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#b91c1c"/></marker></defs>
+                </svg>
+                <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="260" height="220" fill="#eff6ff" rx="12"/>
+                    <line x1="60" y1="10" x2="60" y2="210" stroke="#1e3a8a" stroke-width="4"/>
+                    <path d="M 60 60 Q 100 100 240 100" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                    <path d="M 60 60 Q 100 100 240 100 L 240 210 L 60 210 Z" fill="#94a3b8" opacity="0.6"/>
+                    <circle cx="66" cy="65" r="5" fill="#b91c1c"/>
+                    <line x1="66" y1="65" x2="105" y2="95" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#a4)"/>
+                    <text x="105" y="120" font-size="13" fill="#b91c1c" font-weight="bold">Fv</text>
+                    <text x="80" y="30" font-size="13" fill="#334155">konvexní (rtuť)</text>
+                    <defs><marker id="a4" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#b91c1c"/></marker></defs>
+                </svg>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Úhel smáčení (styčný úhel) ϑ</h3>
+            <p class="text-slate-700 mb-3"><strong>Úhel smáčení</strong> $\vartheta$ je úhel mezi povrchem kapaliny a stěnou nádoby v místě jejich styku.</p>
+            <div class="grid sm:grid-cols-2 gap-4 text-center formula-box">
+                <p class="bg-emerald-100 rounded-lg py-3">$0 \le \vartheta < \dfrac{\pi}{2}$<br><span class="text-sm font-sans">kapalina smáčí stěny, hladina konkávní</span></p>
+                <p class="bg-orange-100 rounded-lg py-3">$\dfrac{\pi}{2} < \vartheta \le \pi$<br><span class="text-sm font-sans">kapalina nesmáčí stěny, hladina konvexní</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- KAPILARITA -->
+    <section id="cz-kapilarita" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Kapilarita</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">V úzké trubici (kapiláře) je zakřivení volné hladiny výraznější než v široké nádobě, a proto se v kapiláře projeví výsledná síla $\vec F_V$ znatelnou <strong>kapilární výškou</strong> hladiny.</p>
+            <ul class="list-disc ml-6 text-slate-700 space-y-1">
+                <li>Kapalina, která <strong>smáčí</strong> stěny kapiláry (např. voda ve skle), v ní <strong>vystoupá</strong> nad volnou hladinu v širší nádobě.</li>
+                <li>Kapalina, která stěny <strong>nesmáčí</strong> (např. rtuť ve skle), v kapiláře <strong>klesne</strong> pod volnou hladinu.</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Kapilární tlak</h3>
+            <p class="text-slate-700 mb-3">Zakřivený povrch kapaliny v kapiláře vyvolává tzv. <strong>kapilární tlak</strong> $p_k$, který je přímo úměrný povrchovému napětí a nepřímo úměrný vnitřnímu poloměru $R$ kapiláry (resp. poloměru křivosti menisku):</p>
+            <p class="text-center formula-box text-2xl bg-blue-100 rounded-xl py-4 mb-2">$p_k = \dfrac{2\sigma}{R}$</p>
+            <figure class="photo max-w-xs mx-auto mt-4"><img src="images-liquides/capillary_pressure_h2o_hg.png" alt="Kapilární tlak - voda a rtuť v trubicích"></figure>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Výška kapilárního vzestupu / poklesu</h3>
+            <p class="text-slate-700 mb-3">Výška $h$ se ustálí, jakmile se kapilární tlak vyrovná s hydrostatickým tlakem sloupce kapaliny $p_h=\rho g h$:</p>
+            <p class="text-center formula-box bg-slate-100 rounded-lg py-2 mb-2">$p_k = p_h \;\Rightarrow\; \dfrac{2\sigma}{R} = \rho g h$</p>
+            <p class="text-center formula-box text-2xl bg-cyan-100 rounded-xl py-4 mb-3">$h = \dfrac{2\sigma}{\rho g R}$</p>
+            <p class="text-slate-700">Výška $h$ je <strong>nepřímo úměrná</strong> vnitřnímu poloměru trubice $R$ — čím tenčí kapilára, tím vyšší (nebo hlubší) vzestup.</p>
+            <figure class="photo max-w-md mx-auto mt-4"><img src="images-liquides/capillary_tubes_diameters.jpg" alt="Kapilární vzestup v trubicích různého průměru"><figcaption class="photo-cap">Čím užší trubice, tím vyšší vzestup vody nad hladinu v širší nádobě.</figcaption></figure>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5 mb-6">
+            <p class="font-semibold text-amber-900 mb-2">Řešené příklady:</p>
+            <p class="text-slate-700 text-sm mb-1"><strong>a)</strong> Jaký je vnitřní průměr kapiláry, vystoupí-li v ní voda do výšky $h=2{,}0\,\text{cm}$ nad hladinu v širší nádobě? ($\sigma=73\,\text{mN}\cdot\text{m}^{-1}$)</p>
+            <p class="text-slate-600 text-sm mb-3">Řešení: $R=\dfrac{2\sigma}{\rho g h}\approx 0{,}74\,\text{mm} \Rightarrow d=2R\approx 1{,}5\,\text{mm}$.</p>
+            <p class="text-slate-700 text-sm mb-1"><strong>b)</strong> Jaký tlak má vzduch v kulové bublině o průměru $1\,\mu\text{m}$ v hloubce $5\,\text{m}$ pod hladinou vody při atmosférickém tlaku $1000\,\text{hPa}$?</p>
+            <p class="text-slate-600 text-sm">Řešení: $p = p_a + \rho g h_{hloubka} + \dfrac{2\sigma}{R} \approx 10^5 + 4{,}9\cdot10^4 + 2{,}92\cdot10^5 \approx 0{,}44\,\text{MPa}$. (U tak malé bublinky je kapilární tlak dominantní složkou!)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Kapilarita kolem nás</h3>
+            <p class="text-slate-700 mb-4">Vzlínání kapaliny v tenkých kanálcích a vláknech pozorujeme všude kolem nás: voda vzlíná do utěrky při utírání, do knotu petrolejové lampy, vlhkost vzlíná zdmi budov, kapaliny vzlínají vlásečnicemi (xylémem) rostlin od kořenů vzhůru.</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-liquides/capillary_damp_wall.jpg" alt="Vlhkost vzlínající ve zdi"><figcaption class="photo-cap">Vzlínající vlhkost u paty zdiva.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/capillary_plant_fibers.jpg" alt="Vlásečnicová vlákna rostliny (SEM)"><figcaption class="photo-cap">Vlásečnicová (kapilární) vlákna v rostlinném pletivu (snímek z elektronového mikroskopu).</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEPLOTNÍ ROZTAŽNOST -->
+    <section id="cz-roztaznost" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Teplotní objemová roztažnost kapalin</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Kapalina nemá stálý tvar, a proto u ní (na rozdíl od pevných látek) nemá smysl rozlišovat délkovou a objemovou roztažnost — sleduje se pouze <strong>objemová roztažnost</strong>. Naprostá většina kapalin se při zahřívání rozpíná.</p>
+            <p class="text-center formula-box text-2xl bg-blue-100 rounded-xl py-4 mb-3">$V = V_0(1 + \beta\, \Delta t)$</p>
+            <p class="text-slate-600 text-sm text-center">$V_0$ – počáteční objem &nbsp;|&nbsp; $\Delta t$ – změna teploty &nbsp;|&nbsp; $\beta$ – teplotní součinitel objemové roztažnosti ($\text{K}^{-1}$)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Orientační hodnoty součinitele β</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Kapalina</th><th class="py-2">β (K⁻¹)</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">voda (20 °C)</td><td>≈ 2,1 · 10⁻⁴</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">rtuť</td><td>≈ 1,82 · 10⁻⁴</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">ethanol (líh)</td><td>≈ 1,1 · 10⁻³</td></tr>
+                    <tr><td class="py-1.5 pr-4">olej</td><td>≈ 7 · 10⁻⁴</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p class="text-slate-500 text-xs mt-2 italic">Hodnoty jsou přibližné, ve skutečnosti mírně závisí na teplotě.</p>
+        </div>
+
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-rose-800 mb-3">Anomálie vody</h3>
+            <p class="text-slate-700 mb-3">Voda se chová výjimečně: v rozmezí teplot $0\,^\circ\text{C}$ až přibližně $3{,}98\,^\circ\text{C}$ (běžně se uvádí $4\,^\circ\text{C}$) se při zahřívání naopak <strong>smršťuje</strong> — teprve nad touto teplotou se chová „normálně“ a rozpíná se. Voda má tedy při $\approx 4\,^\circ\text{C}$ svou <strong>největší hustotu</strong>.</p>
+            <p class="text-slate-700 text-sm">Díky této anomálii led plave na hladině a v zimě rybníky a jezera nezamrzávají do dna — u dna zůstává voda o teplotě kolem $4\,^\circ\text{C}$ (nejhustší), zatímco led se tvoří na povrchu, což umožňuje přežití vodních organismů.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Využití: kapalinové teploměry</h3>
+            <p class="text-slate-700 mb-4">Rtuťové a lihové teploměry využívají toho, že objemová roztažnost kapaliny (rtuti, lihu) je mnohem větší než roztažnost skleněné nádobky — pozorovaný posun hladiny v trubici teploměru tak v podstatě odpovídá roztažnosti samotné kapaliny.</p>
+            <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                <p class="font-semibold text-amber-900 mb-2">Řešený příklad:</p>
+                <p class="text-slate-700 text-sm mb-2">Baňka lihového teploměru obsahuje $V_0 = 1{,}0\,\text{cm}^3$ ethanolu při $20\,^\circ\text{C}$. O kolik se zvětší jeho objem při ohřátí na $40\,^\circ\text{C}$? ($\beta \approx 1{,}1\cdot10^{-3}\,\text{K}^{-1}$)</p>
+                <p class="text-slate-600 text-sm">Řešení: $\Delta V = V_0\beta\Delta t = 1{,}0 \cdot 1{,}1\cdot10^{-3}\cdot 20 \approx 0{,}022\,\text{cm}^3$ — toto nepatrné zvětšení objemu v úzké trubici teploměru vyvolá dobře čitelný posun hladiny.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TENZIDY -->
+    <section id="cz-tenzidy" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Povrchově aktivní látky (tenzidy)</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <p class="text-slate-700 mb-4"><strong>Povrchově aktivní látky (tenzidy, surfaktanty)</strong> jsou látky, které při rozpuštění v kapalině výrazně <strong>snižují její povrchové napětí</strong>. Typickým příkladem jsou mýdla a saponáty (proto se ostatně mýdlová blána — s $\sigma \approx 25$–$30\,\text{mN/m}$ — snadno napíná a vydrží mnohem déle než blána z čisté vody, jejíž vysoké povrchové napětí ji naopak činí křehkou a nestabilní).</p>
+            <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="200" fill="#eff6ff" rx="12"/>
+    <rect x="0" y="60" width="640" height="140" fill="#bfdbfe" opacity="0.4"/>
+    <line x1="0" y1="60" x2="640" y2="60" stroke="#1d4ed8" stroke-width="2"/>
+    <text x="20" y="45" font-size="14" fill="#1e3a8a" font-weight="bold">vzduch</text>
+    <text x="20" y="150" font-size="14" fill="#1e3a8a" font-weight="bold">voda</text>
+    <g id="molecules">
+        <g transform="translate(100,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+        <g transform="translate(200,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+        <g transform="translate(300,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+        <g transform="translate(400,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+        <g transform="translate(500,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+    </g>
+    <text x="440" y="95" font-size="13" fill="#334155">| hydrofobní „ocas" (ve vzduchu)</text>
+    <text x="440" y="120" font-size="13" fill="#334155">● hydrofilní „hlava" (ve vodě)</text>
+</svg>
+            <p class="text-slate-600 text-sm mt-3">Molekula tenzidu má dvě odlišné části: <strong>hydrofilní („vodu milující“) hlavu</strong>, která se orientuje do vody, a <strong>hydrofobní („vodu odpuzující“) ocas</strong>, který se orientuje k vzduchu (nebo k tuku). Molekuly se proto hromadí na povrchu kapaliny a oslabují síly mezi molekulami vody v povrchové vrstvě, čímž snižují povrchové napětí σ.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Využití v praxi</h3>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                <li><strong>Mýdla a prací prostředky:</strong> nižší povrchové napětí umožňuje vodě lépe smáčet mastnotu a nečistoty, které se pak snáze odplavují.</li>
+                <li><strong>Plicní surfaktant:</strong> přirozená povrchově aktivní látka vystýlající plicní sklípky (alveoly) — snižuje jejich povrchové napětí a brání jejich zhroucení při výdechu; u předčasně narozených dětí s nedostatkem surfaktantu hrozí syndrom dechové tísně.</li>
+                <li><strong>Smáčedla v zemědělství a průmyslu:</strong> přidávají se do postřiků, aby kapky lépe pokryly povrch listů (zmenšením úhlu smáčení).</li>
+            </ul>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Vzdělávací modul z fyziky · Struktura a vlastnosti kapalin · dle podkladu „Physique moléculaire et thermique 2–3“</p>
+</footer>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-blue-800 to-indigo-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-blue-200 text-sm font-semibold tracking-wider uppercase">
+            <span>💧 Physique moléculaire et thermique</span><span>•</span><span>Partie 2.3</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Structure et propriétés des liquides</h1>
+        <p class="text-lg md:text-xl text-blue-50 max-w-3xl leading-relaxed">
+            Couche superficielle, énergie et tension superficielles, force superficielle, phénomènes à la frontière liquide–solide, capillarité et dilatation volumique thermique des liquides.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('fr-couche')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Couche superficielle</span>
+        <span onclick="scrollToId('fr-energie')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Énergie superficielle</span>
+        <span onclick="scrollToId('fr-force')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Force superficielle</span>
+        <span onclick="scrollToId('fr-mouillage')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Mouillage, ménisque</span>
+        <span onclick="scrollToId('fr-capillarite')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Capillarité</span>
+        <span onclick="scrollToId('fr-dilatation')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Dilatation thermique</span>
+        <span onclick="scrollToId('fr-tensioactifs')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Tensioactifs</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- COUCHE SUPERFICIELLE -->
+    <section id="fr-couche" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Couche superficielle des liquides</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-4"><strong>Expériences :</strong> la surface libre d'un liquide se comporte comme une membrane élastique.</p>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <figure class="photo"><img src="images-liquides/paperclips_water_surface.jpg" alt="Trombones sur la surface de l'eau"><figcaption class="photo-cap">De petits objets (trombones) posés sur la surface d'un vase plein d'eau.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/water_strider.jpg" alt="Gerris sur la surface de l'eau"><figcaption class="photo-cap">Un gerris (insecte aquatique) ou une petite pièce se maintient sur la surface libre.</figcaption></figure>
+            </div>
+            <p class="text-slate-600 text-sm">La surface du liquide se comporte comme si elle était recouverte d'une fine membrane tendue.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Sphère d'action moléculaire</h3>
+            <p class="text-slate-700 mb-4">Les molécules d'un liquide agissent l'une sur l'autre par des forces attractives dont la grandeur diminue avec la distance — à partir d'une certaine distance, ces forces sont négligeables. Cette distance s'appelle le <strong>rayon d'action moléculaire</strong> $r_m$ (de l'ordre de $r_m \approx 10^{-9}\,\text{m} = 1\,\text{nm}$), et la région sphérique de ce rayon s'appelle la <strong>sphère d'action moléculaire</strong>.</p>
+            <svg viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="640" height="220" fill="#eff6ff" rx="12"/>
+                <rect x="20" y="20" width="600" height="150" fill="#bfdbfe" opacity="0.5"/>
+                <line x1="20" y1="20" x2="620" y2="20" stroke="#1e3a8a" stroke-width="2"/>
+                <text x="30" y="45" font-size="15" fill="#1e3a8a" font-weight="bold">surface libre</text>
+                <circle cx="200" cy="110" r="45" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-dasharray="4"/>
+                <circle cx="200" cy="110" r="5" fill="#1e3a8a"/>
+                <text x="175" y="167" font-size="13" fill="#1e3a8a">molécule à l'intérieur</text>
+                <g stroke="#1e3a8a" stroke-width="2" marker-end="url(#arrowFr)">
+                    <line x1="200" y1="110" x2="230" y2="80"/>
+                    <line x1="200" y1="110" x2="170" y2="80"/>
+                    <line x1="200" y1="110" x2="230" y2="140"/>
+                    <line x1="200" y1="110" x2="170" y2="140"/>
+                    <line x1="200" y1="110" x2="245" y2="110"/>
+                    <line x1="200" y1="110" x2="155" y2="110"/>
+                </g>
+                <text x="130" y="200" font-size="13" fill="#334155">résultante des forces = 0</text>
+
+                <circle cx="430" cy="45" r="45" fill="none" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/>
+                <circle cx="430" cy="45" r="5" fill="#b91c1c"/>
+                <g stroke="#b91c1c" stroke-width="2" marker-end="url(#arrow2Fr)">
+                    <line x1="430" y1="45" x2="460" y2="20"/>
+                    <line x1="430" y1="45" x2="400" y2="20"/>
+                    <line x1="430" y1="45" x2="460" y2="65"/>
+                    <line x1="430" y1="45" x2="400" y2="65"/>
+                </g>
+                <line x1="430" y1="45" x2="430" y2="115" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrow2Fr)"/>
+                <text x="440" y="130" font-size="13" fill="#b91c1c" font-weight="bold">Fv</text>
+                <text x="470" y="30" font-size="13" fill="#334155">molécule plus proche</text>
+                <text x="470" y="46" font-size="13" fill="#334155">de la surface que rm</text>
+                <defs>
+                    <marker id="arrowFr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#1e3a8a"/></marker>
+                    <marker id="arrow2Fr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#b91c1c"/></marker>
+                </defs>
+            </svg>
+            <p class="text-slate-600 text-sm mt-3">Si la sphère d'action moléculaire d'une molécule donnée est entièrement à l'intérieur du liquide, les forces attractives des molécules voisines sont réparties symétriquement et leur résultante est nulle. Si la molécule est plus proche de la surface libre que $r_m$, la sphère déborde dans l'air (où il y a beaucoup moins de molécules), donc la force résultante $\vec F_V$ sur cette molécule <strong>n'est pas nulle</strong> — elle est perpendiculaire à la surface libre et orientée <strong>vers l'intérieur du liquide</strong>.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Couche superficielle</h3>
+            <p class="text-slate-700 mb-3">La <strong>couche superficielle</strong> d'un liquide est constituée des molécules dont la distance à la surface libre est inférieure à $r_m$. Chaque molécule de cette couche est attirée par une force résultante $\vec F_V$ orientée vers l'intérieur du liquide.</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-3">épaisseur de la couche superficielle $\approx r_m \approx 10^{-9}\,\text{m}$</p>
+        </div>
+    </section>
+
+    <!-- ÉNERGIE SUPERFICIELLE -->
+    <section id="fr-energie" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Énergie et tension superficielles</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3">Pour déplacer une molécule de l'intérieur du liquide vers la couche superficielle, il faut effectuer un travail contre la force $\vec F_V$ (dirigée en sens inverse, vers l'intérieur du liquide). Les molécules de la couche superficielle ont donc, par rapport à celles de l'intérieur, une <strong>énergie potentielle plus grande</strong>.</p>
+            <p class="text-slate-700"><strong>L'énergie superficielle</strong> $E_S$ est l'énergie de la couche superficielle du liquide — elle fait partie de l'énergie interne totale du liquide.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Tension superficielle σ</h3>
+            <p class="text-slate-700 mb-3">Considérons un liquide de même volume placé dans des récipients différents — l'aire de la surface libre $S$ peut être différente selon le récipient, et donc l'énergie superficielle $E_S$ diffère également. On a :</p>
+            <p class="text-center formula-box text-2xl bg-blue-100 rounded-xl py-4 mb-4">$\Delta E_S = \sigma \cdot \Delta S$</p>
+            <p class="text-slate-700 mb-2">où $\sigma$ est la <strong>tension superficielle</strong> — elle dépend de la nature du liquide, du milieu environnant (la substance avec laquelle le liquide est en contact) et de la température (la tension superficielle diminue quand la température augmente).</p>
+            <p class="text-slate-600 text-sm">Unité : $[\sigma] = \text{N}\cdot\text{m}^{-1} = \text{J}\cdot\text{m}^{-2}$ (énergie par unité de surface).</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Valeurs indicatives de la tension superficielle (température ambiante)</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Liquide (interface avec l'air)</th><th class="py-2">σ (mN·m⁻¹)</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">eau (20 °C)</td><td>≈ 73</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">mercure (20 °C)</td><td>≈ 486</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">éthanol</td><td>≈ 22</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">solution savonneuse</td><td>≈ 25–30</td></tr>
+                    <tr><td class="py-1.5 pr-4">huile (végétale)</td><td>≈ 32</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p class="text-slate-500 text-xs mt-2 italic">Valeurs approximatives, données pour comparer les ordres de grandeur.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Le liquide tend vers l'énergie superficielle minimale</h3>
+            <p class="text-slate-700 mb-4">Le liquide cherche à réduire sa surface à la plus petite valeur possible, ce qui correspond à l'énergie superficielle minimale. C'est pourquoi les gouttes libres (brouillard, rosée, pluie) ont une <strong>forme sphérique</strong> — de tous les solides de volume donné, la sphère possède la plus petite surface.</p>
+            <div class="grid sm:grid-cols-3 gap-4">
+                <figure class="photo"><img src="images-liquides/water_drop_splash.jpg" alt="Goutte d'eau après impact"><figcaption class="photo-cap">La goutte reprend une forme sphérique même après un impact.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/water_drop_forming.jpg" alt="Goutte d'eau en formation"><figcaption class="photo-cap">Goutte qui s'égoutte d'un tube.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/water_drop_leaf.jpg" alt="Goutte sur une feuille"><figcaption class="photo-cap">Goutte de rosée sur une feuille.</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+    <p class="font-semibold text-amber-900 mb-2">Exemple résolu :</p>
+    <p class="text-slate-700 text-sm mb-2">De petites gouttelettes de brouillard de rayon $r = 2{,}0\ \mu\text{m}$ fusionnent en une seule goutte de rayon $R = 2{,}0\,\text{mm}$. Déterminez la variation de l'énergie superficielle. ($\sigma = 73\,\text{mN}\cdot\text{m}^{-1}$)</p>
+    <p class="text-slate-600 text-sm">Solution : Déterminons d'abord combien de petites gouttelettes forment une seule grosse goutte. Le volume de toutes les petites gouttelettes (dont on note le nombre $n$) est égal au volume de la grosse goutte. Le volume de $n$ petites gouttelettes est $n\cdot \frac{4}{3}\pi r^3$, le volume de la grosse goutte est $\frac{4}{3}\pi R^3$.<br>
+    De l'égalité des volumes (après simplification par $\frac{4}{3}\pi$) on obtient $n r^3 = R^3$, d'où $n = (R/r)^3 = 10^9$ gouttelettes (un milliard). <br>
+    Déterminons ensuite la variation de l'énergie superficielle selon la relation $\Delta E_S = \sigma \Delta S$, où $\Delta S$ est la différence entre la surface totale de toutes les petites gouttelettes et celle d'une seule grosse goutte. La surface totale des $n$ petites gouttelettes est $n\cdot 4\pi r^2$, la surface de la grosse goutte est $4\pi R^2$. Ainsi :<br>
+    $\Delta E_S = \sigma(4\pi R^2 - n\cdot4\pi r^2) \approx -3{,}7\,\text{mJ}$ — l'énergie superficielle <strong>diminue</strong> (elle est libérée sous forme de chaleur), car une grosse goutte possède une surface totale bien plus petite qu'un milliard de petites gouttelettes de même volume total.</p>
+</div>
+    </section>
+
+    <!-- FORCE SUPERFICIELLE -->
+    <section id="fr-force" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Force superficielle</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <p class="text-slate-700 mb-4">Une pellicule de savon tendue dans un cadre métallique muni d'une tige mobile cherche à réduire sa surface et déplace la tige vers l'intérieur du cadre. La tige subit une <strong>force superficielle</strong> $\vec F$, perpendiculaire à la tige et tangente à la surface de la pellicule.</p>
+            <svg viewBox="0 0 320 260" xmlns="http://www.w3.org/2000/svg">
+                <rect x="0" y="0" width="320" height="260" fill="#eff6ff" rx="12"/>
+                <rect x="70" y="30" width="140" height="170" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2"/>
+                <line x1="70" y1="30" x2="70" y2="200" stroke="#1e3a8a" stroke-width="4"/>
+                <line x1="210" y1="30" x2="210" y2="200" stroke="#1e3a8a" stroke-width="4"/>
+                <line x1="70" y1="200" x2="210" y2="200" stroke="#334155" stroke-width="5"/>
+                <circle cx="70" cy="200" r="4" fill="#334155"/>
+                <circle cx="210" cy="200" r="4" fill="#334155"/>
+                <line x1="140" y1="200" x2="140" y2="150" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrowFfr)"/>
+                <text x="150" y="165" font-size="16" fill="#b91c1c" font-weight="bold">F</text>
+                <text x="90" y="20" font-size="13" fill="#334155">tige mobile (longueur l)</text>
+                <defs><marker id="arrowFfr" markerWidth="9" markerHeight="9" refX="4.5" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#b91c1c"/></marker></defs>
+            </svg>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Établissement de la formule de la force superficielle</h3>
+            <p class="text-slate-700 mb-3">Si l'on suspend à la tige (de longueur $l$) un objet de poids $F_G$, la pellicule possède <strong>deux surfaces</strong> (avant et arrière), donc à l'équilibre :</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-3 mb-4">$2F = F_G \;\Rightarrow\; F = \dfrac{F_G}{2}$</p>
+            <p class="text-slate-700 mb-3">Si l'on déplace la tige de $\Delta x$, le travail effectué $W = 2F\Delta x$ est égal à l'accroissement de l'énergie superficielle des deux faces de la pellicule $\Delta E_S = \sigma \cdot 2l\Delta x$ :</p>
+            <p class="text-center formula-box text-lg bg-slate-100 rounded-lg py-3 mb-3">$2F\Delta x = \sigma \cdot 2l\Delta x$</p>
+            <p class="text-center formula-box text-2xl bg-blue-100 rounded-xl py-4 mb-3">$F = \sigma l$</p>
+            <p class="text-slate-700">La force superficielle est donc directement proportionnelle à la longueur $l$ de la frontière le long de laquelle la surface agit. On en déduit la relation définissant la tension superficielle :</p>
+            <p class="text-center formula-box text-xl bg-cyan-100 rounded-xl py-3 mt-3">$\sigma = \dfrac{F}{l}$</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Expériences avec une pellicule de savon</h3>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <figure class="photo"><img src="images-liquides/soap_film_thread.jpg" alt="Fil fin sur une pellicule de savon"><figcaption class="photo-cap">Un fil fin posé librement sur une pellicule de savon (la pellicule est présente des deux côtés du fil).</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/soap_film_loop_circle.jpg" alt="Boucle circulaire après crevaison de la pellicule"><figcaption class="photo-cap">Après avoir crevé la pellicule à l'intérieur de la boucle, le fil se tend en forme circulaire.</figcaption></figure>
+            </div>
+            <p class="text-slate-700 text-sm">Tant que la pellicule existe à l'intérieur et à l'extérieur de la boucle, les forces des deux côtés du fil s'annulent et le fil reste lâche. Si l'on crève la pellicule à l'intérieur de la boucle, seule la force superficielle de la pellicule extérieure agit sur le fil — celle-ci se contracte et tire le fil vers la forme qui referme la plus grande aire possible pour un périmètre donné, c'est-à-dire un <strong>cercle</strong>.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">L'égouttement d'une capillaire</h3>
+            <div class="grid md:grid-cols-[1fr_200px] gap-4 items-center">
+                <p class="text-slate-700 text-sm">Le poids de la goutte grandissante augmente progressivement, tandis que la force superficielle qui retient la goutte au bord du tube est proportionnelle à la circonférence de la capillaire ($F=\sigma l = \sigma\cdot 2\pi r$) et reste à peu près constante. La goutte se détache lorsque son poids $F_G$ dépasse cette force.</p>
+                <figure class="photo"><img src="images-liquides/water_drop_forming.jpg" alt="Goutte s'égouttant d'un tube"></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- MOUILLAGE, MÉNISQUE -->
+    <section id="fr-mouillage" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Phénomènes à la frontière liquide – solide</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Près de la paroi du récipient (où se rencontrent le liquide, le solide et l'air), la surface libre est courbée.</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-liquides/meniscus_water_glass.jpg" alt="Ménisque concave eau–verre"><figcaption class="photo-cap"><strong>Eau – verre :</strong> la surface est concave — l'eau mouille les parois.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/meniscus_mercury_glass.jpg" alt="Ménisque convexe mercure–verre"><figcaption class="photo-cap"><strong>Mercure – verre :</strong> la surface est convexe — le mercure ne mouille pas les parois.</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Forces sur une molécule à la frontière liquide – paroi – air</h3>
+            <p class="text-slate-700 mb-4">Sur une molécule du liquide près de la paroi agissent : $\vec F_1$ – résultante des forces de la part du liquide, $\vec F_2$ – résultante des forces de la part de la paroi, $\vec F_3$ – résultante des forces de la part de l'air, $\vec F_G$ – le poids de la molécule. Puisque $F_1, F_2 \gg F_G, F_3$, on néglige $F_G$ et $F_3$. La force résultante $\vec F_V = \vec F_1 + \vec F_2$ doit, à l'équilibre, être perpendiculaire à la surface libre — cette condition détermine si la surface est concave ou convexe.</p>
+            <div class="grid sm:grid-cols-2 gap-6">
+                <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="260" height="220" fill="#eff6ff" rx="12"/>
+                    <line x1="60" y1="10" x2="60" y2="210" stroke="#1e3a8a" stroke-width="4"/>
+                    <path d="M 60 90 Q 100 60 240 60" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                    <path d="M 60 90 Q 100 60 240 60 L 240 210 L 60 210 Z" fill="#bfdbfe" opacity="0.6"/>
+                    <circle cx="65" cy="88" r="5" fill="#b91c1c"/>
+                    <line x1="65" y1="88" x2="30" y2="120" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#a3fr)"/>
+                    <text x="10" y="140" font-size="13" fill="#b91c1c" font-weight="bold">Fv</text>
+                    <text x="80" y="30" font-size="13" fill="#334155">concave (eau)</text>
+                    <defs><marker id="a3fr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#b91c1c"/></marker></defs>
+                </svg>
+                <svg viewBox="0 0 260 220" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="260" height="220" fill="#eff6ff" rx="12"/>
+                    <line x1="60" y1="10" x2="60" y2="210" stroke="#1e3a8a" stroke-width="4"/>
+                    <path d="M 60 60 Q 100 100 240 100" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                    <path d="M 60 60 Q 100 100 240 100 L 240 210 L 60 210 Z" fill="#94a3b8" opacity="0.6"/>
+                    <circle cx="66" cy="65" r="5" fill="#b91c1c"/>
+                    <line x1="66" y1="65" x2="105" y2="95" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#a4fr)"/>
+                    <text x="105" y="120" font-size="13" fill="#b91c1c" font-weight="bold">Fv</text>
+                    <text x="80" y="30" font-size="13" fill="#334155">convexe (mercure)</text>
+                    <defs><marker id="a4fr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#b91c1c"/></marker></defs>
+                </svg>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Angle de mouillage (angle de contact) ϑ</h3>
+            <p class="text-slate-700 mb-3">L'<strong>angle de mouillage</strong> $\vartheta$ est l'angle entre la surface du liquide et la paroi du récipient à leur point de contact.</p>
+            <div class="grid sm:grid-cols-2 gap-4 text-center formula-box">
+                <p class="bg-emerald-100 rounded-lg py-3">$0 \le \vartheta < \dfrac{\pi}{2}$<br><span class="text-sm font-sans">le liquide mouille les parois, surface concave</span></p>
+                <p class="bg-orange-100 rounded-lg py-3">$\dfrac{\pi}{2} < \vartheta \le \pi$<br><span class="text-sm font-sans">le liquide ne mouille pas les parois, surface convexe</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CAPILLARITÉ -->
+    <section id="fr-capillarite" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Capillarité</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Dans un tube étroit (capillaire), la courbure de la surface libre est plus prononcée que dans un large récipient, et la force résultante $\vec F_V$ se traduit alors par une <strong>hauteur capillaire</strong> notable de la surface.</p>
+            <ul class="list-disc ml-6 text-slate-700 space-y-1">
+                <li>Un liquide qui <strong>mouille</strong> les parois de la capillaire (par exemple l'eau dans le verre) y <strong>monte</strong> au-dessus de la surface libre dans le récipient plus large.</li>
+                <li>Un liquide qui ne mouille pas les parois (par exemple le mercure dans le verre) <strong>descend</strong> dans la capillaire au-dessous de la surface libre.</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Pression capillaire</h3>
+            <p class="text-slate-700 mb-3">La surface courbée du liquide dans la capillaire provoque une <strong>pression capillaire</strong> $p_k$, directement proportionnelle à la tension superficielle et inversement proportionnelle au rayon intérieur $R$ de la capillaire (ou au rayon de courbure du ménisque) :</p>
+            <p class="text-center formula-box text-2xl bg-blue-100 rounded-xl py-4 mb-2">$p_k = \dfrac{2\sigma}{R}$</p>
+            <figure class="photo max-w-xs mx-auto mt-4"><img src="images-liquides/capillary_pressure_h2o_hg.png" alt="Pression capillaire - eau et mercure dans des tubes"></figure>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Hauteur de l'élévation / de l'abaissement capillaire</h3>
+            <p class="text-slate-700 mb-3">La hauteur $h$ se stabilise lorsque la pression capillaire s'équilibre avec la pression hydrostatique de la colonne de liquide $p_h=\rho g h$ :</p>
+            <p class="text-center formula-box bg-slate-100 rounded-lg py-2 mb-2">$p_k = p_h \;\Rightarrow\; \dfrac{2\sigma}{R} = \rho g h$</p>
+            <p class="text-center formula-box text-2xl bg-cyan-100 rounded-xl py-4 mb-3">$h = \dfrac{2\sigma}{\rho g R}$</p>
+            <p class="text-slate-700">La hauteur $h$ est <strong>inversement proportionnelle</strong> au rayon intérieur du tube $R$ — plus la capillaire est fine, plus l'élévation (ou l'abaissement) est importante.</p>
+            <figure class="photo max-w-md mx-auto mt-4"><img src="images-liquides/capillary_tubes_diameters.jpg" alt="Élévation capillaire dans des tubes de diamètres différents"><figcaption class="photo-cap">Plus le tube est étroit, plus l'eau monte au-dessus de la surface dans le récipient plus large.</figcaption></figure>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5 mb-6">
+            <p class="font-semibold text-amber-900 mb-2">Exemples résolus :</p>
+            <p class="text-slate-700 text-sm mb-1"><strong>a)</strong> Quel est le diamètre intérieur d'une capillaire dans laquelle l'eau monte à une hauteur $h=2{,}0\,\text{cm}$ au-dessus de la surface libre dans un récipient plus large ? ($\sigma=73\,\text{mN}\cdot\text{m}^{-1}$)</p>
+            <p class="text-slate-600 text-sm mb-3">Solution : $R=\dfrac{2\sigma}{\rho g h}\approx 0{,}74\,\text{mm} \Rightarrow d=2R\approx 1{,}5\,\text{mm}$.</p>
+            <p class="text-slate-700 text-sm mb-1"><strong>b)</strong> Quelle est la pression de l'air dans une bulle sphérique de diamètre $1\,\mu\text{m}$ à $5\,\text{m}$ de profondeur sous la surface de l'eau, la pression atmosphérique étant de $1000\,\text{hPa}$ ?</p>
+            <p class="text-slate-600 text-sm">Solution : $p = p_a + \rho g h_{profondeur} + \dfrac{2\sigma}{R} \approx 10^5 + 4{,}9\cdot10^4 + 2{,}92\cdot10^5 \approx 0{,}44\,\text{MPa}$. (Pour une bulle aussi petite, la pression capillaire est la composante dominante !)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">La capillarité autour de nous</h3>
+            <p class="text-slate-700 mb-4">On observe l'ascension capillaire dans de fins canaux et fibres partout autour de nous : l'eau monte dans un torchon pendant le nettoyage, dans la mèche d'une lampe à pétrole, l'humidité monte dans les murs des bâtiments, les liquides montent par le xylème des plantes depuis les racines vers le haut.</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-liquides/capillary_damp_wall.jpg" alt="Humidité montant dans un mur"><figcaption class="photo-cap">Humidité ascensionnelle au pied d'un mur.</figcaption></figure>
+                <figure class="photo"><img src="images-liquides/capillary_plant_fibers.jpg" alt="Fibres capillaires d'une plante (MEB)"><figcaption class="photo-cap">Fibres capillaires dans un tissu végétal (image au microscope électronique).</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- DILATATION THERMIQUE -->
+    <section id="fr-dilatation" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Dilatation volumique thermique des liquides</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Un liquide n'a pas de forme propre ; contrairement aux solides, il n'est donc pas pertinent de distinguer dilatation linéaire et volumique — on ne considère que la <strong>dilatation volumique</strong>. La grande majorité des liquides se dilatent lorsqu'on les chauffe.</p>
+            <p class="text-center formula-box text-2xl bg-blue-100 rounded-xl py-4 mb-3">$V = V_0(1 + \beta\, \Delta t)$</p>
+            <p class="text-slate-600 text-sm text-center">$V_0$ – volume initial &nbsp;|&nbsp; $\Delta t$ – variation de température &nbsp;|&nbsp; $\beta$ – coefficient de dilatation volumique thermique ($\text{K}^{-1}$)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Valeurs indicatives du coefficient β</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Liquide</th><th class="py-2">β (K⁻¹)</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">eau (20 °C)</td><td>≈ 2,1 · 10⁻⁴</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">mercure</td><td>≈ 1,82 · 10⁻⁴</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">éthanol</td><td>≈ 1,1 · 10⁻³</td></tr>
+                    <tr><td class="py-1.5 pr-4">huile</td><td>≈ 7 · 10⁻⁴</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p class="text-slate-500 text-xs mt-2 italic">Valeurs approximatives ; en réalité, elles dépendent légèrement de la température.</p>
+        </div>
+
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-rose-800 mb-3">L'anomalie de l'eau</h3>
+            <p class="text-slate-700 mb-3">L'eau se comporte de manière exceptionnelle : entre $0\,^\circ\text{C}$ et environ $3{,}98\,^\circ\text{C}$ (on retient généralement $4\,^\circ\text{C}$), elle se <strong>contracte</strong> au contraire lorsqu'on la chauffe — ce n'est qu'au-delà de cette température qu'elle se comporte « normalement » et se dilate. L'eau a donc sa <strong>masse volumique maximale</strong> vers $4\,^\circ\text{C}$.</p>
+            <p class="text-slate-700 text-sm">Grâce à cette anomalie, la glace flotte à la surface, et en hiver les étangs et les lacs ne gèlent pas jusqu'au fond — l'eau à environ $4\,^\circ\text{C}$ (la plus dense) reste au fond, tandis que la glace se forme en surface, ce qui permet aux organismes aquatiques de survivre.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Application : les thermomètres à liquide</h3>
+            <p class="text-slate-700 mb-4">Les thermomètres à mercure et à alcool exploitent le fait que la dilatation volumique du liquide (mercure, alcool) est bien plus importante que celle du réservoir en verre — le déplacement observé du niveau dans la tige du thermomètre correspond donc essentiellement à la dilatation du liquide lui-même.</p>
+            <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                <p class="font-semibold text-amber-900 mb-2">Exemple résolu :</p>
+                <p class="text-slate-700 text-sm mb-2">Le réservoir d'un thermomètre à alcool contient $V_0 = 1{,}0\,\text{cm}^3$ d'éthanol à $20\,^\circ\text{C}$. De combien son volume augmente-t-il lorsqu'on le chauffe à $40\,^\circ\text{C}$ ? ($\beta \approx 1{,}1\cdot10^{-3}\,\text{K}^{-1}$)</p>
+                <p class="text-slate-600 text-sm">Solution : $\Delta V = V_0\beta\Delta t = 1{,}0 \cdot 1{,}1\cdot10^{-3}\cdot 20 \approx 0{,}022\,\text{cm}^3$ — cette augmentation infime de volume, dans la tige étroite du thermomètre, produit un déplacement du niveau bien lisible.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TENSIOACTIFS -->
+    <section id="fr-tensioactifs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Substances tensioactives (tensioactifs)</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <p class="text-slate-700 mb-4">Les <strong>substances tensioactives (tensioactifs, surfactants)</strong> sont des substances qui, dissoutes dans un liquide, <strong>abaissent fortement sa tension superficielle</strong>. Les savons et détergents en sont l'exemple typique (c'est d'ailleurs pourquoi une pellicule de savon — avec $\sigma \approx 25$–$30\,\text{mN/m}$ — se tend facilement et dure bien plus longtemps qu'une pellicule d'eau pure, dont la tension superficielle élevée la rend au contraire fragile et instable).</p>
+            <svg viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+    <rect width="640" height="200" fill="#eff6ff" rx="12"/>
+    <rect x="0" y="60" width="640" height="140" fill="#bfdbfe" opacity="0.4"/>
+    <line x1="0" y1="60" x2="640" y2="60" stroke="#1d4ed8" stroke-width="2"/>
+    <text x="20" y="45" font-size="14" fill="#1e3a8a" font-weight="bold">air</text>
+    <text x="20" y="150" font-size="14" fill="#1e3a8a" font-weight="bold">eau</text>
+    <g id="molecules">
+        <g transform="translate(100,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+        <g transform="translate(200,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+        <g transform="translate(300,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+        <g transform="translate(400,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+        <g transform="translate(500,65)"><line x1="0" y1="0" x2="0" y2="-45" stroke="#334155" stroke-width="3"/><circle cx="0" cy="0" r="9" fill="#1d4ed8"/></g>
+    </g>
+    <text x="440" y="95" font-size="13" fill="#334155">| queue hydrophobe (dans l'air)</text>
+    <text x="440" y="120" font-size="13" fill="#334155">● tête hydrophile (dans l'eau)</text>
+</svg>
+            <p class="text-slate-600 text-sm mt-3">Une molécule de tensioactif possède deux parties distinctes : une <strong>tête hydrophile</strong> (« qui aime l'eau »), orientée vers l'eau, et une <strong>queue hydrophobe</strong> (« qui repousse l'eau »), orientée vers l'air (ou vers la graisse). Les molécules s'accumulent donc à la surface du liquide et affaiblissent les forces entre les molécules d'eau de la couche superficielle, ce qui diminue la tension superficielle σ.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Applications pratiques</h3>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                <li><strong>Savons et lessives :</strong> une tension superficielle plus faible permet à l'eau de mieux mouiller les graisses et les salissures, qui sont ensuite plus facilement entraînées.</li>
+                <li><strong>Surfactant pulmonaire :</strong> substance tensioactive naturelle tapissant les alvéoles pulmonaires — elle abaisse leur tension superficielle et empêche leur affaissement à l'expiration ; chez les prématurés manquant de surfactant, un syndrome de détresse respiratoire peut survenir.</li>
+                <li><strong>Agents mouillants en agriculture et dans l'industrie :</strong> ajoutés aux produits pulvérisés pour que les gouttes recouvrent mieux la surface des feuilles (en réduisant l'angle de mouillage).</li>
+            </ul>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Module éducatif de Physique · Structure et propriétés des liquides · d'après le support « Physique moléculaire et thermique 2–3 »</p>
+</footer>
+
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+        if (cz.classList.contains('hidden')) {
+            cz.classList.remove('hidden'); fr.classList.add('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        } else {
+            fr.classList.remove('hidden'); cz.classList.add('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        }
+        if (window.MathJax) { setTimeout(() => MathJax.typesetPromise && MathJax.typesetPromise(), 50); }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

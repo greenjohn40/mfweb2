@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Struktura a vlastnosti plynů (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-cyan-700">
+            <h1 class="text-3xl font-bold text-cyan-800 mb-4">Fyzikální kvíz: Struktura a vlastnosti plynů</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-cyan-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (plynové zákony).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-cyan-700 hover:bg-cyan-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-cyan-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-cyan-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-cyan-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-cyan-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-cyan-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-cyan-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+        const N_THEORY = 4;
+        const N_MATH = 6;
+
+        // ======== POMOCNÉ FUNKCE ========
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            if (Math.abs(x) < 1 && x !== 0) {
+                // small decimals (e.g. volumes in m³): keep enough precision to avoid rounding to 0
+                let s = x.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+                return s;
+            }
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ======== TEORETICKÉ OTÁZKY ========
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Jaký je předpoklad modelu ideálního plynu týkající se srážek molekul?", a: "Srážky jsou dokonale pružné (elastické)", o: ["Srážky jsou dokonale pružné (elastické)", "Srážky jsou nepružné a ztrácí energii", "Molekuly se nikdy nesrazí", "Srážky trvají velmi dlouho"], h: "Jde o typ srážky, při němž se zachovává kinetická energie.", e: "V modelu ideálního plynu jsou srážky molekul považovány za dokonale pružné (elastické) a velmi krátké." }, fr: { q: "Quelle hypothèse du modèle du gaz idéal concerne les collisions entre molécules ?", a: "Les collisions sont parfaitement élastiques", o: ["Les collisions sont parfaitement élastiques", "Les collisions sont inélastiques et perdent de l'énergie", "Les molécules ne se heurtent jamais", "Les collisions durent très longtemps"], h: "Il s'agit d'un type de collision où l'énergie cinétique est conservée.", e: "Dans le modèle du gaz idéal, les collisions entre molécules sont considérées comme parfaitement élastiques et très brèves." } },
+            { id: 't2', type: 'concept', cs: { q: "Jak zní Boyleův–Mariottův zákon pro izotermický děj?", a: "p₁V₁ = p₂V₂", o: ["p₁V₁ = p₂V₂", "p₁/T₁ = p₂/T₂", "V₁/T₁ = V₂/T₂", "p₁V₁² = p₂V₂²"], h: "Jde o děj při konstantní teplotě.", e: "Boyleův–Mariottův zákon pro izotermický děj (T = konst.) zní: p₁V₁ = p₂V₂." }, fr: { q: "Comment s'énonce la loi de Boyle-Mariotte pour un processus isotherme ?", a: "p₁V₁ = p₂V₂", o: ["p₁V₁ = p₂V₂", "p₁/T₁ = p₂/T₂", "V₁/T₁ = V₂/T₂", "p₁V₁² = p₂V₂²"], h: "Il s'agit d'un processus à température constante.", e: "La loi de Boyle-Mariotte pour un processus isotherme (T = const.) s'énonce : p₁V₁ = p₂V₂." } },
+            { id: 't3', type: 'concept', cs: { q: "Jaký tvar má izobara v diagramu p-V?", a: "Vodorovná úsečka", o: ["Vodorovná úsečka", "Svislá úsečka", "Hyperbola", "Parabola"], h: "Při izobarickém ději se tlak nemění.", e: "Izobara (p = konst.) je v diagramu p-V vodorovná úsečka." }, fr: { q: "Quelle est la forme de l'isobare dans le diagramme p-V ?", a: "Un segment horizontal", o: ["Un segment horizontal", "Un segment vertical", "Une hyperbole", "Une parabole"], h: "Lors d'un processus isobare, la pression ne change pas.", e: "L'isobare (p = const.) est un segment horizontal dans le diagramme p-V." } },
+            { id: 't4', type: 'concept', cs: { q: "Co platí pro adiabatický děj?", a: "Q = 0 (plyn nevyměňuje teplo s okolím)", o: ["Q = 0 (plyn nevyměňuje teplo s okolím)", "T = konst.", "p = konst.", "V = konst."], h: "Jde o děj, kdy je plyn tepelně izolován.", e: "Adiabatický děj je definován podmínkou Q = 0 — plyn je tepelně izolován od okolí, takže ΔU = W'." }, fr: { q: "Que caractérise un processus adiabatique ?", a: "Q = 0 (le gaz n'échange pas de chaleur avec le milieu extérieur)", o: ["Q = 0 (le gaz n'échange pas de chaleur avec le milieu extérieur)", "T = const.", "p = const.", "V = const."], h: "C'est un processus où le gaz est thermiquement isolé.", e: "Le processus adiabatique est défini par la condition Q = 0 — le gaz est thermiquement isolé du milieu extérieur, donc ΔU = W'." } },
+            { id: 't5', type: 'concept', cs: { q: "Co říká Clausiovo tvrzení (2. zákon termodynamiky)?", a: "Teplo nemůže samovolně přejít z chladnějšího tělesa na teplejší", o: ["Teplo nemůže samovolně přejít z chladnějšího tělesa na teplejší", "Teplo vždy přechází z chladnějšího na teplejší", "Energie se při dějích neustále ztrácí", "Práci lze vždy beze zbytku přeměnit na teplo"], h: "Souvisí to se směrem, kterým přirozeně teplo proudí.", e: "Clausiovo tvrzení říká, že teplo nemůže samovolně (bez vnějšího zásahu) přejít z chladnějšího tělesa na teplejší." }, fr: { q: "Que dit l'énoncé de Clausius (2e principe de la thermodynamique) ?", a: "La chaleur ne peut pas passer spontanément d'un corps froid vers un corps chaud", o: ["La chaleur ne peut pas passer spontanément d'un corps froid vers un corps chaud", "La chaleur passe toujours du froid vers le chaud", "L'énergie se perd continuellement lors des processus", "Le travail peut toujours être intégralement transformé en chaleur"], h: "Cela concerne le sens naturel du flux de chaleur.", e: "L'énoncé de Clausius affirme que la chaleur ne peut pas passer spontanément (sans intervention extérieure) d'un corps froid vers un corps chaud." } },
+            { id: 't6', type: 'concept', cs: { q: "Jaká je změna vnitřní energie ΔU za celý kruhový (cyklický) děj?", a: "ΔU = 0", o: ["ΔU = 0", "ΔU = Q₁", "ΔU = W'", "ΔU je vždy záporná"], h: "Na konci cyklu se soustava vrací do počátečního stavu.", e: "Protože konečný stav kruhového děje je totožný s počátečním, je celková změna vnitřní energie za cyklus nulová: ΔU = 0." }, fr: { q: "Quelle est la variation d'énergie interne ΔU sur un cycle thermodynamique complet ?", a: "ΔU = 0", o: ["ΔU = 0", "ΔU = Q₁", "ΔU = W'", "ΔU est toujours négative"], h: "À la fin du cycle, le système revient à son état initial.", e: "Puisque l'état final d'un cycle est identique à l'état initial, la variation totale d'énergie interne sur le cycle est nulle : ΔU = 0." } },
+            { id: 't7', type: 'concept', cs: { q: "Může tepelný stroj dosáhnout účinnosti η = 100 %?", a: "Ne, účinnost je vždy menší než 1 (100 %)", o: ["Ne, účinnost je vždy menší než 1 (100 %)", "Ano, u ideálních strojů ano", "Ano, pokud nedochází k tření", "Ano, při dostatečně vysoké teplotě zdroje"], h: "Vzpomeň si na vzorec η = 1 − Q₂/Q₁, kde Q₂ > 0.", e: "Protože chladiči je vždy odevzdáno nenulové teplo Q₂ > 0, platí η = 1 − Q₂/Q₁ < 1. Účinnost 100 % není dosažitelná." }, fr: { q: "Une machine thermique peut-elle atteindre un rendement η = 100 % ?", a: "Non, le rendement est toujours inférieur à 1 (100 %)", o: ["Non, le rendement est toujours inférieur à 1 (100 %)", "Oui, pour des machines idéales", "Oui, s'il n'y a pas de frottement", "Oui, à condition que la source soit assez chaude"], h: "Rappelle-toi de la formule η = 1 − Q₂/Q₁, où Q₂ > 0.", e: "Comme une chaleur non nulle Q₂ > 0 est toujours cédée au réfrigérant, on a η = 1 − Q₂/Q₁ < 1. Un rendement de 100 % n'est pas atteignable." } },
+            { id: 't8', type: 'concept', cs: { q: "Jak se nazývá veličina κ = cp/cV v Poissonově zákoně?", a: "Poissonova konstanta", o: ["Poissonova konstanta", "Boltzmannova konstanta", "Avogadrova konstanta", "Molární plynová konstanta"], h: "Je pojmenována po stejném francouzském fyzikovi jako zákon pro adiabatický děj.", e: "Veličina κ = cp/cV se nazývá Poissonova konstanta a vystupuje v Poissonově zákoně pro adiabatický děj: p₁V₁^κ = p₂V₂^κ." }, fr: { q: "Comment appelle-t-on la grandeur κ = cp/cV dans la loi de Poisson ?", a: "La constante de Poisson", o: ["La constante de Poisson", "La constante de Boltzmann", "La constante d'Avogadro", "La constante molaire des gaz"], h: "Elle porte le nom du même physicien français que la loi du processus adiabatique.", e: "La grandeur κ = cp/cV est appelée constante de Poisson et intervient dans la loi de Poisson pour le processus adiabatique : p₁V₁^κ = p₂V₂^κ." } }
+        ];
+
+        // ======== VÝPOČETNÍ ÚLOHY ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Plyn má objem V₁ = {V1} l při tlaku p₁ = {p1e} · 10⁵ Pa. Jaký je tlak p₂ po izotermickém stlačení na V₂ = {V2} l?", h: "Boyleův–Mariottův zákon: p₁V₁ = p₂V₂.", e: "p₂ = p₁V₁/V₂ = {p1e}·10⁵ · {V1} ÷ {V2} = {res} · 10⁵ Pa." },
+                fr: { q: "Un gaz a un volume V₁ = {V1} l à la pression p₁ = {p1e} · 10⁵ Pa. Quelle est la pression p₂ après compression isotherme à V₂ = {V2} l ?", h: "Loi de Boyle-Mariotte : p₁V₁ = p₂V₂.", e: "p₂ = p₁V₁/V₂ = {p1e}·10⁵ · {V1} ÷ {V2} = {res} · 10⁵ Pa." },
+                params: () => { const V2 = randInt(1,4); const factor = randInt(2,4); const V1 = V2*factor; const p1e = randInt(1,3); return { V1, V2, p1e }; },
+                solve: (p) => { const res = p.p1e * p.V1 / p.V2; return { res, unit: '·10⁵ Pa', correct: fmt(res) + ' · 10⁵ Pa' }; } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Plyn ve stálém objemu má tlak p₁ = {p1e} · 10⁵ Pa při T₁ = {T1} K. Jaký je tlak p₂ při ohřátí na T₂ = {T2} K?", h: "Charlesův zákon: p₁/T₁ = p₂/T₂.", e: "p₂ = p₁T₂/T₁ = {p1e}·10⁵ · {T2} ÷ {T1} = {res} · 10⁵ Pa." },
+                fr: { q: "Un gaz à volume constant a une pression p₁ = {p1e} · 10⁵ Pa à T₁ = {T1} K. Quelle est la pression p₂ après réchauffement à T₂ = {T2} K ?", h: "Loi de Charles : p₁/T₁ = p₂/T₂.", e: "p₂ = p₁T₂/T₁ = {p1e}·10⁵ · {T2} ÷ {T1} = {res} · 10⁵ Pa." },
+                params: () => { const T1 = randInt(2,5)*100; const mult = [1.25,1.5,2][randInt(0,2)]; const T2 = Math.round(T1*mult); const p1e = randInt(1,4); return { T1, T2, p1e }; },
+                solve: (p) => { const res = p.p1e * p.T2 / p.T1; return { res, unit: '·10⁵ Pa', correct: fmt(res) + ' · 10⁵ Pa' }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Plyn při stálém tlaku má objem V₁ = {V1} l při T₁ = {T1} K. Jaký je objem V₂ při T₂ = {T2} K?", h: "Gay-Lussacův zákon: V₁/T₁ = V₂/T₂.", e: "V₂ = V₁T₂/T₁ = {V1} · {T2} ÷ {T1} = {res} l." },
+                fr: { q: "Un gaz à pression constante a un volume V₁ = {V1} l à T₁ = {T1} K. Quel est le volume V₂ à T₂ = {T2} K ?", h: "Loi de Gay-Lussac : V₁/T₁ = V₂/T₂.", e: "V₂ = V₁T₂/T₁ = {V1} · {T2} ÷ {T1} = {res} l." },
+                params: () => { const T1 = randInt(2,5)*100; const mult = [1.25,1.5,2][randInt(0,2)]; const T2 = Math.round(T1*mult); const V1 = randInt(1,6); return { V1, T1, T2 }; },
+                solve: (p) => { const res = p.V1 * p.T2 / p.T1; return { res, unit: 'l', correct: fmt(res) + ' l' }; } },
+            { id: 'm4', type: 'math',
+                cs: { q: "Tepelný stroj přijme za jeden cyklus teplo Q₁ = {Q1} J a odevzdá chladiči Q₂ = {Q2} J. Jaká je jeho účinnost η (v %)?", h: "η = (Q₁ − Q₂) / Q₁ × 100 %.", e: "η = ({Q1} − {Q2}) ÷ {Q1} × 100 % = {res} %." },
+                fr: { q: "Une machine thermique absorbe Q₁ = {Q1} J par cycle et cède Q₂ = {Q2} J au réfrigérant. Quel est son rendement η (en %) ?", h: "η = (Q₁ − Q₂) / Q₁ × 100 %.", e: "η = ({Q1} − {Q2}) ÷ {Q1} × 100 % = {res} %." },
+                params: () => { const Q1 = randInt(2,10)*100; const etaTarget = randInt(2,7)*10; const Q2 = Math.round(Q1*(1-etaTarget/100)); return { Q1, Q2 }; },
+                solve: (p) => { const res = (p.Q1 - p.Q2)/p.Q1*100; return { res, unit: '%', correct: fmt(res) + ' %' }; } },
+            { id: 'm5', type: 'math',
+                cs: { q: "Plyn se při stálém tlaku p = {p} · 10⁵ Pa rozpíná z objemu V₁ = {V1} l na V₂ = {V2} l. Jakou práci W' plyn vykoná?", h: "W' = p · ΔV (pozor na převod litrů na m³: 1 l = 0,001 m³).", e: "ΔV = ({V2} − {V1}) l = {dV} m³; W' = {p}·10⁵ · {dV} = {res} J." },
+                fr: { q: "Un gaz se dilate à pression constante p = {p} · 10⁵ Pa d'un volume V₁ = {V1} l à V₂ = {V2} l. Quel travail W' le gaz effectue-t-il ?", h: "W' = p · ΔV (attention à convertir les litres en m³ : 1 l = 0,001 m³).", e: "ΔV = ({V2} − {V1}) l = {dV} m³; W' = {p}·10⁵ · {dV} = {res} J." },
+                params: () => { const V1 = randInt(1,3); const V2 = V1 + randInt(2,5); const p = randInt(1,3); const dV = (V2-V1)/1000; return { V1, V2, p, dV }; },
+                solve: (p) => { const res = p.p*1e5*p.dV; return { res, unit: 'J', correct: fmt(res) + ' J' }; } },
+            { id: 'm6', type: 'math',
+                cs: { q: "Plyn má počáteční tlak p₁ = {p1e} · 10⁵ Pa, objem V₁ = {V1} l a teplotu T₁ = {T1} K. Po změně má T₂ = {T2} K a V₂ = {V1} l (stejný objem). Jaký je nový tlak p₂?", h: "Použij stavovou rovnici: p₁V₁/T₁ = p₂V₂/T₂ (V₁=V₂, tedy jde vlastně o Charlesův zákon).", e: "p₂ = p₁T₂/T₁ = {p1e}·10⁵ · {T2} ÷ {T1} = {res} · 10⁵ Pa." },
+                fr: { q: "Un gaz a une pression initiale p₁ = {p1e} · 10⁵ Pa, un volume V₁ = {V1} l et une température T₁ = {T1} K. Après transformation, T₂ = {T2} K et V₂ = {V1} l (même volume). Quelle est la nouvelle pression p₂ ?", h: "Utilise l'équation d'état : p₁V₁/T₁ = p₂V₂/T₂ (V₁=V₂, donc il s'agit en fait de la loi de Charles).", e: "p₂ = p₁T₂/T₁ = {p1e}·10⁵ · {T2} ÷ {T1} = {res} · 10⁵ Pa." },
+                params: () => { const T1 = randInt(2,5)*100; const mult = [1.25,1.5,2][randInt(0,2)]; const T2 = Math.round(T1*mult); const p1e = randInt(1,4); const V1 = randInt(1,6); return { T1, T2, p1e, V1 }; },
+                solve: (p) => { const res = p.p1e * p.T2 / p.T1; return { res, unit: '·10⁵ Pa', correct: fmt(res) + ' · 10⁵ Pa' }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<N_THEORY; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<N_MATH; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(sol[k] !== undefined ? sol[k] : p[k]));
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    obj.o = [sol.correct, mk(val*2), mk(val/2), mk(val*10)];
+                };
+                inject(q); inject(tr);
+            }
+
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').textContent = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-cyan-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-cyan-300 font-medium fade-in";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').textContent = data.h;
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.textContent = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').textContent = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Plynové zákony i francouzština ti jdou skvěle.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat čtyři plynové zákony a jejich vzorce.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat – zaměř se na stavovou rovnici a jednotlivé izo-děje.";
+                overallIcon = "🔍";
+            }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako ideální plyn, adiabatický děj či 2. zákon termodynamiky.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si tři předpoklady ideálního plynu a čtyři typy dějů (izo-).");
+            if (mathPercent >= 70) strengths.push("Výpočty s plynovými zákony ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech s Boyleovým, Charlesovým a Gay-Lussacovým zákonem chybuješ – procvič si, která veličina zůstává konstantní v jakém ději.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní vztahy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování stavové rovnice a jejích speciálních případů (izotermický, izochorický, izobarický, adiabatický děj).");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitoly o kapalinách a pevných látkách.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení plynových zákonů.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek ve francouzštině)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Struktura a vlastnosti plynů / Structure et propriétés des gaz</title>
+<script src="https://cdn.tailwindcss.com/"></script>
+<style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #cbd5e1; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #2563eb; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #dc2626; }
+    @media (max-width: 640px) {
+        .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; }
+    }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .badge { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.05em; padding:2px 10px; border-radius:9999px; }
+    figure.photo { margin:0; }
+    figure.photo img { border-radius:.75rem; border:1px solid #e2e8f0; width:100%; object-fit:cover; background:#0f172a; }
+    .photo-cap { font-size:.8rem; color:#64748b; margin-top:.4rem; text-align:center; }
+    .formula-box { font-family: 'Cambria Math', Georgia, serif; }
+</style>
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-cyan-800 to-blue-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-cyan-200 text-sm font-semibold tracking-wider uppercase">
+            <span>💨 Molekulová fyzika a termika</span><span>•</span><span>Část 2.1</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Struktura a vlastnosti plynů</h1>
+        <p class="text-lg md:text-xl text-cyan-50 max-w-3xl leading-relaxed">
+            Model ideálního plynu, stavová rovnice, čtyři děje, práce plynu, kruhový děj a tepelné stroje.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('cz-idealni')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Ideální plyn</span>
+        <span onclick="scrollToId('cz-tlak')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Tlak plynu</span>
+        <span onclick="scrollToId('cz-stavova')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Stavová rovnice</span>
+        <span onclick="scrollToId('cz-deje')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Čtyři děje</span>
+        <span onclick="scrollToId('cz-vakuum')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Vakuum</span>
+        <span onclick="scrollToId('cz-prace')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Práce plynu</span>
+        <span onclick="scrollToId('cz-kruhovy')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Kruhový děj</span>
+        <span onclick="scrollToId('cz-druhy')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">2. zákon termodynamiky</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- IDEÁLNÍ PLYN -->
+    <section id="cz-idealni" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Struktura a vlastnosti plynných látek</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-4"><strong>Ideální (dokonalý) plyn</strong> = model (jednodušší než reálné plyny), u kterého:</p>
+            <ol class="list-decimal ml-6 space-y-2 text-slate-700 mb-4">
+                <li>rozměry molekul jsou zanedbatelné vzhledem k jejich středním vzdálenostem</li>
+                <li>vzájemné působení molekul se považuje za neexistující (kromě srážek, které jsou velmi krátké) — tedy $E_p = 0$, $U = E_k$</li>
+                <li>srážky jsou dokonale pružné</li>
+            </ol>
+            <p class="text-sm text-slate-500 italic mb-4">Poznámka: většina reálných plynů se chová jako ideální plyn za normálních podmínek (0 °C, 1 atm).</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-gaz/gas_particles_box.png" alt="Neuspořádaný pohyb molekul"></figure>
+                <figure class="photo"><img src="images-gaz/elastic_collision.png" alt="Pružná srážka molekul" class="!bg-white"></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-cyan-800 mb-3">Maxwellovo rozdělení molekul podle rychlosti</h3>
+            <figure class="photo max-w-xl mx-auto mb-3"><img src="images-gaz/maxwell_distribution.png" alt="Maxwellovo rozdělení rychlostí" class="!bg-white"></figure>
+            <p class="text-slate-700 text-sm text-center">$v_p$ – nejpravděpodobnější rychlost &nbsp;&nbsp;|&nbsp;&nbsp; $v_k$ – střední kvadratická rychlost</p>
+            <p class="text-slate-600 text-sm mt-2 text-center">S rostoucí teplotou se rozdělení posouvá k vyšším rychlostem a zplošťuje se.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-cyan-800 mb-3">Střední kvadratická rychlost $v_k$</h3>
+            <p class="text-slate-700 mb-4">Kdyby všechny molekuly měly rychlost $v_k$, jejich celková energie by se nezměnila.</p>
+            <p class="text-center formula-box text-lg bg-slate-100 rounded-lg py-3 mb-4">$E_0 = \dfrac{1}{2}m_0v_k^2 = \dfrac{3}{2}kT$</p>
+            <div class="grid sm:grid-cols-2 gap-4 items-center mb-4">
+                <div class="text-sm text-slate-600">
+                    $m_0$ – hmotnost jedné molekuly plynu<br>
+                    $T$ – termodynamická teplota plynu<br>
+                    $k$ – Boltzmannova konstanta<br>
+                    $k = 1{,}38 \cdot 10^{-23}\ \text{J/K}$
+                </div>
+                <p class="text-center formula-box text-2xl bg-cyan-100 rounded-xl py-4">$v_k = \sqrt{\dfrac{3kT}{m_0}}$</p>
+            </div>
+            <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                <p class="font-semibold text-amber-900 mb-2">Úloha z prezentace:</p>
+                <p class="text-slate-700 text-sm mb-2">Najděte střední kvadratickou rychlost kyslíku O₂ při teplotě: a) −100 °C, b) 0 °C, c) 100 °C.</p>
+                <p class="text-slate-600 text-sm">Řešení: $v_k \approx$ 367 m/s (a), 461 m/s (b), 539 m/s (c) — viz příručka pro postup výpočtu.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- TLAK PLYNU -->
+    <section id="cz-tlak" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Tlak ideálního plynu</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-4"><strong>Fluktuace tlaku v čase</strong> (při stálé teplotě) — tlak kolísá kolem ustálené hodnoty v důsledku nárazů jednotlivých molekul na stěnu nádoby.</p>
+            <figure class="photo max-w-xs mx-auto mb-6"><img src="images-gaz/pressure_particles_box.png" alt="Částice v nádobě"></figure>
+            <h3 class="font-bold text-cyan-800 mb-3">Rovnice tlaku ideálního plynu</h3>
+            <p class="text-center formula-box text-2xl bg-cyan-100 rounded-xl py-4 mb-4">$p = \dfrac{1}{3}\dfrac{N}{V}m_0v_k^2$</p>
+            <p class="text-slate-600 text-sm text-center">$N$ – počet molekul plynu &nbsp;|&nbsp; $V$ – objem plynu &nbsp;|&nbsp; $m_0$ – hmotnost jedné molekuly &nbsp;|&nbsp; $v_k$ – střední kvadratická rychlost</p>
+        </div>
+    </section>
+
+    <!-- STAVOVÁ ROVNICE -->
+    <section id="cz-stavova" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Stavová rovnice ideálního plynu</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4"><strong>Stavové veličiny</strong> – veličiny popisující stav plynu: $p$ (tlak), $V$ (objem), $T$ (termodynamická teplota), $N$ (počet molekul), $m$ (hmotnost), $n$ (látkové množství), $M_m$ (molární hmotnost), ...</p>
+            <p class="text-slate-700 mb-4"><strong>Stavová rovnice</strong> – vztah mezi stavovými veličinami. Možné tvary:</p>
+            <div class="grid sm:grid-cols-3 gap-4 text-center formula-box">
+                <p class="bg-slate-100 rounded-lg py-3">$pV = NkT$</p>
+                <p class="bg-slate-100 rounded-lg py-3">$pV = nR_mT$</p>
+                <p class="bg-slate-100 rounded-lg py-3">$pV = \dfrac{m}{M_m}R_mT$</p>
+            </div>
+            <p class="text-center formula-box text-xl bg-cyan-100 rounded-xl py-3 mt-4">$\dfrac{p_1V_1}{T_1} = \dfrac{p_2V_2}{T_2} = \dfrac{pV}{T} = \text{konst.}$</p>
+            <p class="text-slate-600 text-sm mt-3 text-center">$R_m = 8{,}31\ \text{J}\cdot\text{K}^{-1}\text{mol}^{-1}$ — molární plynová konstanta</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div class="grid md:grid-cols-[1fr_150px] gap-6 items-center">
+                <div>
+                    <h3 class="font-bold text-cyan-800 mb-3">Molární hmotnost a Avogadrova konstanta</h3>
+                    <p class="text-slate-700 mb-3"><strong>Molární hmotnost</strong> látky = hmotnost jednoho molu látky.</p>
+                    <p class="text-slate-700 mb-3"><strong>Mol</strong> je látkové množství soustavy, která obsahuje právě $6{,}02214076 \cdot 10^{23}$ elementárních entit (atomů, molekul, iontů...) — od roku 2019 je toto číslo pevně stanovenou hodnotou Avogadrovy konstanty a definuje mol přímo (dříve byl mol vázán na počet atomů ve 12 gramech uhlíku $^{12}$C, čemuž přibližně odpovídá i dnes). Značka: <em>mol</em>.</p>
+                    <p class="text-slate-700 mb-2">Avogadrova konstanta $N_A$ udává počet elementárních entit v jednom molu látky.</p>
+                    <p class="text-center formula-box text-xl bg-orange-100 rounded-xl py-3">$N_A = 6{,}022 \cdot 10^{23}\ \text{mol}^{-1}$</p>
+                </div>
+                <figure class="photo"><img src="images-gaz/avogadro_portrait.jpg" alt="Amedeo Avogadro"><figcaption class="photo-cap">Amedeo Avogadro<br>1776–1856</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- ČTYŘI DĚJE -->
+    <section id="cz-deje" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">Stavové změny ideálního plynu</h2>
+        <p class="text-slate-600 mb-8">Ze stavové rovnice $\dfrac{p_1V_1}{T_1}=\dfrac{p_2V_2}{T_2}$ odvodíme čtyři speciální děje podle toho, která veličina zůstává konstantní.</p>
+
+        <!-- Izotermický -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <span class="badge bg-cyan-100 text-cyan-800 mb-3">T = konst.</span>
+            <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Izotermický děj</h3>
+            <p class="text-slate-700 mb-3">Je-li $T_1=T_2$, stavová rovnice dává: </p>
+            <p class="text-center formula-box text-xl bg-cyan-100 rounded-xl py-3 mb-3">$p_1V_1 = p_2V_2$ &nbsp; (Boyleův–Mariottův zákon)</p>
+            <p class="text-slate-700 mb-4">Izoterma je křivka vztahu $p = \text{konst.}/V$ — má tvar hyperboly. Její poloha v diagramu p-V závisí na teplotě.</p>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <figure class="photo"><img src="images-gaz/boyle_apparatus.png" alt="Experiment Boyle-Mariotte" class="!bg-white"></figure>
+                <figure class="photo"><img src="images-gaz/boyle_graph.png" alt="Graf Boyle-Mariotte"></figure>
+            </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <p class="text-slate-700 text-sm mb-2"><strong>1. termodynamický zákon:</strong> $Q = \Delta U + W'$</p>
+                <p class="text-slate-700 text-sm mb-2">Protože $T=\text{konst.} \Rightarrow E_0=\text{konst.} \Rightarrow \Delta U = 0 \Rightarrow Q = W'$</p>
+                <p class="text-slate-600 text-sm">Během izotermického děje se teplo přijaté plynem rovná práci vykonané plynem. Přijímá-li plyn teplo, rozpíná se, aby si udržel stálou teplotu; při izotermické kompresi musí být plyn chlazen.</p>
+            </div>
+        </div>
+
+        <!-- Izochorický -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <span class="badge bg-emerald-100 text-emerald-800 mb-3">V = konst.</span>
+            <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Izochorický děj</h3>
+            <p class="text-slate-700 mb-3">Je-li $V_1=V_2$: </p>
+            <p class="text-center formula-box text-xl bg-emerald-100 rounded-xl py-3 mb-3">$\dfrac{p_1}{T_1} = \dfrac{p_2}{T_2}$ &nbsp; (Charlesův zákon)</p>
+            <p class="text-slate-700 mb-4">Izochora je svislá úsečka v diagramu p-V; její poloha závisí na objemu.</p>
+            <div class="grid md:grid-cols-[1fr_150px] gap-4 items-center mb-4">
+                <figure class="photo"><img src="images-gaz/charles_graph.png" alt="Graf Charlesova zákona" class="!bg-white"></figure>
+                <figure class="photo"><img src="images-gaz/charles_portrait.jpg" alt="Jacques Charles"><figcaption class="photo-cap">J. A. C. Charles<br>1746–1823</figcaption></figure>
+            </div>
+            <p class="text-slate-600 text-sm mb-4">Charles byl první, kdo vzlétl s balónem naplněným vodíkem.</p>
+            <figure class="photo max-w-sm mx-auto mb-4"><img src="images-gaz/hydrogen_balloon.jpg" alt="Vodíkový balón (1783)"><figcaption class="photo-cap">Charlesův vodíkový balón, Paříž 1783</figcaption></figure>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <p class="text-slate-700 text-sm mb-2"><strong>1. termodynamický zákon:</strong> $V=\text{konst.} \Rightarrow W'=0 \Rightarrow Q = \Delta U$, pro $\Delta T=T_2-T_1$ platí $Q = c_V \cdot m \cdot \Delta T$</p>
+                <p class="text-slate-600 text-sm">Během izochorického děje se teplo přijaté plynem rovná změně jeho vnitřní energie. Přijímá-li plyn teplo, jeho teplota roste. $c_V$ je měrná tepelná kapacita plynu při stálém objemu.</p>
+            </div>
+        </div>
+
+        <!-- Izobarický -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <span class="badge bg-amber-100 text-amber-800 mb-3">p = konst.</span>
+            <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Izobarický děj</h3>
+            <p class="text-slate-700 mb-3">Je-li $p_1=p_2$: </p>
+            <p class="text-center formula-box text-xl bg-amber-100 rounded-xl py-3 mb-3">$\dfrac{V_1}{T_1} = \dfrac{V_2}{T_2}$ &nbsp; (Gay-Lussacův zákon)</p>
+            <p class="text-slate-700 mb-4">Izobara je vodorovná úsečka v diagramu p-V; její poloha závisí na tlaku.</p>
+            <div class="grid md:grid-cols-[1fr_150px] gap-4 items-center mb-4">
+                <figure class="photo"><img src="images-gaz/gaylussac_graph.png" alt="Graf Gay-Lussacova zákona" class="!bg-white"></figure>
+                <figure class="photo"><img src="images-gaz/gaylussac_portrait.jpg" alt="Louis Gay-Lussac"><figcaption class="photo-cap">L. J. Gay-Lussac<br>1778–1850</figcaption></figure>
+            </div>
+            <figure class="photo max-w-sm mx-auto mb-4"><img src="images-gaz/gaylussac_apparatus.png" alt="Experiment Gay-Lussac" class="!bg-white"></figure>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <p class="text-slate-700 text-sm mb-2"><strong>1. termodynamický zákon:</strong> $Q = \Delta U + W'$, pro $\Delta T=T_2-T_1$ platí $Q = c_p \cdot m \cdot \Delta T$</p>
+                <p class="text-slate-600 text-sm">Přijímá-li plyn teplo, jeho teplota roste a plyn zároveň koná práci. $c_p$ je měrná tepelná kapacita při stálém tlaku, přičemž vždy platí $c_p > c_V$.</p>
+            </div>
+        </div>
+
+        <!-- Adiabatický -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <span class="badge bg-rose-100 text-rose-800 mb-3">Q = 0</span>
+            <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Adiabatický děj</h3>
+            <p class="text-center formula-box text-xl bg-rose-100 rounded-xl py-3 mb-3">$p_1V_1^\kappa = p_2V_2^\kappa$ &nbsp; (Poissonův zákon)</p>
+            <p class="text-slate-700 mb-4">Adiabata je křivka vztahu $pV^\kappa=\text{konst.}$ — má strmější průběh než izoterma.</p>
+            <figure class="photo max-w-md mx-auto mb-4"><img src="images-gaz/adiabatic_vs_isotherm.png" alt="Adiabata vs izoterma"></figure>
+            <div class="grid md:grid-cols-[1fr_150px] gap-4 items-center mb-4">
+                <div class="bg-orange-50 border border-orange-200 rounded-xl p-4 text-center formula-box">
+                    $\kappa = \dfrac{c_p}{c_V}$ — Poissonova konstanta
+                </div>
+                <figure class="photo"><img src="images-gaz/carnot_portrait.jpg" alt="Siméon Denis Poisson"><figcaption class="photo-cap">S. D. Poisson<br>1781–1840</figcaption></figure>
+            </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-4">
+                <p class="text-slate-700 text-sm mb-2"><strong>1. termodynamický zákon:</strong> $Q=0 \Rightarrow \Delta U = W'$</p>
+                <p class="text-slate-600 text-sm">Plyn je tepelně izolován od okolí. Změna vnitřní energie může být způsobena pouze prací na plynu nebo plynem. Při kompresi teplota roste (okolí koná práci na plynu), při expanzi teplota klesá (plyn koná práci na okolí).</p>
+            </div>
+            <p class="text-slate-700 mb-3"><strong>Efekt föhnu</strong> — adiabatické stlačování a rozpínání vzduchu s nadmořskou výškou způsobuje typický teplotní rozdíl mezi návětrnou a závětrnou stranou hory.</p>
+            <figure class="photo max-w-lg mx-auto mb-4"><img src="images-gaz/foehn_effect.png" alt="Efekt föhnu" class="!bg-white"></figure>
+            <p class="text-slate-700 mb-2"><strong>Aplikace:</strong> ohřívání pumpičky na kolo při kompresi, ochlazení vzduchu unikajícího z pneumatiky, chlazení v ledničkách a klimatizacích, teplotní změny vzduchových hmot v meteorologii.</p>
+            <figure class="photo max-w-xs mx-auto mt-4"><img src="images-gaz/bike_pump_diagram.png" alt="Adiabatická komprese v pumpičce" class="!bg-white"></figure>
+        </div>
+    </section>
+
+    <!-- VAKUUM -->
+    <section id="cz-vakuum" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Plyn při nízkém a vysokém tlaku</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-cyan-800 mb-3">Střední volná dráha</h3>
+            <div class="grid md:grid-cols-[1fr_200px] gap-4 items-center mb-4">
+                <p class="text-slate-700">Střední volná dráha $\lambda$ částice je průměrná vzdálenost, kterou částice urazí mezi dvěma srážkami. Závisí na tlaku plynu (počtu molekul v daném objemu).</p>
+                <figure class="photo"><img src="images-gaz/mean_free_path.png" alt="Střední volná dráha" class="!bg-white"></figure>
+            </div>
+            <table class="w-full text-sm border-collapse">
+                <tr class="bg-slate-100"><th class="border p-2 text-left">Stav</th><th class="border p-2">Tlak [hPa]</th><th class="border p-2">Molekul/cm³</th><th class="border p-2">Střední volná dráha</th></tr>
+                <tr><td class="border p-2">okolní tlak</td><td class="border p-2 text-center">1013</td><td class="border p-2 text-center">2,7·10¹⁹</td><td class="border p-2 text-center">68 nm</td></tr>
+                <tr><td class="border p-2">hrubé vakuum</td><td class="border p-2 text-center">300 – 1</td><td class="border p-2 text-center">10¹⁹–10¹⁶</td><td class="border p-2 text-center">0,1–100 μm</td></tr>
+                <tr><td class="border p-2">jemné vakuum</td><td class="border p-2 text-center">1 – 10⁻³</td><td class="border p-2 text-center">10¹⁶–10¹³</td><td class="border p-2 text-center">0,1–100 mm</td></tr>
+                <tr><td class="border p-2">vysoké vakuum</td><td class="border p-2 text-center">10⁻³ – 10⁻⁷</td><td class="border p-2 text-center">10¹³–10⁹</td><td class="border p-2 text-center">10 cm – 1 km</td></tr>
+                <tr><td class="border p-2">ultra vysoké vakuum</td><td class="border p-2 text-center">10⁻⁷ – 10⁻¹²</td><td class="border p-2 text-center">10⁹–10⁴</td><td class="border p-2 text-center">1 km – 10⁵ km</td></tr>
+                <tr><td class="border p-2">extrémní vakuum</td><td class="border p-2 text-center">&lt;10⁻¹²</td><td class="border p-2 text-center">&lt;10⁴</td><td class="border p-2 text-center">&gt;10⁵ km</td></tr>
+            </table>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-cyan-800 mb-3">Vakuová pumpa</h3>
+            <p class="text-slate-700 mb-4">Vakuová pumpa je nástroj umožňující vytvořit vakuum, tj. snížit tlak plynu. Existují různé systémy vakuových pump; výběr závisí mimo jiné na požadované kvalitě vakua.</p>
+            <div class="grid sm:grid-cols-3 gap-4">
+                <figure class="photo"><img src="images-gaz/turbomolecular_pump.jpg" alt="Turbomolekulární vývěva"><figcaption class="photo-cap">turbomolekulární vývěva</figcaption></figure>
+                <figure class="photo"><img src="images-gaz/vane_pump.png" alt="Lopatková vývěva" class="!bg-white"><figcaption class="photo-cap">lopatková vývěva</figcaption></figure>
+                <figure class="photo"><img src="images-gaz/water_aspirator.png" alt="Vodní vývěva" class="!bg-white"><figcaption class="photo-cap">vodní vývěva</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRÁCE PLYNU -->
+    <section id="cz-prace" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Práce ideálního plynu</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-cyan-800 mb-3">Při stálém tlaku</h3>
+            <p class="text-center formula-box text-lg bg-slate-100 rounded-lg py-2 mb-3">$W' = F\cdot\Delta s = p\cdot S\cdot\Delta s = p\cdot\Delta V$</p>
+            <p class="text-center formula-box text-2xl bg-cyan-100 rounded-xl py-3 mb-4">$W' = p\cdot\Delta V$</p>
+            <div class="grid sm:grid-cols-2 gap-3 text-sm mb-4">
+                <p class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-center">$\Delta V > 0 \Rightarrow W'>0$ — práce vykonaná plynem</p>
+                <p class="bg-rose-50 border border-rose-200 rounded-lg p-3 text-center">$\Delta V < 0 \Rightarrow W'<0$ — práce vykonaná na plynu</p>
+            </div>
+            <figure class="photo max-w-xs mx-auto mb-4"><img src="images-gaz/piston_work.png" alt="Píst se svíčkou" class="!bg-white"></figure>
+            <p class="text-slate-600 text-sm">Práce ideálního plynu při přechodu z A do B izobarického děje je v diagramu p-V graficky vyjádřena obsahem obdélníku pod izobarou.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-cyan-800 mb-3">Při proměnném tlaku</h3>
+            <p class="text-slate-700">Práce plynu se rovná obsahu plochy pod křivkou $p=f(V)$ v diagramu p-V — tedy určitému integrálu tlaku podle objemu mezi počátečním a koncovým stavem.</p>
+        </div>
+    </section>
+
+    <!-- KRUHOVÝ DĚJ -->
+    <section id="cz-kruhovy" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Kruhový (cyklický) děj ideálního plynu</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4"><strong>Kruhový děj</strong> je posloupnost přeměn termodynamické, fyzikální nebo chemické soustavy taková, že konečný stav soustavy je totožný s počátečním stavem. V diagramu p-V se vyjadřuje uzavřenou křivkou.</p>
+            <figure class="photo max-w-xs mx-auto mb-4"><img src="images-gaz/cyclic_process.png" alt="Příklad kruhového děje" class="!bg-white"></figure>
+            <p class="text-slate-700 text-sm text-center">Příklad: A — izobarická expanze, B — izochorický děj, C — izobarická komprese, D — izochorický děj</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3">Práce plynu odpovídající celému cyklu je graficky rovna ploše uvnitř uzavřené křivky:</p>
+            <p class="text-center formula-box bg-slate-100 rounded-lg py-2">$W_{1\text{-}2\text{-}1} = W_{1\text{-}2} - |W_{2\text{-}1}|$</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-4">Protože konečný stav kruhového děje se rovná stavu počátečnímu, je změna vnitřní energie za celý cyklus nulová: <strong>ΔU = 0</strong></p>
+            <figure class="photo max-w-xs mx-auto mb-4"><img src="images-gaz/heat_engine_schematic.png" alt="Schéma tepelného stroje" class="!bg-white"></figure>
+            <p class="text-slate-700 mb-3">Během cyklu plyn přijme teplo $Q_1$ od teplého zdroje („ohřívače“) a odevzdá teplo $Q_2$ „chladiči“, přičemž $Q_1 > Q_2$. Rozdíl $Q_1-Q_2$ se přemění na práci $W'$ plynu:</p>
+            <p class="text-center formula-box text-lg bg-orange-100 rounded-xl py-3 mb-4">$W' = Q_1 - Q_2$</p>
+            <p class="text-slate-700 mb-2"><strong>Tepelná účinnost</strong> kruhového děje:</p>
+            <p class="text-center formula-box text-xl bg-cyan-100 rounded-xl py-3 mb-2">$\eta = \dfrac{W'}{Q_1} = \dfrac{Q_1-Q_2}{Q_1} = 1-\dfrac{Q_2}{Q_1}$</p>
+            <p class="text-rose-700 text-sm text-center font-semibold">Účinnost je vždy menší než 1!</p>
+        </div>
+    </section>
+
+    <!-- DRUHÝ ZÁKON TERMODYNAMIKY -->
+    <section id="cz-druhy" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Druhý zákon termodynamiky</h2>
+
+        <div class="grid md:grid-cols-3 gap-5 mb-6">
+            <div class="bg-blue-100 border border-blue-300 rounded-2xl p-5">
+                <figure class="photo mb-3"><img src="images-gaz/carnot_portrait.jpg" alt="Sadi Carnot"></figure>
+                <h3 class="font-bold text-blue-900 mb-2">Carnotovo tvrzení</h3>
+                <p class="text-sm text-blue-900">Vykonává-li stroj práci během cyklu, vyměňuje si nutně teplo se dvěma zdroji o různých teplotách.</p>
+            </div>
+            <div class="bg-teal-100 border border-teal-300 rounded-2xl p-5">
+                <figure class="photo mb-3"><img src="images-gaz/clausius_portrait.jpg" alt="Rudolf Clausius"></figure>
+                <h3 class="font-bold text-teal-900 mb-2">Clausiovo tvrzení</h3>
+                <p class="text-sm text-teal-900">Teplo nemůže samovolně přecházet z chladnějšího tělesa na teplejší.</p>
+            </div>
+            <div class="bg-yellow-100 border border-yellow-300 rounded-2xl p-5">
+                <figure class="photo mb-3"><img src="images-gaz/kelvin_portrait_gas.jpg" alt="William Thomson Kelvin"></figure>
+                <h3 class="font-bold text-yellow-900 mb-2">Thomson–Kelvin–Planckovo tvrzení</h3>
+                <p class="text-sm text-yellow-900">Nelze sestrojit stroj, který by po dokončení cyklu konal práci pouze na základě tepla čerpaného z jediného zdroje.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-2">To znamená, že každý motor musí být chlazen.</p>
+            <p class="text-slate-600 text-sm"><em>Příklad:</em> Je nemožné sestrojit loď, která by konala práci pouze z tepla čerpaného z oceánu (i kdyby byl teplý). Takový stroj by odpovídal tzv. <strong>perpetuum mobile druhého druhu</strong>.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-cyan-800 mb-3">Tepelné stroje</h3>
+            <p class="text-slate-700 mb-4">Tepelný stroj může plnit dvě hlavní funkce:</p>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700 mb-4">
+                <li><strong>přeměna tepla na práci</strong> (uvedení tělesa do pohybu pomocí tepla): parní stroj, spalovací motor (zážehový, dieselový, na alkohol či plyn v automobilech, proudové motory letadel)...</li>
+                <li><strong>přeměna práce na teplo</strong> (vytvoření tepla nebo chladu z pohybujícího se tělesa): tepelné čerpadlo, lednička, klimatizace...</li>
+            </ul>
+            <p class="text-slate-600 text-sm">Tepelné stroje jsou založeny na sadě termodynamických přeměn, kterými prochází tekutina cyklickým způsobem. Tato tekutina je soustavou, která si vyměňuje teplo a práci s okolím.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h4 class="font-bold text-cyan-800 mb-2">Parní stroj</h4>
+                <p class="text-slate-600 text-sm mb-3">Tekutinou je voda, ohřívaná uhelným kotlem, aby se odpařila (přívod tepla). Vodní pára uvádí do pohybu píst, který přes klikový mechanismus otáčí kolem (vznik práce).</p>
+                <figure class="photo"><img src="images-gaz/steam_engine.png" alt="Parní stroj" class="!bg-white"></figure>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h4 class="font-bold text-cyan-800 mb-2">Spalovací motor</h4>
+                <p class="text-slate-600 text-sm mb-3">V klasickém čtyřdobém zážehovém motoru dochází k výbuchu směsi vzduchu a paliva ve spalovací komoře pomocí jiskry ze zapalovací svíčky (přívod tepla), což uvádí do pohybu píst a otáčí koly (vznik práce).</p>
+                <figure class="photo"><img src="images-gaz/car_engine.png" alt="Spalovací motor" class="!bg-white"></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mt-6">
+            <h4 class="font-bold text-cyan-800 mb-3">Lednička, klimatizace, tepelné čerpadlo</h4>
+            <p class="text-slate-700 mb-4">Základní princip ledničky spočívá ve stlačení tekutiny pomocí kompresoru (přívod práce) a následném prudkém rozepnutí (snížení tlaku tekutiny), což způsobuje chlazení. Klimatizace fungují na stejném principu a tepelná čerpadla jsou v podstatě klimatizace pracující „obráceně“.</p>
+            <div class="grid sm:grid-cols-3 gap-4">
+                <figure class="photo"><img src="images-gaz/fridge_circuit_labeled.png" alt="Schéma chladicího okruhu"></figure>
+                <figure class="photo"><img src="images-gaz/fridge_compressor.jpg" alt="Kompresor ledničky"></figure>
+                <figure class="photo"><img src="images-gaz/fridge_open.jpg" alt="Otevřená lednička"></figure>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-cyan-800 to-blue-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-cyan-200 text-sm font-semibold tracking-wider uppercase">
+            <span>💨 Physique moléculaire et thermique</span><span>•</span><span>Partie 2.1</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Structure et propriétés des gaz</h1>
+        <p class="text-lg md:text-xl text-cyan-50 max-w-3xl leading-relaxed">
+            Le modèle du gaz parfait, l'équation d'état, les quatre processus, le travail du gaz, le processus cyclique et les machines thermiques.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('fr-ideal')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Gaz idéal</span>
+        <span onclick="scrollToId('fr-pression')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Pression</span>
+        <span onclick="scrollToId('fr-etat')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Équation d'état</span>
+        <span onclick="scrollToId('fr-processus')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Quatre processus</span>
+        <span onclick="scrollToId('fr-vide')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Vide</span>
+        <span onclick="scrollToId('fr-travail')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Travail du gaz</span>
+        <span onclick="scrollToId('fr-cyclique')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">Processus cyclique</span>
+        <span onclick="scrollToId('fr-deuxieme')" class="nav-pill hover:text-cyan-700 px-3 py-1 rounded-full hover:bg-cyan-50">2e principe</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- GAZ IDÉAL -->
+    <section id="fr-ideal" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Structure et propriétés des substances gazeuses</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-4"><strong>Le gaz idéal (parfait)</strong> = modèle (plus simple que les gaz réels) dont :</p>
+            <ol class="list-decimal ml-6 space-y-2 text-slate-700 mb-4">
+                <li>les dimensions des molécules sont négligeables par rapport à leurs distances moyennes</li>
+                <li>les interactions des molécules sont supposées inexistantes (sauf des collisions qui sont de très courte durée) — donc $E_p = 0$, $U = E_k$</li>
+                <li>les collisions sont élastiques</li>
+            </ol>
+            <p class="text-sm text-slate-500 italic mb-4">Note : la majorité des gaz réels se comporte comme un gaz idéal à conditions normales (0 °C, 1 atm).</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-gaz/gas_particles_box.png" alt="Mouvement désordonné des molécules"></figure>
+                <figure class="photo"><img src="images-gaz/elastic_collision.png" alt="Collision élastique des molécules" class="!bg-white"></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-cyan-800 mb-3">Distribution de Maxwell des vitesses moléculaires</h3>
+            <figure class="photo max-w-xl mx-auto mb-3"><img src="images-gaz/maxwell_distribution.png" alt="Distribution de Maxwell" class="!bg-white"></figure>
+            <p class="text-slate-700 text-sm text-center">$v_p$ – vitesse la plus probable &nbsp;&nbsp;|&nbsp;&nbsp; $v_k$ – vitesse quadratique moyenne</p>
+            <p class="text-slate-600 text-sm mt-2 text-center">Avec l'augmentation de la température, la distribution se déplace vers des vitesses plus élevées et s'aplatit.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-cyan-800 mb-3">Vitesse quadratique moyenne $v_k$</h3>
+            <p class="text-slate-700 mb-4">Si toutes les molécules avaient la vitesse $v_k$, leur énergie totale ne changerait pas.</p>
+            <p class="text-center formula-box text-lg bg-slate-100 rounded-lg py-3 mb-4">$E_0 = \dfrac{1}{2}m_0v_k^2 = \dfrac{3}{2}kT$</p>
+            <div class="grid sm:grid-cols-2 gap-4 items-center mb-4">
+                <div class="text-sm text-slate-600">
+                    $m_0$ – masse d'une molécule du gaz<br>
+                    $T$ – température thermodynamique du gaz<br>
+                    $k$ – constante de Boltzmann<br>
+                    $k = 1{,}38 \cdot 10^{-23}\ \text{J/K}$
+                </div>
+                <p class="text-center formula-box text-2xl bg-cyan-100 rounded-xl py-4">$v_k = \sqrt{\dfrac{3kT}{m_0}}$</p>
+            </div>
+            <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                <p class="font-semibold text-amber-900 mb-2">Exercice de la présentation :</p>
+                <p class="text-slate-700 text-sm mb-2">Trouver la vitesse quadratique moyenne de l'oxygène O₂ à la température de : a) −100°C, b) 0°C, c) 100°C.</p>
+                <p class="text-slate-600 text-sm">Solution : $v_k \approx$ 367 m/s (a), 461 m/s (b), 539 m/s (c) — voir le guide d'étude pour la démarche complète.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRESSION -->
+    <section id="fr-pression" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Pression du gaz idéal</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-4"><strong>Fluctuation de la pression dans le temps</strong> (à température constante) — la pression fluctue autour d'une valeur stable en raison des chocs des molécules individuelles contre la paroi du récipient.</p>
+            <figure class="photo max-w-xs mx-auto mb-6"><img src="images-gaz/pressure_particles_box.png" alt="Particules dans un récipient"></figure>
+            <h3 class="font-bold text-cyan-800 mb-3">Équation de pression du gaz idéal</h3>
+            <p class="text-center formula-box text-2xl bg-cyan-100 rounded-xl py-4 mb-4">$p = \dfrac{1}{3}\dfrac{N}{V}m_0v_k^2$</p>
+            <p class="text-slate-600 text-sm text-center">$N$ – nombre de molécules du gaz &nbsp;|&nbsp; $V$ – volume du gaz &nbsp;|&nbsp; $m_0$ – masse d'une molécule &nbsp;|&nbsp; $v_k$ – vitesse quadratique moyenne</p>
+        </div>
+    </section>
+
+    <!-- ÉQUATION D'ÉTAT -->
+    <section id="fr-etat" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Équation d'état du gaz idéal</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4"><strong>Grandeurs d'état</strong> – grandeurs qui décrivent l'état du gaz : $p$ (pression), $V$ (volume), $T$ (température thermodynamique), $N$ (nombre de molécules), $m$ (masse), $n$ (quantité de matière), $M_m$ (masse molaire), ...</p>
+            <p class="text-slate-700 mb-4"><strong>Équation d'état</strong> – relation entre les grandeurs d'état. Formes possibles :</p>
+            <div class="grid sm:grid-cols-3 gap-4 text-center formula-box">
+                <p class="bg-slate-100 rounded-lg py-3">$pV = NkT$</p>
+                <p class="bg-slate-100 rounded-lg py-3">$pV = nR_mT$</p>
+                <p class="bg-slate-100 rounded-lg py-3">$pV = \dfrac{m}{M_m}R_mT$</p>
+            </div>
+            <p class="text-center formula-box text-xl bg-cyan-100 rounded-xl py-3 mt-4">$\dfrac{p_1V_1}{T_1} = \dfrac{p_2V_2}{T_2} = \dfrac{pV}{T} = \text{const.}$</p>
+            <p class="text-slate-600 text-sm mt-3 text-center">$R_m = 8{,}31\ \text{J}\cdot\text{K}^{-1}\text{mol}^{-1}$ — constante molaire des gaz</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div class="grid md:grid-cols-[1fr_150px] gap-6 items-center">
+                <div>
+                    <h3 class="font-bold text-cyan-800 mb-3">Masse molaire et constante d'Avogadro</h3>
+                    <p class="text-slate-700 mb-3"><strong>Masse molaire</strong> d'une substance = masse d'une mole de la substance.</p>
+                    <p class="text-slate-700 mb-3">La <strong>mole</strong> est la quantité de matière d'un système contenant exactement $6{,}02214076 \cdot 10^{23}$ entités élémentaires (atomes, molécules, ions...) — depuis 2019, ce nombre est la valeur fixée de la constante d'Avogadro et définit directement la mole (auparavant, la mole était liée au nombre d'atomes contenus dans 12 grammes de carbone $^{12}$C, ce qui reste aujourd'hui encore approximativement exact). Son symbole est <em>mol</em>.</p>
+                    <p class="text-slate-700 mb-2">La <strong>constante d'Avogadro</strong> $N_A$ indique le nombre d'entités élémentaires contenues dans une mole de substance.</p>
+                    <p class="text-center formula-box text-xl bg-orange-100 rounded-xl py-3">$N_A = 6{,}022 \cdot 10^{23}\ \text{mol}^{-1}$</p>
+                </div>
+                <figure class="photo"><img src="images-gaz/avogadro_portrait.jpg" alt="Amedeo Avogadro"><figcaption class="photo-cap">Amedeo Avogadro<br>1776–1856</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUATRE PROCESSUS -->
+    <section id="fr-processus" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">Transformations d'état du gaz idéal</h2>
+        <p class="text-slate-600 mb-8">À partir de l'équation d'état $\dfrac{p_1V_1}{T_1}=\dfrac{p_2V_2}{T_2}$, on peut déduire quatre processus particuliers selon la grandeur qui reste constante.</p>
+
+        <!-- Isotherme -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <span class="badge bg-cyan-100 text-cyan-800 mb-3">T = const.</span>
+            <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Processus isotherme</h3>
+            <p class="text-slate-700 mb-3">Si $T_1=T_2$, l'équation d'état donne :</p>
+            <p class="text-center formula-box text-xl bg-cyan-100 rounded-xl py-3 mb-3">$p_1V_1 = p_2V_2$ &nbsp; (loi de Boyle–Mariotte)</p>
+            <p class="text-slate-700 mb-4">L'isotherme est une courbe de relation $p = \text{const.}/V$ — elle est de forme d'une hyperbole. Sa position dans le diagramme p-V dépend de la température.</p>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                <figure class="photo"><img src="images-gaz/boyle_apparatus.png" alt="Expérience de Boyle-Mariotte" class="!bg-white"></figure>
+                <figure class="photo"><img src="images-gaz/boyle_graph.png" alt="Graphique de Boyle-Mariotte"></figure>
+            </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <p class="text-slate-700 text-sm mb-2"><strong>1ère loi de la thermodynamique :</strong> $Q = \Delta U + W'$</p>
+                <p class="text-slate-700 text-sm mb-2">Puisque $T=\text{const.} \Rightarrow E_0=\text{const.} \Rightarrow \Delta U = 0 \Rightarrow Q = W'$</p>
+                <p class="text-slate-600 text-sm">Pendant le processus isotherme, la chaleur absorbée par le gaz est égale au travail effectué par le gaz. Si le gaz absorbe de la chaleur, il se détend pour que la température reste constante ; pendant la compression isotherme, le gaz doit être refroidi.</p>
+            </div>
+        </div>
+
+        <!-- Isochore -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <span class="badge bg-emerald-100 text-emerald-800 mb-3">V = const.</span>
+            <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Processus isochore</h3>
+            <p class="text-slate-700 mb-3">Si $V_1=V_2$ :</p>
+            <p class="text-center formula-box text-xl bg-emerald-100 rounded-xl py-3 mb-3">$\dfrac{p_1}{T_1} = \dfrac{p_2}{T_2}$ &nbsp; (loi de Charles)</p>
+            <p class="text-slate-700 mb-4">L'isochore est un segment vertical dans le diagramme p-V ; sa position dépend du volume.</p>
+            <div class="grid md:grid-cols-[1fr_150px] gap-4 items-center mb-4">
+                <figure class="photo"><img src="images-gaz/charles_graph.png" alt="Graphique de la loi de Charles" class="!bg-white"></figure>
+                <figure class="photo"><img src="images-gaz/charles_portrait.jpg" alt="Jacques Charles"><figcaption class="photo-cap">J. A. C. Charles<br>1746–1823</figcaption></figure>
+            </div>
+            <p class="text-slate-600 text-sm mb-4">Charles fut le premier à faire voler un ballon à gaz gonflé à l'hydrogène.</p>
+            <figure class="photo max-w-sm mx-auto mb-4"><img src="images-gaz/hydrogen_balloon.jpg" alt="Ballon à hydrogène (1783)"><figcaption class="photo-cap">Ballon à hydrogène de Charles, Paris 1783</figcaption></figure>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <p class="text-slate-700 text-sm mb-2"><strong>1ère loi de la thermodynamique :</strong> $V=\text{const.} \Rightarrow W'=0 \Rightarrow Q = \Delta U$, pour $\Delta T=T_2-T_1$ on a besoin $Q = c_V \cdot m \cdot \Delta T$</p>
+                <p class="text-slate-600 text-sm">Pendant le processus isochore, la chaleur absorbée par le gaz est égale à la variation de l'énergie interne du gaz. Si le gaz absorbe de la chaleur, sa température augmente. $c_V$ est la chaleur spécifique du gaz à volume constant.</p>
+            </div>
+        </div>
+
+        <!-- Isobare -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <span class="badge bg-amber-100 text-amber-800 mb-3">p = const.</span>
+            <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Processus isobare</h3>
+            <p class="text-slate-700 mb-3">Si $p_1=p_2$ :</p>
+            <p class="text-center formula-box text-xl bg-amber-100 rounded-xl py-3 mb-3">$\dfrac{V_1}{T_1} = \dfrac{V_2}{T_2}$ &nbsp; (loi de Gay-Lussac)</p>
+            <p class="text-slate-700 mb-4">L'isobare est un segment horizontal dans le diagramme p-V ; sa position dépend de la pression.</p>
+            <div class="grid md:grid-cols-[1fr_150px] gap-4 items-center mb-4">
+                <figure class="photo"><img src="images-gaz/gaylussac_graph.png" alt="Graphique de la loi de Gay-Lussac" class="!bg-white"></figure>
+                <figure class="photo"><img src="images-gaz/gaylussac_portrait.jpg" alt="Louis Gay-Lussac"><figcaption class="photo-cap">L. J. Gay-Lussac<br>1778–1850</figcaption></figure>
+            </div>
+            <figure class="photo max-w-sm mx-auto mb-4"><img src="images-gaz/gaylussac_apparatus.png" alt="Expérience de Gay-Lussac" class="!bg-white"></figure>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <p class="text-slate-700 text-sm mb-2"><strong>1ère loi de la thermodynamique :</strong> $Q = \Delta U + W'$, pour $\Delta T=T_2-T_1$ on a besoin $Q = c_p \cdot m \cdot \Delta T$</p>
+                <p class="text-slate-600 text-sm">Si le gaz absorbe de la chaleur, sa température augmente et le travail s'effectue par le gaz à la fois. $c_p$ est la chaleur spécifique du gaz à pression constante, et l'on a toujours $c_p > c_V$.</p>
+            </div>
+        </div>
+
+        <!-- Adiabatique -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <span class="badge bg-rose-100 text-rose-800 mb-3">Q = 0</span>
+            <h3 class="text-xl font-bold text-slate-900 mt-2 mb-3">Processus adiabatique</h3>
+            <p class="text-center formula-box text-xl bg-rose-100 rounded-xl py-3 mb-3">$p_1V_1^\kappa = p_2V_2^\kappa$ &nbsp; (loi de Poisson)</p>
+            <p class="text-slate-700 mb-4">L'adiabate est une courbe de relation $pV^\kappa=\text{const.}$ — elle a une pente plus abrupte que l'isotherme.</p>
+            <figure class="photo max-w-md mx-auto mb-4"><img src="images-gaz/adiabatic_vs_isotherm.png" alt="Adiabate vs isotherme"></figure>
+            <div class="grid md:grid-cols-[1fr_150px] gap-4 items-center mb-4">
+                <div class="bg-orange-50 border border-orange-200 rounded-xl p-4 text-center formula-box">
+                    $\kappa = \dfrac{c_p}{c_V}$ — constante de Poisson
+                </div>
+                <figure class="photo"><img src="images-gaz/carnot_portrait.jpg" alt="Siméon Denis Poisson"><figcaption class="photo-cap">S. D. Poisson<br>1781–1840</figcaption></figure>
+            </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-4">
+                <p class="text-slate-700 text-sm mb-2"><strong>1ère loi de la thermodynamique :</strong> $Q=0 \Rightarrow \Delta U = W'$</p>
+                <p class="text-slate-600 text-sm">Le gaz est thermiquement isolé du milieu extérieur. La variation de l'énergie interne ne peut être causée que par un travail sur ou par le gaz. Lors d'une compression, la température augmente (le milieu extérieur fournit du travail au gaz) ; lors d'une détente, la température diminue (le système fournit du travail au milieu extérieur).</p>
+            </div>
+            <p class="text-slate-700 mb-3"><strong>Effet de foehn</strong> — la compression et la détente adiabatique de l'air avec l'altitude provoquent une différence de température caractéristique entre le versant au vent et le versant sous le vent d'une montagne.</p>
+            <figure class="photo max-w-lg mx-auto mb-4"><img src="images-gaz/foehn_effect.png" alt="Effet de foehn" class="!bg-white"></figure>
+            <p class="text-slate-700 mb-2"><strong>Applications :</strong> l'échauffement de la pompe à vélo lors de la compression, le refroidissement de l'air qui sort lorsqu'on dégonfle un pneu, les réfrigérateurs et climatiseurs, les variations de température des masses d'air en météorologie.</p>
+            <figure class="photo max-w-xs mx-auto mt-4"><img src="images-gaz/bike_pump_diagram.png" alt="Compression adiabatique dans une pompe" class="!bg-white"></figure>
+        </div>
+    </section>
+
+    <!-- VIDE -->
+    <section id="fr-vide" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Gaz à basse pression et à haute pression</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-cyan-800 mb-3">Libre parcours moyen</h3>
+            <div class="grid md:grid-cols-[1fr_200px] gap-4 items-center mb-4">
+                <p class="text-slate-700">Le libre parcours moyen $\lambda$ d'une particule est la distance moyenne que parcourt une particule entre deux collisions. Il dépend de la pression du gaz (nombre de molécules dans le volume donné).</p>
+                <figure class="photo"><img src="images-gaz/mean_free_path.png" alt="Libre parcours moyen" class="!bg-white"></figure>
+            </div>
+            <table class="w-full text-sm border-collapse">
+                <tr class="bg-slate-100"><th class="border p-2 text-left">État</th><th class="border p-2">Pression [hPa]</th><th class="border p-2">Molécules/cm³</th><th class="border p-2">Libre parcours moyen</th></tr>
+                <tr><td class="border p-2">pression ambiante</td><td class="border p-2 text-center">1013</td><td class="border p-2 text-center">2,7·10¹⁹</td><td class="border p-2 text-center">68 nm</td></tr>
+                <tr><td class="border p-2">vide relatif</td><td class="border p-2 text-center">300 – 1</td><td class="border p-2 text-center">10¹⁹–10¹⁶</td><td class="border p-2 text-center">0,1–100 μm</td></tr>
+                <tr><td class="border p-2">vide</td><td class="border p-2 text-center">1 – 10⁻³</td><td class="border p-2 text-center">10¹⁶–10¹³</td><td class="border p-2 text-center">0,1–100 mm</td></tr>
+                <tr><td class="border p-2">vide poussé</td><td class="border p-2 text-center">10⁻³ – 10⁻⁷</td><td class="border p-2 text-center">10¹³–10⁹</td><td class="border p-2 text-center">10 cm – 1 km</td></tr>
+                <tr><td class="border p-2">vide très poussé</td><td class="border p-2 text-center">10⁻⁷ – 10⁻¹²</td><td class="border p-2 text-center">10⁹–10⁴</td><td class="border p-2 text-center">1 km – 10⁵ km</td></tr>
+                <tr><td class="border p-2">vide extrême</td><td class="border p-2 text-center">&lt;10⁻¹²</td><td class="border p-2 text-center">&lt;10⁴</td><td class="border p-2 text-center">&gt;10⁵ km</td></tr>
+            </table>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-cyan-800 mb-3">Pompe à vide</h3>
+            <p class="text-slate-700 mb-4">Une pompe à vide est un outil permettant de faire le vide, c'est-à-dire de diminuer la pression d'un gaz. Il existe différents systèmes de pompes à vide, dont le choix dépend entre autres de la qualité du vide désirée.</p>
+            <div class="grid sm:grid-cols-3 gap-4">
+                <figure class="photo"><img src="images-gaz/turbomolecular_pump.jpg" alt="Pompe à vide turbomoléculaire"><figcaption class="photo-cap">pompe à vide turbomoléculaire</figcaption></figure>
+                <figure class="photo"><img src="images-gaz/vane_pump.png" alt="Pompe à palettes" class="!bg-white"><figcaption class="photo-cap">pompe à palettes à excentrique</figcaption></figure>
+                <figure class="photo"><img src="images-gaz/water_aspirator.png" alt="Trompe à eau" class="!bg-white"><figcaption class="photo-cap">trompe à eau</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRAVAIL DU GAZ -->
+    <section id="fr-travail" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Travail du gaz idéal</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-cyan-800 mb-3">À pression constante</h3>
+            <p class="text-center formula-box text-lg bg-slate-100 rounded-lg py-2 mb-3">$W' = F\cdot\Delta s = p\cdot S\cdot\Delta s = p\cdot\Delta V$</p>
+            <p class="text-center formula-box text-2xl bg-cyan-100 rounded-xl py-3 mb-4">$W' = p\cdot\Delta V$</p>
+            <div class="grid sm:grid-cols-2 gap-3 text-sm mb-4">
+                <p class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-center">$\Delta V > 0 \Rightarrow W'>0$ — travail effectué par le gaz</p>
+                <p class="bg-rose-50 border border-rose-200 rounded-lg p-3 text-center">$\Delta V < 0 \Rightarrow W'<0$ — travail effectué sur le gaz</p>
+            </div>
+            <figure class="photo max-w-xs mx-auto mb-4"><img src="images-gaz/piston_work.png" alt="Piston avec bougie" class="!bg-white"></figure>
+            <p class="text-slate-600 text-sm">Le travail du gaz idéal pendant le passage de A à B d'un processus isobare est, dans le diagramme p-V, graphiquement exprimé par l'aire du rectangle au-dessous de l'isobare.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-cyan-800 mb-3">À pression variable</h3>
+            <p class="text-slate-700">Le travail du gaz est égal à l'aire au-dessous de la courbe $p=f(V)$ dans le diagramme p-V — c'est-à-dire à l'intégrale définie de la pression selon le volume entre l'état initial et l'état final.</p>
+        </div>
+    </section>
+
+    <!-- PROCESSUS CYCLIQUE -->
+    <section id="fr-cyclique" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Processus cyclique du gaz idéal</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Un <strong>processus cyclique</strong> est une suite de transformations d'un système thermodynamique, physique ou chimique, telles que l'état final du système soit identique à l'état initial. Il s'exprime dans le diagramme p-V par une courbe fermée.</p>
+            <figure class="photo max-w-xs mx-auto mb-4"><img src="images-gaz/cyclic_process.png" alt="Exemple de processus cyclique" class="!bg-white"></figure>
+            <p class="text-slate-700 text-sm text-center">Exemple : A — expansion isobare, B — processus isochore, C — compression isobare, D — processus isochore</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3">Le travail du gaz correspondant à un cycle complet est graphiquement égal à l'aire de l'intérieur de la courbe fermée :</p>
+            <p class="text-center formula-box bg-slate-100 rounded-lg py-2">$W_{1\text{-}2\text{-}1} = W_{1\text{-}2} - |W_{2\text{-}1}|$</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-4">Puisque l'état final est égal à l'état initial d'un cycle du gaz, la variation de l'énergie interne est nulle : <strong>ΔU = 0</strong></p>
+            <figure class="photo max-w-xs mx-auto mb-4"><img src="images-gaz/heat_engine_schematic.png" alt="Schéma d'une machine thermique" class="!bg-white"></figure>
+            <p class="text-slate-700 mb-3">Pendant un cycle, le gaz absorbe la chaleur $Q_1$ d'une source chaude (« réchauffeur ») et libère la chaleur $Q_2$ à un « réfrigérant », avec $Q_1 > Q_2$. La différence $Q_1-Q_2$ est transformée en travail $W'$ du gaz :</p>
+            <p class="text-center formula-box text-lg bg-orange-100 rounded-xl py-3 mb-4">$W' = Q_1 - Q_2$</p>
+            <p class="text-slate-700 mb-2">Le <strong>rendement thermique</strong> du processus cyclique :</p>
+            <p class="text-center formula-box text-xl bg-cyan-100 rounded-xl py-3 mb-2">$\eta = \dfrac{W'}{Q_1} = \dfrac{Q_1-Q_2}{Q_1} = 1-\dfrac{Q_2}{Q_1}$</p>
+            <p class="text-rose-700 text-sm text-center font-semibold">Le rendement est toujours inférieur à 1 !</p>
+        </div>
+    </section>
+
+    <!-- DEUXIÈME PRINCIPE -->
+    <section id="fr-deuxieme" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Deuxième principe de la thermodynamique</h2>
+
+        <div class="grid md:grid-cols-3 gap-5 mb-6">
+            <div class="bg-blue-100 border border-blue-300 rounded-2xl p-5">
+                <figure class="photo mb-3"><img src="images-gaz/carnot_portrait.jpg" alt="Sadi Carnot"></figure>
+                <h3 class="font-bold text-blue-900 mb-2">Énoncé de Carnot</h3>
+                <p class="text-sm text-blue-900">Si une machine fournit du travail au cours d'un cycle, elle échange nécessairement de la chaleur avec 2 sources de températures différentes.</p>
+            </div>
+            <div class="bg-teal-100 border border-teal-300 rounded-2xl p-5">
+                <figure class="photo mb-3"><img src="images-gaz/clausius_portrait.jpg" alt="Rudolf Clausius"></figure>
+                <h3 class="font-bold text-teal-900 mb-2">Énoncé de Clausius</h3>
+                <p class="text-sm text-teal-900">La chaleur ne peut pas passer spontanément d'un corps froid vers un corps chaud.</p>
+            </div>
+            <div class="bg-yellow-100 border border-yellow-300 rounded-2xl p-5">
+                <figure class="photo mb-3"><img src="images-gaz/kelvin_portrait_gas.jpg" alt="William Thomson Kelvin"></figure>
+                <h3 class="font-bold text-yellow-900 mb-2">Énoncé de Kelvin-Planck</h3>
+                <p class="text-sm text-yellow-900">On ne peut construire de machine qui, au bout d'un cycle, produit du travail en empruntant de la chaleur à une seule source.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-2">Cela veut dire que tout moteur devra être refroidi.</p>
+            <p class="text-slate-600 text-sm"><em>Exemple :</em> Il est impossible de créer un bateau qui fabrique du travail à partir de la chaleur extraite de l'océan (même si celui-ci était chaud). Ce type de moteur correspond à un « <strong>mouvement perpétuel de deuxième espèce</strong> ».</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-cyan-800 mb-3">Les machines thermiques</h3>
+            <p class="text-slate-700 mb-4">Une machine thermique peut répondre à 2 fonctions principales :</p>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700 mb-4">
+                <li><strong>transformer la chaleur en travail</strong> (faire bouger un objet à partir de chaleur) : machine à vapeur, moteur thermique (moteur à explosion, essence, diesel, alcool ou gaz dans les voitures, moteurs à réaction dans les avions)...</li>
+                <li><strong>transformer le travail en chaleur</strong> (faire du chaud ou du froid à partir d'un objet qui bouge) : pompe à chaleur, réfrigérateur, climatiseur...</li>
+            </ul>
+            <p class="text-slate-600 text-sm">Les machines thermiques sont basées sur un ensemble de transformations thermodynamiques que l'on vient faire subir à un fluide de manière cyclique. Ce fluide est alors un système qui va venir échanger de la chaleur et du travail avec le milieu extérieur.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h4 class="font-bold text-cyan-800 mb-2">Machine à vapeur</h4>
+                <p class="text-slate-600 text-sm mb-3">Le fluide est de l'eau, chauffée à l'aide d'une chaudière à charbon pour l'évaporer (apport de chaleur). La vapeur d'eau actionne un piston qui entraîne une roue par l'intermédiaire d'un vilebrequin (création de travail).</p>
+                <figure class="photo"><img src="images-gaz/steam_engine.png" alt="Machine à vapeur" class="!bg-white"></figure>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h4 class="font-bold text-cyan-800 mb-2">Moteur à explosion</h4>
+                <p class="text-slate-600 text-sm mb-3">Dans un moteur à essence 4 temps classique, on fait exploser un mélange air/carburant dans une chambre à combustion avec une étincelle fournie par les bougies (apport de chaleur), ce qui entraîne le mouvement du piston et fait tourner les roues (création de travail).</p>
+                <figure class="photo"><img src="images-gaz/car_engine.png" alt="Moteur à explosion" class="!bg-white"></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mt-6">
+            <h4 class="font-bold text-cyan-800 mb-3">Réfrigérateur, climatiseur, pompe à chaleur</h4>
+            <p class="text-slate-700 mb-4">Le principe général du réfrigérateur est de compresser un fluide à l'aide d'un compresseur (apport de travail) et d'effectuer ensuite une détente (diminuer brutalement la pression du fluide) pour faire du froid. Les climatiseurs sont basés sur le même principe et les pompes à chaleur sont simplement des climatiseurs qui fonctionnent « à l'envers ».</p>
+            <div class="grid sm:grid-cols-3 gap-4">
+                <figure class="photo"><img src="images-gaz/fridge_circuit_labeled.png" alt="Schéma du circuit de réfrigération"></figure>
+                <figure class="photo"><img src="images-gaz/fridge_compressor.jpg" alt="Compresseur de réfrigérateur"></figure>
+                <figure class="photo"><img src="images-gaz/fridge_open.jpg" alt="Réfrigérateur ouvert"></figure>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Module éducatif de Physique · Structure et propriétés des gaz · d'après le support « Physique moléculaire et thermique 2–1 »</p>
+</footer>
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+        if (cz.classList.contains('hidden')) {
+            cz.classList.remove('hidden'); fr.classList.add('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        } else {
+            fr.classList.remove('hidden'); cz.classList.add('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        }
+        if (window.MathJax) { setTimeout(() => MathJax.typesetPromise && MathJax.typesetPromise(), 50); }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struktura a vlastnosti kapalin / Structure et propriétés des liquides</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 720px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        .MathJax_Display { margin: 1em 0; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: left; }
+        th { background: #f5f5f5; }
+        .law-box { background: #eff6ff; border-left: 4px solid #1d4ed8; padding: 12px 16px; margin: 1rem 0; border-radius: 6px; }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Struktura a vlastnosti kapalin</h1>
+        <p><strong>Předmět:</strong> Fyzika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola (pokročilejší učivo)
+        </p>
+
+        <h2>1. Povrchová vrstva kapalin</h2>
+        <p>Molekuly kapaliny na sebe navzájem působí přitažlivými silami, jejichž velikost s rostoucí vzdáleností klesá — od jisté vzdálenosti, tzv. <strong>poloměru molekulového působení</strong> $r_m$ (řádově $10^{-9}\,\text{m}$), jsou tyto síly zanedbatelné. Kulová oblast o poloměru $r_m$ kolem molekuly se nazývá <strong>sféra molekulového působení</strong>.</p>
+        <p>Je-li sféra molekulového působení dané molekuly celá uvnitř kapaliny, jsou přitažlivé síly rozloženy souměrně a jejich výslednice je nulová. Je-li vzdálenost molekuly od volné hladiny menší než $r_m$, sféra zasahuje i do vzduchu (kde molekul je mnohem méně), takže výsledná síla $\vec F_V$ na molekulu je nenulová a míří kolmo k hladině <strong>dovnitř kapaliny</strong>.</p>
+        <p><strong>Povrchová vrstva</strong> je vrstva molekul, jejichž vzdálenost od volné hladiny je menší než $r_m$; její tloušťka je řádově $10^{-9}\,\text{m}$.</p>
+
+        <h2>2. Povrchová energie a povrchové napětí</h2>
+        <p>Přemístění molekuly z nitra kapaliny do povrchové vrstvy vyžaduje práci proti síle $\vec F_V$ — molekuly v povrchové vrstvě mají proto větší potenciální energii. <strong>Povrchová energie</strong> $E_S$ je energie povrchové vrstvy a je součástí vnitřní energie kapaliny.</p>
+        <p>Pro týž objem kapaliny v různých nádobách se liší velikost volné hladiny $S$, a tedy i povrchová energie:</p>
+        $$ \Delta E_S = \sigma \cdot \Delta S $$
+        <p>kde $\sigma$ je <strong>povrchové napětí</strong> ($\text{N}\cdot\text{m}^{-1}$) — závisí na druhu kapaliny, na okolním prostředí a na teplotě (s rostoucí teplotou klesá). Orientačně: voda $\approx 73\,\text{mN/m}$, rtuť $\approx 486\,\text{mN/m}$, ethanol $\approx 22\,\text{mN/m}$ (při pokojové teplotě).</p>
+        <p>Kapalina směřuje k nejmenší možné ploše povrchu (minimální povrchové energii) — proto mají volné kapky (mlha, rosa) kulový tvar, neboť koule má ze všech těles daného objemu nejmenší povrch.</p>
+
+        <h4>Vzorový příklad 1</h4>
+        <p><strong>Zadání:</strong> Drobné kapičky mlhy o poloměru $r=2{,}0\,\mu\text{m}$ splynou v jednu kapku o poloměru $R=2{,}0\,\text{mm}$. Určete změnu povrchové energie ($\sigma=73\,\text{mN/m}$).</p>
+        <p><strong>Řešení:</strong></p>
+        <ol>
+            <li>Ze zachování objemu: $n r^3 = R^3 \Rightarrow n = (R/r)^3 = 10^9$ kapiček.</li>
+            <li>$S_1 = n\cdot4\pi r^2$, $S_2 = 4\pi R^2$</li>
+            <li>$\Delta E_S = \sigma(S_2-S_1) \approx -3{,}7\,\text{mJ}$</li>
+        </ol>
+        <p><strong>Odpověď:</strong> Povrchová energie se zmenší přibližně o $3{,}7\,\text{mJ}$ — energie se uvolní, protože jedna velká kapka má mnohem menší celkový povrch než miliarda drobných kapiček stejného celkového objemu.</p>
+
+        <h2>3. Povrchová síla</h2>
+        <p>Mýdlová blána v drátěném rámu s pohyblivou tyčkou (délky $l$) se smršťuje a působí na tyčku <strong>povrchovou silou</strong> $\vec F$, kolmou na tyčku a tečnou k povrchu blány. Zavěsíme-li na tyčku závaží o tíze $F_G$, v rovnováze (blána má dvě plochy):</p>
+        $$ 2F = F_G \;\Rightarrow\; F = \frac{F_G}{2} $$
+        <p>Posunutím tyčky o $\Delta x$ se vykoná práce $W=2F\Delta x$, která se rovná přírůstku povrchové energie obou ploch $\Delta E_S = \sigma\cdot 2l\Delta x$. Odtud:</p>
+        $$ F = \sigma l \qquad \Rightarrow \qquad \sigma = \frac{F}{l} $$
+        <p>Povrchová síla je přímo úměrná délce hranice, podél které povrch působí. Tento vztah zároveň definuje povrchové napětí jako sílu na jednotku délky.</p>
+
+        <h4>Vzorový příklad 2</h4>
+        <p><strong>Zadání:</strong> Jakou hmotnost lze zavěsit na pohyblivou tyčku širokou $l=8\,\text{cm}$ v rámu s mýdlovou blánou ($\sigma=25\,\text{mN/m}$), aby zůstala v rovnováze?</p>
+        <p><strong>Řešení:</strong> $F=\sigma l = 0{,}025\cdot 0{,}08 = 2{,}0\cdot10^{-3}\,\text{N}$. Blána má dvě plochy, proto $F_G = 2F = 4{,}0\cdot10^{-3}\,\text{N}$, a $m = F_G/g \approx 0{,}41\,\text{g}$.</p>
+
+        <h2>4. Jevy na rozhraní kapalina – pevná látka</h2>
+        <p>V blízkosti stěny nádoby je hladina zakřivená v důsledku sil mezi molekulami kapaliny, stěny a vzduchu. Na molekulu u stěny působí $\vec F_1$ (od kapaliny), $\vec F_2$ (od stěny), $\vec F_3$ (od vzduchu, zanedbatelná) a tíha $\vec F_G$ (zanedbatelná). Výsledná síla $\vec F_V=\vec F_1+\vec F_2$ musí být v rovnováze kolmá k volné hladině, což určuje tvar hladiny:</p>
+        <ul>
+            <li>je-li $\vec F_V$ orientována <strong>ven</strong> z kapaliny → hladina je <strong>konkávní</strong> (voda–sklo, kapalina smáčí stěny),</li>
+            <li>je-li $\vec F_V$ orientována <strong>do</strong> kapaliny → hladina je <strong>konvexní</strong> (rtuť–sklo, kapalina nesmáčí stěny).</li>
+        </ul>
+        <p><strong>Úhel smáčení</strong> $\vartheta$ (úhel mezi povrchem kapaliny a stěnou) rozlišuje oba případy: $0\le\vartheta<\pi/2$ (smáčení, konkávní), $\pi/2<\vartheta\le\pi$ (nesmáčení, konvexní).</p>
+
+        <h2>5. Kapilarita</h2>
+        <p>V úzké trubici (kapiláře) se zakřivení hladiny projeví znatelným vzestupem nebo poklesem hladiny vůči širší nádobě. Zakřivený povrch vyvolává <strong>kapilární tlak</strong>:</p>
+        $$ p_k = \frac{2\sigma}{R} $$
+        <p>kde $R$ je vnitřní poloměr kapiláry (resp. poloměr křivosti menisku). Výška $h$ vzestupu (nebo poklesu) hladiny se ustálí, jakmile se kapilární tlak vyrovná hydrostatickému tlaku sloupce kapaliny $p_h=\rho gh$:</p>
+        $$ h = \frac{2\sigma}{\rho g R} $$
+        <p>Výška $h$ je nepřímo úměrná poloměru trubice — čím tenčí kapilára, tím vyšší vzestup (nebo hlubší pokles). Kapalina, která stěny smáčí, v kapiláře <strong>vystoupá</strong>; kapalina, která stěny nesmáčí, v kapiláře <strong>klesne</strong>.</p>
+        <p>Kapilarita se projevuje všude kolem nás: vzlínání vody do utěrky nebo do knotu lampy, vzlínání vlhkosti ve zdech, vzlínání kapaliny vlásečnicemi (xylémem) rostlin.</p>
+
+        <h4>Vzorový příklad 3</h4>
+        <p><strong>Zadání:</strong> Jaký je vnitřní průměr kapiláry, vystoupí-li v ní voda do výšky $h=2{,}0\,\text{cm}$ nad volnou hladinu v širší nádobě? ($\sigma=73\,\text{mN/m}$, $\rho=1000\,\text{kg/m}^3$, $g=9{,}81\,\text{m/s}^2$)</p>
+        <p><strong>Řešení:</strong> $R = \dfrac{2\sigma}{\rho g h} = \dfrac{2\cdot0{,}073}{1000\cdot9{,}81\cdot0{,}02} \approx 7{,}44\cdot10^{-4}\,\text{m}$, tedy $d=2R\approx 1{,}5\,\text{mm}$.</p>
+
+        <h4>Vzorový příklad 4</h4>
+        <p><strong>Zadání:</strong> Jaký je tlak vzduchu v kulové bublině o průměru $1\,\mu\text{m}$ v hloubce $5\,\text{m}$ pod hladinou vody při atmosférickém tlaku $1000\,\text{hPa}$? ($\sigma=73\,\text{mN/m}$)</p>
+        <p><strong>Řešení:</strong> Celkový tlak uvnitř bubliny je součtem atmosférického tlaku, hydrostatického tlaku v hloubce a kapilárního tlaku:</p>
+        $$ p = p_a + \rho g h + \frac{2\sigma}{R} = 10^5 + 1000\cdot9{,}81\cdot5 + \frac{2\cdot0{,}073}{5\cdot10^{-7}} \approx 4{,}41\cdot10^5\,\text{Pa} \approx 0{,}44\,\text{MPa} $$
+        <p><strong>Odpověď:</strong> U tak drobné bubliny (průměr jen $1\,\mu\text{m}$) je kapilární tlak dokonce dominantní složkou celkového tlaku.</p>
+
+        <h2>6. Teplotní objemová roztažnost kapalin</h2>
+        <p>Kapalina nemá stálý tvar, proto se u ní sleduje pouze <strong>objemová roztažnost</strong>:</p>
+        $$ V = V_0(1+\beta\Delta t) $$
+        <p>kde $\beta$ je teplotní součinitel objemové roztažnosti ($\text{K}^{-1}$). Orientačně: voda $\approx 2{,}1\cdot10^{-4}\,\text{K}^{-1}$, rtuť $\approx 1{,}82\cdot10^{-4}\,\text{K}^{-1}$, ethanol $\approx 1{,}1\cdot10^{-3}\,\text{K}^{-1}$.</p>
+        <p><strong>Anomálie vody:</strong> mezi $0\,^\circ\text{C}$ a přibližně $4\,^\circ\text{C}$ se voda při zahřívání naopak smršťuje; teprve nad touto teplotou se rozpíná normálně. Voda má tedy při $\approx 4\,^\circ\text{C}$ svou největší hustotu, což vysvětluje, proč led plave na hladině a proč jezera nezamrzají do dna.</p>
+        <p>Kapalinové (rtuťové, lihové) teploměry využívají toho, že objemová roztažnost kapaliny je mnohem větší než roztažnost skleněné nádobky.</p>
+
+        <h4>Vzorový příklad 5</h4>
+        <p><strong>Zadání:</strong> Baňka lihového teploměru obsahuje $V_0=1{,}0\,\text{cm}^3$ ethanolu při $20\,^\circ\text{C}$. O kolik se zvětší objem při ohřátí na $40\,^\circ\text{C}$? ($\beta\approx1{,}1\cdot10^{-3}\,\text{K}^{-1}$)</p>
+        <p><strong>Řešení:</strong> $\Delta V = V_0\beta\Delta t = 1{,}0\cdot1{,}1\cdot10^{-3}\cdot20 \approx 0{,}022\,\text{cm}^3$.</p>
+
+        <h2>7. Povrchově aktivní látky (tenzidy)</h2>
+        <p><strong>Tenzidy (surfaktanty)</strong> jsou látky, které při rozpuštění v kapalině výrazně snižují její povrchové napětí. Molekula tenzidu má <strong>hydrofilní hlavu</strong> (orientuje se do vody) a <strong>hydrofobní ocas</strong> (orientuje se k vzduchu nebo tuku); molekuly se proto hromadí v povrchové vrstvě a oslabují mezimolekulární síly, což snižuje $\sigma$.</p>
+        <p>Typickým příkladem jsou mýdla a saponáty — proto mýdlová blána ($\sigma\approx25$–$30\,\text{mN/m}$) vydrží mnohem déle než blána z čisté vody. Dalším příkladem je <strong>plicní surfaktant</strong>, přirozená látka snižující povrchové napětí v plicních sklípcích a bránící jejich zhroucení při výdechu.</p>
+
+        <h2>8. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Sféra molekulového působení:</strong> $r_m\approx10^{-9}\,\text{m}$; uvnitř kapaliny výslednice sil na molekulu je nulová, v povrchové vrstvě míří dovnitř kapaliny.</li>
+            <li><strong>Povrchové napětí:</strong> $\Delta E_S=\sigma\Delta S$; kapalina minimalizuje povrch (kulové kapky).</li>
+            <li><strong>Povrchová síla:</strong> $F=\sigma l$, $\sigma=F/l$.</li>
+            <li><strong>Smáčení:</strong> konkávní meniskus (smáčení, $0\le\vartheta<\pi/2$) vs. konvexní meniskus (nesmáčení, $\pi/2<\vartheta\le\pi$).</li>
+            <li><strong>Kapilarita:</strong> $p_k=2\sigma/R$, $h=2\sigma/(\rho g R)$ — výška nepřímo úměrná poloměru trubice.</li>
+            <li><strong>Objemová roztažnost kapalin:</strong> $V=V_0(1+\beta\Delta t)$; anomálie vody (max. hustota při $\approx4\,^\circ\text{C}$).</li>
+            <li><strong>Tenzidy:</strong> snižují povrchové napětí (hydrofilní hlava + hydrofobní ocas); mýdla, plicní surfaktant.</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>Structure et propriétés des liquides</h1>
+        <p><strong>Matière :</strong> Physique
+            <strong>Niveau :</strong> Lycée (notions avancées)
+        </p>
+
+        <h2>1. Couche superficielle des liquides</h2>
+        <p>Les molécules d'un liquide agissent l'une sur l'autre par des forces attractives dont la grandeur diminue avec la distance — à partir d'une certaine distance, le <strong>rayon d'action moléculaire</strong> $r_m$ (de l'ordre de $10^{-9}\,\text{m}$), ces forces sont négligeables. La région sphérique de rayon $r_m$ autour d'une molécule s'appelle la <strong>sphère d'action moléculaire</strong>.</p>
+        <p>Si la sphère d'action moléculaire d'une molécule est entièrement à l'intérieur du liquide, les forces attractives sont réparties symétriquement et leur résultante est nulle. Si la distance de la molécule à la surface libre est inférieure à $r_m$, la sphère déborde dans l'air (où il y a beaucoup moins de molécules), donc la force résultante $\vec F_V$ sur la molécule est non nulle et orientée perpendiculairement à la surface, <strong>vers l'intérieur du liquide</strong>.</p>
+        <p>La <strong>couche superficielle</strong> est la couche de molécules dont la distance à la surface libre est inférieure à $r_m$ ; son épaisseur est de l'ordre de $10^{-9}\,\text{m}$.</p>
+
+        <h2>2. Énergie et tension superficielles</h2>
+        <p>Déplacer une molécule de l'intérieur du liquide vers la couche superficielle exige un travail contre la force $\vec F_V$ — les molécules de la couche superficielle ont donc une énergie potentielle plus grande. L'<strong>énergie superficielle</strong> $E_S$ est l'énergie de la couche superficielle et fait partie de l'énergie interne du liquide.</p>
+        <p>Pour un même volume de liquide dans des récipients différents, l'aire de la surface libre $S$ diffère, et donc l'énergie superficielle aussi :</p>
+        $$ \Delta E_S = \sigma \cdot \Delta S $$
+        <p>où $\sigma$ est la <strong>tension superficielle</strong> ($\text{N}\cdot\text{m}^{-1}$) — elle dépend de la nature du liquide, du milieu environnant et de la température (elle diminue quand la température augmente). À titre indicatif : eau $\approx 73\,\text{mN/m}$, mercure $\approx 486\,\text{mN/m}$, éthanol $\approx 22\,\text{mN/m}$ (à température ambiante).</p>
+        <p>Le liquide tend vers la plus petite surface possible (énergie superficielle minimale) — c'est pourquoi les gouttes libres (brouillard, rosée) ont une forme sphérique, la sphère ayant la plus petite surface parmi tous les solides de volume donné.</p>
+
+        <h4>Exemple type 1</h4>
+        <p><strong>Énoncé :</strong> De petites gouttelettes de brouillard de rayon $r=2{,}0\,\mu\text{m}$ fusionnent en une seule goutte de rayon $R=2{,}0\,\text{mm}$. Déterminez la variation de l'énergie superficielle ($\sigma=73\,\text{mN/m}$).</p>
+        <p><strong>Solution :</strong></p>
+        <ol>
+            <li>Conservation du volume : $n r^3 = R^3 \Rightarrow n = (R/r)^3 = 10^9$ gouttelettes.</li>
+            <li>$S_1 = n\cdot4\pi r^2$, $S_2 = 4\pi R^2$</li>
+            <li>$\Delta E_S = \sigma(S_2-S_1) \approx -3{,}7\,\text{mJ}$</li>
+        </ol>
+        <p><strong>Réponse :</strong> L'énergie superficielle diminue d'environ $3{,}7\,\text{mJ}$ — cette énergie est libérée, car une grosse goutte possède une surface totale bien plus petite qu'un milliard de gouttelettes de même volume total.</p>
+
+        <h2>3. Force superficielle</h2>
+        <p>Une pellicule de savon tendue dans un cadre métallique avec une tige mobile (de longueur $l$) se contracte et exerce sur la tige une <strong>force superficielle</strong> $\vec F$, perpendiculaire à la tige et tangente à la surface de la pellicule. Si l'on suspend à la tige un objet de poids $F_G$, à l'équilibre (la pellicule a deux faces) :</p>
+        $$ 2F = F_G \;\Rightarrow\; F = \frac{F_G}{2} $$
+        <p>En déplaçant la tige de $\Delta x$, le travail effectué $W=2F\Delta x$ est égal à l'accroissement de l'énergie superficielle des deux faces $\Delta E_S = \sigma\cdot 2l\Delta x$. D'où :</p>
+        $$ F = \sigma l \qquad \Rightarrow \qquad \sigma = \frac{F}{l} $$
+        <p>La force superficielle est directement proportionnelle à la longueur de la frontière le long de laquelle la surface agit. Cette relation définit également la tension superficielle comme une force par unité de longueur.</p>
+
+        <h4>Exemple type 2</h4>
+        <p><strong>Énoncé :</strong> Quelle masse peut-on suspendre à une tige mobile de largeur $l=8\,\text{cm}$ dans un cadre avec une pellicule de savon ($\sigma=25\,\text{mN/m}$), pour qu'elle reste en équilibre ?</p>
+        <p><strong>Solution :</strong> $F=\sigma l = 0{,}025\cdot 0{,}08 = 2{,}0\cdot10^{-3}\,\text{N}$. La pellicule ayant deux faces, $F_G = 2F = 4{,}0\cdot10^{-3}\,\text{N}$, d'où $m = F_G/g \approx 0{,}41\,\text{g}$.</p>
+
+        <h2>4. Phénomènes à la frontière liquide – solide</h2>
+        <p>Près de la paroi du récipient, la surface est courbée en raison des forces entre les molécules du liquide, de la paroi et de l'air. Sur une molécule près de la paroi agissent $\vec F_1$ (du liquide), $\vec F_2$ (de la paroi), $\vec F_3$ (de l'air, négligeable) et le poids $\vec F_G$ (négligeable). La force résultante $\vec F_V=\vec F_1+\vec F_2$ doit, à l'équilibre, être perpendiculaire à la surface libre, ce qui détermine la forme de la surface :</p>
+        <ul>
+            <li>si $\vec F_V$ est orientée vers l'<strong>extérieur</strong> du liquide → la surface est <strong>concave</strong> (eau–verre, le liquide mouille les parois),</li>
+            <li>si $\vec F_V$ est orientée vers l'<strong>intérieur</strong> du liquide → la surface est <strong>convexe</strong> (mercure–verre, le liquide ne mouille pas les parois).</li>
+        </ul>
+        <p>L'<strong>angle de mouillage</strong> $\vartheta$ (angle entre la surface du liquide et la paroi) distingue les deux cas : $0\le\vartheta<\pi/2$ (mouillage, concave), $\pi/2<\vartheta\le\pi$ (non-mouillage, convexe).</p>
+
+        <h2>5. Capillarité</h2>
+        <p>Dans un tube étroit (capillaire), la courbure de la surface se traduit par une élévation ou un abaissement notable par rapport à un récipient plus large. La surface courbée provoque une <strong>pression capillaire</strong> :</p>
+        $$ p_k = \frac{2\sigma}{R} $$
+        <p>où $R$ est le rayon intérieur de la capillaire (ou le rayon de courbure du ménisque). La hauteur $h$ d'élévation (ou d'abaissement) se stabilise lorsque la pression capillaire s'équilibre avec la pression hydrostatique de la colonne de liquide $p_h=\rho gh$ :</p>
+        $$ h = \frac{2\sigma}{\rho g R} $$
+        <p>La hauteur $h$ est inversement proportionnelle au rayon du tube — plus la capillaire est fine, plus l'élévation (ou l'abaissement) est importante. Un liquide qui mouille les parois <strong>monte</strong> dans la capillaire ; un liquide qui ne les mouille pas <strong>descend</strong>.</p>
+        <p>La capillarité se manifeste partout autour de nous : l'eau monte dans un torchon ou dans la mèche d'une lampe, l'humidité monte dans les murs, les liquides montent par le xylème des plantes.</p>
+
+        <h4>Exemple type 3</h4>
+        <p><strong>Énoncé :</strong> Quel est le diamètre intérieur d'une capillaire dans laquelle l'eau monte à une hauteur $h=2{,}0\,\text{cm}$ au-dessus de la surface libre dans un récipient plus large ? ($\sigma=73\,\text{mN/m}$, $\rho=1000\,\text{kg/m}^3$, $g=9{,}81\,\text{m/s}^2$)</p>
+        <p><strong>Solution :</strong> $R = \dfrac{2\sigma}{\rho g h} = \dfrac{2\cdot0{,}073}{1000\cdot9{,}81\cdot0{,}02} \approx 7{,}44\cdot10^{-4}\,\text{m}$, soit $d=2R\approx 1{,}5\,\text{mm}$.</p>
+
+        <h4>Exemple type 4</h4>
+        <p><strong>Énoncé :</strong> Quelle est la pression de l'air dans une bulle sphérique de diamètre $1\,\mu\text{m}$ à $5\,\text{m}$ de profondeur sous la surface de l'eau, la pression atmosphérique étant de $1000\,\text{hPa}$ ? ($\sigma=73\,\text{mN/m}$)</p>
+        <p><strong>Solution :</strong> La pression totale dans la bulle est la somme de la pression atmosphérique, de la pression hydrostatique à cette profondeur et de la pression capillaire :</p>
+        $$ p = p_a + \rho g h + \frac{2\sigma}{R} = 10^5 + 1000\cdot9{,}81\cdot5 + \frac{2\cdot0{,}073}{5\cdot10^{-7}} \approx 4{,}41\cdot10^5\,\text{Pa} \approx 0{,}44\,\text{MPa} $$
+        <p><strong>Réponse :</strong> Pour une bulle aussi petite (diamètre de seulement $1\,\mu\text{m}$), la pression capillaire est même la composante dominante de la pression totale.</p>
+
+        <h2>6. Dilatation volumique thermique des liquides</h2>
+        <p>Un liquide n'a pas de forme propre, donc seule la <strong>dilatation volumique</strong> est considérée :</p>
+        $$ V = V_0(1+\beta\Delta t) $$
+        <p>où $\beta$ est le coefficient de dilatation volumique thermique ($\text{K}^{-1}$). À titre indicatif : eau $\approx 2{,}1\cdot10^{-4}\,\text{K}^{-1}$, mercure $\approx 1{,}82\cdot10^{-4}\,\text{K}^{-1}$, éthanol $\approx 1{,}1\cdot10^{-3}\,\text{K}^{-1}$.</p>
+        <p><strong>Anomalie de l'eau :</strong> entre $0\,^\circ\text{C}$ et environ $4\,^\circ\text{C}$, l'eau se contracte au contraire lorsqu'on la chauffe ; ce n'est qu'au-delà de cette température qu'elle se dilate normalement. L'eau a donc sa masse volumique maximale vers $4\,^\circ\text{C}$, ce qui explique pourquoi la glace flotte et pourquoi les lacs ne gèlent pas jusqu'au fond.</p>
+        <p>Les thermomètres à liquide (mercure, alcool) exploitent le fait que la dilatation volumique du liquide est bien plus grande que celle du réservoir en verre.</p>
+
+        <h4>Exemple type 5</h4>
+        <p><strong>Énoncé :</strong> Le réservoir d'un thermomètre à alcool contient $V_0=1{,}0\,\text{cm}^3$ d'éthanol à $20\,^\circ\text{C}$. De combien son volume augmente-t-il lorsqu'on le chauffe à $40\,^\circ\text{C}$ ? ($\beta\approx1{,}1\cdot10^{-3}\,\text{K}^{-1}$)</p>
+        <p><strong>Solution :</strong> $\Delta V = V_0\beta\Delta t = 1{,}0\cdot1{,}1\cdot10^{-3}\cdot20 \approx 0{,}022\,\text{cm}^3$.</p>
+
+        <h2>7. Substances tensioactives (tensioactifs)</h2>
+        <p>Les <strong>tensioactifs (surfactants)</strong> sont des substances qui, dissoutes dans un liquide, abaissent fortement sa tension superficielle. Une molécule de tensioactif possède une <strong>tête hydrophile</strong> (orientée vers l'eau) et une <strong>queue hydrophobe</strong> (orientée vers l'air ou la graisse) ; les molécules s'accumulent donc dans la couche superficielle et affaiblissent les forces intermoléculaires, ce qui diminue $\sigma$.</p>
+        <p>Les savons et détergents en sont l'exemple typique — c'est pourquoi une pellicule de savon ($\sigma\approx25$–$30\,\text{mN/m}$) dure bien plus longtemps qu'une pellicule d'eau pure. Autre exemple : le <strong>surfactant pulmonaire</strong>, substance naturelle qui abaisse la tension superficielle dans les alvéoles pulmonaires et empêche leur affaissement à l'expiration.</p>
+
+        <h2>8. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Sphère d'action moléculaire :</strong> $r_m\approx10^{-9}\,\text{m}$ ; à l'intérieur du liquide, la résultante des forces sur une molécule est nulle, dans la couche superficielle elle est orientée vers l'intérieur.</li>
+            <li><strong>Tension superficielle :</strong> $\Delta E_S=\sigma\Delta S$ ; le liquide minimise sa surface (gouttes sphériques).</li>
+            <li><strong>Force superficielle :</strong> $F=\sigma l$, $\sigma=F/l$.</li>
+            <li><strong>Mouillage :</strong> ménisque concave (mouillage, $0\le\vartheta<\pi/2$) vs. ménisque convexe (non-mouillage, $\pi/2<\vartheta\le\pi$).</li>
+            <li><strong>Capillarité :</strong> $p_k=2\sigma/R$, $h=2\sigma/(\rho g R)$ — hauteur inversement proportionnelle au rayon du tube.</li>
+            <li><strong>Dilatation volumique des liquides :</strong> $V=V_0(1+\beta\Delta t)$ ; anomalie de l'eau (masse volumique max. vers $4\,^\circ\text{C}$).</li>
+            <li><strong>Tensioactifs :</strong> abaissent la tension superficielle (tête hydrophile + queue hydrophobe) ; savons, surfactant pulmonaire.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang) {
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (lang === 'cs') {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else if (lang === 'fr') {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangLiquides', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangLiquides');
+            if (saved === 'fr') { setLanguage('fr'); } else { setLanguage('cs'); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs'); });
+            btnFr.addEventListener('click', function() { setLanguage('fr'); });
+        })();
+    </script>
+
+</body>
+</html>
