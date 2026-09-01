@@ -2,9 +2,9 @@
 title: MFWeb francouzské sekce GP
 ---
 
-Studijní materiály, zadání a aktuality k matematice a fyzice.
+Podpůrné studijní materiály k výuce matematiky a fyziky.
 
-- [[aktuality/index|Aktuality]] – co je nového, změny v rozvrhu, termíny testů
-- [[matematika/index|Matematika]] – teorie, příklady, odkazy podle ročníků
-- [[fyzika/index|Fyzika]] – teorie, laboratorní práce, odkazy podle ročníků
+- [[hodnocení/index|Hodnocení]] – principy a požadavky ke klasifikaci
+- [[matematika/index|Matematika]] – teorie, příklady, odkazy podle témat
+- [[fyzika/index|Fyzika]] – teorie, příklady, odkazy podle témat
 - [[o-sekci|O sekci]] – k čemu je tento web a jak se v něm orientovat
