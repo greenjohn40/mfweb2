@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistika 1 — Základní pojmy — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f5f5f4; border-left: 4px solid #78716c; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Statistika 1 — Základní pojmy</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-statistika1.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Co mají společného volby, počasí a školní testy?</h2>
+    <p>Ve zprávách slyšíme, že <b>„nezaměstnanost klesla o 0,5 procentního bodu"</b>, ve škole dostáváme přehled o tom, kolik žáků mělo z pololetí jedničku, a před volbami vídáme grafy s procenty jednotlivých stran. Ve všech těchto situacích pracujeme se stejným nástrojem — se <b>statistikou</b>: sbíráme data o velkém množství jednotek (lidí, měření, výrobků), tato data zpracováváme a snažíme se z nich vyvodit srozumitelné závěry.</p>
+    <p>Tato kapitola má tři části: nejdřív se naučíme <b>základní pojmy</b> (soubor, znak, četnost), pak si ukážeme, jak data <b>zobrazit graficky</b>, a nakonec probereme, jak grafy a procenta <b>správně číst</b> — a jak si při jejich čtení nenechat namluvit něco, co z dat vůbec neplyne.</p>
+</section>
+
+<section id="sec-soubor" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Statistický soubor a jednotka</h2>
+    <p><b>Statistický soubor</b> je množina všech jednotek, které nás zajímají. <b>Statistická jednotka</b> je jeden konkrétní prvek tohoto souboru. <b>Rozsah souboru</b> $n$ je počet všech jednotek v souboru.</p>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Ve třídě 3.B zjišťujeme, jaký sport mají žáci nejraději.</p>
+        <ul class="list-disc list-inside space-y-1 text-sm">
+            <li>Statistický soubor = všichni žáci třídy 3.B</li>
+            <li>Statistická jednotka = jeden konkrétní žák</li>
+            <li>Rozsah souboru: $n=24$</li>
+        </ul>
+    </div>
+</section>
+
+<section id="sec-znak" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Statistický znak</h2>
+    <p><b>Statistický znak</b> je vlastnost, kterou u jednotek zjišťujeme. Dělí se na:</p>
+    <div class="def-grid grid sm:grid-cols-2 gap-3">
+        <div class="card">
+            <p class="font-semibold text-violet-800 mb-1">Kvalitativní znak</p>
+            <p class="text-sm">Hodnoty vyjádřené slovně (nečíselně) — např. oblíbený sport, barva očí, obor studia.</p>
+        </div>
+        <div class="card">
+            <p class="font-semibold text-violet-800 mb-1">Kvantitativní znak</p>
+            <p class="text-sm">Hodnoty vyjádřené číslem — dál se dělí na <b>nespojitý (diskrétní)</b> (může nabývat jen některých hodnot, typicky celočíselných — např. počet sourozenců) a <b>spojitý</b> (může nabývat libovolné hodnoty v intervalu — např. výška, čas, hmotnost).</p>
+        </div>
+    </div>
+    <p><b>Vlastní příklad:</b> U 18 žáků zjišťujeme počet sourozenců — jde o kvantitativní nespojitý znak, protože počet sourozenců je vždy celé nezáporné číslo: $0,1,2,3,\dots$</p>
+</section>
+
+<section id="sec-cetnosti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Absolutní a relativní četnost</h2>
+    <p>Hodnotu, kterou znak u konkrétní jednotky nabývá, značíme $x_i$. <b>Absolutní četnost</b> $n_i$ udává, kolik jednotek souboru má hodnotu znaku rovnu $x_i$. <b>Relativní četnost</b> $p_i$ udává, jakou část celého souboru tyto jednotky tvoří:</p>
+    <div class="card text-center">
+        $$p_i=\frac{n_i}{n}, \qquad \sum_{i} p_i = 1 \;(\text{tj. }100\%)$$
+    </div>
+    <p><b>Vlastní příklad (navazuje na počet sourozenců u 18 žáků):</b></p>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">$x_i$ (počet sourozenců)</th><th class="p-1">$n_i$</th><th class="p-1">$p_i$</th><th class="p-1">$p_i$ v %</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">0</td><td class="p-1">5</td><td class="p-1">$\frac{5}{18}$</td><td class="p-1">$27{,}8\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">1</td><td class="p-1">8</td><td class="p-1">$\frac{4}{9}$</td><td class="p-1">$44{,}4\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">2</td><td class="p-1">3</td><td class="p-1">$\frac{1}{6}$</td><td class="p-1">$16{,}7\%$</td></tr>
+                <tr><td class="p-1">3</td><td class="p-1">2</td><td class="p-1">$\frac{1}{9}$</td><td class="p-1">$11{,}1\%$</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Součet relativních četností musí vždy vyjít přesně $1$ (tedy $100\%$) — pokud vyjde jinak, je někde chyba ve výpočtu nebo v datech.
+    </div>
+</section>
+
+<section id="sec-kumulativni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kumulativní četnost</h2>
+    <p><b>Kumulativní četnost</b> $N_i$ udává, kolik jednotek má hodnotu znaku <b>menší nebo rovnu</b> $x_i$ — je to postupný součet absolutních četností. Dává smysl jen u znaků, kde má pořadí hodnot smysl (tedy u kvantitativních znaků).</p>
+    <p><b>Vlastní příklad:</b> Známky z matematického testu u 25 žáků:</p>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">známka $x_i$</th><th class="p-1">$n_i$</th><th class="p-1">kumulativní $N_i$</th><th class="p-1">kumulativní $p_i$</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">1</td><td class="p-1">4</td><td class="p-1">4</td><td class="p-1">$16\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">2</td><td class="p-1">9</td><td class="p-1">13</td><td class="p-1">$52\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">3</td><td class="p-1">7</td><td class="p-1">20</td><td class="p-1">$80\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">4</td><td class="p-1">3</td><td class="p-1">23</td><td class="p-1">$92\%$</td></tr>
+                <tr><td class="p-1">5</td><td class="p-1">2</td><td class="p-1">25</td><td class="p-1">$100\%$</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="text-sm">Kumulativní četnost u známky 3 ($N_3=20$) říká: <b>20 žáků z 25</b> mělo známku 3 nebo lepší.</p>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Kumulativní četnost nemá smysl počítat u kvalitativních znaků (např. u oblíbeného sportu) — tam hodnoty nemají žádné přirozené pořadí, takže „součet menších nebo rovných hodnot" nedává žádný význam.
+    </div>
+</section>
+
+<section id="sec-intervaly" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Třídění do intervalů</h2>
+    <p>Pokud kvantitativní znak nabývá mnoha různých (často spojitých) hodnot, je nepřehledné vypisovat četnost pro každou jednotlivou hodnotu — sloučíme proto blízké hodnoty do <b>intervalů</b>. Počet intervalů $k$ lze odhadnout např. Sturgesovým pravidlem $k\approx1+3{,}3\log n$ nebo pravidlem $k\approx\sqrt n$. Každému intervalu přiřadíme jeho <b>střed</b> — hodnotu uprostřed intervalu, kterou při dalších výpočtech používáme jako zástupnou hodnotu za celý interval.</p>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Hmotnost (kg) 30 štěňat na chovatelské přehlídce:</p>
+        <p class="text-sm mb-2">Rozpětí hodnot: od $1{,}8$ do $8{,}0$ kg. Podle Sturgesova pravidla $k\approx1+3{,}3\log 30\approx5{,}9$, zvolíme tedy $k=5$ intervalů šířky $1{,}5$ kg:</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">interval [kg]</th><th class="p-1">střed</th><th class="p-1">$n_i$</th><th class="p-1">$p_i$</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">$\langle1{,}4;2{,}9)$</td><td class="p-1">$2{,}15$</td><td class="p-1">3</td><td class="p-1">$10\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">$\langle2{,}9;4{,}4)$</td><td class="p-1">$3{,}65$</td><td class="p-1">6</td><td class="p-1">$20\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">$\langle4{,}4;5{,}9)$</td><td class="p-1">$5{,}15$</td><td class="p-1">14</td><td class="p-1">$46{,}7\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">$\langle5{,}9;7{,}4)$</td><td class="p-1">$6{,}65$</td><td class="p-1">6</td><td class="p-1">$20\%$</td></tr>
+                <tr><td class="p-1">$\langle7{,}4;8{,}9\rangle$</td><td class="p-1">$8{,}15$</td><td class="p-1">1</td><td class="p-1">$3{,}3\%$</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Tahle konkrétní tabulka (3, 6, 14, 6, 1) má typický „zvonovitý" tvar — nejvíc štěňat je někde uprostřed rozpětí hmotností a k oběma krajům jich ubývá. S podobným tvarem rozdělení se ve statistice setkáváme velmi často.
+    </div>
+</section>
+
+<section id="sec-sloupcovy-spojnicovy" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Sloupcový a spojnicový diagram</h2>
+    <p><b>Sloupcový diagram</b> znázorňuje četnosti pomocí svislých (nebo vodorovných) sloupců, které se navzájem nedotýkají — hodí se pro kvalitativní i kvantitativní nespojité znaky.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Vlastní příklad:</b> Oblíbený hudební žánr u 20 studentů.</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="190.0" x2="50.0" y2="190.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="194.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="190.0" x2="360.0" y2="190.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="135.0" x2="50.0" y2="135.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="139.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="135.0" x2="360.0" y2="135.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="80.0" x2="50.0" y2="80.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="84.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="80.0" x2="360.0" y2="80.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="58.7" y="80.0" width="44.6" height="165.0" fill="#7c3aed" opacity="0.85"/><text x="81.0" y="74.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">6</text><text x="81.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">pop</text><rect x="120.7" y="107.5" width="44.6" height="137.5" fill="#7c3aed" opacity="0.85"/><text x="143.0" y="101.5" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">5</text><text x="143.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">rock</text><rect x="182.7" y="135.0" width="44.6" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="205.0" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="205.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">rap</text><rect x="244.7" y="190.0" width="44.6" height="55.0" fill="#7c3aed" opacity="0.85"/><text x="267.0" y="184.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="267.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">klasika</text><rect x="306.7" y="162.5" width="44.6" height="82.5" fill="#7c3aed" opacity="0.85"/><text x="329.0" y="156.5" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">3</text><text x="329.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">jazz</text></svg>
+    </div>
+    <p><b>Spojnicový diagram</b> spojuje jednotlivé hodnoty úsečkami — hodí se hlavně pro znázornění <b>vývoje v čase</b>, kdy nás zajímá trend (růst, pokles).</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Vlastní příklad:</b> Počet členů školního kroužku robotiky v jednotlivých letech.</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="255.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="255.0" x2="50.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="259.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="209.0" x2="50.0" y2="209.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="213.0" font-size="11" fill="#57534e" text-anchor="end">5</text><line x1="50.0" y1="209.0" x2="360.0" y2="209.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="163.0" x2="50.0" y2="163.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="167.0" font-size="11" fill="#57534e" text-anchor="end">10</text><line x1="50.0" y1="163.0" x2="360.0" y2="163.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="117.0" x2="50.0" y2="117.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="121.0" font-size="11" fill="#57534e" text-anchor="end">15</text><line x1="50.0" y1="117.0" x2="360.0" y2="117.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="71.0" x2="50.0" y2="71.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="75.0" font-size="11" fill="#57534e" text-anchor="end">20</text><line x1="50.0" y1="71.0" x2="360.0" y2="71.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">25</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="50.0" y1="255.0" x2="50.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2021</text><line x1="153.3" y1="255.0" x2="153.3" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="153.3" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2022</text><line x1="256.7" y1="255.0" x2="256.7" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="256.7" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2023</text><line x1="360.0" y1="255.0" x2="360.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2024</text><line x1="50.0" y1="181.4" x2="153.3" y2="135.4" stroke="#7c3aed" stroke-width="3"/><line x1="153.3" y1="135.4" x2="256.7" y2="80.2" stroke="#7c3aed" stroke-width="3"/><line x1="256.7" y1="80.2" x2="360.0" y2="34.2" stroke="#7c3aed" stroke-width="3"/><circle cx="50.0" cy="181.4" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="50.0" y="170.4" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">8</text><circle cx="153.3" cy="135.4" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="153.3" y="124.4" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">13</text><circle cx="256.7" cy="80.2" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="256.7" y="69.2" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">19</text><circle cx="360.0" cy="34.2" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="360.0" y="23.2" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">24</text></svg>
+    </div>
+</section>
+
+<section id="sec-histogram" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Histogram</h2>
+    <p><b>Histogram</b> je speciální typ sloupcového diagramu pro intervalově tříděné (obvykle spojité) znaky — sloupce se na rozdíl od klasického sloupcového diagramu <b>vzájemně dotýkají</b>, protože intervaly na sebe plynule navazují.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Vlastní příklad (navazuje na tabulku hmotností štěňat výše):</b></p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="197.9" x2="50.0" y2="197.9" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="201.9" font-size="11" fill="#57534e" text-anchor="end">3</text><line x1="50.0" y1="197.9" x2="360.0" y2="197.9" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="150.7" x2="50.0" y2="150.7" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="154.7" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="150.7" x2="360.0" y2="150.7" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="103.6" x2="50.0" y2="103.6" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="107.6" font-size="11" fill="#57534e" text-anchor="end">9</text><line x1="50.0" y1="103.6" x2="360.0" y2="103.6" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="56.4" x2="50.0" y2="56.4" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="60.4" font-size="11" fill="#57534e" text-anchor="end">12</text><line x1="50.0" y1="56.4" x2="360.0" y2="56.4" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="50.0" y="197.9" width="62.0" height="47.1" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="81.0" y="191.9" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">3</text><rect x="112.0" y="150.7" width="62.0" height="94.3" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="143.0" y="144.7" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">6</text><rect x="174.0" y="25.0" width="62.0" height="220.0" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="205.0" y="19.0" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">14</text><rect x="236.0" y="150.7" width="62.0" height="94.3" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="267.0" y="144.7" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">6</text><rect x="298.0" y="229.3" width="62.0" height="15.7" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="329.0" y="223.3" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">1</text><line x1="50.0" y1="245.0" x2="50.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">1.4</text><line x1="112.0" y1="245.0" x2="112.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="112.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">2.9</text><line x1="174.0" y1="245.0" x2="174.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="174.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">4.4</text><line x1="236.0" y1="245.0" x2="236.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="236.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">5.9</text><line x1="298.0" y1="245.0" x2="298.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="298.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">7.4</text><line x1="360.0" y1="245.0" x2="360.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">8.9</text></svg>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Histogram je jen grafické znázornění tabulky, kterou jsme si sestavili už v části o třídění do intervalů — sloupce odpovídají přesně stejným pěti intervalům a stejným četnostem.
+    </div>
+</section>
+
+<section id="sec-kruhovy" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kruhový diagram</h2>
+    <p><b>Kruhový diagram</b> znázorňuje relativní četnosti pomocí výsečí kruhu — celý kruh ($360°$) odpovídá celému souboru ($100\%$). Úhel výseče odpovídající kategorii s relativní četností $p_i$ spočítáme jako:</p>
+    <div class="card text-center">
+        $$\alpha_i = p_i\cdot360°$$
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: anketa „Chutnají ti obědy ve školní jídelně?"</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-ano" min="0" max="100" value="62" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="ano-val">62</span> % Ano</span>
+        </div>
+        <p class="text-sm mb-3">Úhel výseče „Ano": <span id="pie-formula">$62\%\cdot360°=223{,}2°$</span></p>
+        <svg viewBox="0 0 260 180" class="w-full max-w-xs mx-auto" xmlns="http://www.w3.org/2000/svg">
+            <path id="wedge-ano" fill="#7c3aed" stroke="white" stroke-width="2"/>
+            <path id="wedge-ne" fill="#d97706" stroke="white" stroke-width="2"/>
+            <rect x="8" y="152" width="12" height="12" fill="#7c3aed"/>
+            <text x="24" y="162" font-size="12" fill="#57534e">Ano</text>
+            <rect x="70" y="152" width="12" height="12" fill="#d97706"/>
+            <text x="86" y="162" font-size="12" fill="#57534e">Ne</text>
+        </svg>
+    </div>
+    <p><b>Vlastní příklad (statický):</b> Způsob dopravy do školy u 32 žáků.</p>
+    <div class="card">
+        <svg viewBox="0 0 320 320" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><path d="M160.0,125.0 L160.0,30.0 A95,95 0 0 1 253.2,143.5 Z" fill="#7c3aed" stroke="white" stroke-width="2"/><text x="205.5" y="87.6" font-size="13" fill="white" text-anchor="middle" font-weight="700">28%</text><path d="M160.0,125.0 L253.2,143.5 A95,95 0 0 1 178.5,218.2 Z" fill="#0d9488" stroke="white" stroke-width="2"/><text x="201.6" y="166.6" font-size="13" fill="white" text-anchor="middle" font-weight="700">19%</text><path d="M160.0,125.0 L178.5,218.2 A95,95 0 0 1 92.8,57.8 Z" fill="#d97706" stroke="white" stroke-width="2"/><text x="108.1" y="152.8" font-size="13" fill="white" text-anchor="middle" font-weight="700">41%</text><path d="M160.0,125.0 L92.8,57.8 A95,95 0 0 1 160.0,30.0 Z" fill="#db2777" stroke="white" stroke-width="2"/><text x="137.5" y="70.6" font-size="13" fill="white" text-anchor="middle" font-weight="700">12%</text><rect x="90.0" y="238.0" width="12.0" height="12.0" fill="#7c3aed" opacity="1.0"/><text x="108.0" y="248.0" font-size="12" fill="#57534e" text-anchor="start">pěšky</text><rect x="90.0" y="258.0" width="12.0" height="12.0" fill="#0d9488" opacity="1.0"/><text x="108.0" y="268.0" font-size="12" fill="#57534e" text-anchor="start">kolo</text><rect x="90.0" y="278.0" width="12.0" height="12.0" fill="#d97706" opacity="1.0"/><text x="108.0" y="288.0" font-size="12" fill="#57534e" text-anchor="start">MHD</text><rect x="90.0" y="298.0" width="12.0" height="12.0" fill="#db2777" opacity="1.0"/><text x="108.0" y="308.0" font-size="12" fill="#57534e" text-anchor="start">auto</text></svg>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Kruhový diagram má smysl jen tehdy, když se kategorie vzájemně vylučují a dohromady tvoří $100\%$ souboru. U anket, kde respondent mohl zaškrtnout víc odpovědí najednou (např. „jaké sporty máš rád, zaškrtni všechny, které se hodí"), by součet přesáhl $100\%$ a kruhový diagram by byl zavádějící — tam patří sloupcový diagram.
+    </div>
+</section>
+
+<section id="sec-volba-grafu" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Jak zvolit vhodný typ grafu</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Situace</th><th class="p-1">Vhodný graf</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">Kvalitativní znak, porovnání kategorií</td><td class="p-1">sloupcový nebo kruhový diagram</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">Vývoj v čase</td><td class="p-1">spojnicový diagram</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">Intervalově tříděný spojitý znak</td><td class="p-1">histogram</td></tr>
+                <tr><td class="p-1 text-left">Podíly, které dohromady tvoří 100 %</td><td class="p-1">kruhový diagram</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="sec-procenta" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Procento a procentní bod</h2>
+    <p><b>Procento</b> je setina celku. <b>Procentní bod (p.b.)</b> je jednotka pro vyjádření <b>rozdílu dvou procentních hodnot</b> — nesmí se zaměňovat s relativní (procentní) změnou!</p>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: úspěšnost u zkoušky</p>
+        <div class="flex items-center gap-3 mb-2">
+            <span class="text-sm w-24">dříve:</span>
+            <input type="range" id="slider-pred" min="0" max="100" value="65" class="flex-grow">
+            <span class="font-mono text-sm w-14 text-right"><span id="pred-val">65</span> %</span>
+        </div>
+        <div class="flex items-center gap-3 mb-3">
+            <span class="text-sm w-24">nyní:</span>
+            <input type="range" id="slider-po" min="0" max="100" value="78" class="flex-grow">
+            <span class="font-mono text-sm w-14 text-right"><span id="po-val">78</span> %</span>
+        </div>
+        <p class="text-sm">Rozdíl v procentních bodech: <b><span id="pb-diff">13</span> p.b.</b></p>
+        <p class="text-sm">Relativní (procentní) změna: <b><span id="pct-diff">20,0</span> %</b></p>
+    </div>
+    <p class="text-sm">Když úspěšnost vzroste z $65\%$ na $78\%$, jde o nárůst o $78-65=13$ <b>procentních bodů</b>, ale o $\frac{78-65}{65}\approx20\%$ <b>relativně</b> (vzhledem k původní hodnotě).</p>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Záměna procent a procentních bodů je jedna z nejčastějších chyb v médiích — věta „úrokové sazby vzrostly o 200 %" znamená něco úplně jiného než „úrokové sazby vzrostly o 200 procentních bodů".
+    </div>
+</section>
+
+<section id="sec-srovnani" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Srovnávání souborů různé velikosti</h2>
+    <p>Absolutní četnosti nelze přímo srovnávat mezi soubory různého rozsahu — k férovému srovnání je potřeba použít <b>relativní</b> četnosti.</p>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Neúspěšnost u přijímací zkoušky na dvou školách.</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Škola</th><th class="p-1">neúspěšní</th><th class="p-1">celkem</th><th class="p-1">relativně</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">Škola A</td><td class="p-1">6</td><td class="p-1">40</td><td class="p-1">$15\%$</td></tr>
+                <tr><td class="p-1 text-left">Škola B</td><td class="p-1">15</td><td class="p-1">150</td><td class="p-1">$10\%$</td></tr>
+            </tbody>
+        </table>
+        <p class="text-sm mt-2">Přestože má škola B víc neúspěšných uchazečů v absolutních číslech ($15\gt6$), <b>relativně</b> je úspěšnější — u přijímacích zkoušek u ní neuspělo jen $10\%$ oproti $15\%$ u školy A.</p>
+    </div>
+</section>
+
+<section id="sec-chyby-grafu" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Typické chyby a zavádějící grafy</h2>
+    <p>Graf může být matematicky správně sestrojený, a přesto vyvolávat zkreslený dojem — nejčastější příčinou je <b>useknutá (nezačínající nulou) osa y</b>, která opticky zveličí i malé rozdíly.</p>
+    <div class="grid sm:grid-cols-2 gap-3">
+        <div class="card">
+            <p class="text-sm mb-2 font-semibold text-emerald-700">Správně (osa od 0 %)</p>
+            <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0%</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="201.0" x2="50.0" y2="201.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="205.0" font-size="11" fill="#57534e" text-anchor="end">20%</text><line x1="50.0" y1="201.0" x2="360.0" y2="201.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="157.0" x2="50.0" y2="157.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="161.0" font-size="11" fill="#57534e" text-anchor="end">40%</text><line x1="50.0" y1="157.0" x2="360.0" y2="157.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="113.0" x2="50.0" y2="113.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="117.0" font-size="11" fill="#57534e" text-anchor="end">60%</text><line x1="50.0" y1="113.0" x2="360.0" y2="113.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="69.0" x2="50.0" y2="69.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="73.0" font-size="11" fill="#57534e" text-anchor="end">80%</text><line x1="50.0" y1="69.0" x2="360.0" y2="69.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">100%</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="71.7" y="126.2" width="111.6" height="118.8" fill="#7c3aed" opacity="0.85"/><text x="127.5" y="120.2" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">54%</text><text x="127.5" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">Kandidát A</text><rect x="226.7" y="143.8" width="111.6" height="101.2" fill="#7c3aed" opacity="0.85"/><text x="282.5" y="137.8" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">46%</text><text x="282.5" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">Kandidát B</text></svg>
+        </div>
+        <div class="card">
+            <p class="text-sm mb-2 font-semibold text-red-700">Zavádějící (osa od 40 %)</p>
+            <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">40%</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="190.0" x2="50.0" y2="190.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="194.0" font-size="11" fill="#57534e" text-anchor="end">45%</text><line x1="50.0" y1="190.0" x2="360.0" y2="190.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="135.0" x2="50.0" y2="135.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="139.0" font-size="11" fill="#57534e" text-anchor="end">50%</text><line x1="50.0" y1="135.0" x2="360.0" y2="135.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="80.0" x2="50.0" y2="80.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="84.0" font-size="11" fill="#57534e" text-anchor="end">55%</text><line x1="50.0" y1="80.0" x2="360.0" y2="80.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">60%</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="71.7" y="91.0" width="111.6" height="154.0" fill="#db2777" opacity="0.85"/><text x="127.5" y="85.0" font-size="12" fill="#db2777" text-anchor="middle" font-weight="600">54%</text><text x="127.5" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">Kandidát A</text><rect x="226.7" y="179.0" width="111.6" height="66.0" fill="#db2777" opacity="0.85"/><text x="282.5" y="173.0" font-size="12" fill="#db2777" text-anchor="middle" font-weight="600">46%</text><text x="282.5" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">Kandidát B</text></svg>
+        </div>
+    </div>
+    <p class="text-sm">Oba grafy zobrazují <b>tentýž</b> výsledek voleb ($54\%$ ku $46\%$) — v druhém grafu ale rozdíl vypadá mnohem dramatičtěji, protože osa y nezačíná od nuly.</p>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Než z grafu vyvodíš závěr, vždy zkontroluj popisky a rozsah osy y. Sloupcový diagram, který nezačíná nulou, může vytvořit zavádějící dojem o velikosti rozdílu mezi kategoriemi.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Pojem</th><th class="p-1 text-left">Co znamená</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">rozsah souboru $n$</td><td class="p-1 text-left">počet všech jednotek souboru</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">absolutní četnost $n_i$</td><td class="p-1 text-left">počet jednotek s hodnotou znaku $x_i$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">relativní četnost $p_i$</td><td class="p-1 text-left">$n_i/n$, součet přes všechny $i$ je $1$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">kumulativní četnost $N_i$</td><td class="p-1 text-left">součet $n_i$ do hodnoty $x_i$ včetně</td></tr>
+                <tr><td class="p-1 text-left">procentní bod</td><td class="p-1 text-left">rozdíl dvou procentních hodnot (ne totéž co % změna)</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Co bude dál:</b> V navazující kapitole <i>Statistika 2 — charakteristiky polohy</i> se naučíme, jak celý soubor shrnout jedním číslem (průměr, medián, modus).
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="hidden mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Qu'ont en commun les élections, la météo et les contrôles scolaires ?</h2>
+    <p>Dans les journaux, on entend que <b>« le chômage a baissé de 0,5 point de pourcentage »</b>, à l'école on reçoit un récapitulatif du nombre d'élèves ayant eu une bonne note au semestre, et avant les élections on voit des graphiques avec les pourcentages de chaque parti. Dans toutes ces situations, nous utilisons le même outil — la <b>statistique</b> : nous collectons des données sur un grand nombre d'unités (personnes, mesures, produits), nous traitons ces données et nous essayons d'en tirer des conclusions compréhensibles.</p>
+    <p>Ce chapitre comporte trois parties : nous apprendrons d'abord les <b>notions de base</b> (population, caractère, effectif), puis nous verrons comment <b>représenter les données graphiquement</b>, et enfin nous verrons comment <b>bien lire</b> les graphiques et les pourcentages — et comment ne pas se laisser convaincre de quelque chose que les données ne montrent pas du tout.</p>
+</section>
+
+<section id="sec-soubor" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Population statistique et unité statistique</h2>
+    <p>La <b>population statistique</b> est l'ensemble de toutes les unités qui nous intéressent. L'<b>unité statistique</b> est un élément concret de cette population. La <b>taille de la population</b> $n$ est le nombre total d'unités de la population.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Dans la classe de 3.B, on cherche à savoir quel sport les élèves préfèrent.</p>
+        <ul class="list-disc list-inside space-y-1 text-sm">
+            <li>Population statistique = tous les élèves de la classe 3.B</li>
+            <li>Unité statistique = un élève en particulier</li>
+            <li>Taille de la population : $n=24$</li>
+        </ul>
+    </div>
+</section>
+
+<section id="sec-znak" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Caractère statistique</h2>
+    <p>Le <b>caractère statistique</b> est la propriété que l'on observe chez les unités. On distingue :</p>
+    <div class="def-grid grid sm:grid-cols-2 gap-3">
+        <div class="card">
+            <p class="font-semibold text-violet-800 mb-1">Caractère qualitatif</p>
+            <p class="text-sm">Valeurs exprimées par des mots (non numériques) — par ex. sport préféré, couleur des yeux, filière d'études.</p>
+        </div>
+        <div class="card">
+            <p class="font-semibold text-violet-800 mb-1">Caractère quantitatif</p>
+            <p class="text-sm">Valeurs exprimées par un nombre — on distingue le caractère <b>discret</b> (ne prend que certaines valeurs, typiquement entières — par ex. nombre de frères et sœurs) et le caractère <b>continu</b> (peut prendre n'importe quelle valeur d'un intervalle — par ex. taille, temps, masse).</p>
+        </div>
+    </div>
+    <p><b>Exemple :</b> Chez 18 élèves, on relève le nombre de frères et sœurs — c'est un caractère quantitatif discret, car ce nombre est toujours un entier non négatif : $0,1,2,3,\dots$</p>
+</section>
+
+<section id="sec-cetnosti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Effectif absolu et fréquence relative</h2>
+    <p>La valeur que prend le caractère chez une unité donnée est notée $x_i$. L'<b>effectif absolu</b> $n_i$ indique combien d'unités de la population ont une valeur du caractère égale à $x_i$. La <b>fréquence relative</b> $p_i$ indique quelle part de la population entière ces unités représentent :</p>
+    <div class="card text-center">
+        $$p_i=\frac{n_i}{n}, \qquad \sum_{i} p_i = 1 \;(\text{c.-à-d. }100\%)$$
+    </div>
+    <p><b>Exemple (suite du nombre de frères et sœurs chez 18 élèves) :</b></p>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">$x_i$ (frères et sœurs)</th><th class="p-1">$n_i$</th><th class="p-1">$p_i$</th><th class="p-1">$p_i$ en %</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">0</td><td class="p-1">5</td><td class="p-1">$\frac{5}{18}$</td><td class="p-1">$27{,}8\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">1</td><td class="p-1">8</td><td class="p-1">$\frac{4}{9}$</td><td class="p-1">$44{,}4\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">2</td><td class="p-1">3</td><td class="p-1">$\frac{1}{6}$</td><td class="p-1">$16{,}7\%$</td></tr>
+                <tr><td class="p-1">3</td><td class="p-1">2</td><td class="p-1">$\frac{1}{9}$</td><td class="p-1">$11{,}1\%$</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> La somme des fréquences relatives doit toujours donner exactement $1$ (donc $100\%$) — si ce n'est pas le cas, il y a une erreur quelque part dans le calcul ou dans les données.
+    </div>
+</section>
+
+<section id="sec-kumulativni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Effectif cumulé</h2>
+    <p>L'<b>effectif cumulé</b> $N_i$ indique combien d'unités ont une valeur du caractère <b>inférieure ou égale</b> à $x_i$ — c'est la somme progressive des effectifs absolus. Cela n'a de sens que pour les caractères où l'ordre des valeurs est pertinent (donc pour les caractères quantitatifs).</p>
+    <p><b>Exemple :</b> Notes du contrôle de mathématiques chez 25 élèves :</p>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">note $x_i$</th><th class="p-1">$n_i$</th><th class="p-1">cumulé $N_i$</th><th class="p-1">cumulé $p_i$</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">1</td><td class="p-1">4</td><td class="p-1">4</td><td class="p-1">$16\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">2</td><td class="p-1">9</td><td class="p-1">13</td><td class="p-1">$52\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">3</td><td class="p-1">7</td><td class="p-1">20</td><td class="p-1">$80\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">4</td><td class="p-1">3</td><td class="p-1">23</td><td class="p-1">$92\%$</td></tr>
+                <tr><td class="p-1">5</td><td class="p-1">2</td><td class="p-1">25</td><td class="p-1">$100\%$</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p class="text-sm">L'effectif cumulé pour la note 3 ($N_3=20$) signifie : <b>20 élèves sur 25</b> ont eu la note 3 ou mieux.</p>
+    <div class="note-box note-warn">
+        <b>Attention :</b> Il n'est pas pertinent de calculer l'effectif cumulé pour un caractère qualitatif (par ex. le sport préféré) — les valeurs n'y ont pas d'ordre naturel, donc « la somme des valeurs inférieures ou égales » n'a aucun sens.
+    </div>
+</section>
+
+<section id="sec-intervaly" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Regroupement en classes</h2>
+    <p>Si un caractère quantitatif prend de nombreuses valeurs différentes (souvent continues), il devient peu lisible de donner l'effectif de chaque valeur individuelle — on regroupe donc les valeurs proches en <b>classes (intervalles)</b>. Le nombre de classes $k$ peut être estimé par exemple par la règle de Sturges $k\approx1+3{,}3\log n$ ou par la règle $k\approx\sqrt n$. On associe à chaque classe son <b>centre</b> — la valeur du milieu de l'intervalle, utilisée comme valeur représentative de toute la classe dans les calculs ultérieurs.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Masse (kg) de 30 chiots lors d'une exposition canine.</p>
+        <p class="text-sm mb-2">Étendue des valeurs : de $1{,}8$ à $8{,}0$ kg. Selon la règle de Sturges $k\approx1+3{,}3\log 30\approx5{,}9$, on choisit donc $k=5$ classes de largeur $1{,}5$ kg :</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">classe [kg]</th><th class="p-1">centre</th><th class="p-1">$n_i$</th><th class="p-1">$p_i$</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">$\langle1{,}4;2{,}9)$</td><td class="p-1">$2{,}15$</td><td class="p-1">3</td><td class="p-1">$10\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">$\langle2{,}9;4{,}4)$</td><td class="p-1">$3{,}65$</td><td class="p-1">6</td><td class="p-1">$20\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">$\langle4{,}4;5{,}9)$</td><td class="p-1">$5{,}15$</td><td class="p-1">14</td><td class="p-1">$46{,}7\%$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">$\langle5{,}9;7{,}4)$</td><td class="p-1">$6{,}65$</td><td class="p-1">6</td><td class="p-1">$20\%$</td></tr>
+                <tr><td class="p-1">$\langle7{,}4;8{,}9\rangle$</td><td class="p-1">$8{,}15$</td><td class="p-1">1</td><td class="p-1">$3{,}3\%$</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Cette répartition (3, 6, 14, 6, 1) a une forme typique « en cloche » — la plupart des chiots se situent au milieu de l'étendue des masses, avec de moins en moins d'individus vers les deux extrémités. On rencontre très souvent ce type de répartition en statistique.
+    </div>
+</section>
+
+<section id="sec-sloupcovy-spojnicovy" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Diagramme en barres et diagramme en ligne</h2>
+    <p>Le <b>diagramme en barres</b> représente les effectifs par des barres verticales (ou horizontales) qui ne se touchent pas — il convient aux caractères qualitatifs comme aux caractères quantitatifs discrets.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Genre musical préféré chez 20 étudiants.</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="190.0" x2="50.0" y2="190.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="194.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="190.0" x2="360.0" y2="190.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="135.0" x2="50.0" y2="135.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="139.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="135.0" x2="360.0" y2="135.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="80.0" x2="50.0" y2="80.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="84.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="80.0" x2="360.0" y2="80.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="58.7" y="80.0" width="44.6" height="165.0" fill="#7c3aed" opacity="0.85"/><text x="81.0" y="74.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">6</text><text x="81.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">pop</text><rect x="120.7" y="107.5" width="44.6" height="137.5" fill="#7c3aed" opacity="0.85"/><text x="143.0" y="101.5" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">5</text><text x="143.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">rock</text><rect x="182.7" y="135.0" width="44.6" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="205.0" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="205.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">rap</text><rect x="244.7" y="190.0" width="44.6" height="55.0" fill="#7c3aed" opacity="0.85"/><text x="267.0" y="184.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="267.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">classique</text><rect x="306.7" y="162.5" width="44.6" height="82.5" fill="#7c3aed" opacity="0.85"/><text x="329.0" y="156.5" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">3</text><text x="329.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">jazz</text></svg>
+    </div>
+    <p>Le <b>diagramme en ligne</b> relie les valeurs par des segments — il convient surtout pour représenter une <b>évolution dans le temps</b>, lorsqu'on s'intéresse à une tendance (hausse, baisse).</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Nombre de membres du club de robotique scolaire au fil des années.</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="255.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="255.0" x2="50.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="259.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="209.0" x2="50.0" y2="209.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="213.0" font-size="11" fill="#57534e" text-anchor="end">5</text><line x1="50.0" y1="209.0" x2="360.0" y2="209.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="163.0" x2="50.0" y2="163.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="167.0" font-size="11" fill="#57534e" text-anchor="end">10</text><line x1="50.0" y1="163.0" x2="360.0" y2="163.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="117.0" x2="50.0" y2="117.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="121.0" font-size="11" fill="#57534e" text-anchor="end">15</text><line x1="50.0" y1="117.0" x2="360.0" y2="117.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="71.0" x2="50.0" y2="71.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="75.0" font-size="11" fill="#57534e" text-anchor="end">20</text><line x1="50.0" y1="71.0" x2="360.0" y2="71.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">25</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="50.0" y1="255.0" x2="50.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2021</text><line x1="153.3" y1="255.0" x2="153.3" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="153.3" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2022</text><line x1="256.7" y1="255.0" x2="256.7" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="256.7" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2023</text><line x1="360.0" y1="255.0" x2="360.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2024</text><line x1="50.0" y1="181.4" x2="153.3" y2="135.4" stroke="#7c3aed" stroke-width="3"/><line x1="153.3" y1="135.4" x2="256.7" y2="80.2" stroke="#7c3aed" stroke-width="3"/><line x1="256.7" y1="80.2" x2="360.0" y2="34.2" stroke="#7c3aed" stroke-width="3"/><circle cx="50.0" cy="181.4" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="50.0" y="170.4" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">8</text><circle cx="153.3" cy="135.4" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="153.3" y="124.4" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">13</text><circle cx="256.7" cy="80.2" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="256.7" y="69.2" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">19</text><circle cx="360.0" cy="34.2" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="360.0" y="23.2" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">24</text></svg>
+    </div>
+</section>
+
+<section id="sec-histogram" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Histogramme</h2>
+    <p>L'<b>histogramme</b> est un type particulier de diagramme en barres pour les caractères regroupés en classes (généralement continus) — contrairement au diagramme en barres classique, les barres <b>se touchent</b>, car les classes se succèdent sans interruption.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple (suite du tableau des masses de chiots ci-dessus) :</b></p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="197.9" x2="50.0" y2="197.9" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="201.9" font-size="11" fill="#57534e" text-anchor="end">3</text><line x1="50.0" y1="197.9" x2="360.0" y2="197.9" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="150.7" x2="50.0" y2="150.7" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="154.7" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="150.7" x2="360.0" y2="150.7" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="103.6" x2="50.0" y2="103.6" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="107.6" font-size="11" fill="#57534e" text-anchor="end">9</text><line x1="50.0" y1="103.6" x2="360.0" y2="103.6" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="56.4" x2="50.0" y2="56.4" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="60.4" font-size="11" fill="#57534e" text-anchor="end">12</text><line x1="50.0" y1="56.4" x2="360.0" y2="56.4" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="50.0" y="197.9" width="62.0" height="47.1" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="81.0" y="191.9" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">3</text><rect x="112.0" y="150.7" width="62.0" height="94.3" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="143.0" y="144.7" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">6</text><rect x="174.0" y="25.0" width="62.0" height="220.0" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="205.0" y="19.0" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">14</text><rect x="236.0" y="150.7" width="62.0" height="94.3" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="267.0" y="144.7" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">6</text><rect x="298.0" y="229.3" width="62.0" height="15.7" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="329.0" y="223.3" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">1</text><line x1="50.0" y1="245.0" x2="50.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">1.4</text><line x1="112.0" y1="245.0" x2="112.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="112.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">2.9</text><line x1="174.0" y1="245.0" x2="174.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="174.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">4.4</text><line x1="236.0" y1="245.0" x2="236.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="236.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">5.9</text><line x1="298.0" y1="245.0" x2="298.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="298.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">7.4</text><line x1="360.0" y1="245.0" x2="360.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">8.9</text></svg>
+    </div>
+    <div class="note-box note-link">
+        <b>Lien :</b> L'histogramme n'est qu'une représentation graphique du tableau que nous avons déjà construit dans la partie sur le regroupement en classes — les barres correspondent exactement aux cinq mêmes classes et aux mêmes effectifs.
+    </div>
+</section>
+
+<section id="sec-kruhovy" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Diagramme circulaire</h2>
+    <p>Le <b>diagramme circulaire</b> représente les fréquences relatives par des secteurs d'un cercle — le cercle entier ($360°$) correspond à la population entière ($100\%$). L'angle du secteur correspondant à une catégorie de fréquence relative $p_i$ se calcule ainsi :</p>
+    <div class="card text-center">
+        $$\alpha_i = p_i\cdot360°$$
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 À toi d'essayer : sondage « Les repas de la cantine te plaisent-ils ? »</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-ano-fr" min="0" max="100" value="62" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="ano-val-fr">62</span> % Oui</span>
+        </div>
+        <p class="text-sm mb-3">Angle du secteur « Oui » : <span id="pie-formula-fr">$62\%\cdot360°=223{,}2°$</span></p>
+        <svg viewBox="0 0 260 180" class="w-full max-w-xs mx-auto" xmlns="http://www.w3.org/2000/svg">
+            <path id="wedge-ano-fr" fill="#7c3aed" stroke="white" stroke-width="2"/>
+            <path id="wedge-ne-fr" fill="#d97706" stroke="white" stroke-width="2"/>
+            <rect x="8" y="152" width="12" height="12" fill="#7c3aed"/>
+            <text x="24" y="162" font-size="12" fill="#57534e">Oui</text>
+            <rect x="70" y="152" width="12" height="12" fill="#d97706"/>
+            <text x="86" y="162" font-size="12" fill="#57534e">Non</text>
+        </svg>
+    </div>
+    <p><b>Exemple (statique) :</b> Mode de transport pour aller à l'école chez 32 élèves.</p>
+    <div class="card">
+        <svg viewBox="0 0 320 320" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><path d="M160.0,125.0 L160.0,30.0 A95,95 0 0 1 253.2,143.5 Z" fill="#7c3aed" stroke="white" stroke-width="2"/><text x="205.5" y="87.6" font-size="13" fill="white" text-anchor="middle" font-weight="700">28%</text><path d="M160.0,125.0 L253.2,143.5 A95,95 0 0 1 178.5,218.2 Z" fill="#0d9488" stroke="white" stroke-width="2"/><text x="201.6" y="166.6" font-size="13" fill="white" text-anchor="middle" font-weight="700">19%</text><path d="M160.0,125.0 L178.5,218.2 A95,95 0 0 1 92.8,57.8 Z" fill="#d97706" stroke="white" stroke-width="2"/><text x="108.1" y="152.8" font-size="13" fill="white" text-anchor="middle" font-weight="700">41%</text><path d="M160.0,125.0 L92.8,57.8 A95,95 0 0 1 160.0,30.0 Z" fill="#db2777" stroke="white" stroke-width="2"/><text x="137.5" y="70.6" font-size="13" fill="white" text-anchor="middle" font-weight="700">12%</text><rect x="90.0" y="238.0" width="12.0" height="12.0" fill="#7c3aed" opacity="1.0"/><text x="108.0" y="248.0" font-size="12" fill="#57534e" text-anchor="start">à pied</text><rect x="90.0" y="258.0" width="12.0" height="12.0" fill="#0d9488" opacity="1.0"/><text x="108.0" y="268.0" font-size="12" fill="#57534e" text-anchor="start">vélo</text><rect x="90.0" y="278.0" width="12.0" height="12.0" fill="#d97706" opacity="1.0"/><text x="108.0" y="288.0" font-size="12" fill="#57534e" text-anchor="start">transports en commun</text><rect x="90.0" y="298.0" width="12.0" height="12.0" fill="#db2777" opacity="1.0"/><text x="108.0" y="308.0" font-size="12" fill="#57534e" text-anchor="start">voiture</text></svg>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention :</b> Un diagramme circulaire n'a de sens que si les catégories s'excluent mutuellement et forment ensemble $100\%$ de la population. Dans un sondage où le répondant pouvait cocher plusieurs réponses à la fois (par ex. « quels sports aimes-tu, coche tous ceux qui conviennent »), la somme dépasserait $100\%$ et le diagramme circulaire serait trompeur — dans ce cas, il faut utiliser un diagramme en barres.
+    </div>
+</section>
+
+<section id="sec-volba-grafu" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Comment choisir le bon type de graphique</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Situation</th><th class="p-1">Graphique adapté</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">Caractère qualitatif, comparaison de catégories</td><td class="p-1">diagramme en barres ou circulaire</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">Évolution dans le temps</td><td class="p-1">diagramme en ligne</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">Caractère continu regroupé en classes</td><td class="p-1">histogramme</td></tr>
+                <tr><td class="p-1 text-left">Parts formant ensemble 100 %</td><td class="p-1">diagramme circulaire</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="sec-procenta" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Pourcentage et point de pourcentage</h2>
+    <p>Le <b>pourcentage</b> est un centième d'un tout. Le <b>point de pourcentage (p.p.)</b> est l'unité utilisée pour exprimer la <b>différence entre deux valeurs en pourcentage</b> — il ne faut pas la confondre avec la variation relative (en pourcentage) !</p>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 À toi d'essayer : taux de réussite à un examen</p>
+        <div class="flex items-center gap-3 mb-2">
+            <span class="text-sm w-24">avant :</span>
+            <input type="range" id="slider-pred-fr" min="0" max="100" value="65" class="flex-grow">
+            <span class="font-mono text-sm w-14 text-right"><span id="pred-val-fr">65</span> %</span>
+        </div>
+        <div class="flex items-center gap-3 mb-3">
+            <span class="text-sm w-24">maintenant :</span>
+            <input type="range" id="slider-po-fr" min="0" max="100" value="78" class="flex-grow">
+            <span class="font-mono text-sm w-14 text-right"><span id="po-val-fr">78</span> %</span>
+        </div>
+        <p class="text-sm">Différence en points de pourcentage : <b><span id="pb-diff-fr">13</span> p.p.</b></p>
+        <p class="text-sm">Variation relative (en pourcentage) : <b><span id="pct-diff-fr">20,0</span> %</b></p>
+    </div>
+    <p class="text-sm">Quand le taux de réussite passe de $65\%$ à $78\%$, il s'agit d'une hausse de $78-65=13$ <b>points de pourcentage</b>, mais de $\frac{78-65}{65}\approx20\%$ <b>relativement</b> (par rapport à la valeur initiale).</p>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> La confusion entre pourcentages et points de pourcentage est l'une des erreurs les plus fréquentes dans les médias — la phrase « les taux d'intérêt ont augmenté de 200 % » signifie quelque chose de tout à fait différent de « les taux d'intérêt ont augmenté de 200 points de pourcentage ».
+    </div>
+</section>
+
+<section id="sec-srovnani" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Comparer des populations de tailles différentes</h2>
+    <p>Les effectifs absolus ne peuvent pas être comparés directement entre des populations de tailles différentes — pour une comparaison équitable, il faut utiliser les fréquences <b>relatives</b>.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Taux d'échec à un examen d'entrée dans deux établissements.</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Établissement</th><th class="p-1">échecs</th><th class="p-1">total</th><th class="p-1">relatif</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">Établissement A</td><td class="p-1">6</td><td class="p-1">40</td><td class="p-1">$15\%$</td></tr>
+                <tr><td class="p-1 text-left">Établissement B</td><td class="p-1">15</td><td class="p-1">150</td><td class="p-1">$10\%$</td></tr>
+            </tbody>
+        </table>
+        <p class="text-sm mt-2">Bien que l'établissement B ait plus de candidats en échec en valeur absolue ($15\gt6$), il est <b>relativement</b> plus performant — seuls $10\%$ de ses candidats ont échoué, contre $15\%$ pour l'établissement A.</p>
+    </div>
+</section>
+
+<section id="sec-chyby-grafu" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Erreurs typiques et graphiques trompeurs</h2>
+    <p>Un graphique peut être mathématiquement correct tout en donnant une impression déformée — la cause la plus fréquente est un <b>axe des ordonnées tronqué</b> (ne commençant pas à zéro), qui exagère visuellement même de petites différences.</p>
+    <div class="grid sm:grid-cols-2 gap-3">
+        <div class="card">
+            <p class="text-sm mb-2 font-semibold text-emerald-700">Correct (axe à partir de 0 %)</p>
+            <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0%</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="201.0" x2="50.0" y2="201.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="205.0" font-size="11" fill="#57534e" text-anchor="end">20%</text><line x1="50.0" y1="201.0" x2="360.0" y2="201.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="157.0" x2="50.0" y2="157.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="161.0" font-size="11" fill="#57534e" text-anchor="end">40%</text><line x1="50.0" y1="157.0" x2="360.0" y2="157.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="113.0" x2="50.0" y2="113.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="117.0" font-size="11" fill="#57534e" text-anchor="end">60%</text><line x1="50.0" y1="113.0" x2="360.0" y2="113.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="69.0" x2="50.0" y2="69.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="73.0" font-size="11" fill="#57534e" text-anchor="end">80%</text><line x1="50.0" y1="69.0" x2="360.0" y2="69.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">100%</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="71.7" y="126.2" width="111.6" height="118.8" fill="#7c3aed" opacity="0.85"/><text x="127.5" y="120.2" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">54%</text><text x="127.5" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">Candidat A</text><rect x="226.7" y="143.8" width="111.6" height="101.2" fill="#7c3aed" opacity="0.85"/><text x="282.5" y="137.8" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">46%</text><text x="282.5" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">Candidat B</text></svg>
+        </div>
+        <div class="card">
+            <p class="text-sm mb-2 font-semibold text-red-700">Trompeur (axe à partir de 40 %)</p>
+            <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">40%</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="190.0" x2="50.0" y2="190.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="194.0" font-size="11" fill="#57534e" text-anchor="end">45%</text><line x1="50.0" y1="190.0" x2="360.0" y2="190.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="135.0" x2="50.0" y2="135.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="139.0" font-size="11" fill="#57534e" text-anchor="end">50%</text><line x1="50.0" y1="135.0" x2="360.0" y2="135.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="80.0" x2="50.0" y2="80.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="84.0" font-size="11" fill="#57534e" text-anchor="end">55%</text><line x1="50.0" y1="80.0" x2="360.0" y2="80.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">60%</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="71.7" y="91.0" width="111.6" height="154.0" fill="#db2777" opacity="0.85"/><text x="127.5" y="85.0" font-size="12" fill="#db2777" text-anchor="middle" font-weight="600">54%</text><text x="127.5" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">Candidat A</text><rect x="226.7" y="179.0" width="111.6" height="66.0" fill="#db2777" opacity="0.85"/><text x="282.5" y="173.0" font-size="12" fill="#db2777" text-anchor="middle" font-weight="600">46%</text><text x="282.5" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">Candidat B</text></svg>
+        </div>
+    </div>
+    <p class="text-sm">Les deux graphiques montrent <b>le même</b> résultat électoral ($54\%$ contre $46\%$) — mais dans le second, la différence paraît beaucoup plus dramatique, car l'axe des ordonnées ne commence pas à zéro.</p>
+    <div class="note-box note-warn">
+        <b>Attention :</b> Avant de tirer une conclusion d'un graphique, vérifie toujours les étiquettes et l'échelle de l'axe des ordonnées. Un diagramme en barres qui ne commence pas à zéro peut créer une impression trompeuse quant à l'ampleur de la différence entre catégories.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Notion</th><th class="p-1 text-left">Signification</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">taille de la population $n$</td><td class="p-1 text-left">nombre total d'unités de la population</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">effectif absolu $n_i$</td><td class="p-1 text-left">nombre d'unités ayant la valeur $x_i$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">fréquence relative $p_i$</td><td class="p-1 text-left">$n_i/n$, la somme sur tous les $i$ vaut $1$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">effectif cumulé $N_i$</td><td class="p-1 text-left">somme des $n_i$ jusqu'à $x_i$ inclus</td></tr>
+                <tr><td class="p-1 text-left">point de pourcentage</td><td class="p-1 text-left">différence entre deux valeurs en % (différent d'une variation en %)</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Et ensuite :</b> Dans le chapitre suivant <i>Statistique 2 — caractéristiques de position</i>, nous apprendrons à résumer toute la population par un seul nombre (moyenne, médiane, mode).
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+    document.getElementById('page-title').textContent = czVisible ? 'Statistique 1 — Notions de base' : 'Statistika 1 — Základní pojmy';
+    document.title = czVisible ? 'Statistique 1 — Notions de base — Théorie' : 'Statistika 1 — Základní pojmy — Teorie';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+// ---- Interaktivni kruhovy diagram (Ano/Ne) ----
+function describeWedge(cx, cy, r, startDeg, endDeg){
+    const startRad = startDeg * Math.PI/180;
+    const endRad = endDeg * Math.PI/180;
+    const x0 = cx + r*Math.cos(startRad), y0 = cy + r*Math.sin(startRad);
+    const x1 = cx + r*Math.cos(endRad), y1 = cy + r*Math.sin(endRad);
+    const largeArc = (endDeg - startDeg) > 180 ? 1 : 0;
+    return `M${cx},${cy} L${x0.toFixed(1)},${y0.toFixed(1)} A${r},${r} 0 ${largeArc} 1 ${x1.toFixed(1)},${y1.toFixed(1)} Z`;
+}
+
+function updatePie(suffix){
+    suffix = suffix || '';
+    const val = parseInt(document.getElementById('slider-ano'+suffix).value);
+    document.getElementById('ano-val'+suffix).textContent = val;
+    const angle = val * 3.6;
+    const angleClamped = Math.max(0.02, Math.min(359.98, angle));
+    const cx = 75, cy = 78, r = 62;
+    document.getElementById('wedge-ano'+suffix).setAttribute('d', describeWedge(cx,cy,r,-90,-90+angleClamped));
+    document.getElementById('wedge-ne'+suffix).setAttribute('d', describeWedge(cx,cy,r,-90+angleClamped,270));
+    const angleStr = angle.toFixed(1).replace('.', ',');
+    const formulaEl = document.getElementById('pie-formula'+suffix);
+    formulaEl.textContent = '$' + val + '\\%\\cdot360°=' + angleStr + '°$';
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([formulaEl]);
+}
+
+// ---- Interaktivni kalkulacka procento vs. procentni bod ----
+function updatePercentCalc(suffix){
+    suffix = suffix || '';
+    const before = parseInt(document.getElementById('slider-pred'+suffix).value);
+    const after = parseInt(document.getElementById('slider-po'+suffix).value);
+    document.getElementById('pred-val'+suffix).textContent = before;
+    document.getElementById('po-val'+suffix).textContent = after;
+    document.getElementById('pb-diff'+suffix).textContent = (after - before);
+    let pctText;
+    if (before === 0){
+        pctText = suffix === '-fr' ? 'indéfini (division par 0)' : 'nelze určit (dělení nulou)';
+    } else {
+        const pct = (after - before) / before * 100;
+        pctText = pct.toFixed(1).replace('.', ',');
+    }
+    document.getElementById('pct-diff'+suffix).textContent = pctText;
+}
+
+updatePie('');
+updatePie('-fr');
+updatePercentCalc('');
+updatePercentCalc('-fr');
+
+document.getElementById('slider-ano').addEventListener('input', () => updatePie(''));
+document.getElementById('slider-ano-fr').addEventListener('input', () => updatePie('-fr'));
+document.getElementById('slider-pred').addEventListener('input', () => updatePercentCalc(''));
+document.getElementById('slider-po').addEventListener('input', () => updatePercentCalc(''));
+document.getElementById('slider-pred-fr').addEventListener('input', () => updatePercentCalc('-fr'));
+document.getElementById('slider-po-fr').addEventListener('input', () => updatePercentCalc('-fr'));
+</script>
+
+</body>
+</html>

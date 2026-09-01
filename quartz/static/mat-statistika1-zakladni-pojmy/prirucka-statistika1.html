@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistika 1 — Základní pojmy — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-statistika1.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Statistika 1 — Základní pojmy · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Statistika 1 — Základní pojmy</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Statistický soubor, jednotka, rozsah souboru</h2>
+<p class="mb-3"><b>Statistický soubor</b> je množina všech jednotek, které nás zajímají. <b>Statistická jednotka</b> je jeden konkrétní prvek tohoto souboru. <b>Rozsah souboru</b> $n$ je počet všech jednotek v souboru.</p>
+<p class="mb-3"><b>Příklad:</b> Ve třídě 3.B zjišťujeme oblíbený sport žáků. Statistický soubor = všichni žáci třídy (jednotka = jeden žák), rozsah souboru $n=24$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Statistický znak</h2>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Dva základní typy</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>Kvalitativní znak</b> — hodnoty vyjádřené slovně (nečíselně), např. oblíbený sport, barva očí.</li>
+        <li><b>Kvantitativní znak</b> — hodnoty vyjádřené číslem; dělí se dál na <b>nespojitý (diskrétní)</b> (jen některé hodnoty, typicky celočíselné, např. počet sourozenců) a <b>spojitý</b> (libovolná hodnota v intervalu, např. výška, čas, hmotnost).</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> Počet sourozenců u 18 žáků je kvantitativní nespojitý znak — nabývá jen hodnot $0,1,2,3,\dots$</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Absolutní a relativní četnost</h2>
+<p class="mb-3">Hodnotu znaku u konkrétní jednotky značíme $x_i$. <b>Absolutní četnost</b> $n_i$ udává počet jednotek s hodnotou $x_i$. <b>Relativní četnost</b> $p_i=\frac{n_i}{n}$ udává, jakou část celého souboru tyto jednotky tvoří; platí $\sum_i p_i=1$ (tj. $100\%$).</p>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Příklad (počet sourozenců u 18 žáků)</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li>$x_i=0$: $n_i=5$, $p_i=\frac{5}{18}\approx27{,}8\%$</li>
+        <li>$x_i=1$: $n_i=8$, $p_i=\frac{4}{9}\approx44{,}4\%$</li>
+        <li>$x_i=2$: $n_i=3$, $p_i=\frac{1}{6}\approx16{,}7\%$</li>
+        <li>$x_i=3$: $n_i=2$, $p_i=\frac{1}{9}\approx11{,}1\%$</li>
+    </ul>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Kumulativní četnost</h2>
+<p class="mb-3"><b>Kumulativní četnost</b> $N_i$ udává, kolik jednotek má hodnotu znaku menší nebo rovnu $x_i$ — je to postupný součet absolutních četností. Dává smysl jen u kvantitativních znaků (kde má pořadí hodnot smysl).</p>
+<p class="mb-3"><b>Příklad:</b> Známky z testu u 25 žáků: $n_i=4,9,7,3,2$ pro známky $1$–$5$; kumulativní četnosti $N_i=4,13,20,23,25$. Kumulativní četnost u známky $3$ ($N_3=20$) říká, že $20$ žáků z $25$ mělo známku $3$ nebo lepší.</p>
+<div class="warn-box mb-3">
+    <p>Kumulativní četnost nemá smysl u kvalitativních znaků (např. u oblíbeného sportu) — tam hodnoty nemají přirozené pořadí.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Třídění do intervalů</h2>
+<p class="mb-3">Pokud kvantitativní znak nabývá mnoha různých hodnot, sloučíme blízké hodnoty do <b>intervalů</b>. Počet intervalů $k$ lze odhadnout Sturgesovým pravidlem $k\approx1+3{,}3\log n$ nebo pravidlem $k\approx\sqrt n$. Každému intervalu přiřadíme jeho <b>střed</b> jako zástupnou hodnotu.</p>
+<p class="mb-3"><b>Příklad:</b> Hmotnost 30 štěňat, rozpětí $1{,}8$–$8{,}0$ kg. Podle Sturgesova pravidla $k\approx1+3{,}3\log 30\approx5{,}9$, zvoleno $k=5$ intervalů šířky $1{,}5$ kg s četnostmi $3,6,14,6,1$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Sloupcový a spojnicový diagram</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>Sloupcový diagram</b> — sloupce se nedotýkají; pro kvalitativní i kvantitativní nespojité znaky.</li>
+        <li><b>Spojnicový diagram</b> — hodnoty spojené úsečkami; hodí se hlavně pro vývoj v čase.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklady:</b> Oblíbený hudební žánr u 20 studentů (pop 6, rock 5, rap 4, klasika 2, jazz 3) — sloupcový diagram. Počet členů kroužku robotiky 2021–2024 ($8,13,19,24$) — spojnicový diagram.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Histogram</h2>
+<p class="mb-3"><b>Histogram</b> je sloupcový diagram pro intervalově tříděné (obvykle spojité) znaky — sloupce se na rozdíl od klasického sloupcového diagramu dotýkají, protože intervaly na sebe navazují. Navazuje na tabulku hmotností štěňat výše (5 sloupců odpovídajících pěti intervalům).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Kruhový diagram</h2>
+<p class="mb-3"><b>Kruhový diagram</b> znázorňuje relativní četnosti výsečemi kruhu — celý kruh ($360°$) odpovídá $100\%$. Úhel výseče: $\alpha_i=p_i\cdot360°$.</p>
+<p class="mb-3"><b>Příklad:</b> Doprava do školy u 32 žáků: pěšky 9 ($101{,}25°$), kolo 6 ($67{,}5°$), MHD 13 ($146{,}25°$), auto 4 ($45°$).</p>
+<div class="warn-box mb-3">
+    <p>Kruhový diagram má smysl jen tehdy, když se kategorie vzájemně vylučují a dohromady tvoří $100\%$ souboru (jinak, např. u ankety s více možnými odpověďmi, patří sloupcový diagram).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Volba vhodného typu grafu</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Kvalitativní znak, porovnání kategorií → sloupcový nebo kruhový diagram</li>
+        <li>Vývoj v čase → spojnicový diagram</li>
+        <li>Intervalově tříděný spojitý znak → histogram</li>
+        <li>Podíly tvořící dohromady 100 % → kruhový diagram</li>
+    </ul>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Procento a procentní bod</h2>
+<p class="mb-3"><b>Procento</b> je setina celku. <b>Procentní bod (p.b.)</b> vyjadřuje rozdíl dvou procentních hodnot — nezaměňovat s relativní (procentní) změnou.</p>
+<p class="mb-3"><b>Příklad:</b> Úspěšnost u zkoušky vzrostla z $65\%$ na $78\%$ — to je nárůst o $13$ procentních bodů, ale o $\frac{78-65}{65}\approx20\%$ relativně.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Srovnávání souborů různé velikosti</h2>
+<p class="mb-3">Absolutní četnosti nelze přímo srovnávat mezi soubory různého rozsahu — je potřeba použít relativní četnosti.</p>
+<p class="mb-3"><b>Příklad:</b> Škola A: $6$ neúspěšných ze $40$ ($15\%$). Škola B: $15$ neúspěšných ze $150$ ($10\%$). Přestože má škola B víc neúspěšných v absolutních číslech, relativně je úspěšnější.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">12. Typické chyby a zavádějící grafy</h2>
+<p class="mb-3">Graf může být matematicky správně sestrojený, a přesto vyvolávat zkreslený dojem — nejčastěji kvůli <b>useknuté (nezačínající nulou) ose y</b>, která opticky zveličí i malé rozdíly. Než z grafu vyvodíš závěr, vždy zkontroluj popisky a rozsah osy y.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">13. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Pojem</th>
+            <th class="text-left py-1">Co znamená</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">rozsah souboru $n$</td><td class="py-1">počet všech jednotek souboru</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">absolutní četnost $n_i$</td><td class="py-1">počet jednotek s hodnotou znaku $x_i$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">relativní četnost $p_i$</td><td class="py-1">$n_i/n$, součet přes všechny $i$ je $1$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">kumulativní četnost $N_i$</td><td class="py-1">součet $n_i$ do hodnoty $x_i$ včetně</td></tr>
+        <tr><td class="py-1 pr-2">procentní bod</td><td class="py-1">rozdíl dvou procentních hodnot (ne totéž co % změna)</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Statistique 1 — Notions de base</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Population statistique, unité, taille de la population</h2>
+<p class="mb-3">La <b>population statistique</b> est l'ensemble de toutes les unités qui nous intéressent. L'<b>unité statistique</b> est un élément concret de cette population. La <b>taille de la population</b> $n$ est le nombre total d'unités.</p>
+<p class="mb-3"><b>Exemple :</b> Dans la classe de 3.B, on relève le sport préféré des élèves. Population statistique = tous les élèves de la classe (unité = un élève), taille de la population $n=24$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Caractère statistique</h2>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Deux types principaux</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>Caractère qualitatif</b> — valeurs exprimées par des mots (non numériques), par ex. sport préféré, couleur des yeux.</li>
+        <li><b>Caractère quantitatif</b> — valeurs exprimées par un nombre ; on distingue le caractère <b>discret</b> (seulement certaines valeurs, typiquement entières, par ex. nombre de frères et sœurs) et le caractère <b>continu</b> (n'importe quelle valeur d'un intervalle, par ex. taille, temps, masse).</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> Le nombre de frères et sœurs chez 18 élèves est un caractère quantitatif discret — il ne prend que les valeurs $0,1,2,3,\dots$</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Effectif absolu et fréquence relative</h2>
+<p class="mb-3">La valeur du caractère chez une unité donnée est notée $x_i$. L'<b>effectif absolu</b> $n_i$ indique le nombre d'unités ayant la valeur $x_i$. La <b>fréquence relative</b> $p_i=\frac{n_i}{n}$ indique la part de la population entière que représentent ces unités ; on a $\sum_i p_i=1$ (soit $100\%$).</p>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Exemple (nombre de frères et sœurs chez 18 élèves)</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li>$x_i=0$ : $n_i=5$, $p_i=\frac{5}{18}\approx27{,}8\%$</li>
+        <li>$x_i=1$ : $n_i=8$, $p_i=\frac{4}{9}\approx44{,}4\%$</li>
+        <li>$x_i=2$ : $n_i=3$, $p_i=\frac{1}{6}\approx16{,}7\%$</li>
+        <li>$x_i=3$ : $n_i=2$, $p_i=\frac{1}{9}\approx11{,}1\%$</li>
+    </ul>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Effectif cumulé</h2>
+<p class="mb-3">L'<b>effectif cumulé</b> $N_i$ indique le nombre d'unités ayant une valeur du caractère inférieure ou égale à $x_i$ — c'est la somme progressive des effectifs absolus. Cela n'a de sens que pour les caractères quantitatifs (où l'ordre des valeurs est pertinent).</p>
+<p class="mb-3"><b>Exemple :</b> Notes du contrôle chez 25 élèves : $n_i=4,9,7,3,2$ pour les notes $1$–$5$ ; effectifs cumulés $N_i=4,13,20,23,25$. L'effectif cumulé pour la note $3$ ($N_3=20$) signifie que $20$ élèves sur $25$ ont eu la note $3$ ou mieux.</p>
+<div class="warn-box mb-3">
+    <p>L'effectif cumulé n'a pas de sens pour un caractère qualitatif (par ex. le sport préféré) — les valeurs n'y ont pas d'ordre naturel.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Regroupement en classes</h2>
+<p class="mb-3">Si un caractère quantitatif prend de nombreuses valeurs différentes, on regroupe les valeurs proches en <b>classes</b>. Le nombre de classes $k$ peut être estimé par la règle de Sturges $k\approx1+3{,}3\log n$ ou par la règle $k\approx\sqrt n$. On associe à chaque classe son <b>centre</b> comme valeur représentative.</p>
+<p class="mb-3"><b>Exemple :</b> Masse de 30 chiots, étendue $1{,}8$–$8{,}0$ kg. Selon la règle de Sturges $k\approx1+3{,}3\log 30\approx5{,}9$, on choisit $k=5$ classes de largeur $1{,}5$ kg avec les effectifs $3,6,14,6,1$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Diagramme en barres et diagramme en ligne</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>Diagramme en barres</b> — les barres ne se touchent pas ; pour les caractères qualitatifs et quantitatifs discrets.</li>
+        <li><b>Diagramme en ligne</b> — valeurs reliées par des segments ; convient surtout pour l'évolution dans le temps.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemples :</b> Genre musical préféré chez 20 étudiants (pop 6, rock 5, rap 4, classique 2, jazz 3) — diagramme en barres. Nombre de membres du club de robotique 2021–2024 ($8,13,19,24$) — diagramme en ligne.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Histogramme</h2>
+<p class="mb-3">L'<b>histogramme</b> est un diagramme en barres pour les caractères regroupés en classes (généralement continus) — contrairement au diagramme en barres classique, les barres se touchent, car les classes se succèdent sans interruption. Il reprend le tableau des masses de chiots ci-dessus (5 barres correspondant aux cinq classes).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Diagramme circulaire</h2>
+<p class="mb-3">Le <b>diagramme circulaire</b> représente les fréquences relatives par des secteurs d'un cercle — le cercle entier ($360°$) correspond à $100\%$. Angle du secteur : $\alpha_i=p_i\cdot360°$.</p>
+<p class="mb-3"><b>Exemple :</b> Mode de transport chez 32 élèves : à pied 9 ($101{,}25°$), vélo 6 ($67{,}5°$), transports en commun 13 ($146{,}25°$), voiture 4 ($45°$).</p>
+<div class="warn-box mb-3">
+    <p>Un diagramme circulaire n'a de sens que si les catégories s'excluent mutuellement et forment ensemble $100\%$ de la population (sinon, par ex. pour un sondage à réponses multiples, il faut utiliser un diagramme en barres).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Choisir le bon type de graphique</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Caractère qualitatif, comparaison de catégories → diagramme en barres ou circulaire</li>
+        <li>Évolution dans le temps → diagramme en ligne</li>
+        <li>Caractère continu regroupé en classes → histogramme</li>
+        <li>Parts formant ensemble 100 % → diagramme circulaire</li>
+    </ul>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Pourcentage et point de pourcentage</h2>
+<p class="mb-3">Le <b>pourcentage</b> est un centième d'un tout. Le <b>point de pourcentage (p.p.)</b> exprime la différence entre deux valeurs en pourcentage — à ne pas confondre avec la variation relative (en pourcentage).</p>
+<p class="mb-3"><b>Exemple :</b> Le taux de réussite est passé de $65\%$ à $78\%$ — soit une hausse de $13$ points de pourcentage, mais de $\frac{78-65}{65}\approx20\%$ relativement.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Comparer des populations de tailles différentes</h2>
+<p class="mb-3">Les effectifs absolus ne peuvent pas être comparés directement entre des populations de tailles différentes — il faut utiliser les fréquences relatives.</p>
+<p class="mb-3"><b>Exemple :</b> Établissement A : $6$ échecs sur $40$ ($15\%$). Établissement B : $15$ échecs sur $150$ ($10\%$). Bien que l'établissement B ait plus d'échecs en valeur absolue, il est relativement plus performant.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">12. Erreurs typiques et graphiques trompeurs</h2>
+<p class="mb-3">Un graphique peut être mathématiquement correct tout en donnant une impression déformée — le plus souvent à cause d'un <b>axe des ordonnées tronqué</b> (ne commençant pas à zéro), qui exagère visuellement même de petites différences. Avant de tirer une conclusion d'un graphique, vérifie toujours les étiquettes et l'échelle de l'axe des ordonnées.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">13. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Notion</th>
+            <th class="text-left py-1">Signification</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">taille de la population $n$</td><td class="py-1">nombre total d'unités de la population</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">effectif absolu $n_i$</td><td class="py-1">nombre d'unités ayant la valeur $x_i$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">fréquence relative $p_i$</td><td class="py-1">$n_i/n$, la somme sur tous les $i$ vaut $1$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">effectif cumulé $N_i$</td><td class="py-1">somme des $n_i$ jusqu'à $x_i$ inclus</td></tr>
+        <tr><td class="py-1 pr-2">point de pourcentage</td><td class="py-1">différence entre deux valeurs en % (différent d'une variation en %)</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Statistique 1 — Notions de base · Manuel' : 'Statistika 1 — Základní pojmy · Příručka';
+    document.title = czVisible ? 'Statistique 1 — Notions de base — Manuel' : 'Statistika 1 — Základní pojmy — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

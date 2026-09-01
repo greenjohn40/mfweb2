@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Statistika 1 — Základní pojmy / Statistique 1 — Notions de base</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-statistika1.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Statistika 1</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Statistique 1 — Notions de base
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        { "q": "Co je statistický soubor?", "a": "množina všech zkoumaných jednotek" },
+        { "q": "Co je statistická jednotka?", "a": "jeden konkrétní prvek statistického souboru" },
+        { "q": "Co udává rozsah souboru $n$?", "a": "počet všech jednotek souboru" },
+        { "q": "Kolik žáků má třída 3.B v příkladu o oblíbeném sportu?", "a": "$n=24$" },
+        { "q": "Co je statistický znak?", "a": "vlastnost, kterou u jednotek zjišťujeme" },
+        { "q": "Jak se dělí statistický znak podle typu hodnot?", "a": "na kvalitativní a kvantitativní" },
+        { "q": "Jaké hodnoty má kvalitativní znak?", "a": "slovní (nečíselné) hodnoty" },
+        { "q": "Uveď příklad kvalitativního znaku.", "a": "oblíbený sport, barva očí" },
+        { "q": "Na co se dál dělí kvantitativní znak?", "a": "na nespojitý (diskrétní) a spojitý" },
+        { "q": "Co je kvantitativní nespojitý (diskrétní) znak?", "a": "znak nabývající jen některých (typicky celočíselných) hodnot" },
+        { "q": "Uveď příklad kvantitativního nespojitého znaku.", "a": "počet sourozenců" },
+        { "q": "Co je kvantitativní spojitý znak?", "a": "znak nabývající libovolné hodnoty v intervalu" },
+        { "q": "Uveď příklad kvantitativního spojitého znaku.", "a": "výška, čas, hmotnost" },
+        { "q": "Jaké hodnoty může nabývat počet sourozenců?", "a": "$0,1,2,3,\\dots$ (celá nezáporná čísla)" },
+        { "q": "Co značíme symbolem $x_i$?", "a": "hodnotu, kterou znak nabývá u konkrétní jednotky" },
+        { "q": "Co udává absolutní četnost $n_i$?", "a": "počet jednotek s hodnotou znaku rovnou $x_i$" },
+        { "q": "Jaký je vzorec pro relativní četnost $p_i$?", "a": "$p_i=\\frac{n_i}{n}$" },
+        { "q": "Čemu je roven součet všech relativních četností?", "a": "$1$ (tedy $100\\%$)" },
+        { "q": "U 18 žáků má 5 z nich 0 sourozenců. Jaká je relativní četnost?", "a": "$\\frac{5}{18}\\approx27{,}8\\%$" },
+        { "q": "Co udává kumulativní četnost $N_i$?", "a": "počet jednotek s hodnotou znaku menší nebo rovnou $x_i$" },
+        { "q": "U kterého typu znaku dává smysl počítat kumulativní četnost?", "a": "jen u kvantitativního (kde má pořadí hodnot smysl)" },
+        { "q": "Test měl známky 1–5 s četnostmi $4,9,7,3,2$. Jaká je kumulativní četnost u známky 3?", "a": "$N_3=4+9+7=20$" },
+        { "q": "Co znamená $N_3=20$ ze souboru 25 žáků?", "a": "20 žáků mělo známku 3 nebo lepší" },
+        { "q": "Proč třídíme kvantitativní znak do intervalů?", "a": "aby tabulka byla přehledná, když znak nabývá mnoha různých hodnot" },
+        { "q": "Jaké je Sturgesovo pravidlo pro počet intervalů $k$?", "a": "$k\\approx1+3{,}3\\log n$" },
+        { "q": "Jaké je alternativní jednoduché pravidlo pro počet intervalů?", "a": "$k\\approx\\sqrt{n}$" },
+        { "q": "Co je střed intervalu a k čemu slouží?", "a": "hodnota uprostřed intervalu, používaná jako zástupná hodnota za celý interval" },
+        { "q": "Pro 30 štěňat s rozpětím hmotností $1{,}8$–$8{,}0$ kg vyšlo Sturgesovo pravidlo $k\\approx5{,}9$. Kolik intervalů bylo zvoleno?", "a": "5 intervalů" },
+        { "q": "Jaký tvar mělo rozdělení četností štěňat do 5 intervalů ($3,6,14,6,1$)?", "a": "zvonovitý (nejvíc uprostřed, k oběma krajům ubývá)" },
+        { "q": "Co znázorňuje sloupcový diagram?", "a": "četnosti pomocí sloupců, které se navzájem nedotýkají" },
+        { "q": "Pro jaký typ znaku se hodí sloupcový diagram?", "a": "kvalitativní i kvantitativní nespojité" },
+        { "q": "Co znázorňuje spojnicový diagram?", "a": "hodnoty spojené úsečkami, hlavně pro vývoj v čase" },
+        { "q": "Kolik členů měl kroužek robotiky v roce 2024 (hodnoty 8, 13, 19, 24 za 2021–2024)?", "a": "24" },
+        { "q": "Co je histogram?", "a": "sloupcový diagram pro intervalově tříděné znaky, jehož sloupce se dotýkají" },
+        { "q": "Proč se sloupce histogramu na rozdíl od klasického sloupcového diagramu dotýkají?", "a": "protože intervaly na sebe plynule navazují" },
+        { "q": "Kolik štěňat spadalo do intervalu $\\langle4{,}4;5{,}9)$ v příkladu histogramu?", "a": "14" },
+        { "q": "Co znázorňuje kruhový diagram?", "a": "relativní četnosti pomocí výsečí kruhu" },
+        { "q": "Jaký úhel odpovídá celému souboru (100 %) v kruhovém diagramu?", "a": "$360°$" },
+        { "q": "Jaký je vzorec pro úhel výseče $\\alpha_i$ odpovídající relativní četnosti $p_i$?", "a": "$\\alpha_i=p_i\\cdot360°$" },
+        { "q": "Jaký úhel odpovídá kategorii „MHD\" s relativní četností $40{,}6\\%$ (13 z 32 žáků)?", "a": "přibližně $146{,}25°$" },
+        { "q": "Kdy je kruhový diagram zavádějící?", "a": "když se kategorie vzájemně nevylučují a součet přesáhne $100\\%$" },
+        { "q": "Jaký graf zvolíme pro znázornění vývoje v čase?", "a": "spojnicový diagram" },
+        { "q": "Jaký graf zvolíme pro intervalově tříděný spojitý znak?", "a": "histogram" },
+        { "q": "Co je procento?", "a": "setina celku" },
+        { "q": "Co je procentní bod (p.b.)?", "a": "jednotka pro vyjádření rozdílu dvou procentních hodnot" },
+        { "q": "Úspěšnost vzrostla z $65\\%$ na $78\\%$. Kolik je to procentních bodů?", "a": "$13$ p.b." },
+        { "q": "Úspěšnost vzrostla z $65\\%$ na $78\\%$. Kolik je to relativně v procentech?", "a": "přibližně $20\\%$" },
+        { "q": "Proč nelze přímo srovnávat absolutní četnosti souborů různého rozsahu?", "a": "nezohledňují velikost souboru; je potřeba použít relativní četnosti" },
+        { "q": "Škola A: 6 neúspěšných ze 40. Škola B: 15 ze 150. Která je relativně úspěšnější?", "a": "škola B ($10\\%$ oproti $15\\%$ u školy A)" },
+        { "q": "Co nejčastěji způsobuje zavádějící dojem u sloupcových diagramů?", "a": "useknutá (nezačínající nulou) osa y" }
+    ],
+    "fr": [
+        { "q": "Qu'est-ce qu'une population statistique ?", "a": "l'ensemble de toutes les unités étudiées" },
+        { "q": "Qu'est-ce qu'une unité statistique ?", "a": "un élément concret de la population statistique" },
+        { "q": "Que indique la taille de la population $n$ ?", "a": "le nombre total d'unités de la population" },
+        { "q": "Combien d'élèves compte la classe de 3.B dans l'exemple sur le sport préféré ?", "a": "$n=24$" },
+        { "q": "Qu'est-ce qu'un caractère statistique ?", "a": "la propriété que l'on observe chez les unités" },
+        { "q": "Comment se divise un caractère statistique selon le type de valeurs ?", "a": "en qualitatif et quantitatif" },
+        { "q": "Quelles sont les valeurs d'un caractère qualitatif ?", "a": "des valeurs exprimées par des mots (non numériques)" },
+        { "q": "Donne un exemple de caractère qualitatif.", "a": "le sport préféré, la couleur des yeux" },
+        { "q": "En quoi se divise encore le caractère quantitatif ?", "a": "en discret et continu" },
+        { "q": "Qu'est-ce qu'un caractère quantitatif discret ?", "a": "un caractère ne prenant que certaines valeurs (typiquement entières)" },
+        { "q": "Donne un exemple de caractère quantitatif discret.", "a": "le nombre de frères et sœurs" },
+        { "q": "Qu'est-ce qu'un caractère quantitatif continu ?", "a": "un caractère pouvant prendre n'importe quelle valeur d'un intervalle" },
+        { "q": "Donne un exemple de caractère quantitatif continu.", "a": "la taille, le temps, la masse" },
+        { "q": "Quelles valeurs peut prendre le nombre de frères et sœurs ?", "a": "$0,1,2,3,\\dots$ (entiers non négatifs)" },
+        { "q": "Que note-t-on $x_i$ ?", "a": "la valeur que prend le caractère chez une unité donnée" },
+        { "q": "Que indique l'effectif absolu $n_i$ ?", "a": "le nombre d'unités ayant une valeur du caractère égale à $x_i$" },
+        { "q": "Quelle est la formule de la fréquence relative $p_i$ ?", "a": "$p_i=\\frac{n_i}{n}$" },
+        { "q": "À quoi est égale la somme de toutes les fréquences relatives ?", "a": "à $1$ (soit $100\\%$)" },
+        { "q": "Chez 18 élèves, 5 d'entre eux ont 0 frère ou sœur. Quelle est la fréquence relative ?", "a": "$\\frac{5}{18}\\approx27{,}8\\%$" },
+        { "q": "Que indique l'effectif cumulé $N_i$ ?", "a": "le nombre d'unités ayant une valeur du caractère inférieure ou égale à $x_i$" },
+        { "q": "Pour quel type de caractère l'effectif cumulé a-t-il un sens ?", "a": "seulement pour un caractère quantitatif (où l'ordre des valeurs est pertinent)" },
+        { "q": "Un contrôle avait les notes 1–5 avec les effectifs $4,9,7,3,2$. Quel est l'effectif cumulé pour la note 3 ?", "a": "$N_3=4+9+7=20$" },
+        { "q": "Que signifie $N_3=20$ pour une population de 25 élèves ?", "a": "20 élèves ont eu la note 3 ou mieux" },
+        { "q": "Pourquoi regroupe-t-on un caractère quantitatif en classes ?", "a": "pour que le tableau reste lisible quand le caractère prend de nombreuses valeurs" },
+        { "q": "Quelle est la règle de Sturges pour le nombre de classes $k$ ?", "a": "$k\\approx1+3{,}3\\log n$" },
+        { "q": "Quelle est la règle alternative simple pour le nombre de classes ?", "a": "$k\\approx\\sqrt{n}$" },
+        { "q": "Qu'est-ce que le centre d'une classe et à quoi sert-il ?", "a": "la valeur du milieu de la classe, utilisée comme valeur représentative de toute la classe" },
+        { "q": "Pour 30 chiots avec une étendue de masse de $1{,}8$–$8{,}0$ kg, la règle de Sturges donnait $k\\approx5{,}9$. Combien de classes ont été choisies ?", "a": "5 classes" },
+        { "q": "Quelle forme avait la répartition des chiots en 5 classes ($3,6,14,6,1$) ?", "a": "en cloche (maximum au milieu, diminution vers les extrémités)" },
+        { "q": "Que représente un diagramme en barres ?", "a": "les effectifs par des barres qui ne se touchent pas" },
+        { "q": "Pour quel type de caractère convient un diagramme en barres ?", "a": "qualitatif et quantitatif discret" },
+        { "q": "Que représente un diagramme en ligne ?", "a": "des valeurs reliées par des segments, surtout pour l'évolution dans le temps" },
+        { "q": "Combien de membres comptait le club de robotique en 2024 (valeurs 8, 13, 19, 24 pour 2021–2024) ?", "a": "24" },
+        { "q": "Qu'est-ce qu'un histogramme ?", "a": "un diagramme en barres pour les caractères regroupés en classes, dont les barres se touchent" },
+        { "q": "Pourquoi les barres de l'histogramme se touchent-elles, contrairement au diagramme en barres classique ?", "a": "parce que les classes se succèdent sans interruption" },
+        { "q": "Combien de chiots se trouvaient dans la classe $\\langle4{,}4;5{,}9)$ dans l'exemple d'histogramme ?", "a": "14" },
+        { "q": "Que représente un diagramme circulaire ?", "a": "les fréquences relatives par des secteurs d'un cercle" },
+        { "q": "Quel angle correspond à la population entière (100 %) dans un diagramme circulaire ?", "a": "$360°$" },
+        { "q": "Quelle est la formule de l'angle du secteur $\\alpha_i$ correspondant à la fréquence relative $p_i$ ?", "a": "$\\alpha_i=p_i\\cdot360°$" },
+        { "q": "Quel angle correspond à la catégorie « transports en commun » avec $40{,}6\\%$ (13 sur 32 élèves) ?", "a": "environ $146{,}25°$" },
+        { "q": "Quand un diagramme circulaire devient-il trompeur ?", "a": "quand les catégories ne s'excluent pas mutuellement et que la somme dépasse $100\\%$" },
+        { "q": "Quel graphique choisir pour représenter une évolution dans le temps ?", "a": "un diagramme en ligne" },
+        { "q": "Quel graphique choisir pour un caractère continu regroupé en classes ?", "a": "un histogramme" },
+        { "q": "Qu'est-ce qu'un pourcentage ?", "a": "un centième d'un tout" },
+        { "q": "Qu'est-ce qu'un point de pourcentage (p.p.) ?", "a": "l'unité utilisée pour exprimer la différence entre deux valeurs en pourcentage" },
+        { "q": "Le taux de réussite est passé de $65\\%$ à $78\\%$. Combien de points de pourcentage ?", "a": "$13$ p.p." },
+        { "q": "Le taux de réussite est passé de $65\\%$ à $78\\%$. Quelle est la variation relative en pourcentage ?", "a": "environ $20\\%$" },
+        { "q": "Pourquoi ne peut-on pas comparer directement les effectifs absolus de populations de tailles différentes ?", "a": "ils ne tiennent pas compte de la taille de la population ; il faut utiliser les fréquences relatives" },
+        { "q": "Établissement A : 6 échecs sur 40. Établissement B : 15 sur 150. Lequel est relativement plus performant ?", "a": "l'établissement B ($10\\%$ contre $15\\%$ pour l'établissement A)" },
+        { "q": "Quelle est la cause la plus fréquente d'une impression trompeuse dans un diagramme en barres ?", "a": "un axe des ordonnées tronqué (ne commençant pas à zéro)" }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

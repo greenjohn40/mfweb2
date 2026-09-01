@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Statistika 1 — Základní pojmy (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-statistika1.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Statistika 1</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (základní pojmy statistiky, četnosti, grafy, procenta).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function pctOptions(correct, spread) {
+    return buildOptions(correct, [], spread).map(x => x + '\\%');
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    { id: 't1', type: 'concept',
+        cs: { q: "Co je statistická jednotka?", a: "jeden konkrétní prvek statistického souboru", o: ["jeden konkrétní prvek statistického souboru", "celý statistický soubor", "průměrná hodnota souboru", "název zkoumané vlastnosti"], h: "Jednotka je součást souboru, ne celý soubor.", e: "Statistická jednotka je jeden konkrétní prvek (např. jeden žák), zatímco statistický soubor je množina všech takových jednotek." },
+        fr: { q: "Qu'est-ce qu'une unité statistique ?", a: "un élément concret de la population statistique", o: ["un élément concret de la population statistique", "la population statistique entière", "la valeur moyenne de la population", "le nom de la propriété étudiée"], h: "L'unité fait partie de la population, ce n'est pas la population entière.", e: "L'unité statistique est un élément concret (par ex. un élève), tandis que la population statistique est l'ensemble de toutes ces unités." } },
+    { id: 't2', type: 'concept',
+        cs: { q: "Jak se nazývá znak, jehož hodnoty jsou vyjádřeny slovně (nečíselně)?", a: "kvalitativní znak", o: ["kvalitativní znak", "kvantitativní spojitý znak", "kvantitativní nespojitý znak", "statistická jednotka"], h: "Slovní hodnoty nejsou čísla.", e: "Znak s nečíselnými (slovními) hodnotami, např. barva očí nebo oblíbený sport, se nazývá kvalitativní." },
+        fr: { q: "Comment appelle-t-on un caractère dont les valeurs sont exprimées par des mots (non numériques) ?", a: "caractère qualitatif", o: ["caractère qualitatif", "caractère quantitatif continu", "caractère quantitatif discret", "unité statistique"], h: "Des valeurs exprimées par des mots ne sont pas des nombres.", e: "Un caractère avec des valeurs non numériques (par ex. la couleur des yeux) est dit qualitatif." } },
+    { id: 't3', type: 'concept',
+        cs: { q: "Jaký je vzorec pro relativní četnost $p_i$?", a: "$p_i=\\frac{n_i}{n}$", o: ["$p_i=\\frac{n_i}{n}$", "$p_i=n_i\\cdot n$", "$p_i=n-n_i$", "$p_i=\\frac{n}{n_i}$"], h: "Relativní četnost je podíl, ne součin ani rozdíl.", e: "Relativní četnost udává, jakou část celého souboru tvoří jednotky s danou hodnotou znaku: $p_i=\\frac{n_i}{n}$." },
+        fr: { q: "Quelle est la formule de la fréquence relative $p_i$ ?", a: "$p_i=\\frac{n_i}{n}$", o: ["$p_i=\\frac{n_i}{n}$", "$p_i=n_i\\cdot n$", "$p_i=n-n_i$", "$p_i=\\frac{n}{n_i}$"], h: "La fréquence relative est un quotient, pas un produit ni une différence.", e: "La fréquence relative indique la part de la population entière représentée par une valeur : $p_i=\\frac{n_i}{n}$." } },
+    { id: 't4', type: 'concept',
+        cs: { q: "Čemu se rovná součet všech relativních četností ve statistickém souboru?", a: "$1$ (tedy $100\\%$)", o: ["$1$ (tedy $100\\%$)", "$n$", "$0$", "záleží na počtu kategorií"], h: "Všechny jednotky souboru dohromady tvoří celý soubor.", e: "Součet relativních četností přes všechny hodnoty znaku je vždy roven $1$, protože dohromady pokrývají celý soubor." },
+        fr: { q: "À quoi est égale la somme de toutes les fréquences relatives d'une population statistique ?", a: "$1$ (soit $100\\%$)", o: ["$1$ (soit $100\\%$)", "$n$", "$0$", "cela dépend du nombre de catégories"], h: "Toutes les unités de la population forment ensemble la population entière.", e: "La somme des fréquences relatives sur toutes les valeurs du caractère vaut toujours $1$, car elles couvrent ensemble la population entière." } },
+    { id: 't5', type: 'concept',
+        cs: { q: "Pro jaký typ znaku dává smysl počítat kumulativní četnost?", a: "jen pro kvantitativní znak", o: ["jen pro kvantitativní znak", "jen pro kvalitativní znak", "pro libovolný znak", "kumulativní četnost se nikdy nepočítá"], h: "Kumulativní četnost potřebuje, aby hodnoty měly přirozené pořadí.", e: "Kumulativní četnost dává smysl jen tam, kde má pořadí hodnot smysl — tedy u kvantitativních znaků." },
+        fr: { q: "Pour quel type de caractère est-il pertinent de calculer l'effectif cumulé ?", a: "seulement pour un caractère quantitatif", o: ["seulement pour un caractère quantitatif", "seulement pour un caractère qualitatif", "pour n'importe quel caractère", "l'effectif cumulé ne se calcule jamais"], h: "L'effectif cumulé nécessite un ordre naturel des valeurs.", e: "L'effectif cumulé n'a de sens que là où l'ordre des valeurs est pertinent — donc pour un caractère quantitatif." } },
+    { id: 't6', type: 'concept',
+        cs: { q: "Čím se histogram liší od klasického sloupcového diagramu?", a: "sloupce histogramu se vzájemně dotýkají", o: ["sloupce histogramu se vzájemně dotýkají", "histogram nemá osu y", "histogram používá jen kruhové výseče", "sloupce histogramu mají vždy stejnou barvu"], h: "Souvisí to s tím, že intervaly na sebe navazují.", e: "Protože intervaly na sebe plynule navazují, sloupce histogramu se na rozdíl od klasického sloupcového diagramu vzájemně dotýkají." },
+        fr: { q: "En quoi un histogramme diffère-t-il d'un diagramme en barres classique ?", a: "les barres de l'histogramme se touchent", o: ["les barres de l'histogramme se touchent", "l'histogramme n'a pas d'axe des ordonnées", "l'histogramme utilise uniquement des secteurs circulaires", "les barres de l'histogramme ont toujours la même couleur"], h: "Cela est lié au fait que les classes se succèdent sans interruption.", e: "Comme les classes se succèdent sans interruption, les barres de l'histogramme se touchent, contrairement au diagramme en barres classique." } },
+    { id: 't7', type: 'concept',
+        cs: { q: "Jaký je vzorec pro úhel výseče $\\alpha_i$ v kruhovém diagramu odpovídající relativní četnosti $p_i$?", a: "$\\alpha_i=p_i\\cdot360°$", o: ["$\\alpha_i=p_i\\cdot360°$", "$\\alpha_i=p_i\\cdot100°$", "$\\alpha_i=n_i\\cdot360°$", "$\\alpha_i=\\frac{360°}{n_i}$"], h: "Celý kruh (100 %) odpovídá 360°.", e: "Protože celý kruh ($360°$) odpovídá celému souboru ($100\\%$), úhel výseče je $\\alpha_i=p_i\\cdot360°$." },
+        fr: { q: "Quelle est la formule de l'angle du secteur $\\alpha_i$ dans un diagramme circulaire, correspondant à la fréquence relative $p_i$ ?", a: "$\\alpha_i=p_i\\cdot360°$", o: ["$\\alpha_i=p_i\\cdot360°$", "$\\alpha_i=p_i\\cdot100°$", "$\\alpha_i=n_i\\cdot360°$", "$\\alpha_i=\\frac{360°}{n_i}$"], h: "Le cercle entier (100 %) correspond à 360°.", e: "Comme le cercle entier ($360°$) correspond à la population entière ($100\\%$), l'angle du secteur est $\\alpha_i=p_i\\cdot360°$." } },
+    { id: 't8', type: 'concept',
+        cs: { q: "Co vyjadřuje procentní bod (p.b.)?", a: "rozdíl dvou procentních hodnot", o: ["rozdíl dvou procentních hodnot", "setinu procenta", "relativní (procentní) změnu", "součet dvou procentních hodnot"], h: "Nezaměňuj to s relativní změnou.", e: "Procentní bod je jednotka pro vyjádření rozdílu dvou procentních hodnot — nesmí se zaměňovat s relativní (procentní) změnou." },
+        fr: { q: "Que exprime un point de pourcentage (p.p.) ?", a: "la différence entre deux valeurs en pourcentage", o: ["la différence entre deux valeurs en pourcentage", "un centième de pourcentage", "une variation relative (en pourcentage)", "la somme de deux valeurs en pourcentage"], h: "Ne le confonds pas avec la variation relative.", e: "Le point de pourcentage est l'unité utilisée pour exprimer la différence entre deux valeurs en pourcentage — à ne pas confondre avec la variation relative." } }
+];
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Statistický soubor má rozsah $n={n}$. Hodnota znaku $x_i$ má absolutní četnost $n_i={ni}$. Jaká je relativní četnost $p_i$ v procentech?", h: "Použij vzorec $p_i=\\frac{n_i}{n}$ a převeď na procenta.", e: "$p_i=\\frac{ {ni} }{ {n} } = {res}\\%$." },
+        fr: { q: "Une population statistique a une taille $n={n}$. La valeur $x_i$ a un effectif absolu $n_i={ni}$. Quelle est la fréquence relative $p_i$ en pourcentage ?", h: "Utilise la formule $p_i=\\frac{n_i}{n}$ et convertis en pourcentage.", e: "$p_i=\\frac{ {ni} }{ {n} } = {res}\\%$." },
+        params: () => { const n = randChoice([20,25,50]); const ni = randInt(1, n-1); return { n, ni }; },
+        solve: (p) => { const res = Math.round(p.ni/p.n*1000)/10; return { res, correct: fmt(res) + '\\%' }; },
+        wrongOptions: (p, sol) => pctOptions(sol.res, 8) },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Urči typ statistického znaku: {popisCs}.", h: "Rozliš, zda jsou hodnoty slovní, celočíselné, nebo libovolné v intervalu.", e: "{expl}" },
+        fr: { q: "Détermine le type du caractère statistique : {popisFr}.", h: "Distingue si les valeurs sont des mots, des entiers, ou n'importe quelle valeur d'un intervalle.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { popisCs: "hmotnost balíku v kg", popisFr: "le poids d'un colis en kg", answer: "kvantitativní spojitý znak", answerFr: "caractère quantitatif continu" },
+                { popisCs: "počet sourozenců", popisFr: "le nombre de frères et sœurs", answer: "kvantitativní nespojitý znak", answerFr: "caractère quantitatif discret" },
+                { popisCs: "oblíbená barva", popisFr: "la couleur préférée", answer: "kvalitativní znak", answerFr: "caractère qualitatif" }
+            ];
+            const idx = randInt(0,2);
+            return Object.assign({ idx }, scenarios[idx]);
+        },
+        solve: (p) => {
+            const explCsMap = [
+                "Hmotnost může nabývat libovolné hodnoty v intervalu (např. $2{,}3$ kg), jde tedy o kvantitativní spojitý znak.",
+                "Počet sourozenců je vždy celé číslo ($0,1,2,\\dots$), jde tedy o kvantitativní nespojitý (diskrétní) znak.",
+                "Barva je vyjádřena slovně, nejde o číselnou hodnotu, jde tedy o kvalitativní znak."
+            ];
+            const explFrMap = [
+                "La masse peut prendre n'importe quelle valeur d'un intervalle (par ex. $2{,}3$ kg), c'est donc un caractère quantitatif continu.",
+                "Le nombre de frères et sœurs est toujours un entier ($0,1,2,\\dots$), c'est donc un caractère quantitatif discret.",
+                "La couleur est exprimée par un mot, ce n'est pas une valeur numérique, c'est donc un caractère qualitatif."
+            ];
+            return { res: p.answer, resFr: p.answerFr, explCs: explCsMap[p.idx], explFr: explFrMap[p.idx] };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m2 */ },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Statistický soubor má rozsah $n={n}$. Podle Sturgesova pravidla $k\\approx1+3{,}3\\log n$ urči, kolik intervalů (zaokrouhleno na celé číslo) bychom měli přibližně zvolit.", h: "Nejdřív spočítej $\\log n$ (dekadický logaritmus), pak dosaď do vzorce.", e: "$k\\approx1+3{,}3\\log {n}\\approx{kraw}\\approx{res}$ (zaokrouhleno na celé číslo)." },
+        fr: { q: "Une population statistique a une taille $n={n}$. Selon la règle de Sturges $k\\approx1+3{,}3\\log n$, combien de classes (arrondi à l'entier) devrait-on choisir environ ?", h: "Calcule d'abord $\\log n$ (logarithme décimal), puis substitue dans la formule.", e: "$k\\approx1+3{,}3\\log {n}\\approx{kraw}\\approx{res}$ (arrondi à l'entier)." },
+        params: () => { const n = randChoice([16,20,25,30,40,50,64,80,100,120]); return { n }; },
+        solve: (p) => { const kraw = 1 + 3.3*Math.log10(p.n); const res = Math.round(kraw); return { res, correct: fmt(res), kraw: Math.round(kraw*10)/10 }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 2) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Úspěšnost vzrostla z ${before}\\%$ na ${after}\\%$. Kolik je to procentních bodů?", h: "Procentní bod je jednoduše rozdíl dvou procentních hodnot.", e: "${after}-{before}={res}$ procentních bodů." },
+        fr: { q: "Le taux de réussite est passé de ${before}\\%$ à ${after}\\%$. Combien de points de pourcentage cela représente-t-il ?", h: "Un point de pourcentage est simplement la différence entre deux valeurs en pourcentage.", e: "${after}-{before}={res}$ points de pourcentage." },
+        params: () => { const before = randInt(10,75); const after = before + randInt(3,20); return { before, after: Math.min(after,99) }; },
+        solve: (p) => { const res = p.after - p.before; return { res, correct: fmt(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 6) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Úspěšnost vzrostla z ${before}\\%$ na ${after}\\%$. Kolik je to přibližně relativně (v procentech vzhledem k původní hodnotě)?", h: "Relativní změna = (nová hodnota − stará hodnota) / stará hodnota, vyjádřeno v procentech.", e: "$\\frac{ {after}-{before} }{ {before} }\\times100\\%\\approx{res}\\%$." },
+        fr: { q: "Le taux de réussite est passé de ${before}\\%$ à ${after}\\%$. Quelle est la variation relative approximative (en pourcentage par rapport à la valeur initiale) ?", h: "Variation relative = (nouvelle valeur − ancienne valeur) / ancienne valeur, exprimée en pourcentage.", e: "$\\frac{ {after}-{before} }{ {before} }\\times100\\%\\approx{res}\\%$." },
+        params: () => { const before = randInt(20,75); const after = before + randInt(5,20); return { before, after: Math.min(after,98) }; },
+        solve: (p) => { const res = Math.round((p.after-p.before)/p.before*1000)/10; return { res, correct: fmt(res) + '\\%' }; },
+        wrongOptions: (p, sol) => pctOptions(sol.res, 6) },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "{popisCs} Je vhodné pro tento soubor použít kruhový diagram?", h: "Rozhoduje, zda se kategorie vzájemně vylučují a dohromady tvoří 100 %.", e: "{expl}" },
+        fr: { q: "{popisFr} Est-il approprié d'utiliser un diagramme circulaire pour cette population ?", h: "Ce qui compte, c'est si les catégories s'excluent mutuellement et forment ensemble 100 %.", e: "{expl}" },
+        params: () => {
+            const kind = randChoice(['excl','multi']);
+            const popisCs = kind === 'excl'
+                ? "Zjišťujeme oblíbený den v týdnu na oběd ve školní jídelně — každý žák mohl vybrat jen jeden den."
+                : "Zjišťujeme, které sporty žáci provozují — každý mohl zaškrtnout libovolný počet sportů.";
+            const popisFr = kind === 'excl'
+                ? "On demande le jour de la semaine préféré pour le déjeuner à la cantine — chaque élève ne pouvait choisir qu'un seul jour."
+                : "On demande quels sports les élèves pratiquent — chacun pouvait cocher n'importe quel nombre de sports.";
+            return { kind, popisCs, popisFr };
+        },
+        solve: (p) => {
+            const isYes = p.kind === 'excl';
+            const explCs = isYes
+                ? "Kategorie (dny v týdnu) se vzájemně vylučují a dohromady tvoří $100\\%$ souboru, kruhový diagram je tedy vhodný."
+                : "Žáci mohli zaškrtnout víc možností najednou, součet četností by mohl přesáhnout $100\\%$ souboru, kruhový diagram by byl zavádějící.";
+            const explFr = isYes
+                ? "Les catégories (jours de la semaine) s'excluent mutuellement et forment ensemble $100\\%$ de la population, un diagramme circulaire est donc approprié."
+                : "Les élèves pouvaient cocher plusieurs options à la fois, la somme des effectifs pourrait dépasser $100\\%$ de la population, un diagramme circulaire serait donc trompeur.";
+            return { res: isYes ? 'ano' : 'ne', resFr: isYes ? 'oui' : 'non', explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m6 */ }
+];
+
+const CATEGORIES_CS = ['kvalitativní znak', 'kvantitativní nespojitý znak', 'kvantitativní spojitý znak'];
+const CATEGORIES_FR = ['caractère qualitatif', 'caractère quantitatif discret', 'caractère quantitatif continu'];
+const DISTRACTOR_CS = 'statistická jednotka';
+const DISTRACTOR_FR = 'unité statistique';
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit', 'záleží na barvě grafu'];
+const YESNO_DISTRACTORS_FR = ['impossible à déterminer', 'cela dépend de la couleur du graphique'];
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm2') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const catsOther = lang === 'cs' ? CATEGORIES_FR : CATEGORIES_CS;
+            const distractorOther = lang === 'cs' ? DISTRACTOR_FR : DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.innerHTML === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Základní pojmy statistiky ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat rozdíl mezi absolutní a relativní četností a typy statistických znaků."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na základní pojmy (soubor, jednotka, znak, četnost) a jejich výpočty."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako statistický znak, četnost či procentní bod.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definice statistického souboru, znaku a typů četností.");
+            if (mathPercent >= 70) strengths.push("Výpočty (relativní četnost, Sturgesovo pravidlo, procentní body) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si výpočet relativní četnosti $p_i=\\frac{n_i}{n}$ a rozdíl mezi procenty a procentními body.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus navazující kapitolu o charakteristikách polohy (průměr, medián, modus).");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení základních pojmů a vzorců.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>
