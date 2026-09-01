@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deformace pevných těles – Rozcestník</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+        .mindmap-container {
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            height: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .node-main {
+            background: #1e293b;
+            color: white;
+            padding: 1.5rem 2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            z-index: 10;
+            text-align: center;
+            border: 4px solid #3b82f6;
+            animation: pulse 3s infinite ease-in-out;
+        }
+        .node-child {
+            position: absolute;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            text-decoration: none;
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            width: 220px;
+            text-align: center;
+            border: 2px solid transparent;
+            z-index: 5;
+        }
+        .node-child:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+            z-index: 20;
+        }
+        .pos-1 { top: 16%; left: 50%; transform: translate(-50%, -50%); }
+        .pos-1:hover { transform: translate(-50%, -58%) scale(1.05); }
+        .pos-2 { top: 39%; left: 84%; transform: translate(-50%, -50%); }
+        .pos-2:hover { transform: translate(-46%, -54%) scale(1.05); }
+        .pos-3 { top: 78%; left: 71%; transform: translate(-50%, -50%); }
+        .pos-3:hover { transform: translate(-50%, -46%) scale(1.05); }
+        .pos-4 { top: 78%; left: 29%; transform: translate(-50%, -50%); }
+        .pos-4:hover { transform: translate(-50%, -46%) scale(1.05); }
+        .pos-5 { top: 39%; left: 16%; transform: translate(-50%, -50%); }
+        .pos-5:hover { transform: translate(-54%, -54%) scale(1.05); }
+        .node-child span { font-weight: 600; }
+        .node-child small { color: #64748b; font-size: 0.8rem; }
+        .lines-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        line {
+            stroke: #cbd5e1;
+            stroke-width: 2;
+            stroke-dasharray: 5;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash { to { stroke-dashoffset: 100; } }
+        @keyframes pulse {
+            0%,100% { transform: scale(1); }
+            50% { transform: scale(1.03); box-shadow: 0 0 20px rgba(59,130,246,0.4); }
+        }
+        @media (max-width: 768px) {
+            body { overflow-y: auto; }
+            .mindmap-container {
+                flex-direction: column;
+                height: auto;
+                padding: 3rem 1rem;
+                gap: 1.5rem;
+            }
+            .node-child {
+                position: static;
+                transform: none !important;
+                width: 100%;
+                max-width: 320px;
+            }
+            .lines-svg { display: none; }
+        }
+        .icon { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    </style>
+</head>
+<body>
+<div class="mindmap-container" id="container">
+    <svg class="lines-svg" id="svg-canvas">
+        <line id="line1" x1="500" y1="350" x2="500" y2="147"></line>
+        <line id="line2" x1="500" y1="350" x2="840" y2="273"></line>
+        <line id="line3" x1="500" y1="350" x2="710" y2="546"></line>
+        <line id="line4" x1="500" y1="350" x2="290" y2="546"></line>
+        <line id="line5" x1="500" y1="350" x2="160" y2="273"></line>
+    </svg>
+    <div class="node-main" id="main-node">Deformace pevných těles</div>
+    <a href="interaktivni-prehled.html" target="_blank" class="node-child pos-1" id="child-1">
+        <div class="icon">🌐</div><span>Interaktivní přehled</span><small>Teorie, grafy a animace deformací v praxi.</small>
+    </a>
+    <a href="studijni-prirucka.html" target="_blank" class="node-child pos-2" id="child-2">
+        <div class="icon">📖</div><span>Studijní příručka</span><small>Podrobný text pro hlubší pochopení látky.</small>
+    </a>
+    <a href="karticky.html" target="_blank" class="node-child pos-3" id="child-3">
+        <div class="icon">🗂️</div><span>Opakovací kartičky</span><small>Rychlé procvičení pojmů a vzorců.</small>
+    </a>
+    <a href="ulohy.html" target="_blank" class="node-child pos-4" id="child-4">
+        <div class="icon">✏️</div><span>Sbírka řešených úloh</span><small>10 úloh s postupem krok za krokem (CZ/FR).</small>
+    </a>
+    <a href="test.html" target="_blank" class="node-child pos-5" id="child-5">
+        <div class="icon">✅</div><span>Interaktivní test</span><small>Kvíz s teoretickými i výpočetními otázkami (CZ/FR).</small>
+    </a>
+</div>
+<script>
+function updateLines(){
+    if(window.innerWidth<768)return;
+    var c=document.getElementById('container').getBoundingClientRect();
+    var m=document.getElementById('main-node').getBoundingClientRect();
+    var cx=(m.left+m.width/2)-c.left;
+    var cy=(m.top+m.height/2)-c.top;
+    for(var i=1;i<=5;i++){
+        var ch=document.getElementById('child-'+i).getBoundingClientRect();
+        var ln=document.getElementById('line'+i);
+        ln.setAttribute('x1',cx);
+        ln.setAttribute('y1',cy);
+        ln.setAttribute('x2',(ch.left+ch.width/2)-c.left);
+        ln.setAttribute('y2',(ch.top+ch.height/2)-c.top);
+    }
+}
+window.addEventListener('resize',updateLines);
+window.addEventListener('load',updateLines);
+updateLines();
+</script>
+</body>
+</html>

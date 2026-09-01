@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Teplotní roztažnost (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-blue-600">
+            <h1 class="text-3xl font-bold text-blue-700 mb-4">Fyzikální kvíz: Dilatace pevných látek</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-blue-500">Test obsahuje 5 teoretických a 5 výpočetních úloh.</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-blue-600 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold py-2 px-3 rounded-lg border border-blue-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-600 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-blue-700 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-600">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-blue-600">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Co se děje s hustotou pevné látky při zahřívání?", a: "Zmenšuje se", o: ["Zvětšuje se", "Zmenšuje se", "Zůstává stejná", "Závisí na tlaku"], h: "Hmotnost je stejná, ale objem roste.", e: "ρ = m/V. Vyšší objem znamená nižší hustotu." }, fr: { q: "Qu'arrive-t-il à la masse volumique d'un solide en le chauffant ?", a: "Elle diminue", o: ["Elle augmente", "Elle diminue", "Elle reste identique", "Dépend de la pression"], h: "La masse est fixe, le volume augmente.", e: "ρ = m/V. Si V augmente, ρ diminue." } },
+            { id: 't2', type: 'concept', cs: { q: "Který kov se u bimetalu (ocel/mosaz) při zahřívání prodlouží více?", a: "Mosaz", o: ["Ocel", "Mosaz", "Oba stejně", "Závisí na tloušťce"], h: "Mosaz má vyšší α než ocel.", e: "Mosaz se prodlouží více a bimetal se prohne k oceli." }, fr: { q: "Dans un bilame (acier/laiton), quel métal s'allonge le plus au chauffage ?", a: "Le laiton", o: ["L'acier", "Le laiton", "Les deux pareil", "Dépend de l'épaisseur"], h: "Le laiton a un α plus élevé.", e: "Le laiton s'allonge plus, courbant le bilame vers l'acier." } },
+            { id: 't3', type: 'concept', cs: { q: "Proč musí mít plomba podobné α jako zub?", a: "Aby zub nepraskl pnutím", o: ["Kvůli barvě", "Aby zub nepraskl pnutím", "Aby lépe vedla teplo", "Kvůli chuti"], h: "Při jídle dochází k velkým změnám teploty.", e: "Různé α by vyvolalo mechanické pnutí a prasknutí skloviny." }, fr: { q: "Pourquoi une obturation doit avoir un α proche de la dent ?", a: "Pour éviter les fissures", o: ["Pour la couleur", "Pour éviter les fissures", "Pour la conductivité", "Pour le goût"], h: "Manger chaud et froid crée des chocs thermiques.", e: "Une différence de dilatation briserait l'émail par tension." } },
+            { id: 't4', type: 'concept', cs: { q: "Proč tlusté sklo praskne při kontaktu s horkou vodou?", a: "Vnitřek se roztáhne dříve než vnějšek", o: ["Sklo se taví", "Vnějšek se roztáhne dříve", "Vnitřek se roztáhne dříve než vnějšek", "Tlak páry"], h: "Sklo vede teplo velmi pomalu.", e: "Nerovnoměrná dilatace vrstev vyvolá pnutí." }, fr: { q: "Pourquoi un verre épais éclate-t-il avec l'eau chaude ?", a: "L'intérieur se dilate avant l'extérieur", o: ["Le verre fond", "L'extérieur se dilate avant", "L'intérieur se dilate avant l'extérieur", "Pression de vapeur"], h: "Le verre conduit mal la chaleur.", e: "L'expansion inégale des couches crée une tension cassante." } },
+            { id: 't5', type: 'concept', cs: { q: "Která slitina má minimální teplotní roztažnost?", a: "Invar", o: ["Invar", "Dural", "Bronz", "Mosaz"], h: "Název od 'Invariable'.", e: "Invar (Ni+Fe) se používá v hodinářství a metrologii." }, fr: { q: "Quel alliage a une dilatation thermique minimale ?", a: "L'Invar", o: ["L'Invar", "Le Dural", "Le Bronze", "Le Laiton"], h: "Nommé d'après 'Invariable'.", e: "L'Invar (Ni+Fe) est utilisé en horlogerie et metrologio." } }
+        ];
+
+        const mathPool = [
+            { id: 'm1', type: 'math', cs: { q: "O kolik mm se prodlouží ocelový nosník ({L} m) při oteplení o {dT} K? (α = {alpha}·10⁻⁵ K⁻¹)", h: "ΔL = L₀ · α · ΔT.", e: "ΔL = {L} * ({alpha}*10⁻⁵) * {dT} = {res} mm." }, fr: { q: "De combien de mm s'allongera une poutre ({L} m) chauffée de {dT} K ? (α = {alpha}·10⁻⁵ K⁻¹)", h: "ΔL = L₀ · α · ΔT.", e: "ΔL = {L} * ({alpha}*10⁻⁵) * {dT} = {res} mm." },
+                solve: (p) => { const res = (p.L * (p.alpha * 1e-5) * p.dT * 1000).toFixed(2); return { res, correct: res + " mm" }; } },
+            { id: 'm2', type: 'math', cs: { q: "Tyč má délku {L} m při 0°C. Délka [m] při {dT}°C? (α = 1,7·10⁻⁵ K⁻¹)", h: "L = L₀(1 + αΔT)", e: "L = {L} * (1 + 1.7e-5 * {dT}) = {res} m." }, fr: { q: "Longueur [m] à {dT}°C d'une barre de {L} m (à 0°C) ? (α = 1,7·10⁻⁵ K⁻¹)", h: "L = L₀(1 + αΔT)", e: "L = {L} * (1 + 1.7e-5 * {dT}) = {res} m." },
+                solve: (p) => { const res = (p.L * (1 + 1.7e-5 * p.dT)).toFixed(4); return { res, correct: res + " m" }; } },
+            { id: 'm3', type: 'math', cs: { q: "Měděný drát ({L} m) se prodloužil o {res} mm. O kolik stupňů se ohřál? (α = 1,7·10⁻⁵ K⁻¹)", h: "ΔT = ΔL / (L₀ · α)", e: "ΔT = {res}/1000 / ({L} * 1.7e-5) = {dT} K." }, fr: { q: "Un fil de cuivre ({L} m) s'est allongé de {res} mm. Quelle est la hausse de T ? (α = 1,7·10⁻⁵ K⁻¹)", h: "ΔT = ΔL / (L₀ · α)", e: "ΔT = {res}/1000 / ({L} * 1.7e-5) = {dT} K." },
+                solve: (p) => { const res = (p.L * 1.7e-5 * p.dT * 1000).toFixed(2); return { res, correct: p.dT + " K" }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<5; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = { L: (Math.random()*15+5).toFixed(1), dT: Math.floor(Math.random()*80+20), alpha: (Math.random()*1.8+1.1).toFixed(1) };
+                const sol = template.solve(p);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => p[k] || sol[k]);
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => sol[k] || p[k]);
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res || sol.correct);
+                    const unit = sol.correct.toString().split(" ")[1] || "";
+                    obj.o = [sol.correct, (val*1.33).toFixed(2)+unit, (val*0.75).toFixed(2)+unit, (val+5).toFixed(2)+unit].sort(() => Math.random()-0.5);
+                };
+                inject(q); inject(tr);
+            }
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').textContent = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-blue-600" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-blue-300 font-medium fade-in";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').textContent = data.h;
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.textContent = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').textContent = data.e;
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            // Spočítáme statistiky podle typu otázky
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            // Vyhodnocení celkového skóre
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Fyzika ti jde a francouzština ti nedělá potíže.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji se vrátit k učivu a procvičit si klíčové pojmy.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat. Zaměř se na pochopení vzorců a významu jednotlivých veličin.";
+                overallIcon = "🔍";
+            }
+
+            // Silné a slabé stránky
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš principům dilatace.");
+            else weaknesses.push("Teorie ti dělá potíže – zkus si znovu projít definice a příklady.");
+            if (mathPercent >= 70) strengths.push("Výpočty ti jdou – umíš správně dosadit do vzorců.");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si práci se vzorci a jednotkami.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní vztahy a jednotky.");
+
+            // Doporučení
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování teorie a řešení podobných příkladů.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus složitější úlohy nebo si prostuduj aplikace dilatace v praxi.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a interaktivní přehledy k zapamatování vzorců.");
+
+            // Francouzština
+            let frenchMsg, frenchIcon;
+            const frenchQuestions = sessionQuestions.filter(q => q.lang === 'fr').length; // mělo by být 5
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            // Sestavení karet
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z 5 francouzských otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            // Vložíme do DOM
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

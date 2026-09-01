@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teplotní roztažnost pevných látek</title>
+
+    <!-- Import písma Inter z Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <!-- MathJax konfigurace -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        /* Použití písma Inter – velmi podobné Google Sans */
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto;
+            padding: 0 20px;
+            max-width: 700px;
+            background: #fff;
+            color: #1f1f1f;
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin: 1.75rem 0 0.5rem;
+            font-weight: 600;
+        }
+        p {
+            margin: 0 0 1rem;
+        }
+        ul, ol {
+            margin: 0.5rem 0;
+            padding-left: 1.75rem;
+        }
+        strong {
+            font-weight: 600;
+        }
+        /* Zajištění správného zobrazení display rovnic */
+        .MathJax_Display {
+            margin: 1em 0;
+            text-align: center;
+        }
+        /* Jemné vylepšení pro lepší čitelnost */
+        .math {
+            font-family: 'Times New Roman', 'STIX', 'MathJax_Main', serif;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Teplotní roztažnost pevných látek</h1>
+    <p><strong>Předmět:</strong> Fyzika
+        <strong>Úroveň:</strong> Gymnázium / Střední škola
+    </p>
+
+    <h2>1. Úvod do problematiky</h2>
+    <p>Teplotní roztažnost je fyzikální jev, při kterém tělesa mění své rozměry v důsledku změny své teploty. Na mikroskopické úrovni je tento jev způsoben tím, že se zvyšující se teplotou roste kinetická energie částic. Částice kmitají s větší amplitudou kolem svých rovnovážných poloh a v důsledku nesymetrie vazebných sil se jejich střední vzdálenost zvětšuje.</p>
+
+    <h2>2. Délková roztažnost</h2>
+    <p>U těles, u nichž jeden rozměr výrazně převládá nad ostatními (dráty, tyče, kolejnice), zkoumáme <strong>teplotní délkovou roztažnost</strong>.</p>
+
+    <h3>Matematické vyjádření</h3>
+    <p>Změna délky tyče $\Delta l$ je přímo úměrná její počáteční délce $l_0$ a změně teploty $\Delta t$.</p>
+
+    $$ \Delta l = \alpha \cdot l_0 \cdot \Delta t $$
+
+    <p>Kde:</p>
+    <ul>
+        <li>$\Delta l = l - l_0$ je prodloužení tyče $[m]$</li>
+        <li>$l_0$ je počáteční délka při teplotě $t_0$ $[m]$</li>
+        <li>$l$ je výsledná délka při teplotě $t$ $[m]$</li>
+        <li>$\Delta t = t - t_0$ je rozdíl teplot $[^\circ C]$ nebo $[K]$</li>
+        <li>$\alpha$ je <strong>teplotní součinitel délkové roztažnosti</strong> $[K^{-1}]$</li>
+    </ul>
+
+    <p><strong>Výsledná délka tělesa</strong> $l$ <strong>po zahřátí:</strong></p>
+
+    $$ l = l_0 (1 + \alpha \Delta t) $$
+
+    <h3>Součinitel délkové roztažnosti ($\alpha$)</h3>
+    <p>Jedná se o materiálovou konstantu, která udává, o jakou část své původní délky se prodlouží tyč z daného materiálu o délce $1 \, m$, zahřejeme-li ji o $1 \, K$.<br>
+        <em>Příklad:</em> Ocel má $\alpha \approx 1{,}2 \cdot 10^{-5} \, K^{-1}$.
+    </p>
+
+    <h2>3. Objemová roztažnost</h2>
+    <p>U prostorových těles, kde nelze zanedbat žádný rozměr, uvažujeme změnu celkového objemu.</p>
+
+    <h3>Matematické vyjádření</h3>
+    <p>Vztah je analogický k délkové roztažnosti:</p>
+
+    $$ \Delta V = \beta \cdot V_0 \cdot \Delta t $$
+
+    <p>Kde:</p>
+    <ul>
+        <li>$V = V_0 (1 + \beta \Delta t)$</li>
+        <li>$\beta$ je <strong>teplotní součinitel objemové roztažnosti</strong> $[K^{-1}]$</li>
+    </ul>
+
+    <h3>Vztah mezi $\alpha$ a $\beta$</h3>
+    <p>Pro izotropní pevné látky (vlastnosti stejné ve všech směrech) platí přibližný vztah:</p>
+
+    $$ \beta \approx 3\alpha $$
+
+    <h2>4. Praktické důsledky a aplikace</h2>
+
+    <h3>Technická praxe</h3>
+    <ol>
+        <li><strong>Dilatační spáry:</strong> Mosty, kolejnice nebo potrubí musí mít vynechané volné prostory, aby se v létě horkem nezdeformovaly nebo nepopraskaly.</li>
+        <li><strong>Bimetalový pásek:</strong> Spojení dvou kovů s různými součiniteli $\alpha$ (např. mosaz a ocel). Při zahřátí se pásek ohne na stranu kovu s menším $\alpha$. Využití v termostatech.</li>
+        <li><strong>Zasklívání:</strong> Sklo má jinou roztažnost než kovový rám, proto se používají pružné tmely pro kompenzaci rozdílů.</li>
+    </ol>
+
+    <h3>Fyzikální zajímavosti</h3>
+    <ul>
+        <li><strong>Zubní materiály:</strong> Plomby musí mít stejný součinitel roztažnosti jako sklovina, jinak by při pití horkých nápojů vypadly nebo poškodily zub.</li>
+        <li><strong>Invar:</strong> Speciální slitina železa a niklu s extrémně nízkým $\alpha$ ($1{,}2 \cdot 10^{-6} \, K^{-1}$), používaná pro přesné měřicí přístroje.</li>
+    </ul>
+
+    <h2>5. Vzorový příklad</h2>
+    <p><strong>Zadání:</strong> Ocelový most má při teplotě $-10 \, ^\circ C$ délku $150 \, m$. Jakou délku bude mít při letním horku $35 \, ^\circ C$? ($\alpha_{\text{ocel}} = 1{,}2 \cdot 10^{-5} \, K^{-1}$)</p>
+    <p><strong>Řešení:</strong></p>
+    <ol>
+        <li>Výpočet rozdílu teplot: $\Delta t = 35 - (-10) = 45 \, ^\circ C$</li>
+        <li>Dosazení do vzorce: $l = 150 \cdot (1 + 1{,}2 \cdot 10^{-5} \cdot 45)$</li>
+        <li>$l = 150 \cdot (1 + 0{,}00054)$</li>
+        <li>$l = 150{,}081 \, m$</li>
+    </ol>
+    <p><strong>Odpověď:</strong> Most se prodlouží o $8{,}1 \, cm$.</p>
+
+    <h2>6. Shrnutí k maturitě</h2>
+    <ul>
+        <li><strong>Délková roztažnost:</strong> Týká se tyčí, $l = l_0(1+\alpha\Delta t)$.</li>
+        <li><strong>Objemová roztažnost:</strong> Týká se objemů, $V = V_0(1+\beta\Delta t)$.</li>
+        <li><strong>Klíčový vztah:</strong> $\beta \approx 3\alpha$ (pro izotropní látky).</li>
+        <li><strong>Příčina:</strong> Nesymetrie kmitů částic v krystalové mřížce.</li>
+    </ul>
+
+</body>
+</html>

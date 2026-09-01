@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teplotní roztažnost pevných látek / Dilatation thermique des solides</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" crossorigin="anonymous"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 40vh;
+            max-height: 400px;
+        }
+        .tab-btn.active {
+            border-bottom-width: 4px;
+            border-color: #1d4ed8;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Skrytí jazykových kontejnerů */
+        .lang-container {
+            display: block;
+        }
+        .lang-container.hidden {
+            display: none;
+        }
+        /* Fixní tlačítko */
+        .lang-switch-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            z-index: 1000;
+            background: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 9999px;
+            padding: 8px 16px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .lang-switch-btn:hover {
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .lang-switch-btn .lang-indicator {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            text-align: center;
+            line-height: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .lang-switch-btn .lang-indicator.fr {
+            background: #dc2626;
+        }
+        .lang-switch-btn .lang-label {
+            font-size: 14px;
+        }
+        @media (max-width: 640px) {
+            .lang-switch-btn {
+                top: 8px;
+                right: 8px;
+                padding: 6px 12px;
+            }
+            .lang-switch-btn .lang-label {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- Jazykové tlačítko -->
+    <button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+        <span class="lang-indicator fr" id="langIndicator">FR</span>
+        <span class="lang-label" id="langLabel">Français</span>
+    </button>
+
+    <!-- ČESKÝ OBSAH -->
+    <div id="cz-content" class="lang-container">
+        <!-- Hlavička -->
+        <header class="bg-blue-800 text-white py-12 px-4 shadow-md">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center gap-3 mb-4 text-blue-200 text-sm font-semibold tracking-wider uppercase">
+                    <span>📚 Fyzika</span>
+                    <span>•</span>
+                    <span>🏫 Gymnázium</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Teplotní roztažnost pevných látek</h1>
+                <p class="text-lg md:text-xl text-blue-50 max-w-3xl leading-relaxed">
+                    Interaktivní průvodce fyzikálním jevem, při kterém tělesa mění své rozměry v důsledku změny teploty. Objevte mikroskopické příčiny a praktické důsledky.
+                </p>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-4 py-8 space-y-12">
+            <!-- Úvod -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4 border-b pb-2">🔬 Úvod do problematiky</h2>
+                <p class="mb-4 text-slate-700">Tato sekce vysvětluje základní podstatu jevu. Zjistíte, proč se látky vůbec roztahují a co se děje na úrovni atomů.</p>
+                <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg">
+                    <p class="text-slate-700 leading-relaxed">
+                        Na mikroskopické úrovni je teplotní roztažnost způsobena tím, že se zvyšující se teplotou <strong>roste kinetická energie částic</strong>. Částice kmitají s větší amplitudou kolem svých rovnovážných poloh a v důsledku nesymetrie vazebných sil se jejich střední vzdálenost zvětšuje.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Matematické modely -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 md:p-8 pb-0">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4 text-blue-900">📐 Matematické modely roztažnosti</h2>
+                    <p class="mb-6 text-slate-600">Zde se seznámíte s výpočtem změny rozměrů. Zvolte si typ roztažnosti podle tvaru tělesa.</p>
+                </div>
+
+                <div class="flex border-b border-slate-200 px-6 md:px-8">
+                    <button class="tab-btn active px-4 py-3 text-slate-600 hover:text-blue-600 focus:outline-none transition-colors" data-target="delkova">
+                        📏 Délková roztažnost
+                    </button>
+                    <button class="tab-btn px-4 py-3 text-slate-600 hover:text-blue-600 focus:outline-none transition-colors" data-target="objemova">
+                        📦 Objemová roztažnost
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 bg-slate-50">
+                    <div id="delkova" class="tab-content active">
+                        <p class="mb-4 text-slate-700">Zkoumáme změnu délky u těles, kde jeden rozměr výrazně převládá (tyče, kolejnice).</p>
+                        <div class="grid md:grid-cols-2 gap-8 items-start">
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                <h3 class="font-bold text-lg mb-3 text-blue-800">Základní vzorce</h3>
+                                <div class="text-center bg-slate-100 p-4 rounded-lg mb-4 font-mono text-lg font-semibold tracking-widest text-slate-800">
+                                    Δl = α · l₀ · Δt
+                                </div>
+                                <div class="text-center bg-slate-100 p-4 rounded-lg font-mono text-lg font-semibold tracking-widest text-slate-800">
+                                    l = l₀ (1 + αΔt)
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2">Vysvětlivky veličin</h3>
+                                <ul class="space-y-2 text-slate-700">
+                                    <li><strong>Δl</strong> = l - l₀ (prodloužení tyče) [m]</li>
+                                    <li><strong>l₀</strong> = počáteční délka při teplotě t₀ [m]</li>
+                                    <li><strong>l</strong> = výsledná délka při teplotě t [m]</li>
+                                    <li><strong>Δt</strong> = t - t₀ (změna teploty) [°C / K]</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="objemova" class="tab-content">
+                        <p class="mb-4 text-slate-700">U prostorových těles uvažujeme změnu celkového objemu.</p>
+                        <div class="grid md:grid-cols-2 gap-8 items-start">
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                <h3 class="font-bold text-lg mb-3 text-blue-800">Základní vzorce</h3>
+                                <div class="text-center bg-slate-100 p-4 rounded-lg mb-4 font-mono text-lg font-semibold tracking-widest text-slate-800">
+                                    ΔV = β · V₀ · Δt
+                                </div>
+                                <div class="text-center bg-slate-100 p-4 rounded-lg font-mono text-lg font-semibold tracking-widest text-slate-800">
+                                    V = V₀ (1 + βΔt)
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2">Vztah mezi α a β</h3>
+                                <p class="text-slate-700 mb-4">Pro izotropní látky platí, že objemový součinitel je přibližně trojnásobkem délkového:</p>
+                                <div class="text-center bg-blue-100 border border-blue-200 p-4 rounded-lg font-mono text-xl font-bold text-blue-900">
+                                    β ≈ 3α
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Kalkulačka -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2 text-blue-900">🧮 Interaktivní kalkulačka</h2>
+                <p class="mb-6 text-slate-600">Simulace změny délky. Všechny hodnoty α jsou vyjádřeny v jednotkách 10⁻⁶ K⁻¹ pro snadné srovnání.</p>
+
+                <div class="grid lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 space-y-5 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Materiál (α · 10⁻⁶ K⁻¹)</label>
+                            <select id="calc-material" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="12">Ocel (α = 12 · 10⁻⁶ K⁻¹)</option>
+                                <option value="19">Mosaz (α = 19 · 10⁻⁶ K⁻¹)</option>
+                                <option value="1.2">Invar (α = 1,2 · 10⁻⁶ K⁻¹)</option>
+                                <option value="9">Sklo (α = 9 · 10⁻⁶ K⁻¹)</option>
+                                <option value="23">Hliník (α = 23 · 10⁻⁶ K⁻¹)</option>
+                                <option value="17">Měď (α = 17 · 10⁻⁶ K⁻¹)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Počáteční délka l₀ [m]</label>
+                            <input type="number" id="calc-l0" value="150" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Teplota t₀ [°C]</label>
+                                <input type="number" id="calc-t0" value="-10" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Teplota t [°C]</label>
+                                <input type="number" id="calc-t" value="35" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 flex flex-col justify-center">
+                        <div class="bg-blue-800 text-white p-6 rounded-xl shadow-inner relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">⚛️</div>
+                            <h3 class="text-xl font-bold mb-4">Postup výpočtu</h3>
+                            <div class="space-y-3 font-mono text-sm md:text-base relative z-10">
+                                <p>1. Změna teploty: Δt = t - t₀ = <span id="res-t">35</span> - (<span id="res-t0">-10</span>) = <strong id="res-dt" class="text-amber-300">45 °C</strong></p>
+                                <p>2. Dosazení: l = <span id="res-l0-val">150</span> · (1 + <span id="res-alpha-display">12 · 10⁻⁶</span> · <span id="res-dt-val">45</span>)</p>
+                                <p>3. Změna délky: Δl = <strong id="res-dl" class="text-amber-300">0.0810 m</strong> (<span id="res-dl-cm">8.10</span> cm)</p>
+                                <div class="pt-4 mt-4 border-t border-blue-600">
+                                    <p class="text-lg">Koncová délka l = <strong id="res-l-final" class="text-2xl text-white bg-blue-900 px-3 py-1 rounded">150.0810 m</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 border-t pt-8">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">Porovnání roztažnosti různých materiálů</h3>
+                    <div class="chart-container">
+                        <canvas id="expansionChart" width="800" height="340" style="display: block; box-sizing: border-box; height: 340.4px; width: 800px;"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Praxe -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6 text-blue-900">🌍 Fyzika v praxi</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🌉</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Mostní konstrukce</h3>
+                        <p class="text-slate-600 text-sm">Dilatační spáry a válečková ložiska umožňují mostu měnit délku bez rizika zřícení nebo popraskání pilířů.</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🌡️</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Termostaty</h3>
+                        <p class="text-slate-600 text-sm">Bimetalový pásek se při zahřátí prohne a mechanicky rozpojí elektrický kontakt, čímž reguluje teplotu (žehličky, konvice).</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🦷</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Stomatologie</h3>
+                        <p class="text-slate-600 text-sm">Materiál zubních výplní musí mít stejné α jako zubní sklovina, jinak by při pití horkých nápojů plomba vypadla nebo zub praskl.</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">⚡</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Elektrické dráty</h3>
+                        <p class="text-slate-600 text-sm">Vedení vysokého napětí se v létě vlivem roztažnosti prověšuje mnohem více než v zimě, což projektanti musí zohlednit.</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🥛</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Praskání skla</h3>
+                        <p class="text-slate-600 text-sm">Tlustostěnné sklo praskne při nalití vařící vody, protože vnitřní vrstva se roztáhne rychleji než vnější, čímž vznikne pnutí.</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🛤️</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Železnice</h3>
+                        <p class="text-slate-600 text-sm">Při extrémních vedrech může dojít k vybočení kolejnic, pokud nemají dostatečnou vůli v mezerách nebo nejsou správně upevněny.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Shrnutí -->
+            <section class="bg-blue-600 rounded-2xl p-6 md:p-8 text-white shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">📝 Shrnutí klíčových poznatků</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-blue-700 p-4 rounded-lg border border-blue-500">
+                        <h3 class="font-bold border-b border-blue-400 mb-2 pb-1">Délková roztažnost</h3>
+                        <p class="text-sm mb-2">Změna lineárního rozměru tělesa:</p>
+                        <p class="font-mono bg-blue-800 p-2 rounded text-center">l = l₀(1 + αΔt)</p>
+                        <p class="text-xs mt-2 italic text-blue-200">α [K⁻¹] – teplotní součinitel délkové roztažnosti</p>
+                    </div>
+                    <div class="bg-blue-700 p-4 rounded-lg border border-blue-500">
+                        <h3 class="font-bold border-b border-blue-400 mb-2 pb-1">Objemová roztažnost</h3>
+                        <p class="text-sm mb-2">Změna celkového objemu tělesa:</p>
+                        <p class="font-mono bg-blue-800 p-2 rounded text-center">V = V₀(1 + βΔt)</p>
+                        <p class="text-xs mt-2 italic text-blue-200">β [K⁻¹] – teplotní součinitel objemové roztažnosti</p>
+                    </div>
+                </div>
+                <div class="mt-6 bg-blue-800 p-4 rounded-lg border border-blue-400">
+                    <h3 class="font-bold mb-2">Vzájemný vztah součinitelů</h3>
+                    <p class="text-sm leading-relaxed">
+                        U izotropních pevných látek (vlastnosti stejné ve všech směrech) platí pro součinitel objemové roztažnosti důležitý vztah:
+                    </p>
+                    <div class="flex justify-center my-3">
+                        <span class="text-2xl font-bold bg-blue-900 px-6 py-2 rounded-full border border-blue-300 italic">β ≈ 3α</span>
+                    </div>
+                    <p class="text-xs text-blue-200">
+                        To znamená, že objem se zvětšuje přibližně třikrát více než délka v jednom konkrétním směru. Tento vztah je zásadní pro řešení úloh, kde známe pouze α z tabulek, ale počítáme s objemem.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-slate-800 text-slate-400 py-8 text-center mt-12">
+            <p>© Interaktivní studijní příručka pro gymnázia</p>
+        </footer>
+    </div>
+
+    <!-- FRANCOUZSKÝ OBSAH -->
+    <div id="fr-content" class="lang-container hidden">
+        <!-- Hlavička -->
+        <header class="bg-blue-800 text-white py-12 px-4 shadow-md">
+            <div class="max-w-5xl mx-auto">
+                <div class="flex items-center gap-3 mb-4 text-blue-200 text-sm font-semibold tracking-wider uppercase">
+                    <span>📚 Physique</span>
+                    <span>•</span>
+                    <span>🏫 Lycée</span>
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Dilatation thermique des solides</h1>
+                <p class="text-lg md:text-xl text-blue-50 max-w-3xl leading-relaxed">
+                    Guide interactif sur le phénomène physique où les corps changent de dimensions suite à une variation de température. Découvrez les causes microscopiques et les conséquences pratiques.
+                </p>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-4 py-8 space-y-12">
+            <!-- Introduction -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4 border-b pb-2">🔬 Introduction</h2>
+                <p class="mb-4 text-slate-700">Cette section explique la nature fondamentale du phénomène. Vous découvrirez pourquoi les substances se dilatent et ce qui se passe au niveau atomique.</p>
+                <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg">
+                    <p class="text-slate-700 leading-relaxed">
+                        Au niveau microscopique, la dilatation thermique est due au fait qu'avec l'augmentation de la température, <strong>l'énergie cinétique des particules augmente</strong>. Les particules vibrent avec une plus grande amplitude autour de leurs positions d'équilibre et, en raison de l'asymétrie des forces de liaison, leur distance moyenne augmente.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Modèles mathématiques -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="p-6 md:p-8 pb-0">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-4 text-blue-900">📐 Modèles mathématiques</h2>
+                    <p class="mb-6 text-slate-600">Ici, vous apprendrez à calculer le changement de dimensions. Choisissez le type de dilatation selon la forme du corps.</p>
+                </div>
+
+                <div class="flex border-b border-slate-200 px-6 md:px-8">
+                    <button class="tab-btn active px-4 py-3 text-slate-600 hover:text-blue-600 focus:outline-none transition-colors" data-target="delkova_fr">
+                        📏 Dilatation linéaire
+                    </button>
+                    <button class="tab-btn px-4 py-3 text-slate-600 hover:text-blue-600 focus:outline-none transition-colors" data-target="objemova_fr">
+                        📦 Dilatation volumique
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8 bg-slate-50">
+                    <div id="delkova_fr" class="tab-content active">
+                        <p class="mb-4 text-slate-700">Nous étudions le changement de longueur pour les corps dont une dimension prédomine nettement (barres, rails).</p>
+                        <div class="grid md:grid-cols-2 gap-8 items-start">
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                <h3 class="font-bold text-lg mb-3 text-blue-800">Formules de base</h3>
+                                <div class="text-center bg-slate-100 p-4 rounded-lg mb-4 font-mono text-lg font-semibold tracking-widest text-slate-800">
+                                    Δl = α · l₀ · Δt
+                                </div>
+                                <div class="text-center bg-slate-100 p-4 rounded-lg font-mono text-lg font-semibold tracking-widest text-slate-800">
+                                    l = l₀ (1 + αΔt)
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2">Légende des grandeurs</h3>
+                                <ul class="space-y-2 text-slate-700">
+                                    <li><strong>Δl</strong> = l - l₀ (allongement) [m]</li>
+                                    <li><strong>l₀</strong> = longueur initiale à la température t₀ [m]</li>
+                                    <li><strong>l</strong> = longueur finale à la température t [m]</li>
+                                    <li><strong>Δt</strong> = t - t₀ (variation de température) [°C / K]</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="objemova_fr" class="tab-content">
+                        <p class="mb-4 text-slate-700">Pour les corps tridimensionnels, nous considérons le changement de volume total.</p>
+                        <div class="grid md:grid-cols-2 gap-8 items-start">
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                                <h3 class="font-bold text-lg mb-3 text-blue-800">Formules de base</h3>
+                                <div class="text-center bg-slate-100 p-4 rounded-lg mb-4 font-mono text-lg font-semibold tracking-widest text-slate-800">
+                                    ΔV = β · V₀ · Δt
+                                </div>
+                                <div class="text-center bg-slate-100 p-4 rounded-lg font-mono text-lg font-semibold tracking-widest text-slate-800">
+                                    V = V₀ (1 + βΔt)
+                                </div>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-2">Relation entre α et β</h3>
+                                <p class="text-slate-700 mb-4">Pour les matériaux isotropes, le coefficient volumique est environ le triple du linéaire :</p>
+                                <div class="text-center bg-blue-100 border border-blue-200 p-4 rounded-lg font-mono text-xl font-bold text-blue-900">
+                                    β ≈ 3α
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Calculatrice -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2 text-blue-900">🧮 Calculatrice interactive</h2>
+                <p class="mb-6 text-slate-600">Simulation de la variation de longueur. Toutes les valeurs de α sont exprimées en unités de 10⁻⁶ K⁻¹.</p>
+
+                <div class="grid lg:grid-cols-12 gap-8">
+                    <div class="lg:col-span-5 space-y-5 bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Matériau (α · 10⁻⁶ K⁻¹)</label>
+                            <select id="calc-material-fr" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                                <option value="12">Acier (α = 12 · 10⁻⁶ K⁻¹)</option>
+                                <option value="19">Laiton (α = 19 · 10⁻⁶ K⁻¹)</option>
+                                <option value="1.2">Invar (α = 1,2 · 10⁻⁶ K⁻¹)</option>
+                                <option value="9">Verre (α = 9 · 10⁻⁶ K⁻¹)</option>
+                                <option value="23">Aluminium (α = 23 · 10⁻⁶ K⁻¹)</option>
+                                <option value="17">Cuivre (α = 17 · 10⁻⁶ K⁻¹)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-1">Longueur initiale l₀ [m]</label>
+                            <input type="number" id="calc-l0-fr" value="150" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Température t₀ [°C]</label>
+                                <input type="number" id="calc-t0-fr" value="-10" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Température t [°C]</label>
+                                <input type="number" id="calc-t-fr" value="35" class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-7 flex flex-col justify-center">
+                        <div class="bg-blue-800 text-white p-6 rounded-xl shadow-inner relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl">⚛️</div>
+                            <h3 class="text-xl font-bold mb-4">Détails du calcul</h3>
+                            <div class="space-y-3 font-mono text-sm md:text-base relative z-10">
+                                <p>1. Δt = t - t₀ = <span id="res-t-fr">35</span> - (<span id="res-t0-fr">-10</span>) = <strong id="res-dt-fr" class="text-amber-300">45 °C</strong></p>
+                                <p>2. Substitution : l = <span id="res-l0-val-fr">150</span> · (1 + <span id="res-alpha-display-fr">12 · 10⁻⁶</span> · <span id="res-dt-val-fr">45</span>)</p>
+                                <p>3. Variation : Δl = <strong id="res-dl-fr" class="text-amber-300">0.0810 m</strong> (<span id="res-dl-cm-fr">8.10</span> cm)</p>
+                                <div class="pt-4 mt-4 border-t border-blue-600">
+                                    <p class="text-lg">Longueur finale l = <strong id="res-l-final-fr" class="text-2xl text-white bg-blue-900 px-3 py-1 rounded">150.0810 m</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 border-t pt-8">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4 text-center">Comparaison de la dilatation (l₀ = 100m)</h3>
+                    <div class="chart-container">
+                        <canvas id="expansionChartFr" width="800" height="340" style="display: block; box-sizing: border-box; height: 340.4px; width: 800px;"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pratique -->
+            <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-6 text-blue-900">🌍 La physique en pratique</h2>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🌉</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Ponts et viaducs</h3>
+                        <p class="text-slate-600 text-sm">Les joints de dilatation et les appuis à rouleaux permettent au pont de changer de longueur sans risque de rupture.</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🌡️</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Thermostats</h3>
+                        <p class="text-slate-600 text-sm">Une lame bimétallique s'incurve sous l'effet de la chaleur et coupe le contact électrique (fers à repasser, bouilloires).</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🦷</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Stomatologie</h3>
+                        <p class="text-slate-600 text-sm">Le matériau d'obturation doit avoir le même α que l'émail, sinon le plombage tomberait ou la dent se fissurerait.</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">⚡</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Lignes électriques</h3>
+                        <p class="text-slate-600 text-sm">Les fils haute tension pendent beaucoup plus en été qu'en hiver en raison de la dilatation thermique.</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🥛</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Choc thermique</h3>
+                        <p class="text-slate-600 text-sm">Un verre épais peut éclater si on y verse de l'eau bouillante car la couche interne se dilate plus vite que l'externe.</p>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-5 hover:border-blue-300 transition-all hover:shadow-md">
+                        <div class="text-3xl mb-3">🛤️</div>
+                        <h3 class="font-bold text-lg text-slate-800 mb-2">Chemins de fer</h3>
+                        <p class="text-slate-600 text-sm">Lors de chaleurs extrêmes, les rails peuvent se déformer s'ils n'ont pas assez d'espace de dilatation.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Résumé -->
+            <section class="bg-blue-600 rounded-2xl p-6 md:p-8 text-white shadow-lg">
+                <h2 class="text-2xl font-bold mb-4">📝 Résumé des points clés</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-blue-700 p-4 rounded-lg border border-blue-500">
+                        <h3 class="font-bold border-b border-blue-400 mb-2 pb-1">Dilatation linéaire</h3>
+                        <p class="text-sm mb-2">Variation d'une dimension linéaire :</p>
+                        <p class="font-mono bg-blue-800 p-2 rounded text-center">l = l₀(1 + αΔt)</p>
+                        <p class="text-xs mt-2 italic text-blue-200">α [K⁻¹] – coefficient de dilatation linéaire</p>
+                    </div>
+                    <div class="bg-blue-700 p-4 rounded-lg border border-blue-500">
+                        <h3 class="font-bold border-b border-blue-400 mb-2 pb-1">Dilatation volumique</h3>
+                        <p class="text-sm mb-2">Variation du volume total :</p>
+                        <p class="font-mono bg-blue-800 p-2 rounded text-center">V = V₀(1 + βΔt)</p>
+                        <p class="text-xs mt-2 italic text-blue-200">β [K⁻¹] – coefficient de dilatation volumique</p>
+                    </div>
+                </div>
+                <div class="mt-6 bg-blue-800 p-4 rounded-lg border border-blue-400">
+                    <h3 class="font-bold mb-2">Relation entre les coefficients</h3>
+                    <p class="text-sm leading-relaxed">
+                        Pour les solides isotropes, la relation suivante est fondamentale pour les calculs :
+                    </p>
+                    <div class="flex justify-center my-3">
+                        <span class="text-2xl font-bold bg-blue-900 px-6 py-2 rounded-full border border-blue-300 italic">β ≈ 3α</span>
+                    </div>
+                    <p class="text-xs text-blue-200">
+                        Cela signifie que le volume augmente environ trois fois plus que la longueur dans une direction donnée.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="bg-slate-800 text-slate-400 py-8 text-center mt-12">
+            <p>© Guide d'étude interactif pour lycées</p>
+        </footer>
+    </div>
+
+    <script>
+        // Přepínání jazyků
+        function toggleLanguage() {
+            const czContent = document.getElementById('cz-content');
+            const frContent = document.getElementById('fr-content');
+            const indicator = document.getElementById('langIndicator');
+            const label = document.getElementById('langLabel');
+
+            if (czContent.classList.contains('hidden')) {
+    // Přepnout na češtinu – tlačítko teď ukazuje FR, protože po přepnutí bude česky
+    czContent.classList.remove('hidden');
+    frContent.classList.add('hidden');
+    indicator.textContent = 'FR';
+    indicator.className = 'lang-indicator fr';
+    label.textContent = 'Français';
+    // ...
+} else {
+    // Přepnout na francouzštinu – tlačítko teď ukazuje CZ
+    czContent.classList.add('hidden');
+    frContent.classList.remove('hidden');
+    indicator.textContent = 'CZ';
+    indicator.className = 'lang-indicator';
+    label.textContent = 'Čeština';
+    // ...
+}
+        }
+
+        // Aktivace správných tabů podle jazyka
+        function activateTabs(lang) {
+            const prefix = lang === 'cz' ? '' : '_fr';
+            const tabBtns = document.querySelectorAll(`#${lang}-content .tab-btn`);
+            const tabContents = document.querySelectorAll(`#${lang}-content .tab-content`);
+
+            // Deaktivovat všechny
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Aktivovat první (délková)
+            if (tabBtns.length > 0) tabBtns[0].classList.add('active');
+            const firstTarget = tabBtns.length > 0 ? tabBtns[0].getAttribute('data-target') : null;
+            if (firstTarget) {
+                const firstContent = document.getElementById(firstTarget);
+                if (firstContent) firstContent.classList.add('active');
+            }
+        }
+
+        // Aktualizace kalkulačky podle jazyka
+        function updateCalculator(lang) {
+            const suffix = lang === 'cz' ? '' : '-fr';
+            const mat = document.getElementById(`calc-material${suffix}`);
+            const l0 = document.getElementById(`calc-l0${suffix}`);
+            const t0 = document.getElementById(`calc-t0${suffix}`);
+            const t = document.getElementById(`calc-t${suffix}`);
+
+            const resT = document.getElementById(`res-t${suffix}`);
+            const resT0 = document.getElementById(`res-t0${suffix}`);
+            const resDt = document.getElementById(`res-dt${suffix}`);
+            const resDtVal = document.getElementById(`res-dt-val${suffix}`);
+            const resL0Val = document.getElementById(`res-l0-val${suffix}`);
+            const resAlphaDisplay = document.getElementById(`res-alpha-display${suffix}`);
+            const resDl = document.getElementById(`res-dl${suffix}`);
+            const resDlCm = document.getElementById(`res-dl-cm${suffix}`);
+            const resLFinal = document.getElementById(`res-l-final${suffix}`);
+
+            function calculate() {
+                const alphaVal = parseFloat(mat.value);
+                const alphaReal = alphaVal * 1e-6;
+                const l0Val = parseFloat(l0.value) || 0;
+                const t0Val = parseFloat(t0.value) || 0;
+                const tVal = parseFloat(t.value) || 0;
+
+                const dt = tVal - t0Val;
+                const dl = alphaReal * l0Val * dt;
+                const l = l0Val + dl;
+
+                resT.textContent = tVal;
+                resT0.textContent = t0Val;
+                resDt.textContent = dt + " °C";
+                resDtVal.textContent = dt;
+                resL0Val.textContent = l0Val;
+                resAlphaDisplay.textContent = alphaVal + " · 10⁻⁶";
+                resDl.textContent = dl.toFixed(4) + " m";
+                resDlCm.textContent = (dl * 100).toFixed(2);
+                resLFinal.textContent = l.toFixed(4) + " m";
+            }
+
+            [mat, l0, t0, t].forEach(input => {
+                input.removeEventListener('input', calculate);
+                input.addEventListener('input', calculate);
+            });
+            calculate();
+        }
+
+        // Inicializace: čeština aktivní
+        document.addEventListener('DOMContentLoaded', function() {
+            // Nastavit aktivní taby pro češtinu
+            activateTabs('cz');
+            updateCalculator('cz');
+            // Aktivovat i francouzské taby (ale skryté) pro případ přepnutí
+            activateTabs('fr');
+            updateCalculator('fr');
+
+            // Grafy – vytvořit pro oba jazyky (ale zobrazí se jen aktivní)
+            createChart('expansionChart', 'cz');
+            createChart('expansionChartFr', 'fr');
+        });
+
+        function createChart(canvasId, lang) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            const temps = [0, 20, 40, 60, 80, 100];
+            const baseL = 100;
+            const labels = lang === 'cz' ? temps.map(t => t + ' °C') : temps.map(t => t + ' °C');
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: lang === 'cz' ? 'Hliník (23)' : 'Aluminium (23)',
+                            data: temps.map(t => (23e-6 * baseL * t) * 1000),
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.1
+                        },
+                        {
+                            label: lang === 'cz' ? 'Ocel (12)' : 'Acier (12)',
+                            data: temps.map(t => (12e-6 * baseL * t) * 1000),
+                            borderColor: '#1d4ed8',
+                            backgroundColor: 'rgba(29, 78, 216, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Invar (1.2)',
+                            data: temps.map(t => (1.2e-6 * baseL * t) * 1000),
+                            borderColor: '#1e3a8a',
+                            borderWidth: 3,
+                            fill: false,
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(2) + ' mm';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: lang === 'cz' ? 'Prodloužení Δl [mm] (l₀ = 100m)' : 'Allongement Δl [mm] (l₀ = 100m)' },
+                            beginAtZero: true
+                        },
+                        x: { title: { display: true, text: lang === 'cz' ? 'Změna teploty Δt' : 'Variation Δt' } }
+                    }
+                }
+            });
+        }
+
+        // Zajištění, že taby fungují i po přepnutí jazyka – delegace událostí
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.tab-btn');
+            if (btn) {
+                const container = btn.closest('.lang-container');
+                if (!container) return;
+                const lang = container.id === 'cz-content' ? 'cz' : 'fr';
+                const targetId = btn.getAttribute('data-target');
+                const content = document.getElementById(targetId);
+                if (!content) return;
+
+                // Deaktivovat všechny taby a obsahy v tomto kontejneru
+                const btns = container.querySelectorAll('.tab-btn');
+                const contents = container.querySelectorAll('.tab-content');
+                btns.forEach(b => b.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                content.classList.add('active');
+            }
+        });
+    </script>
+
+</body>
+</html>

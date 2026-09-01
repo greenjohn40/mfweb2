@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Příručka: Deformace pevných těles</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&family=Noto+Sans:wght@400;700&display=swap');
+        body { font-family: 'Noto Serif', serif; line-height: 1.6; color: #1a1a1a; }
+        h1, h2, h3, .sans { font-family: 'Noto Sans', sans-serif; }
+        .lang-switch { font-family: 'Noto Sans', sans-serif; }
+        .active-lang { text-decoration: underline; font-weight: bold; }
+        @media print { .no-print { display: none; } body { background: white; } .page-break { page-break-before: always; } }
+        .section-divider { border-top: 2px solid #1a1a1a; margin: 3rem 0; }
+        .sub-divider { border-top: 1px solid #e5e7eb; margin: 2rem 0; }
+        table { border-collapse: collapse; width: 100%; margin: 1.5rem 0; }
+        th, td { border: 1px solid #1a1a1a; padding: 0.75rem; text-align: left; }
+        .example-box { border: 1px solid #1a1a1a; padding: 1.5rem; margin: 1.5rem 0; background-color: #fdfdfd; }
+        .theory-note { border-left: 4px solid #4a5568; padding-left: 1rem; margin: 1rem 0; font-style: italic; }
+        .highlight-term { font-weight: bold; color: #2d3748; background-color: #f7fafc; padding: 0 4px; border-radius: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- Jazykový přepínač -->
+    <div class="no-print border-b bg-gray-50 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-end gap-4 px-6 py-2 text-sm lang-switch">
+            <button id="btn-cz" onclick="switchLang('cz')" class="active-lang">Čeština</button>
+            <span class="text-gray-300">|</span>
+            <button id="btn-fr" onclick="switchLang('fr')">Français</button>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-8 py-12 md:py-16">
+        <header class="mb-12 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4" data-cz="Deformace pevných těles" data-fr="Déformation des solides">Deformace pevných těles</h1>
+            <p class="text-gray-600 italic" data-cz="studijní opora pro bilingvní výuku" data-fr="Support d'étude pour l'enseignement bilingue">Studijní opora pro bilingvní výuku</p>
+        </header>
+
+        <!-- 1. ZÁKLADY -->
+        <section>
+            <h2 class="text-xl font-bold mb-4 uppercase tracking-wider" data-cz="1. Fyzikální podstata a druhy deformace" data-fr="1. Nature physique et types de déformation">1. Fyzikální podstata a druhy deformace</h2>
+            <p class="mb-4" data-cz="Pevná tělesa nejsou absolutně tuhá. Působením vnějších sil dochází k deformaci, což je změna vzájemných poloh částic tělesa. Pokud síly přestanou působit a těleso se vrátí do původního stavu, mluvíme o &lt;span class='highlight-term'&gt;Pružné (elastické) deformaci&lt;/span&gt;. Pokud v tělese změny zůstanou trvale, jde o &lt;span class='highlight-term'&gt;Tvárnou (plastickou) deformaci&lt;/span&gt;." data-fr="Les corps solides ne sont pas absolument rigides. Sous l'action de forces, une déformation se produit. Si le corps reprend sa forme initiale, on parle de &lt;span class='highlight-term'&gt;Déformation élastique&lt;/span&gt;. Si les changements sont permanents, il s'agit d'une &lt;span class='highlight-term'&gt;Déformation plastique&lt;/span&gt;.">
+                Pevná tělesa nejsou absolutně tuhá. Působením vnějších sil dochází k deformaci, což je změna vzájemných poloh částic tělesa. Pokud síly přestanou působit a těleso se vrátí do původního stavu, mluvíme o <span class="highlight-term">Pružné (elastické) deformaci</span>. Pokud v tělese změny zůstanou trvale, jde o <span class="highlight-term">Tvárnou (plastickou) deformaci</span>.
+            </p>
+
+            <h3 class="font-bold mt-6 mb-2" data-cz="Pět základních druhů deformace" data-fr="Cinq types fondamentaux de déformation">Pět základních druhů deformace</h3>
+            <table class="text-sm">
+                <thead>
+                    <tr class="bg-gray-50">
+                        <th data-cz="Typ namáhání" data-fr="Type de sollicitation">Typ namáhání</th>
+                        <th data-cz="Charakteristika sil" data-fr="Caractéristique des forces">Charakteristika sil</th>
+                        <th data-cz="Příklad z praxe" data-fr="Exemple pratique">Příklad z praxe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-bold" data-cz="Tah" data-fr="Traction">Tah</td>
+                        <td data-cz="Dvě síly působí v ose tělesa směrem od sebe." data-fr="Deux forces agissent dans l'axe à l'opposé l'une de l'autre.">Dvě síly působí v ose tělesa směrem od sebe.</td>
+                        <td data-cz="Lano výtahu, dráty mostu." data-fr="Câble d'ascenseur, haubans d'un pont.">Lano výtahu, dráty mostu.</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold" data-cz="Tlak" data-fr="Compression">Tlak</td>
+                        <td data-cz="Dvě síly působí v ose tělesa směrem k sobě." data-fr="Deux forces agissent dans l'axe l'une vers l'autre.">Dvě síly působí v ose tělesa směrem k sobě.</td>
+                        <td data-cz="Pilíře mostu, základy budov." data-fr="Piliers de pont, fondations.">Pilíře mostu, základy budov.</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold" data-cz="Ohyb" data-fr="Flexion">Ohyb</td>
+                        <td data-cz="Síly působí kolmo na podélnou osu tělesa." data-fr="Les forces agissent perpendiculairement à l'axe.">Síly působí kolmo na podélnou osu tělesa.</td>
+                        <td data-cz="Nosník podlahy, skokanské prkno." data-fr="Poutre de plancher, plongeoir.">Nosník podlahy, skokanské prkno.</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold" data-cz="Smyk" data-fr="Cisaillement">Smyk</td>
+                        <td data-cz="Síly působí v rovnoběžných rovinách těsně u sebe." data-fr="Forces agissant dans des plans parallèles proches.">Síly působí v rovnoběžných rovinách těsně u sebe.</td>
+                        <td data-cz="Nýty, šroubové spoje, stříhání nůžkami." data-fr="Rivets, boulons, découpe aux ciseaux.">Nýty, šroubové spoje, stříhání nůžkami.</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold" data-cz="Kroucení" data-fr="Torsion">Kroucení</td>
+                        <td data-cz="Dvojice sil působí v rovině kolmé k ose." data-fr="Couple de forces agissant perpendiculairement à l'axe.">Dvojice sil působí v rovině kolmé k ose.</td>
+                        <td data-cz="Hřídel motoru, vrták, klíč v zámku." data-fr="Arbre moteur, foret, clé dans la serrure.">Hřídel motoru, vrták, klíč v zámku.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="sub-divider"></div>
+
+        <!-- 2. PRUŽNÁ DEFORMACE TAHEM (TLAKEM) -->
+        <section>
+            <h2 class="text-xl font-bold mb-4 uppercase tracking-wider" data-cz="2. Pružná deformace tahem (tlakem)" data-fr="2. Déformation élastique par traction (compression)">2. Pružná deformace tahem (tlakem)</h2>
+            <div class="grid md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="font-bold mb-2" data-cz="Normálové napětí" data-fr="Contrainte normale">Normálové napětí</h3>
+                    <p class="text-sm" data-cz="Vyjadřuje vnitřní síly v materiálu připadající na jednotku plochy." data-fr="Exprime les forces internes par unité de surface.">Vyjadřuje vnitřní síly v materiálu připadající na jednotku plochy.</p>
+                    <p class="text-xl my-4 text-center">$$\sigma = \frac{F_p}{S}$$</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2" data-cz="Relativní prodloužení (zkrácení)" data-fr="Allongement relatif (raccourcissement)">Relativní prodloužení (zkrácení)</h3>
+                    <p class="text-sm" data-cz="Bezrozměrná veličina udávající poměrnou změnu délky." data-fr="Grandeur sans dimension indiquant le changement relatif de longueur.">Bezrozměrná veličina udávající poměrnou změnu délky.</p>
+                    <p class="text-xl my-4 text-center">$$\varepsilon = \frac{\Delta l}{l_0}$$</p>
+                </div>
+            </div>
+
+            <h3 class="font-bold mb-2" data-cz="Hookův zákon a modul pružnosti" data-fr="Loi de Hooke et module d'élasticité">Hookův zákon a modul pružnosti</h3>
+            <p data-cz="Hookův zákon vyjadřuje přímou úměru mezi napětím a relativním prodloužením v oblasti pružné deformace:" data-fr="La loi de Hooke exprime la proportionnalité directe entre la contrainte et l'allongement relatif dans la zone élastique :">
+                Hookův zákon vyjadřuje přímou úměru mezi napětím a relativním prodloužením v oblasti pružné deformace:
+            </p>
+            <p class="text-xl my-6 text-center">$$\sigma = E \cdot \varepsilon$$</p>
+            <p class="text-sm" data-cz="Modul pružnosti $E$ udává tuhost materiálu. Příklad hodnot:" data-fr="Le module d'élasticité $E$ indique la rigidité du matériau. Exemples :">
+                Modul pružnosti $E$ udává tuhost materiálu. Příklad hodnot:
+            </p>
+            <ul class="list-none pl-4 text-sm mt-4 space-y-1">
+                <li>— <strong>Ocel:</strong> $E \approx 210\ \text{GPa}$</li>
+                <li>— <strong>Hliník:</strong> $E \approx 70\ \text{GPa}$</li>
+            </ul>
+            <div class="theory-note mt-6 text-sm" data-cz="Poznámka k deformaci tlakem: Při prostém tlaku dochází ke zkrácení tělesa, ale zároveň se mírně zvětšuje jeho příčný průřez." data-fr="Note sur la compression : Lors d'une compression simple, le corps se raccourcit, mais sa section transversale augmente légèrement.">
+                Poznámka k deformaci tlakem: Při prostém tlaku dochází ke zkrácení tělesa, ale zároveň se mírně zvětšuje jeho příčný průřez.
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. DEFORMAČNÍ KŘIVKA -->
+        <section class="page-break">
+            <h2 class="text-xl font-bold mb-6 uppercase tracking-wider" data-cz="3. Deformační křivka" data-fr="3. Courbe de déformation">3. Deformační křivka</h2>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="w-full md:w-1/2">
+                    <svg viewBox="0 0 320 220" class="w-full h-auto border p-2 bg-white">
+                        <!-- Osy -->
+                        <line x1="40" y1="180" x2="300" y2="180" stroke="black" stroke-width="1.5"></line>
+                        <line x1="40" y1="180" x2="40" y2="20" stroke="black" stroke-width="1.5"></line>
+                        <!-- Křivka -->
+                        <path d="M40 180 L100 80 L130 80 Q160 80 180 60 Q220 30 260 40 L280 70" fill="none" stroke="black" stroke-width="2"></path>
+                        <!-- Dovolené napětí -->
+                        <line x1="40" y1="140" x2="64" y2="140" stroke="gray" stroke-dasharray="2"></line>
+                        <circle cx="64" cy="140" r="3" fill="black"></circle>
+                        <text x="15" y="145" font-size="11" fill="black" font-weight="bold">σ<tspan baseline-shift="sub" font-size="8">d</tspan></text>
+                        <!-- Mez pružnosti -->
+                        <line x1="40" y1="80" x2="100" y2="80" stroke="gray" stroke-dasharray="2"></line>
+                        <circle cx="100" cy="80" r="3" fill="black"></circle>
+                        <text x="15" y="85" font-size="11" font-weight="bold">σ<tspan baseline-shift="sub" font-size="8">E</tspan></text>
+                        <!-- Mez pevnosti -->
+                        <line x1="40" y1="40" x2="260" y2="40" stroke="gray" stroke-dasharray="2"></line>
+                        <circle cx="260" cy="40" r="3" fill="black"></circle>
+                        <text x="15" y="45" font-size="11" font-weight="bold">σ<tspan baseline-shift="sub" font-size="8">P</tspan></text>
+                        <!-- Popisky os -->
+                        <text x="305" y="195" font-size="12" text-anchor="end">ε</text>
+                        <text x="20" y="25" font-size="12">σ</text>
+                    </svg>
+                </div>
+                <div class="w-full md:w-1/2 text-sm">
+                    <p class="mb-4" data-cz="Křivka znázorňuje vztah mezi napětím a prodloužením. Pro bezpečnost jsou klíčové tyto tři hodnoty napětí:" data-fr="La courbe illustre la relation entre contrainte et allongement. Trois valeurs sont essentielles :">
+                        Křivka znázorňuje vztah mezi napětím a prodloužením. Pro bezpečnost jsou klíčové tyto tři hodnoty napětí:
+                    </p>
+                    <ul class="space-y-4">
+                        <li>
+                            <strong data-cz="Dovolené napětí ($\sigma_d$)" data-fr="Contrainte admissible ($\sigma_d$)">Dovolené napětí ($\sigma_d$)</strong> —
+                            <span data-cz="Napětí, které nesmí být v konstrukci překročeno. Zahrnuje bezpečnostní rezervu." data-fr="Contrainte à ne pas dépasser. Elle inclut une marge de sécurité.">Napětí, které nesmí být v konstrukci překročeno. Zahrnuje bezpečnostní rezervu.</span>
+                        </li>
+                        <li>
+                            <strong data-cz="Mez pružnosti ($\sigma_E$)" data-fr="Limite d'élasticité ($\sigma_E$)">Mez pružnosti ($\sigma_E$)</strong> —
+                            <span data-cz="Maximální napětí, po jehož odstranění se těleso ještě vrátí do původního tvaru." data-fr="Contrainte maximale permettant un retour à la forme initiale.">Maximální napětí, po jehož odstranění se těleso ještě vrátí do původního tvaru.</span>
+                        </li>
+                        <li>
+                            <strong data-cz="Mez pevnosti ($\sigma_P$)" data-fr="Limite de rupture ($\sigma_P$)">Mez pevnosti ($\sigma_P$)</strong> —
+                            <span data-cz="Největší napětí, které materiál snese. Po jeho překročení dochází k porušení soudržnosti." data-fr="Contrainte maximale supportée. Au-delà, le matériau se rompt.">Největší napětí, které materiál snese. Po jeho překročení dochází k porušení soudržnosti.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="sub-divider"></div>
+
+        <!-- 4. PRAKTICKÉ VÝPOČTY -->
+        <section>
+            <h2 class="text-xl font-bold mb-4 uppercase tracking-wider" data-cz="4. Praktické výpočty" data-fr="4. Calculs pratiques">4. Praktické výpočty</h2>
+
+            <div class="example-box">
+                <p class="font-bold mb-2" data-cz="Příklad 1: Výpočet průřezu" data-fr="Exemple 1 : Calcul de section">Příklad 1: Výpočet průřezu</p>
+                <p class="text-sm mb-4" data-cz="Určete minimální plochu průřezu ocelového táhla, je-li namáháno silou 20 kN a dovolené napětí $\sigma_d$ je 100 MPa." data-fr="Déterminez la section minimale d'un tirant soumis à 20 kN avec une contrainte admissible $\sigma_d$ de 100 MPa.">
+                    Určete minimální plochu průřezu ocelového táhla, je-li namáháno silou 20 kN a dovolené napětí $\sigma_d$ je 100 MPa.
+                </p>
+                <div class="text-sm italic">
+                    <p><strong>Řešení / Solution:</strong></p>
+                    <p>$S = \dfrac{F}{\sigma_d} = \dfrac{20\,000}{100\cdot10^6} = 2\cdot10^{-4}\ \text{m}^2 = \mathbf{2\ cm^2}$</p>
+                </div>
+            </div>
+
+            <div class="example-box">
+                <p class="font-bold mb-2" data-cz="Příklad 2: Prodloužení" data-fr="Exemple 2 : Allongement">Příklad 2: Prodloužení</p>
+                <p class="text-sm mb-4" data-cz="Hliníkový drát o délce 2 m je napnut napětím 35 MPa. O kolik se prodlouží? (E = 70 GPa)" data-fr="Un fil d'aluminium de 2 m subit une contrainte de 35 MPa. Calculez son allongement. (E = 70 GPa)">
+                    Hliníkový drát o délce 2 m je napnut napětím 35 MPa. O kolik se prodlouží? (E = 70 GPa)
+                </p>
+                <div class="text-sm italic">
+                    <p><strong>Řešení / Solution:</strong></p>
+                    <p>$\varepsilon = \dfrac{\sigma}{E} = \dfrac{35\cdot10^6}{70\cdot10^9} = 0{,}0005$</p>
+                    <p>$\Delta l = \varepsilon \cdot l_0 = 0{,}0005 \cdot 2 = 0{,}001\ \text{m} = \mathbf{1\ mm}$</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="section-divider"></div>
+
+        <!-- 5. TERMINOLOGICKÝ SLOVNÍK -->
+        <section>
+            <h2 class="text-xl font-bold mb-6 uppercase tracking-wider" data-cz="5. Terminologický slovník" data-fr="5. Glossaire terminologique">5. Terminologický slovník</h2>
+            <div class="overflow-x-auto">
+                <table>
+                    <thead>
+                        <tr class="bg-gray-100 text-xs">
+                            <th class="w-1/2">Čeština (CZ)</th>
+                            <th class="w-1/2 italic">Français (FR)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr class="bg-gray-50"><td colspan="2" class="font-bold text-center" data-cz="Druhy deformace" data-fr="Types de déformation">Druhy deformace</td></tr>
+                        <tr><td>Deformace tahem</td><td class="italic">Traction</td></tr>
+                        <tr><td>Deformace tlakem</td><td class="italic">Compression</td></tr>
+                        <tr><td>Ohyb</td><td class="italic">Flexion</td></tr>
+                        <tr><td>Smyk</td><td class="italic">Cisaillement</td></tr>
+                        <tr><td>Kroucení</td><td class="italic">Torsion</td></tr>
+                        <tr class="bg-gray-50"><td colspan="2" class="font-bold text-center" data-cz="Technické pojmy" data-fr="Termes techniques">Technické pojmy</td></tr>
+                        <tr><td>Dovolené napětí</td><td class="italic">Contrainte admissible</td></tr>
+                        <tr><td>Mez pružnosti</td><td class="italic">Limite d'élasticité</td></tr>
+                        <tr><td>Mez pevnosti</td><td class="italic">Limite de rupture</td></tr>
+                        <tr><td>Pružná (elastická) deformace</td><td class="italic">Déformation élastique</td></tr>
+                        <tr><td>Tvárná (plastická) deformace</td><td class="italic">Déformation plastique</td></tr>
+                        <tr><td>Relativní prodloužení (zkrácení)</td><td class="italic">Allongement (raccourcissement) relatif</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        function switchLang(lang) {
+            document.querySelectorAll('[data-cz]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text) el.innerHTML = text;
+            });
+
+            document.getElementById('btn-cz').className = lang === 'cz' ? 'active-lang' : '';
+            document.getElementById('btn-fr').className = lang === 'fr' ? 'active-lang' : '';
+
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Teplotní roztažnost / Dilatation thermique</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col font-sans">
+
+    <header class="bg-blue-700 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Teplotní roztažnost / Dilatation thermique</h1>
+        <p class="text-blue-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-blue-600 text-blue-600 font-bold hover:bg-blue-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-blue-500 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Výpočet: Δl pro l₀ = 10 m, α = 1·10⁻⁵ K⁻¹, Δt = 100 K.</p>
+                </div>
+                <div class="card-face card-back bg-blue-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Δl = 0,01 m = 1 cm.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-blue-600 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Fyzika / Physique
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const rawData = {
+            cs: [
+                { q: "Co je to teplotní roztažnost?", a: "Fyzikální jev, při kterém tělesa mění své rozměry v důsledku změny své teploty." },
+                { q: "Jaká je mikroskopická příčina roztažnosti?", a: "Zvětšení amplitudy kmitů částic a nesymetrie vazebných sil mezi nimi." },
+                { q: "Co se děje s kinetickou energií částic při zahřívání?", a: "Kinetická energie částic roste." },
+                { q: "Pojem: Délková roztažnost.", a: "Změna délky tělesa, u něhož jeden rozměr výrazně převládá (např. tyč)." },
+                { q: "Vzorec: Jaký je vztah pro prodloužení tyče Δl?", a: "Δl = α · l₀ · Δt" },
+                { q: "Vzorec: Jak vypočítáme výslednou délku l po zahřátí?", a: "l = l₀ (1 + αΔt)" },
+                { q: "Pojem: Co značí symbol l₀?", a: "Počáteční délka tělesa při teplotě t₀." },
+                { q: "Pojem: Co značí symbol α?", a: "Teplotní součinitel délkové roztažnosti." },
+                { q: "Jednotka: Jaká je základní jednotka součinitele α?", a: "K⁻¹ (případně °C⁻¹)." },
+                { q: "Co udává součinitel α v praxi?", a: "O jakou část původní délky se prodlouží tyč dlouhá 1 m při zahřátí o 1 K." },
+                { q: "Pojem: Objemová roztažnost.", a: "Změna celkového objemu tělesa v důsledku změny teploty." },
+                { q: "Vzorec: Jaký je vztah pro změnu objemu ΔV?", a: "ΔV = β · V₀ · Δt" },
+                { q: "Vzorec: Jak vypočítáme výsledný objem V?", a: "V = V₀ (1 + βΔt)" },
+                { q: "Pojem: Co značí symbol β?", a: "Teplotní součinitel objemové roztažnosti." },
+                { q: "Vztah: Jaký je vztah mezi α a β pro izotropní látky?", a: "β ≈ 3α" },
+                { q: "Definice: Co je to izotropní pevná látka?", a: "Látka, která má ve všech směrech stejné fyzikální vlastnosti (včetně roztažnosti)." },
+                { q: "Aplikace: Proč se u kolejnic nechávají mezery?", a: "Aby měly prostor pro prodloužení v létě a nedošlo k jejich deformaci." },
+                { q: "Aplikace: Co je to dilatační spára?", a: "Mezera v konstrukci (mosty, budovy), která umožňuje volnou změnu rozměrů." },
+                { q: "Pojem: Bimetalový pásek.", a: "Spojení dvou kovů s různými součiniteli teplotní roztažnosti α." },
+                { q: "Co se stane s bimetalovým páskem při zahřátí?", a: "Prohne se na stranu kovu s menším součinitelem roztažnosti α." },
+                { q: "Aplikace: Kde se v domácnosti využívá bimetal?", a: "V termostatech (žehlička, rychlovarná konvice, topení)." },
+                { q: "Proč může tlustostěnné sklo prasknout po nalití horké vody?", a: "Vnitřní vrstva se roztáhne dříve a více než vnější, což vyvolá pnutí." },
+                { q: "Praktický příklad: Jak se změní délka drátů vysokého napětí v létě?", a: "Dráty se prodlouží a jejich průvěs se zvětší." },
+                { q: "Materiál: Co je to Invar?", a: "Slitina železa a niklu s extrémně nízkou teplotní roztažností." },
+                { q: "Aplikace: K čemu se používá Invar?", a: "Pro výrobu přesných měřidel a součástek." },
+                { q: "Proč musí mít zubní plomby stejné α jako zubní sklovina?", a: "Aby při jídle horkých/studených pokrmů plomba nevypadla." },
+                { q: "Výpočet: Δt pokud t₀ = 10 °C a t = 30 °C.", a: "Δt = 20 °C (nebo 20 K)." },
+                { q: "Výpočet: Δl pro l₀ = 10 m, α = 1·10⁻⁵ K⁻¹, Δt = 100 K.", a: "Δl = 0,01 m = 1 cm." },
+                { q: "Závisí absolutní prodloužení Δl na počáteční délce?", a: "Ano, čím delší je těleso, tím větší je absolutní prodloužení." },
+                { q: "Závisí součinitel α na teplotě?", a: "V běžném rozsahu se považuje za konstantní." },
+                { q: "Pojem: Co se stane s hustotou pevné látky při zahřívání?", a: "Hustota se zmenšuje (objem roste, hmotnost zůstává stejná)." },
+                { q: "Aplikace: Jak se upevňují ocelové obruče na dřevěná kola?", a: "Obruč se zahřeje, nasadí a po ochlazení se pevně sevře." },
+                { q: "Roztažnost kapalin vs. pevných látek – která je větší?", a: "Roztažnost kapalin je obvykle mnohem větší." },
+                { q: "Vzorec: Vyjádřete α ze vztahu Δl = α · l₀ · Δt.", a: "α = Δl / (l₀ · Δt)" },
+                { q: "Logika: Pokud α tyče A je větší, než α tyče B, která tyč se prodlouží více?", a: "Tyč A." },
+                { q: "Aplikace: Proč jsou dálniční mosty uloženy na válcích?", a: "Aby se konstrukce mohla volně pohybovat při změnách délky." },
+                { q: "Pojem: Co znamená Δt = -10 K?", a: "Těleso se ochladilo o 10 stupňů." },
+                { q: "Změní se velikost otvoru v plechu při zahřátí?", a: "Ano, otvor se zvětší." },
+                { q: "Materiál: Má ocel a beton podobné α?", a: "Ano, díky tomu lze používat železobeton." },
+                { q: "Výpočet: Pokud α = 2·10⁻⁵ K⁻¹, kolik je β?", a: "β ≈ 6 · 10⁻⁵ K⁻¹ (protože β ≈ 3α)." },
+                { q: "Pojem: Tepelné pnutí.", a: "Napětí v tělese, které vznikne, pokud je mu bráněno v roztažnosti." },
+                { q: "Aplikace: Co jsou to kompenzátory u potrubí?", a: "Pružné části (např. tvaru U), které pohlcují délkové změny." },
+                { q: "Proč jsou rtuťové teploměry založeny na roztažnosti?", a: "Objem se mění lineárně s teplotou, což umožňuje měření." },
+                { q: "Historie: Kdo popsal roztažnost kovů?", a: "Např. Pieter van Musschenbroek (pyrometr)." },
+                { q: "Výpočet: Kolik mm je 0,00012 m?", a: "0,12 mm." },
+                { q: "Co se stane s délkou kyvadla v hodinách při oteplení?", a: "Kyvadlo se prodlouží a hodiny se začnou opožďovat." },
+                { q: "Aplikace: Jak se řeší roztažnost u velkých skleněných ploch?", a: "Použitím dilatačních lišt a pružných tmelů." },
+                { q: "Pojem: Lineární aproximace v roztažnosti.", a: "Předpoklad, že změna délky je přímo úměrná změně teploty." },
+                { q: "Může být α záporné?", a: "Ano, existují výjimečné materiály (např. zirkon-wolframát)." },
+                { q: "Shrnutí: Hlavní přínos studia roztažnosti?", a: "Prevence destrukce staveb a strojů v důsledku teplotních změn." }
+            ],
+            fr: [
+                { q: "Qu'est-ce que la dilatation thermique ?", a: "Phénomène physique par lequel les dimensions d'un corps changent suite à une variation de température." },
+                { q: "Quelle est la cause microscopique de la dilatation ?", a: "L'augmentation de l'amplitude de vibration des particules et l'asymétrie des forces de liaison." },
+                { q: "Qu'arrive-t-il à l'énergie cinétique des particules ?", a: "L'énergie cinétique des particules augmente." },
+                { q: "Concept : Dilatation linéaire.", a: "Changement de longueur d'un corps dont une dimension prédomine nettement." },
+                { q: "Formule : Quelle est la relation pour l'allongement Δl ?", a: "Δl = α · l₀ · Δt" },
+                { q: "Formule : Comment calcule-t-on la longueur finale l ?", a: "l = l₀ (1 + α Δt)" },
+                { q: "Concept : Que signifie le symbole l₀ ?", a: "Longueur initiale du corps à la température t₀." },
+                { q: "Concept : Que signifie le symbole α ?", a: "Coefficient de dilatation thermique linéaire." },
+                { q: "Unité : Quelle est l'unité de base du coefficient α ?", a: "K⁻¹ (ou °C⁻¹)." },
+                { q: "Que représente le coefficient α en pratique ?", a: "La fraction de longueur d'une barre de 1m s'allongeant pour 1K." },
+                { q: "Concept : Dilatation volumique.", a: "Changement du volume total d'un corps dû à une variation de température." },
+                { q: "Formule : Relation pour le changement de volume ΔV ?", a: "ΔV = β · V₀ · Δt" },
+                { q: "Formule : Comment calcule-t-on le volume final V ?", a: "V = V₀ (1 + β Δt)" },
+                { q: "Concept : Que signifie le symbole β ?", a: "Coefficient de dilatation thermique volumique." },
+                { q: "Relation : Lien entre α et β pour les solides isotropes ?", a: "β ≈ 3α" },
+                { q: "Définition : Qu'est-ce qu'un solide isotrope ?", a: "Matériau dont les propriétés sont identiques dans toutes les directions." },
+                { q: "Application : Pourquoi laisse-t-on des espaces entre les rails ?", a: "Pour permettre leur allongement en été et éviter leur déformation." },
+                { q: "Application : Qu'est-ce qu'un joint de dilatation ?", a: "Un espace permettant le changement libre de dimensions d'une structure." },
+                { q: "Concept : Lame bimétallique.", a: "Union de deux métaux ayant des coefficients α différents." },
+                { q: "Qu'arrive-t-il à une lame bimétallique lors du chauffage ?", a: "Elle se courbe du côté du métal ayant le plus petit α." },
+                { q: "Application : Utilisation du bimétal à la maison ?", a: "Thermostats (fer à repasser, bouilloire, chauffage)." },
+                { q: "Pourquoi un verre épais peut-il éclater à l'eau bouillante ?", a: "La couche interne se dilate plus vite que la couche externe." },
+                { q: "Exemple : Longueur des lignes haute tension en été ?", a: "Les fils s'allongent et leur flèche augmente." },
+                { q: "Matériau : Qu'est-ce que l'Invar ?", a: "Alliage fer-nickel avec une dilatation extrêmement faible." },
+                { q: "À quoi sert l'Invar ?", a: "Instruments de mesure de précision et pièces stables." },
+                { q: "Pourquoi les plombages ont le même α que l'émail ?", a: "Pour éviter que le plombage ne tombe ou fissure la dent." },
+                { q: "Calcul : Δt si t₀ = 10 °C et t = 30 °C.", a: "Δt = 20 °C (ou 20 K)." },
+                { q: "Calcul : Δl pour l₀=10m, α=1·10⁻⁵ K⁻¹, Δt=100K.", a: "Δl = 0,01 m = 1 cm." },
+                { q: "L'allongement Δl dépend-il de la longueur initiale ?", a: "Oui, plus le corps est long, plus l'allongement est important." },
+                { q: "Le coefficient α dépend-il de la température ?", a: "Il est considéré constant dans les plages usuelles." },
+                { q: "Concept : Masse volumique lors du chauffage ?", a: "Elle diminue (volume augmente, masse constante)." },
+                { q: "Application : Fixation des cerclages acier sur roues bois ?", a: "On chauffe le cercle, on le pose, il se serre en refroidissant." },
+                { q: "Dilatation liquides vs solides – la plus grande ?", a: "La dilatation des liquides est généralement plus importante." },
+                { q: "Formule : Exprimez α à partir de Δl = α · l₀ · Δt.", a: "α = Δl / (l₀ · Δt)" },
+                { q: "Logique : Si α d'une barre A est plus grande que α d'une barre B, quelle barre s'allonge le plus ?", a: "La barre A." },
+                { q: "Application : Pourquoi des rouleaux sous les ponts ?", a: "Pour permettre à la structure de bouger librement." },
+                { q: "Concept : Que signifie Δt = -10 K ?", a: "Le corps s'est refroidi de 10 degrés." },
+                { q: "La taille d'un trou dans une plaque change-t-elle ?", a: "Oui, le trou s'agrandit." },
+                { q: "Matériau : L'acier et le béton ont-ils des α similaires ?", a: "Oui, ce qui permet d'utiliser le béton armé." },
+                { q: "Calcul : Si α = 2·10⁻⁵ K⁻¹, combien vaut β ?", a: "β ≈ 6 · 10⁻⁵ K⁻¹ (car β ≈ 3α)." },
+                { q: "Concept : Contrainte thermique.", a: "Tension apparaissant si on empêche la dilatation thermique." },
+                { q: "Application : Lyres de dilatation dans les tuyauteries ?", a: "Sections courbées absorbant les variations de longueur." },
+                { q: "Pourquoi le mercure pour les thermomètres ?", a: "Le volume change linéairement, permettant une mesure précise." },
+                { q: "Histoire : Qui a décrit la dilatation des métaux ?", a: "Ex: Pieter van Musschenbroek (pyromètre)." },
+                { q: "Calcul : Combien font 0,00012 m en mm ?", a: "0,12 mm." },
+                { q: "Longueur du pendule d'horloge lors d'un réchauffement ?", a: "Le pendule s'allonge et l'horloge commence à retarder." },
+                { q: "Dilatation des grandes surfaces vitrées ?", a: "Utilisation de profilés de dilatation et mastics élastiques." },
+                { q: "Concept : Approximation linéaire.", a: "Hypothèse que Δl est directement proportionnel à Δt." },
+                { q: "Le coefficient α peut-il être négatif ?", a: "Oui, pour des matériaux exceptionnels (ex: tungstate de zirconium)." },
+                { q: "Résumé : Intérêt de l'étude en ingénierie ?", a: "Prévenir la destruction des structures due aux variations de T." }
+            ]
+        };
+
+        // ========== KÓD FLASHCARD ==========
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.textContent = data.q;
+            aText.textContent = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-blue-600', 'text-blue-600');
+            btnFr.classList.remove('border-blue-600', 'text-blue-600');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-blue-600', 'text-blue-600');
+            btnCs.classList.remove('border-blue-600', 'text-blue-600');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

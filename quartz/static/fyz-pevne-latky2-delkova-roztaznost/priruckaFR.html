@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dilatation thermique des solides</title>
+
+    <!-- Import du pince Inter depuis Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <!-- MathJax konfigurace -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        /* Základní styl – převzat z původní stránky, aby vzhled zůstal stejný */
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto;
+            padding: 0 20px;
+            max-width: 700px;
+            background: #fff;
+            color: #1f1f1f;
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin: 1.75rem 0 0.5rem;
+            font-weight: 600;
+        }
+        p {
+            margin: 0 0 1rem;
+        }
+        ul, ol {
+            margin: 0.5rem 0;
+            padding-left: 1.75rem;
+        }
+        strong {
+            font-weight: 600;
+        }
+        /* Zajištění správného zobrazení display rovnic */
+        .MathJax_Display {
+            margin: 1em 0;
+            text-align: center;
+        }
+        /* Jemné vylepšení pro lepší čitelnost */
+        .math {
+            font-family: 'Times New Roman', 'STIX', 'MathJax_Main', serif;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Dilatation thermique des solides</h1>
+    <p><strong>Matière :</strong> Physique
+        <strong>Niveau :</strong> Lycée
+    </p>
+
+    <h2>1. Introduction</h2>
+    <p>La dilatation thermique est un phénomène physique par lequel les dimensions d'un corps changent suite à une variation de sa température. Au niveau microscopique, ce phénomène est dû au fait qu'avec l'augmentation de la température, l'énergie cinétique des particules augmente. Les particules vibrent avec une plus grande amplitude autour de leurs positions d'équilibre et, en raison de l'asymétrie des forces de liaison, leur distance moyenne augmente.</p>
+
+    <h2>2. Dilatation linéaire</h2>
+    <p>Pour les corps dont une dimension prédomine nettement sur les autres (fils, barres, rails), nous étudions la <strong>dilatation thermique linéaire</strong>.</p>
+
+    <h3>Expression mathématique</h3>
+    <p>La variation de longueur d'une barre $\Delta l$ est directement proportionnelle à sa longueur initiale $l_0$ et à la variation de température $\Delta t$.</p>
+
+    $$ \Delta l = \alpha \cdot l_0 \cdot \Delta t $$
+
+    <p>Où :</p>
+    <ul>
+        <li>$\Delta l = l - l_0$ est l'allongement de la barre $[m]$</li>
+        <li>$l_0$ est la longueur initiale à la température $t_0$ $[m]$</li>
+        <li>$l$ est la longueur finale à la température $t$ $[m]$</li>
+        <li>$\Delta t = t - t_0$ est la différence de température $[^\circ C]$ ou $[K]$</li>
+        <li>$\alpha$ est le <strong>coefficient de dilatation thermique linéaire</strong> $[K^{-1}]$</li>
+    </ul>
+
+    <p><strong>Longueur finale du corps</strong> $l$ <strong>après chauffage :</strong></p>
+
+    $$ l = l_0 (1 + \alpha \Delta t) $$
+
+    <h3>Coefficient de dilatation linéaire ($\alpha$)</h3>
+    <p>C'est une constante matérielle qui indique de quelle fraction de la longueur initiale une barre de $1 \, m$ s'allonge lorsqu'elle est chauffée de $1 \, K$.<br>
+        <em>Exemple :</em> L'acier a un $\alpha \approx 1{,}2 \cdot 10^{-5} \, K^{-1}$.
+    </p>
+
+    <h2>3. Dilatation volumique</h2>
+    <p>Pour les corps où aucune dimension ne peut être négligée, nous considérons la variation du volume total.</p>
+
+    <h3>Expression mathématique</h3>
+    <p>La relation est analogue à celle de la dilatation linéaire :</p>
+
+    $$ \Delta V = \beta \cdot V_0 \cdot \Delta t $$
+
+    <p>Où :</p>
+    <ul>
+        <li>$V = V_0 (1 + \beta \Delta t)$</li>
+        <li>$\beta$ est le <strong>coefficient de dilatation thermique volumique</strong> $[K^{-1}]$</li>
+    </ul>
+
+    <h3>Relation entre $\alpha$ et $\beta$</h3>
+    <p>Pour les solides isotropes (qui se dilatent de la même manière dans toutes les directions), on utilise la relation approximative :</p>
+
+    $$ \beta \approx 3\alpha $$
+
+    <h2>4. Conséquences pratiques et applications</h2>
+
+    <h3>Pratique technique</h3>
+    <ol>
+        <li><strong>Joints de dilatation :</strong> Les ponts, les rails ou les canalisations doivent comporter des espaces vides pour éviter de se déformer ou de se fissurer sous l'effet de la chaleur en été.</li>
+        <li><strong>Lame bimétallique :</strong> Union de deux métaux ayant des coefficients $\alpha$ différents (ex. laiton et acier). Lors du chauffage, la lame se courbe du côté du métal ayant le plus petit $\alpha$. Utilisé dans les thermostats.</li>
+        <li><strong>Vitrage :</strong> Le verre a une dilatation différente de celle du cadre métallique, c'est pourquoi on utilise des mastics élastiques pour compenser les différences.</li>
+    </ol>
+
+    <h3>Curiosités physiques</h3>
+    <ul>
+        <li><strong>Matériaux dentaires :</strong> Les obturations dentaires doivent avoir le même coefficient de dilatation que l'émail, sinon le plombage tomberait ou endommagerait la dent lors de l'ingestion de boissons chaudes ou froides.</li>
+        <li><strong>Invar :</strong> Alliage spécial fer-nickel avec un $\alpha$ extrêmement faible ($1{,}2 \cdot 10^{-6} \, K^{-1}$), utilisé pour les instruments de mesure de précision.</li>
+    </ul>
+
+    <h2>5. Exemple type</h2>
+    <p><strong>Énoncé :</strong> Un pont en acier mesure $150 \, m$ à une température de $-10 \, ^\circ C$. Quelle sera sa longueur lors d'une canicule à $35 \, ^\circ C$ ? ($\alpha_{\text{acier}} = 1{,}2 \cdot 10^{-5} \, K^{-1}$)</p>
+    <p><strong>Solution :</strong></p>
+    <ol>
+        <li>Calcul de la différence de température : $\Delta t = 35 - (-10) = 45 \, ^\circ C$</li>
+        <li>Substitution dans la formule : $l = 150 \cdot (1 + 1{,}2 \cdot 10^{-5} \cdot 45)$</li>
+        <li>$l = 150 \cdot (1 + 0{,}00054)$</li>
+        <li>$l = 150{,}081 \, m$</li>
+    </ol>
+    <p><strong>Réponse :</strong> Le pont s'allonge de $8{,}1 \, cm$.</p>
+
+    <h2>6. Résumé pour révision</h2>
+    <ul>
+        <li><strong>Dilatation linéaire :</strong> Concerne les barres, $l = l_0(1+\alpha\Delta t)$.</li>
+        <li><strong>Dilatation volumique :</strong> Concerne les volumes, $V = V_0(1+\beta\Delta t)$.</li>
+        <li><strong>Relation clé :</strong> $\beta \approx 3\alpha$ (pour les solides isotropes).</li>
+        <li><strong>Cause :</strong> Asymétrie des vibrations des particules dans le réseau cristallin.</li>
+    </ul>
+
+</body>
+</html>

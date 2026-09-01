@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Úlohy: Deformace tahem a tlakem</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        body { font-family: 'Outfit', sans-serif; }
+        .solution-content { display: none; }
+        .solution-content.active { display: block; }
+        .math-step { overflow-x: auto; max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen pb-20">
+
+    <header class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 id="title-cs" class="text-xl font-bold text-blue-800">Pružná deformace tahem a tlakem</h1>
+                <h1 id="title-fr" class="text-xl font-bold text-blue-800 hidden">Déformation élastique par traction et compression</h1>
+            </div>
+            <button onclick="toggleLanguage()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+                <span>🇨🇿 / 🇫🇷</span>
+                <span id="btn-lang-text">Français</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-8">
+        <section class="mb-10 bg-blue-50 p-6 rounded-2xl border border-blue-100">
+            <p id="intro-cs" class="text-slate-700 leading-relaxed italic">
+                Níže naleznete 10 úloh zaměřených na definici normálového napětí, relativního prodloužení a Hookův zákon. Úlohy jsou seřazeny podle náročnosti.
+            </p>
+            <p id="intro-fr" class="text-slate-700 leading-relaxed italic hidden">
+                Vous trouverez ci-dessous 10 exercices portant sur la définition de la contrainte normale, l'allongement relatif et la loi de Hooke. Les exercices sont classés par ordre de difficulté.
+            </p>
+        </section>
+
+        <div id="exercises-container" class="space-y-6"></div>
+    </main>
+
+    <script>
+        let currentLang = 'cs';
+
+        const exercises = [
+            {
+                id: 1,
+                cs: {
+                    q: "Ocelový drát o průřezu $2 \\, \\text{mm}^2$ je napínán silou $400 \\, \\text{N}$. Určete normálové napětí v drátu.",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $S = 2 \\cdot 10^{-6} \\, \\text{m}^2$, $F = 400 \\, \\text{N}$.",
+                        "Vzorec pro normálové napětí: $\\sigma = \\frac{F}{S}$.",
+                        "Výpočet: $\\sigma = \\frac{400}{2 \\cdot 10^{-6}} = 200 \\cdot 10^6 \\, \\text{Pa} = 200 \\, \\text{MPa}$."
+                    ]
+                },
+                fr: {
+                    q: "Un fil d'acier de section $2 \\, \\text{mm}^2$ est tendu par une force de $400 \\, \\text{N}$. Déterminez la contrainte normale dans le fil.",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $S = 2 \\cdot 10^{-6} \\, \\text{m}^2$, $F = 400 \\, \\text{N}$.",
+                        "Formule de la contrainte normale : $\\sigma = \\frac{F}{S}$.",
+                        "Calcul : $\\sigma = \\frac{400}{2 \\cdot 10^{-6}} = 200 \\cdot 10^6 \\, \\text{Pa} = 200 \\, \\text{MPa}$."
+                    ]
+                }
+            },
+            {
+                id: 2,
+                cs: {
+                    q: "Tyč o délce $2{,}5 \\, \\text{m}$ se po zatížení prodloužila o $5 \\, \\text{mm}$. Vypočtěte relativní prodloužení.",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $l_0 = 2{,}5 \\, \\text{m}$, $\\Delta l = 0{,}005 \\, \\text{m}$.",
+                        "Vzorec pro relativní prodloužení: $\\varepsilon = \\frac{\\Delta l}{l_0}$.",
+                        "Výpočet: $\\varepsilon = \\frac{0{,}005}{2{,}5} = 0{,}002 = 0{,}2 \\, \\%$."
+                    ]
+                },
+                fr: {
+                    q: "Une barre d'une longueur de $2{,}5 \\, \\text{m}$ s'allonge de $5 \\, \\text{mm}$ après avoir été chargée. Calculez l'allongement relatif.",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $l_0 = 2{,}5 \\, \\text{m}$, $\\Delta l = 0{,}005 \\, \\text{m}$.",
+                        "Formule de l'allongement relatif : $\\varepsilon = \\frac{\\Delta l}{l_0}$.",
+                        "Calcul : $\\varepsilon = \\frac{0{,}005}{2{,}5} = 0{,}002 = 0{,}2 \\, \\%$."
+                    ]
+                }
+            },
+            {
+                id: 3,
+                cs: {
+                    q: "Jak velké napětí vyvolá v hliníkové tyči ($E = 70 \\, \\text{GPa}$) relativní prodloužení $0{,}1 \\, \\%$?",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $E = 70 \\cdot 10^9 \\, \\text{Pa}$, $\\varepsilon = 0{,}001$.",
+                        "Hookův zákon: $\\sigma = E \\cdot \\varepsilon$.",
+                        "Výpočet: $\\sigma = 70 \\cdot 10^9 \\cdot 0{,}001 = 70 \\cdot 10^6 \\, \\text{Pa} = 70 \\, \\text{MPa}$."
+                    ]
+                },
+                fr: {
+                    q: "Quelle contrainte provoque un allongement relatif de $0{,}1 \\, \\%$ dans une barre d'aluminium ($E = 70 \\, \\text{GPa}$) ?",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $E = 70 \\cdot 10^9 \\, \\text{Pa}$, $\\varepsilon = 0{,}001$.",
+                        "Loi de Hooke : $\\sigma = E \\cdot \\varepsilon$.",
+                        "Calcul : $\\sigma = 70 \\cdot 10^9 \\cdot 0{,}001 = 70 \\cdot 10^6 \\, \\text{Pa} = 70 \\, \\text{MPa}$."
+                    ]
+                }
+            },
+            {
+                id: 4,
+                cs: {
+                    q: "Betonový pilíř o průřezu $0{,}2 \\, \\text{m}^2$ nese zatížení $400 \\, \\text{kN}$. Určete tlakové napětí v pilíři.",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $S = 0{,}2 \\, \\text{m}^2$, $F = 400 \\cdot 10^3 \\, \\text{N}$.",
+                        "Vzorec: $\\sigma = \\frac{F}{S}$.",
+                        "Výpočet: $\\sigma = \\frac{400000}{0{,}2} = 2 \\cdot 10^6 \\, \\text{Pa} = 2 \\, \\text{MPa}$."
+                    ]
+                },
+                fr: {
+                    q: "Un pilier en béton de section $0{,}2 \\, \\text{m}^2$ supporte une charge de $400 \\, \\text{kN}$. Déterminez la contrainte de compression dans le pilier.",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $S = 0{,}2 \\, \\text{m}^2$, $F = 400 \\cdot 10^3 \\, \\text{N}$.",
+                        "Formule : $\\sigma = \\frac{F}{S}$.",
+                        "Calcul : $\\sigma = \\frac{400000}{0{,}2} = 2 \\cdot 10^6 \\, \\text{Pa} = 2 \\, \\text{MPa}$."
+                    ]
+                }
+            },
+            {
+                id: 5,
+                cs: {
+                    q: "Ocelové lano ($E = 210 \\, \\text{GPa}$) má délku $20 \\, \\text{m}$. O kolik se prodlouží, působí-li v něm napětí $105 \\, \\text{MPa}$?",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $E = 210 \\cdot 10^9 \\, \\text{Pa}$, $l_0 = 20 \\, \\text{m}$, $\\sigma = 105 \\cdot 10^6 \\, \\text{Pa}$.",
+                        "Vztah: $\\sigma = E \\cdot \\frac{\\Delta l}{l_0} \\implies \\Delta l = \\frac{\\sigma \\cdot l_0}{E}$.",
+                        "Výpočet: $\\Delta l = \\frac{105 \\cdot 10^6 \\cdot 20}{210 \\cdot 10^9} = 0{,}01 \\, \\text{m} = 1 \\, \\text{cm}$."
+                    ]
+                },
+                fr: {
+                    q: "Un câble d'acier ($E = 210 \\, \\text{GPa}$) mesure $20 \\, \\text{m}$ de long. De combien s'allongera-t-il si une contrainte de $105 \\, \\text{MPa}$ est exercée ?",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $E = 210 \\cdot 10^9 \\, \\text{Pa}$, $l_0 = 20 \\, \\text{m}$, $\\sigma = 105 \\cdot 10^6 \\, \\text{Pa}$.",
+                        "Relation : $\\sigma = E \\cdot \\frac{\\Delta l}{l_0} \\implies \\Delta l = \\frac{\\sigma \\cdot l_0}{E}$.",
+                        "Calcul : $\\Delta l = \\frac{105 \\cdot 10^6 \\cdot 20}{210 \\cdot 10^9} = 0{,}01 \\, \\text{m} = 1 \\, \\text{cm}$."
+                    ]
+                }
+            },
+            {
+                id: 6,
+                cs: {
+                    q: "Drát má průměr $1 \\, \\text{mm}$. Určete sílu, která v něm vyvolá napětí $314 \\, \\text{MPa}$.",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $d = 10^{-3} \\, \\text{m}$, $\\sigma = 314 \\cdot 10^6 \\, \\text{Pa}$.",
+                        "Průřez: $S = \\frac{\\pi d^2}{4} \\approx \\frac{3{,}14 \\cdot (10^{-3})^2}{4} = 0{,}785 \\cdot 10^{-6} \\, \\text{m}^2$.",
+                        "Síla: $F = \\sigma \\cdot S = 314 \\cdot 10^6 \\cdot 0{,}785 \\cdot 10^{-6} \\approx 246{,}5 \\, \\text{N}$."
+                    ]
+                },
+                fr: {
+                    q: "Un fil a un diamètre de $1 \\, \\text{mm}$. Déterminez la force qui y provoque une contrainte de $314 \\, \\text{MPa}$.",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $d = 10^{-3} \\, \\text{m}$, $\\sigma = 314 \\cdot 10^6 \\, \\text{Pa}$.",
+                        "Section : $S = \\frac{\\pi d^2}{4} \\approx \\frac{3{,}14 \\cdot (10^{-3})^2}{4} = 0{,}785 \\cdot 10^{-6} \\, \\text{m}^2$.",
+                        "Force : $F = \\sigma \\cdot S = 314 \\cdot 10^6 \\cdot 0{,}785 \\cdot 10^{-6} \\approx 246{,}5 \\, \\text{N}$."
+                    ]
+                }
+            },
+            {
+                id: 7,
+                cs: {
+                    q: "Měděný drát ($E = 120 \\, \\text{GPa}$) s průřezem $1{,}5 \\, \\text{mm}^2$ se při zatížení prodloužil o $0{,}05 \\, \\%$. Jak velká síla na něj působila?",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $E = 120 \\cdot 10^9 \\, \\text{Pa}$, $S = 1{,}5 \\cdot 10^{-6} \\, \\text{m}^2$, $\\varepsilon = 0{,}0005$.",
+                        "Hookův zákon: $\\sigma = E \\cdot \\varepsilon = 120 \\cdot 10^9 \\cdot 0{,}0005 = 60 \\cdot 10^6 \\, \\text{Pa}$.",
+                        "Síla: $F = \\sigma \\cdot S = 60 \\cdot 10^6 \\cdot 1{,}5 \\cdot 10^{-6} = 90 \\, \\text{N}$."
+                    ]
+                },
+                fr: {
+                    q: "Un fil de cuivre ($E = 120 \\, \\text{GPa}$) de section $1{,}5 \\, \\text{mm}^2$ s'est allongé de $0{,}05 \\, \\%$ sous charge. Quelle force a agi sur lui ?",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $E = 120 \\cdot 10^9 \\, \\text{Pa}$, $S = 1{,}5 \\cdot 10^{-6} \\, \\text{m}^2$, $\\varepsilon = 0{,}0005$.",
+                        "Loi de Hooke : $\\sigma = E \\cdot \\varepsilon = 120 \\cdot 10^9 \\cdot 0{,}0005 = 60 \\cdot 10^6 \\, \\text{Pa}$.",
+                        "Force : $F = \\sigma \\cdot S = 60 \\cdot 10^6 \\cdot 1{,}5 \\cdot 10^{-6} = 90 \\, \\text{N}$."
+                    ]
+                }
+            },
+            {
+                id: 8,
+                cs: {
+                    q: "Při zkoušce tahem se ocelová tyč ($E = 200 \\, \\text{GPa}$) o délce $50 \\, \\text{cm}$ prodloužila o $0{,}2 \\, \\text{mm}$. Určete vyvolané napětí.",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $l_0 = 0{,}5 \\, \\text{m}$, $\\Delta l = 2 \\cdot 10^{-4} \\, \\text{m}$, $E = 200 \\cdot 10^9 \\, \\text{Pa}$.",
+                        "Relativní prodloužení: $\\varepsilon = \\frac{\\Delta l}{l_0} = \\frac{0{,}0002}{0{,}5} = 0{,}0004$.",
+                        "Napětí: $\\sigma = E \\cdot \\varepsilon = 200 \\cdot 10^9 \\cdot 0{,}0004 = 80 \\cdot 10^6 \\, \\text{Pa} = 80 \\, \\text{MPa}$."
+                    ]
+                },
+                fr: {
+                    q: "Lors d'un essai de traction, une barre d'acier ($E = 200 \\, \\text{GPa}$) de $50 \\, \\text{cm}$ de long s'est allongée de $0{,}2 \\, \\text{mm}$. Déterminez la contrainte induite.",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $l_0 = 0{,}5 \\, \\text{m}$, $\\Delta l = 2 \\cdot 10^{-4} \\, \\text{m}$, $E = 200 \\cdot 10^9 \\, \\text{Pa}$.",
+                        "Allongement relatif : $\\varepsilon = \\frac{\\Delta l}{l_0} = \\frac{0{,}0002}{0{,}5} = 0{,}0004$.",
+                        "Contrainte : $\\sigma = E \\cdot \\varepsilon = 200 \\cdot 10^9 \\cdot 0{,}0004 = 80 \\cdot 10^6 \\, \\text{Pa} = 80 \\, \\text{MPa}$."
+                    ]
+                }
+            },
+            {
+                id: 9,
+                cs: {
+                    q: "Mez úměrnosti oceli je $210 \\, \\text{MPa}$. Jakou maximální silou můžeme napínat drát o průměru $2 \\, \\text{mm}$, aby platil Hookův zákon?",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $\\sigma_{max} = 210 \\cdot 10^6 \\, \\text{Pa}$, $d = 2 \\cdot 10^{-3} \\, \\text{m}$.",
+                        "Plocha: $S = \\frac{\\pi d^2}{4} = \\pi \\cdot 10^{-6} \\, \\text{m}^2 \\approx 3{,}14 \\cdot 10^{-6} \\, \\text{m}^2$.",
+                        "Maximální síla: $F = \\sigma_{max} \\cdot S = 210 \\cdot 10^6 \\cdot 3{,}14 \\cdot 10^{-6} \\approx 659{,}4 \\, \\text{N}$."
+                    ]
+                },
+                fr: {
+                    q: "La limite de proportionnalité d'un acier est de $210 \\, \\text{MPa}$. Quelle force maximale peut-on appliquer à un fil de diamètre $2 \\, \\text{mm}$ pour que la loi de Hooke reste valable ?",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $\\sigma_{max} = 210 \\cdot 10^6 \\, \\text{Pa}$, $d = 2 \\cdot 10^{-3} \\, \\text{m}$.",
+                        "Aire : $S = \\frac{\\pi d^2}{4} = \\pi \\cdot 10^{-6} \\, \\text{m}^2 \\approx 3{,}14 \\cdot 10^{-6} \\, \\text{m}^2$.",
+                        "Force maximale : $F = \\sigma_{max} \\cdot S = 210 \\cdot 10^6 \\cdot 3{,}14 \\cdot 10^{-6} \\approx 659{,}4 \\, \\text{N}$."
+                    ]
+                }
+            },
+            {
+                id: 10,
+                cs: {
+                    q: "Ocelový drát ($E = 200 \\, \\text{GPa}$) má délku $3 \\, \\text{m}$. Určete jeho průřez, jestliže se při zatížení silou $100 \\, \\text{N}$ prodlouží o $0{,}5 \\, \\text{mm}$.",
+                    btn: "Zobrazit řešení",
+                    steps: [
+                        "Zápis: $E = 200 \\cdot 10^9 \\, \\text{Pa}$, $l_0 = 3 \\, \\text{m}$, $F = 100 \\, \\text{N}$, $\\Delta l = 5 \\cdot 10^{-4} \\, \\text{m}$.",
+                        "Vzorec pro $S$: $S = \\frac{F \\cdot l_0}{E \\cdot \\Delta l}$.",
+                        "Výpočet: $S = \\frac{100 \\cdot 3}{200 \\cdot 10^9 \\cdot 5 \\cdot 10^{-4}} = \\frac{300}{100 \\cdot 10^6} = 3 \\cdot 10^{-6} \\, \\text{m}^2 = 3 \\, \\text{mm}^2$."
+                    ]
+                },
+                fr: {
+                    q: "Un fil d'acier ($E = 200 \\, \\text{GPa}$) mesure $3 \\, \\text{m}$ de long. Déterminez sa section s'il s'allonge de $0{,}5 \\, \\text{mm}$ sous l'effet d'une force de $100 \\, \\text{N}$.",
+                    btn: "Afficher la solution",
+                    steps: [
+                        "Données : $E = 200 \\cdot 10^9 \\, \\text{Pa}$, $l_0 = 3 \\, \\text{m}$, $F = 100 \\, \\text{N}$, $\\Delta l = 5 \\cdot 10^{-4} \\, \\text{m}$.",
+                        "Formule pour $S$ : $S = \\frac{F \\cdot l_0}{E \\cdot \\Delta l}$.",
+                        "Calcul : $S = \\frac{100 \\cdot 3}{200 \\cdot 10^9 \\cdot 5 \\cdot 10^{-4}} = \\frac{300}{100 \\cdot 10^6} = 3 \\cdot 10^{-6} \\, \\text{m}^2 = 3 \\, \\text{mm}^2$."
+                    ]
+                }
+            }
+        ];
+
+        function renderExercises() {
+            const container = document.getElementById('exercises-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            exercises.forEach(ex => {
+                const data = ex[currentLang];
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden transition-all hover:shadow-md';
+
+                card.innerHTML = `
+                    <div class="p-5">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="bg-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded">
+                                ${currentLang === 'cs' ? 'Úloha' : 'Exercice'} ${ex.id}
+                            </span>
+                        </div>
+                        <div class="text-lg leading-relaxed mb-4 math-step">${data.q}</div>
+                        <button onclick="toggleSolution(${ex.id})" class="text-blue-600 font-semibold flex items-center gap-1 hover:underline text-sm">
+                            <svg class="w-4 h-4 transition-transform" id="arrow-${ex.id}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            ${data.btn}
+                        </button>
+                        <div id="solution-${ex.id}" class="solution-content mt-4 pt-4 border-t border-slate-100">
+                            <ul class="space-y-3">
+                                ${data.steps.map((step, idx) => `
+                                    <li class="flex gap-3 items-start">
+                                        <span class="text-blue-400 font-bold shrink-0">${idx + 1}.</span>
+                                        <div class="text-slate-600 math-step">${step}</div>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function toggleSolution(id) {
+            const sol = document.getElementById(`solution-${id}`);
+            const arrow = document.getElementById(`arrow-${id}`);
+            if (sol) sol.classList.toggle('active');
+            if (arrow) arrow.style.transform = sol.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'cs' ? 'fr' : 'cs';
+
+            const elTitleCs = document.getElementById('title-cs');
+            const elTitleFr = document.getElementById('title-fr');
+            const elIntroCs = document.getElementById('intro-cs');
+            const elIntroFr = document.getElementById('intro-fr');
+
+            if (elTitleCs) elTitleCs.classList.toggle('hidden', currentLang !== 'cs');
+            if (elTitleFr) elTitleFr.classList.toggle('hidden', currentLang !== 'fr');
+            if (elIntroCs) elIntroCs.classList.toggle('hidden', currentLang !== 'cs');
+            if (elIntroFr) elIntroFr.classList.toggle('hidden', currentLang !== 'fr');
+
+            const btnText = document.getElementById('btn-lang-text');
+            if (btnText) btnText.innerText = currentLang === 'cs' ? 'Français' : 'Čeština';
+
+            renderExercises();
+        }
+
+        document.addEventListener('DOMContentLoaded', renderExercises);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deformace pevných těles – Výukový modul</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" crossorigin="anonymous"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        :root { scroll-padding-top: 100px; }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .card { transition: transform 0.2s; }
+        .card:hover { transform: translateY(-5px); }
+        .nav-link { cursor: pointer; user-select: none; }
+        .lang-active { color: #2563eb; font-weight: bold; text-decoration: underline; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 leading-relaxed">
+
+    <!-- Hero Section -->
+    <header class="bg-blue-900 text-white py-16 px-6 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4" data-cz="Deformace pevných těles" data-fr="Déformation des solides">Deformace pevných těles</h1>
+        <p class="text-xl opacity-90 max-w-2xl mx-auto text-blue-100" data-cz="Interaktivní fyzikální modul pro studenty." data-fr="Module de physique interactif pour les étudiants.">Interaktivní fyzikální modul pro studenty.</p>
+    </header>
+
+    <!-- Navigace -->
+    <nav class="sticky top-0 bg-white shadow-md z-50 border-b border-slate-200">
+        <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-4">
+            <div class="flex overflow-x-auto space-x-6 text-sm font-semibold whitespace-nowrap mr-4">
+                <span onclick="scrollToSection('uvod')" class="nav-link hover:text-blue-600 transition-colors p-2" data-cz="Definice" data-fr="Définition">Definice</span>
+                <span onclick="scrollToSection('typy')" class="nav-link hover:text-blue-600 transition-colors p-2" data-cz="Typy deformace" data-fr="Types de déformation">Typy deformace</span>
+                <span onclick="scrollToSection('tah')" class="nav-link hover:text-blue-600 transition-colors p-2" data-cz="Deformace tahem" data-fr="Traction">Deformace tahem</span>
+                <span onclick="scrollToSection('hook')" class="nav-link hover:text-blue-600 transition-colors p-2" data-cz="Hookův zákon" data-fr="Loi de Hooke">Hookův zákon</span>
+                <span onclick="scrollToSection('krivka')" class="nav-link hover:text-blue-600 transition-colors p-2" data-cz="Křivka deformace" data-fr="Courbe de déformation">Křivka deformace</span>
+                <span onclick="scrollToSection('praxe')" class="nav-link hover:text-blue-600 transition-colors p-2" data-cz="Praxe" data-fr="Pratique">Praxe</span>
+            </div>
+            <div class="flex space-x-3 text-xs font-bold border-l pl-4 border-slate-200">
+                <button id="btn-cz" onclick="setLanguage('cz')" class="lang-active">CZ</button>
+                <span class="text-slate-300">|</span>
+                <button id="btn-fr" onclick="setLanguage('fr')" class="hover:text-blue-600">FR</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-6 py-12 space-y-24">
+
+        <!-- Definice -->
+        <section id="uvod" class="scroll-mt-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6 border-l-4 border-blue-600 pl-4" data-cz="Co je to deformace?" data-fr="Qu'est-ce que la déformation ?">Co je to deformace?</h2>
+                    <p class="text-lg mb-4 text-slate-700" data-cz='&lt;span class="font-bold"&gt;Deformace&lt;/span&gt; je změna rozměrů, objemu nebo tvaru tělesa způsobená účinkem vnějších sil. Tyto síly mění vzájemné polohy částic v krystalové mřížce tělesa.' data-fr='La &lt;span class="font-bold"&gt;déformation&lt;/span&gt; est le changement de dimensions, de volume ou de forme d&apos;un corps causé par l&apos;action de forces externes. Ces forces modifient les positions relatives des particules dans le réseau cristallin du corps.'>
+                        <span class="font-bold">Deformace</span> je změna rozměrů, objemu nebo tvaru tělesa způsobená účinkem vnějších sil. Tyto síly mění vzájemné polohy částic v krystalové mřížce tělesa.
+                    </p>
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                        <h3 class="font-bold text-blue-800 mb-2 text-lg" data-cz="Základní typy:" data-fr="Types fondamentaux :">Základní typy:</h3>
+                        <ul class="list-disc ml-5 space-y-2 text-slate-700">
+                            <li data-cz='&lt;strong&gt;Elastická (pružná):&lt;/strong&gt; Dočasná. Po odstranění sil se těleso vrátí do původního stavu.' data-fr='&lt;strong&gt;Élastique :&lt;/strong&gt; Temporaire. Après suppression des forces, le corps reprend sa forme initiale.'><strong>Elastická (pružná):</strong> Dočasná. Po odstranění sil se těleso vrátí do původního stavu.</li>
+                            <li data-cz='&lt;strong&gt;Plastická (tvárná):&lt;/strong&gt; Trvalá. Těleso si zachovává nový tvar.' data-fr='&lt;strong&gt;Plastique :&lt;/strong&gt; Permanente. Le corps conserve sa nouvelle forme.'><strong>Plastická (tvárná):</strong> Trvalá. Těleso si zachovává nový tvar.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <svg viewBox="0 0 400 200" class="w-full max-w-md bg-white rounded-xl shadow-inner border border-slate-200">
+                        <path d="M50 100 L80 100 L90 70 L110 130 L130 70 L150 130 L170 70 L190 130 L210 70 L230 130 L240 100 L270 100" fill="none" stroke="#2563eb" stroke-width="3"></path>
+                        <circle cx="270" cy="100" r="10" fill="#1e293b"></circle>
+                        <text x="50" y="170" class="text-sm font-bold" data-cz="Vnější síla F" data-fr="Force externe F">Vnější síla F</text>
+                        <path d="M285 100 L330 100" stroke="black" stroke-width="2" marker-end="url(#arrow)"></path>
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker>
+                        </defs>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typy podle působení -->
+        <section id="typy" class="scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-10 text-center" data-cz="Způsoby namáhání těles" data-fr="Modes de sollicitation des corps">Způsoby namáhání těles</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 text-center">
+                <div class="card bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="h-24 mb-4 flex items-center justify-center bg-slate-100 rounded">
+                        <svg viewBox="0 0 100 60" class="h-16"><rect x="30" y="25" width="40" height="10" fill="#cbd5e1" stroke="black"></rect><path d="M25 30 L10 30" stroke="red" marker-end="url(#arrow)"></path><path d="M75 30 L90 30" stroke="red" marker-end="url(#arrow)"></path></svg>
+                    </div>
+                    <h3 class="font-bold" data-cz="Tahem" data-fr="Traction">Tahem</h3>
+                </div>
+                <div class="card bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="h-24 mb-4 flex items-center justify-center bg-slate-100 rounded">
+                        <svg viewBox="0 0 100 60" class="h-16"><rect x="30" y="25" width="40" height="10" fill="#cbd5e1" stroke="black"></rect><path d="M10 30 L25 30" stroke="red" marker-end="url(#arrow)"></path><path d="M90 30 L75 30" stroke="red" marker-end="url(#arrow)"></path></svg>
+                    </div>
+                    <h3 class="font-bold" data-cz="Tlakem" data-fr="Compression">Tlakem</h3>
+                </div>
+                <div class="card bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="h-24 mb-4 flex items-center justify-center bg-slate-100 rounded">
+                        <svg viewBox="0 0 100 60" class="h-16"><path d="M20 30 Q50 50 80 30" fill="none" stroke="black" stroke-width="8" stroke-linecap="round"></path><path d="M50 15 L50 35" stroke="red" marker-end="url(#arrow)"></path></svg>
+                    </div>
+                    <h3 class="font-bold" data-cz="Ohybem" data-fr="Flexion">Ohybem</h3>
+                </div>
+                <div class="card bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="h-24 mb-4 flex items-center justify-center bg-slate-100 rounded">
+                        <svg viewBox="0 0 100 60" class="h-16"><rect x="30" y="20" width="40" height="20" fill="#cbd5e1" stroke="black"></rect><path d="M30 15 L50 15" stroke="red" marker-end="url(#arrow)"></path><path d="M70 45 L50 45" stroke="red" marker-end="url(#arrow)"></path></svg>
+                    </div>
+                    <h3 class="font-bold" data-cz="Smykem" data-fr="Cisaillement">Smykem</h3>
+                </div>
+                <div class="card bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                    <div class="h-24 mb-4 flex items-center justify-center bg-slate-100 rounded">
+                        <svg viewBox="0 0 100 60" class="h-16"><ellipse cx="50" cy="30" rx="30" ry="10" fill="none" stroke="black"></ellipse><path d="M30 20 Q50 5 70 20" stroke="red" fill="none" marker-end="url(#arrow)"></path></svg>
+                    </div>
+                    <h3 class="font-bold" data-cz="Kroucením" data-fr="Torsion">Kroucením</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detail: Deformace tahem -->
+        <section id="tah" class="space-y-12 scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-6 border-l-4 border-blue-600 pl-4" data-cz="Deformace tahem" data-fr="Déformation par traction">Deformace tahem</h2>
+            <div class="bg-white p-8 rounded-2xl shadow-lg border border-slate-100">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-4">
+                        <h3 class="text-xl font-bold" data-cz="Vznik normálového napětí" data-fr="Formation de la contrainte normale">Vznik normálového napětí</h3>
+                        <p class="text-slate-700" data-cz='Při natahování tělesa vznikají uvnitř &lt;strong&gt;síly pružnosti $\vec{F_p}$&lt;/strong&gt;, které působí proti vnější síle. Normálové napětí $\sigma$ je podíl této síly a plochy průřezu $S$.' data-fr='Lors de l&apos;étirement d&apos;un corps, des &lt;strong&gt;forces élastiques $\vec{F_p}$&lt;/strong&gt; apparaissent à l&apos;intérieur, s&apos;opposant à la force externe. La contrainte normale $\sigma$ est le quotient de cette force par l&apos;aire de la section transversale $S$.'>
+                            Při natahování tělesa vznikají uvnitř <strong>síly pružnosti \(\vec{F_p}\)</strong>, které působí proti vnější síle. Normálové napětí \(\sigma\) je podíl této síly a plochy průřezu \(S\).
+                        </p>
+                        <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 text-center">
+                            <p class="text-3xl font-bold text-blue-900">\(\sigma = \frac{F_p}{S}\)</p>
+                            <p class="text-sm text-blue-600 mt-2" data-cz="Jednotka: Pascal [Pa] ($N/m^2$)" data-fr="Unité : Pascal [Pa] ($N/m^2$)">Jednotka: Pascal [Pa] (\(N/m^2\))</p>
+                        </div>
+                        <div class="bg-amber-50 p-4 rounded-lg border border-amber-200">
+                             <p class="text-sm text-amber-900 italic" data-cz='&lt;strong&gt;Poznámka:&lt;/strong&gt; Tyto fyzikální vztahy platí analogicky i pro &lt;strong&gt;deformaci tlakem&lt;/strong&gt;. V takovém případě však nehovoříme o prodloužení, ale o &lt;strong&gt;zkrácení&lt;/strong&gt; tělesa.' data-fr='&lt;strong&gt;Note :&lt;/strong&gt; Ces relations physiques s&apos;appliquent de manière analogue à la &lt;strong&gt;déformation par compression&lt;/strong&gt;. Dans ce cas, on ne parle pas d&apos;allongement, mais d&apos;un &lt;strong&gt;raccourcissement&lt;/strong&gt; du corps.'><strong>Poznámka:</strong> Tyto fyzikální vztahy platí analogicky i pro <strong>deformaci tlakem</strong>. V takovém případě však nehovoříme o prodloužení, ale o <strong>zkrácení</strong> tělesa.</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <svg viewBox="0 0 300 120" class="w-full">
+                            <rect x="40" y="40" width="220" height="40" fill="#cbd5e1" stroke="#475569" stroke-width="2"></rect>
+                            <line x1="150" y1="35" x2="150" y2="85" stroke="#2563eb" stroke-width="2" stroke-dasharray="4"></line>
+                            <path d="M145 50 L120 50" stroke="#1e40af" stroke-width="2" marker-end="url(#arrowBlue)"></path>
+                            <path d="M145 70 L120 70" stroke="#1e40af" stroke-width="2" marker-end="url(#arrowBlue)"></path>
+                            <path d="M155 50 L180 50" stroke="#1e40af" stroke-width="2" marker-end="url(#arrowBlue)"></path>
+                            <path d="M155 70 L180 70" stroke="#1e40af" stroke-width="2" marker-end="url(#arrowBlue)"></path>
+                            <path d="M40 60 L10 60" stroke="#ef4444" stroke-width="3" marker-end="url(#arrowRed)"></path>
+                            <path d="M260 60 L290 60" stroke="#ef4444" stroke-width="3" marker-end="url(#arrowRed)"></path>
+                            <defs>
+                                <marker id="arrowRed" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444"></path></marker>
+                                <marker id="arrowBlue" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1e40af"></path></marker>
+                            </defs>
+                        </svg>
+                        <p class="text-center text-[10px] font-bold text-slate-500 mt-2 uppercase tracking-widest text-blue-900" data-cz="Vnitřní síly pružnosti $\vec{F_p}$" data-fr="Forces élastiques internes $\vec{F_p}$">Vnitřní síly pružnosti \(\vec{F_p}\)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hookův zákon -->
+        <section id="hook" class="bg-blue-900 text-white p-10 rounded-3xl shadow-2xl scroll-mt-24">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-bold mb-6" data-cz="Hookův zákon" data-fr="Loi de Hooke">Hookův zákon</h2>
+                    <p class="text-lg opacity-90 mb-6" data-cz="V oblasti pružné deformace je napětí přímo úměrné relativnímu prodloužení." data-fr="Dans le domaine de la déformation élastique, la contrainte est directement proportionnelle à l'allongement relatif.">V oblasti pružné deformace je napětí přímo úměrné relativnímu prodloužení.</p>
+                    <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/20">
+                        <p class="text-3xl mb-2">\(\sigma = E \cdot \varepsilon\)</p>
+                        <p class="text-sm opacity-80" data-cz="&lt;strong&gt;E&lt;/strong&gt; – Modul pružnosti v tahu [Pa]" data-fr="&lt;strong&gt;E&lt;/strong&gt; – Module d'élasticité [Pa]"><strong>E</strong> – Modul pružnosti v tahu [Pa]</p>
+                        <p class="text-sm opacity-80" data-cz="&lt;strong&gt;$\varepsilon$&lt;/strong&gt; – Relativní prodloužení ($\Delta l / l_0$)" data-fr="&lt;strong&gt;$\varepsilon$&lt;/strong&gt; – Allongement relatif ($\Delta l / l_0$)"><strong>\(\varepsilon\)</strong> – Relativní prodloužení (\(\Delta l / l_0\))</p>
+                    </div>
+                </div>
+                <div class="bg-white/5 p-6 rounded-2xl">
+                    <h4 class="font-bold mb-4 text-blue-300" data-cz="Modul pružnosti E:" data-fr="Module d'élasticité E :">Modul pružnosti E:</h4>
+                    <div class="space-y-3 text-sm">
+                        <div class="flex justify-between border-b border-white/10 pb-1"><span data-cz="Ocel" data-fr="Acier">Ocel</span> <span>210 GPa</span></div>
+                        <div class="flex justify-between border-b border-white/10 pb-1"><span data-cz="Měď" data-fr="Cuivre">Měď</span> <span>120 GPa</span></div>
+                        <div class="flex justify-between border-b border-white/10 pb-1"><span data-cz="Hliník" data-fr="Aluminium">Hliník</span> <span>70 GPa</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Křivka deformace -->
+        <section id="krivka" class="space-y-8 scroll-mt-24">
+            <h2 class="text-3xl font-bold border-l-4 border-blue-600 pl-4" data-cz="Deformační křivka" data-fr="Courbe de déformation">Deformační křivka</h2>
+            <div class="grid lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md h-[450px]">
+                    <canvas id="stressStrainChart"></canvas>
+                </div>
+                <div class="space-y-4">
+                    <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-500">
+                        <h4 class="font-bold text-orange-800" data-cz="$\sigma_E$ – Mez pružnosti" data-fr="$\sigma_E$ – Limite d'élasticité">\(\sigma_E\) – Mez pružnosti</h4>
+                        <p class="text-xs text-slate-600 italic" data-cz="Konec lineární oblasti (vyznačen oranžově). Těleso se stále vrací do pův. stavu." data-fr="Fin de la zone linéaire (en orange). Le corps reprend sa forme initiale.">Konec lineární oblasti (vyznačen oranžově). Těleso se stále vrací do pův. stavu.</p>
+                    </div>
+                    <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                        <h4 class="font-bold text-red-800" data-cz="$\sigma_P$ – Mez pevnosti" data-fr="$\sigma_P$ – Limite de rupture">\(\sigma_P\) – Mez pevnosti</h4>
+                        <p class="text-xs text-slate-600 italic" data-cz="Maximální napětí před porušením (vyznačeno červeně)." data-fr="Contrainte maximale avant la rupture (en rouge).">Maximální napětí před porušením (vyznačeno červeně).</p>
+                    </div>
+                    <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                        <h4 class="font-bold text-green-800" data-cz="$\sigma_d$ – Dovolené napětí" data-fr="$\sigma_d$ – Contrainte admissible">\(\sigma_d\) – Dovolené napětí</h4>
+                        <p class="text-xs text-slate-600 italic" data-cz="Bezpečné napětí (vyznačeno zeleně). Vždy nižší než mez pružnosti." data-fr="Contrainte de sécurité (en vert). Toujours inférieure à la limite d'élasticité.">Bezpečné napětí (vyznačeno zeleně). Vždy nižší než mez pružnosti.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-200">
+                <h3 class="font-bold text-lg mb-3" data-cz="Bezpečnost v praxi: Dovolené napětí" data-fr="Sécurité pratique : Contrainte admissible">Bezpečnost v praxi: Dovolené napětí</h3>
+                <p class="text-slate-700 text-sm mb-4" data-cz='V technické praxi nesmíme dopustit, aby napětí v materiálu dosáhlo meze pružnosti nebo meze pevnosti. Proto definujeme &lt;strong&gt;dovolené napětí $\sigma_d$&lt;/strong&gt;:' data-fr='En pratique technique, nous ne devons pas permettre que la contrainte atteigne la limite d&apos;élasticité ou de rupture. C&apos;est pourquoi nous définissons la &lt;strong&gt;contrainte admissible $\sigma_d$&lt;/strong&gt; :'>V technické praxi nesmíme dopustit, aby napětí v materiálu dosáhlo meze pružnosti nebo meze pevnosti. Proto definujeme <strong>dovolené napětí \(\sigma_d\)</strong>:</p>
+                <div class="bg-slate-50 p-4 rounded text-center font-mono text-xl text-green-700">
+                    \(\sigma_d = \frac{\sigma_E}{k}\) <span data-cz="nebo" data-fr="ou">nebo</span> \(\sigma_d = \frac{\sigma_P}{k}\)
+                </div>
+                <p class="text-xs text-slate-500 mt-3 italic" data-cz="Kde &lt;strong&gt;k&lt;/strong&gt; je součinitel bezpečnosti (obvykle 1,5 až 10). Například u výtahových lan je součinitel bezpečnosti velmi vysoký." data-fr="Où &lt;strong&gt;k&lt;/strong&gt; est le coefficient de sécurité (généralement entre 1,5 et 10). Par exemple, pour les câbles d'ascenseur, le coefficient est très élevé.">Kde <strong>k</strong> je součinitel bezpečnosti (obvykle 1,5 až 10). Například u výtahových lan je součinitel bezpečnosti velmi vysoký.</p>
+            </div>
+        </section>
+
+        <!-- Praktické souvislosti -->
+        <section id="praxe" class="bg-slate-800 text-white p-12 rounded-3xl scroll-mt-24">
+            <h2 class="text-3xl font-bold mb-10 text-center text-blue-400 font-mono tracking-tight" data-cz="PRAXE &amp; APLIKACE" data-fr="PRATIQUE &amp; APPLICATIONS">PRAXE &amp; APLIKACE</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="p-6 bg-slate-700/50 rounded-2xl hover:bg-slate-700 transition-colors border border-slate-600">
+                    <div class="text-3xl mb-4">🏗️</div>
+                    <h3 class="text-xl font-bold mb-2 text-blue-200" data-cz="Statika staveb" data-fr="Génie civil">Statika staveb</h3>
+                    <p class="text-slate-300 text-sm" data-cz='Mosty a mrakodrapy jsou navrženy tak, aby jejich prvky nikdy nepřekročily &lt;strong&gt;dovolené napětí&lt;/strong&gt;.' data-fr='Les ponts et les gratte-ciel sont conçus pour que leurs éléments ne dépassent jamais la &lt;strong&gt;contrainte admissible&lt;/strong&gt;.'>Mosty a mrakodrapy jsou navrženy tak, aby jejich prvky nikdy nepřekročily <strong>dovolené napětí</strong>.</p>
+                </div>
+                <div class="p-6 bg-slate-700/50 rounded-2xl hover:bg-slate-700 transition-colors border border-slate-600">
+                    <div class="text-3xl mb-4">🚗</div>
+                    <h3 class="text-xl font-bold mb-2 text-blue-200" data-cz="Bezpečnost aut" data-fr="Sécurité automobile">Bezpečnost aut</h3>
+                    <p class="text-slate-300 text-sm" data-cz='Deformační zóny absorbují energii nárazu díky řízené &lt;strong&gt;plastické deformaci&lt;/strong&gt; materiálu.' data-fr='Les zones de déformation absorbent l&apos;énergie d&apos;un impact grâce à une &lt;strong&gt;déformation plastique&lt;/strong&gt; contrôlée.'>Deformační zóny absorbují energii nárazu díky řízené <strong>plastické deformaci</strong> materiálu.</p>
+                </div>
+                <div class="p-6 bg-slate-700/50 rounded-2xl hover:bg-slate-700 transition-colors border border-slate-600">
+                    <div class="text-3xl mb-4">🎸</div>
+                    <h3 class="text-xl font-bold mb-2 text-blue-200" data-cz="Hudební nástroje" data-fr="Instruments de musique">Hudební nástroje</h3>
+                    <p class="text-slate-300 text-sm" data-cz='Struny pracují výhradně v &lt;strong&gt;elastické oblasti&lt;/strong&gt;, aby udržely konstantní ladění i po brnknutí.' data-fr='Les cordes travaillent exclusivement dans le &lt;strong&gt;domaine élastique&lt;/strong&gt; pour maintenir un accordage constant.'>Struny pracují výhradně v <strong>elastické oblasti</strong>, aby udržely konstantní ladění i po brnknutí.</p>
+                </div>
+                <div class="p-6 bg-blue-900/30 rounded-2xl hover:bg-blue-900/40 transition-colors border border-blue-800">
+                    <div class="text-3xl mb-4">✈️</div>
+                    <h3 class="text-xl font-bold mb-2 text-blue-300" data-cz="Letectví" data-fr="Aéronautique">Letectví</h3>
+                    <p class="text-slate-300 text-sm" data-cz="Trup letadla musí odolávat cyklickému namáhání a únavě materiálu při změnách tlaku." data-fr="Le fuselage d'un avion doit résister aux contraintes cycliques et à la fatigue du matériau lors des changements de pression.">Trup letadla musí odolávat cyklickému namáhání a únavě materiálu při změnách tlaku.</p>
+                </div>
+                <div class="p-6 bg-blue-900/30 rounded-2xl hover:bg-blue-900/40 transition-colors border border-blue-800">
+                    <div class="text-3xl mb-4">🧗</div>
+                    <h3 class="text-xl font-bold mb-2 text-blue-300" data-cz="Horolezecká lana" data-fr="Cordes d'escalade">Horolezecká lana</h3>
+                    <p class="text-slate-300 text-sm" data-cz="Dynamická lana mají vysokou elastickou deformaci, aby 'měkce' zachytila pád lezce." data-fr="Les cordes dynamiques ont une déformation élastique élevée pour amortir la chute d'un grimpeur.">Dynamická lana mají vysokou elastickou deformaci, aby 'měkce' zachytila pád lezce.</p>
+                </div>
+                <div class="p-6 bg-blue-900/30 rounded-2xl hover:bg-blue-900/40 transition-colors border border-blue-800">
+                    <div class="text-3xl mb-4">🧪</div>
+                    <h3 class="text-xl font-bold mb-2 text-blue-300" data-cz="Materiálový test" data-fr="Essai de traction">Materiálový test</h3>
+                    <p class="text-slate-300 text-sm" data-cz="Trhací zkouška určuje přesné hodnoty meze pevnosti pro každou výrobní šarži kovu." data-fr="L'essai de traction détermine les valeurs exactes de résistance pour chaque lot de métal produit.">Trhací zkouška určuje přesné hodnoty meze pevnosti pro každou výrobní šarži kovu.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-500 py-12 text-center border-t border-slate-800 mt-20">
+        <p data-cz="© 2024 Vzdělávací modul Fyzika | Studijní opora pro gymnázia" data-fr="© 2024 Module éducatif de Physique | Soutien scolaire pour lycées">© 2024 Vzdělávací modul Fyzika | Studijní opora pro gymnázia</p>
+    </footer>
+
+    <script>
+        let currentLang = 'cz';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-cz]').forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text) el.innerHTML = text;
+            });
+            document.getElementById('btn-cz').className = lang === 'cz' ? 'lang-active' : 'hover:text-blue-600';
+            document.getElementById('btn-fr').className = lang === 'fr' ? 'lang-active' : 'hover:text-blue-600';
+            updateChartLang();
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                const headerOffset = 100;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+            }
+        }
+
+        const ctx = document.getElementById('stressStrainChart').getContext('2d');
+        const steelData = [{x: 0, y: 0}, {x: 0.1, y: 100}, {x: 0.2, y: 200}, {x: 0.25, y: 220}, {x: 0.4, y: 235}, {x: 0.7, y: 280}, {x: 1.0, y: 350}, {x: 1.15, y: 310}];
+        const brittleData = [{x: 0, y: 0}, {x: 0.05, y: 150}, {x: 0.1, y: 280}, {x: 0.12, y: 310}];
+        const highlightPoints = {
+            steel: [{x: 0.2, y: 200, type: 'mez-pruzn'}, {x: 1.0, y: 350, type: 'mez-pevn'}, {x: 0.12, y: 120, type: 'dov-nap'}],
+            brittle: [{x: 0.1, y: 280, type: 'mez-pruzn'}, {x: 0.12, y: 310, type: 'mez-pevn'}, {x: 0.04, y: 120, type: 'dov-nap'}]
+        };
+        const translations = {
+            cz: { steel: 'Ocel (Houževnatá)', brittle: 'Křehké materiály', points: 'Zvýrazněné body', e: 'ε [%]', sigma: 'σ [MPa]', pruzn: 'Mez pružnosti (σE)', pevn: 'Mez pevnosti (σP)', dov: 'Dovolené napětí (σd)' },
+            fr: { steel: 'Acier (Ductile)', brittle: 'Matériaux fragiles', points: 'Points clés', e: 'ε [%]', sigma: 'σ [MPa]', pruzn: "Limite d'élasticité (σE)", pevn: 'Limite de rupture (σP)', dov: 'Contrainte admissible (σd)' }
+        };
+
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [
+                    { label: translations.cz.steel, data: steelData, borderColor: '#2563eb', backgroundColor: 'rgba(37, 99, 235, 0.05)', tension: 0.3, pointRadius: 0, fill: true },
+                    { label: translations.cz.brittle, data: brittleData, borderColor: '#94a3b8', borderDash: [5, 5], tension: 0.1, pointRadius: 0 },
+                    { label: translations.cz.points, data: [...highlightPoints.steel, ...highlightPoints.brittle], pointRadius: 7, pointHoverRadius: 9, showLine: false, backgroundColor: (c) => { const p = c.raw; if(!p) return '#000'; if(p.type === 'dov-nap') return '#10b981'; if(p.type === 'mez-pruzn') return '#f97316'; if(p.type === 'mez-pevn') return '#ef4444'; return '#000'; }, borderColor: '#fff', borderWidth: 2 }
+                ]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        onClick: (e, item, legend) => {
+                            const idx = item.datasetIndex; const ci = legend.chart;
+                            if (idx === 2) return;
+                            ci.isDatasetVisible(idx) ? ci.hide(idx) : ci.show(idx);
+                            const pts = [];
+                            if (ci.isDatasetVisible(0)) pts.push(...highlightPoints.steel);
+                            if (ci.isDatasetVisible(1)) pts.push(...highlightPoints.brittle);
+                            ci.data.datasets[2].data = pts; ci.update();
+                        }
+                    },
+                    tooltip: { callbacks: { label: (c) => { const p = c.raw; const t = translations[currentLang]; if(p.type === 'mez-pruzn') return t.pruzn; if(p.type === 'mez-pevn') return t.pevn; if(p.type === 'dov-nap') return t.dov; return `σ: ${p.y} MPa`; } } }
+                },
+                scales: { x: { type: 'linear', title: { display: true, text: translations.cz.e } }, y: { title: { display: true, text: translations.cz.sigma } } }
+            }
+        });
+
+        function updateChartLang() {
+            const t = translations[currentLang];
+            chart.data.datasets[0].label = t.steel; chart.data.datasets[1].label = t.brittle; chart.data.datasets[2].label = t.points;
+            chart.options.scales.x.title.text = t.e; chart.options.scales.y.title.text = t.sigma;
+            chart.update();
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Deformace pevných těles</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        body { font-family: 'Outfit', sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-blue-600">
+            <a href="rozcestnik.html" class="text-blue-600 hover:text-blue-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-blue-800 mb-4">Test: Deformace pevných těles</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-blue-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (druhy deformace, napětí, prodloužení, Hookův zákon, praktické výpočty).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-blue-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-blue-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-600 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-blue-700 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-600">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-blue-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(4).replace(/0+$/, '').replace(/\.$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        const cand = Math.round((correct + delta) * 100) / 100;
+        if (cand > 0) set.add(cand);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildOptionsFrac(correct, extras, deltaCandidates) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randChoice(deltaCandidates);
+        const cand = Math.round((correct + delta) * 100000) / 100000;
+        if (cand > 0) set.add(cand);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    { id: 't1', type: 'concept',
+        cs: { q: "Co je pružná (elastická) deformace?", a: "dočasná změna tvaru — po odstranění sil se těleso vrátí do původního stavu", o: ["dočasná změna tvaru — po odstranění sil se těleso vrátí do původního stavu", "trvalá změna tvaru, která zůstává i po odstranění sil", "změna objemu bez změny tvaru", "deformace, která nastává jen při vysokých teplotách"], h: "Co se stane s tělesem, když síla přestane působit?", e: "Pružná (elastická) deformace je dočasná — jakmile vnější síly přestanou působit, těleso se vrátí do svého původního tvaru." },
+        fr: { q: "Qu'est-ce que la déformation élastique ?", a: "un changement temporaire de forme — après suppression des forces, le corps reprend sa forme initiale", o: ["un changement temporaire de forme — après suppression des forces, le corps reprend sa forme initiale", "un changement permanent de forme qui subsiste après suppression des forces", "un changement de volume sans changement de forme", "une déformation qui n'apparaît qu'à haute température"], h: "Que se passe-t-il avec le corps quand la force cesse d'agir ?", e: "La déformation élastique est temporaire — dès que les forces externes cessent d'agir, le corps reprend sa forme initiale." } },
+    { id: 't2', type: 'concept',
+        cs: { q: "Jak působí dvojice sil při deformaci tahem?", a: "dvě stejně velké síly působí v ose tělesa směrem od sebe", o: ["dvě stejně velké síly působí v ose tělesa směrem od sebe", "dvě stejně velké síly působí v ose tělesa směrem k sobě", "síly působí kolmo na podélnou osu tělesa", "síly působí v rovnoběžných rovinách těsně u sebe"], h: "Tah těleso natahuje, nebo stlačuje?", e: "Při tahu působí dvě stejně velké síly v ose tělesa směrem od sebe, čímž se těleso prodlužuje." },
+        fr: { q: "Comment agissent les forces lors d'une déformation par traction ?", a: "deux forces égales agissent dans l'axe du corps en s'éloignant l'une de l'autre", o: ["deux forces égales agissent dans l'axe du corps en s'éloignant l'une de l'autre", "deux forces égales agissent dans l'axe du corps en se rapprochant l'une de l'autre", "les forces agissent perpendiculairement à l'axe longitudinal du corps", "les forces agissent dans des plans parallèles proches l'un de l'autre"], h: "La traction allonge-t-elle ou comprime-t-elle le corps ?", e: "Lors de la traction, deux forces égales agissent dans l'axe du corps en s'éloignant l'une de l'autre, ce qui allonge le corps." } },
+    { id: 't3', type: 'concept',
+        cs: { q: "Co vyjadřuje normálové napětí $\\sigma$?", a: "podíl vnitřní síly pružnosti a plochy průřezu tělesa", o: ["podíl vnitřní síly pružnosti a plochy průřezu tělesa", "poměrnou (procentuální) změnu délky tělesa", "součin síly a délky tělesa", "tuhost materiálu"], h: "Podívej se na vzorec $\\sigma = F_p/S$ — co je v čitateli a co ve jmenovateli?", e: "Normálové napětí $\\sigma$ je podíl vnitřní síly pružnosti $F_p$ a plochy průřezu $S$: $\\sigma = F_p/S$." },
+        fr: { q: "Qu'exprime la contrainte normale $\\sigma$ ?", a: "le rapport entre la force élastique interne et l'aire de la section transversale", o: ["le rapport entre la force élastique interne et l'aire de la section transversale", "le changement relatif (en %) de la longueur du corps", "le produit de la force et de la longueur du corps", "la rigidité du matériau"], h: "Regarde la formule $\\sigma = F_p/S$ — qu'y a-t-il au numérateur et au dénominateur ?", e: "La contrainte normale $\\sigma$ est le rapport entre la force élastique interne $F_p$ et l'aire de la section $S$ : $\\sigma = F_p/S$." } },
+    { id: 't4', type: 'concept',
+        cs: { q: "Co vyjadřuje relativní prodloužení $\\varepsilon$?", a: "bezrozměrnou veličinu udávající poměrnou změnu délky tělesa", o: ["bezrozměrnou veličinu udávající poměrnou změnu délky tělesa", "vnitřní sílu pružnosti v tělese", "tuhost materiálu (modul pružnosti)", "maximální napětí, které materiál snese"], h: "Podívej se na vzorec $\\varepsilon = \\Delta l/l_0$ — je to poměr, nebo síla?", e: "Relativní prodloužení $\\varepsilon = \\Delta l/l_0$ je bezrozměrná veličina, která udává, o jakou část původní délky se těleso prodloužilo." },
+        fr: { q: "Qu'exprime l'allongement relatif $\\varepsilon$ ?", a: "une grandeur sans dimension indiquant le changement relatif de longueur du corps", o: ["une grandeur sans dimension indiquant le changement relatif de longueur du corps", "la force élastique interne du corps", "la rigidité du matériau (module d'élasticité)", "la contrainte maximale supportée par le matériau"], h: "Regarde la formule $\\varepsilon = \\Delta l/l_0$ — est-ce un rapport ou une force ?", e: "L'allongement relatif $\\varepsilon = \\Delta l/l_0$ est une grandeur sans dimension qui indique de quelle fraction de sa longueur initiale le corps s'est allongé." } },
+    { id: 't5', type: 'concept',
+        cs: { q: "Co říká Hookův zákon pro pružnou deformaci?", a: "normálové napětí je přímo úměrné relativnímu prodloužení ($\\sigma = E\\cdot\\varepsilon$)", o: ["normálové napětí je přímo úměrné relativnímu prodloužení ($\\sigma = E\\cdot\\varepsilon$)", "relativní prodloužení je nepřímo úměrné napětí", "napětí je vždy rovno mezi pevnosti", "modul pružnosti závisí na velikosti tělesa"], h: "Jaký typ úměrnosti (přímá, nebo nepřímá) spojuje σ a ε?", e: "Hookův zákon říká, že v oblasti pružné deformace je napětí $\\sigma$ přímo úměrné relativnímu prodloužení $\\varepsilon$: $\\sigma = E\\cdot\\varepsilon$." },
+        fr: { q: "Que dit la loi de Hooke pour la déformation élastique ?", a: "la contrainte normale est directement proportionnelle à l'allongement relatif ($\\sigma = E\\cdot\\varepsilon$)", o: ["la contrainte normale est directement proportionnelle à l'allongement relatif ($\\sigma = E\\cdot\\varepsilon$)", "l'allongement relatif est inversement proportionnel à la contrainte", "la contrainte est toujours égale à la limite de rupture", "le module d'élasticité dépend de la taille du corps"], h: "Quel type de proportionnalité (directe ou inverse) relie σ et ε ?", e: "La loi de Hooke énonce que dans le domaine élastique, la contrainte $\\sigma$ est directement proportionnelle à l'allongement relatif $\\varepsilon$ : $\\sigma = E\\cdot\\varepsilon$." } },
+    { id: 't6', type: 'concept',
+        cs: { q: "Co je modul pružnosti $E$?", a: "veličina udávající tuhost materiálu (Youngův modul)", o: ["veličina udávající tuhost materiálu (Youngův modul)", "maximální napětí, které materiál snese před přetržením", "bezpečné napětí zahrnující bezpečnostní rezervu", "poměrná změna délky tělesa"], h: "E je vlastnost materiálu, ne konkrétního tělesa nebo zatížení.", e: "Modul pružnosti $E$ (Youngův modul) je materiálová konstanta udávající tuhost materiálu — čím vyšší $E$, tím menší prodloužení při stejném napětí." },
+        fr: { q: "Qu'est-ce que le module d'élasticité $E$ ?", a: "une grandeur indiquant la rigidité du matériau (module de Young)", o: ["une grandeur indiquant la rigidité du matériau (module de Young)", "la contrainte maximale supportée avant la rupture", "la contrainte de sécurité incluant une marge de sécurité", "le changement relatif de longueur du corps"], h: "E est une propriété du matériau, pas d'un corps ou d'une charge donnés.", e: "Le module d'élasticité $E$ (module de Young) est une constante du matériau indiquant sa rigidité — plus $E$ est élevé, plus l'allongement est faible pour une même contrainte." } },
+    { id: 't7', type: 'concept',
+        cs: { q: "Jaký je vztah mezi dovoleným napětím $\\sigma_d$ a mezí pružnosti $\\sigma_E$?", a: "dovolené napětí je vždy menší než mez pružnosti (zahrnuje bezpečnostní rezervu)", o: ["dovolené napětí je vždy menší než mez pružnosti (zahrnuje bezpečnostní rezervu)", "dovolené napětí je vždy větší než mez pružnosti", "dovolené napětí a mez pružnosti jsou vždy stejné", "dovolené napětí nesouvisí s mezí pružnosti"], h: "Proč se dovolené napětí zavádí — kvůli bezpečnosti, nebo kvůli maximálnímu výkonu?", e: "Dovolené napětí $\\sigma_d = \\sigma_E/k$ (kde $k$ je součinitel bezpečnosti $>1$) je vždy menší než mez pružnosti — zajišťuje bezpečnou rezervu v konstrukci." },
+        fr: { q: "Quelle est la relation entre la contrainte admissible $\\sigma_d$ et la limite d'élasticité $\\sigma_E$ ?", a: "la contrainte admissible est toujours inférieure à la limite d'élasticité (marge de sécurité incluse)", o: ["la contrainte admissible est toujours inférieure à la limite d'élasticité (marge de sécurité incluse)", "la contrainte admissible est toujours supérieure à la limite d'élasticité", "la contrainte admissible et la limite d'élasticité sont toujours égales", "la contrainte admissible n'a aucun lien avec la limite d'élasticité"], h: "Pourquoi introduit-on la contrainte admissible — pour la sécurité, ou pour la performance maximale ?", e: "La contrainte admissible $\\sigma_d = \\sigma_E/k$ (où $k$ est le coefficient de sécurité $>1$) est toujours inférieure à la limite d'élasticité — elle assure une marge de sécurité dans la construction." } },
+    { id: 't8', type: 'concept',
+        cs: { q: "Jak se nazývá deformace, při které síly působí kolmo na podélnou osu tělesa?", a: "ohyb", o: ["ohyb", "tah", "kroucení", "smyk"], h: "Představ si prohýbající se prkno — síly na něj tlačí shora, ne z boku.", e: "Deformace, při které síly působí kolmo na podélnou osu tělesa (např. prohýbající se nosník), se nazývá ohyb." },
+        fr: { q: "Comment appelle-t-on la déformation où les forces agissent perpendiculairement à l'axe longitudinal du corps ?", a: "la flexion", o: ["la flexion", "la traction", "la torsion", "le cisaillement"], h: "Imagine une planche qui plie — les forces la poussent par le dessus, pas sur le côté.", e: "La déformation où les forces agissent perpendiculairement à l'axe longitudinal du corps (par exemple une poutre qui plie) s'appelle la flexion." } }
+];
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Ocelový drát má průřez $S = %S%\\,\\text{mm}^2$ a je napínán silou $F = %F%\\,\\text{N}$. Určete normálové napětí $\\sigma$ v drátu.", h: "Použij vzorec $\\sigma = F/S$. Připomeň si, že $1\\,\\text{MPa} = 1\\,\\text{N/mm}^2$.", e: "$\\sigma = \\dfrac{F}{S} = \\dfrac{%F%}{%S%} = %res%\\,\\text{MPa}$." },
+        fr: { q: "Un fil d'acier a une section $S = %S%\\,\\text{mm}^2$ et est tendu par une force $F = %F%\\,\\text{N}$. Déterminez la contrainte normale $\\sigma$ dans le fil.", h: "Utilise la formule $\\sigma = F/S$. Rappelle-toi que $1\\,\\text{MPa} = 1\\,\\text{N/mm}^2$.", e: "$\\sigma = \\dfrac{F}{S} = \\dfrac{%F%}{%S%} = %res%\\,\\text{MPa}$." },
+        params: () => { const S = randChoice([1,2,4,5,8,10]); const sigma = randChoice([20,50,80,100,150,200]); const F = sigma*S; return { S, F }; },
+        solve: (p) => { const res = p.F/p.S; return { res, correct: fmt(res)+"\\,\\text{MPa}" }; },
+        wrongOptions: (p, sol) => buildOptions(p.F/p.S, [], 30).map(v => v+"\\,\\text{MPa}") },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Tyč o délce $l_0 = %l0%\\,\\text{m}$ se po zatížení prodloužila o $\\Delta l = %dlmm%\\,\\text{mm}$. Vypočtěte relativní prodloužení $\\varepsilon$.", h: "Použij vzorec $\\varepsilon = \\Delta l/l_0$. Nezapomeň převést $\\Delta l$ na metry.", e: "$\\varepsilon = \\dfrac{\\Delta l}{l_0} = \\dfrac{%dlm%}{%l0%} = %res%$." },
+        fr: { q: "Une barre de longueur $l_0 = %l0%\\,\\text{m}$ s'est allongée de $\\Delta l = %dlmm%\\,\\text{mm}$ après chargement. Calculez l'allongement relatif $\\varepsilon$.", h: "Utilise la formule $\\varepsilon = \\Delta l/l_0$. N'oublie pas de convertir $\\Delta l$ en mètres.", e: "$\\varepsilon = \\dfrac{\\Delta l}{l_0} = \\dfrac{%dlm%}{%l0%} = %res%$." },
+        params: () => { const l0 = randChoice([0.5,1,2,2.5,4,5]); const eps = randChoice([0.0005,0.001,0.002,0.0025,0.004]); const dlm = eps*l0; const dlmm = dlm*1000; return { l0, dlmm, dlm: Math.round(dlm*10000)/10000 }; },
+        solve: (p) => { const res = p.dlm/p.l0; return { res, correct: fmt(res) }; },
+        wrongOptions: (p, sol) => buildOptionsFrac(sol.res, [], [0.0002,0.0004,0.0007,0.001,0.0015,-0.0002,-0.0004,-0.0007]) },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Hliníková tyč ($E = %E%\\,\\text{GPa}$) je namáhána relativním prodloužením $\\varepsilon = %eps%$. Jaké napětí $\\sigma$ v ní vzniklo?", h: "Použij Hookův zákon $\\sigma = E\\cdot\\varepsilon$. Nezapomeň, že $E$ je v GPa a výsledek chceme v MPa.", e: "$\\sigma = E\\cdot\\varepsilon = %E%\\cdot10^9 \\cdot %eps% = %res%\\,\\text{MPa}$." },
+        fr: { q: "Une barre d'aluminium ($E = %E%\\,\\text{GPa}$) subit un allongement relatif $\\varepsilon = %eps%$. Quelle contrainte $\\sigma$ s'y est développée ?", h: "Utilise la loi de Hooke $\\sigma = E\\cdot\\varepsilon$. N'oublie pas que $E$ est en GPa et le résultat est demandé en MPa.", e: "$\\sigma = E\\cdot\\varepsilon = %E%\\cdot10^9 \\cdot %eps% = %res%\\,\\text{MPa}$." },
+        params: () => { const E = randChoice([70,120,200,210]); const eps = randChoice([0.0005,0.001,0.0015,0.002,0.0025]); return { E, eps }; },
+        solve: (p) => { const res = p.E*1000*p.eps; return { res, correct: fmt(res)+"\\,\\text{MPa}" }; },
+        wrongOptions: (p, sol) => buildOptions(p.E*1000*p.eps, [], 40).map(v => v+"\\,\\text{MPa}") },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Ocelová tyč ($E = %E%\\,\\text{GPa}$) o délce $l_0 = %l0%\\,\\text{m}$ je namáhána napětím $\\sigma = %sigma%\\,\\text{MPa}$. O kolik se prodlouží?", h: "Z Hookova zákona $\\sigma = E\\cdot\\varepsilon$ a $\\varepsilon = \\Delta l/l_0$ vyjádři $\\Delta l = \\sigma\\cdot l_0/E$.", e: "$\\Delta l = \\dfrac{\\sigma \\cdot l_0}{E} = \\dfrac{%sigma%\\cdot%l0%}{%E%} = %res%\\,\\text{mm}$." },
+        fr: { q: "Une barre d'acier ($E = %E%\\,\\text{GPa}$) de longueur $l_0 = %l0%\\,\\text{m}$ subit une contrainte $\\sigma = %sigma%\\,\\text{MPa}$. De combien s'allonge-t-elle ?", h: "À partir de la loi de Hooke $\\sigma = E\\cdot\\varepsilon$ et $\\varepsilon = \\Delta l/l_0$, exprime $\\Delta l = \\sigma\\cdot l_0/E$.", e: "$\\Delta l = \\dfrac{\\sigma \\cdot l_0}{E} = \\dfrac{%sigma%\\cdot%l0%}{%E%} = %res%\\,\\text{mm}$." },
+        params: () => {
+            const combos = [[70,1,70],[70,1,140],[70,2,70],[100,1,100],[140,1,70],[140,1,140],[175,1,70],[175,1,175],[210,1,70],[210,1,210],[210,2,140],[100,2,100]];
+            const [sigma,l0,E] = randChoice(combos);
+            return { sigma, l0, E };
+        },
+        solve: (p) => { const res = p.sigma*p.l0/p.E; return { res, correct: fmt(res)+"\\,\\text{mm}" }; },
+        wrongOptions: (p, sol) => buildOptions(p.sigma*p.l0/p.E, [], 3).map(v => v+"\\,\\text{mm}") },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Jaký minimální průřez $S$ musí mít táhlo namáhané silou $F = %F%\\,\\text{N}$, aby napětí v něm nepřekročilo dovolené napětí $\\sigma_d = %sigma%\\,\\text{MPa}$?", h: "Použij vzorec $\\sigma = F/S$ a vyjádři z něj $S$.", e: "$S = \\dfrac{F}{\\sigma_d} = \\dfrac{%F%}{%sigma%} = %res%\\,\\text{mm}^2$." },
+        fr: { q: "Quelle section minimale $S$ doit avoir un tirant soumis à une force $F = %F%\\,\\text{N}$ pour que la contrainte n'y dépasse pas la contrainte admissible $\\sigma_d = %sigma%\\,\\text{MPa}$ ?", h: "Utilise la formule $\\sigma = F/S$ et exprime $S$.", e: "$S = \\dfrac{F}{\\sigma_d} = \\dfrac{%F%}{%sigma%} = %res%\\,\\text{mm}^2$." },
+        params: () => { const F = randChoice([100,200,300,400,500,1000]); const sigma = randChoice([50,100,200]); return { F, sigma }; },
+        solve: (p) => { const res = p.F/p.sigma; return { res, correct: fmt(res)+"\\,\\text{mm}^2" }; },
+        wrongOptions: (p, sol) => buildOptions(p.F/p.sigma, [], 3).map(v => v+"\\,\\text{mm}^2") },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "V materiálu s mezí pružnosti $\\sigma_E = %sigmaE%\\,\\text{MPa}$ a mezí pevnosti $\\sigma_P = %sigmaP%\\,\\text{MPa}$ vzniklo napětí $\\sigma = %sigma%\\,\\text{MPa}$. V jaké oblasti se materiál nachází?", h: "Porovnej $\\sigma$ postupně s $\\sigma_E$ a s $\\sigma_P$.", e: "%expl%" },
+        fr: { q: "Dans un matériau de limite d'élasticité $\\sigma_E = %sigmaE%\\,\\text{MPa}$ et de limite de rupture $\\sigma_P = %sigmaP%\\,\\text{MPa}$, une contrainte $\\sigma = %sigma%\\,\\text{MPa}$ est apparue. Dans quel domaine se trouve le matériau ?", h: "Compare $\\sigma$ successivement à $\\sigma_E$ puis à $\\sigma_P$.", e: "%expl%" },
+        params: () => {
+            const sigmaE = randChoice([100,150,200,210]);
+            const sigmaP = sigmaE + randChoice([50,80,100,120]);
+            const zone = randChoice(['elastic','plastic','broken']);
+            let sigma;
+            if (zone === 'elastic') sigma = randInt(Math.round(sigmaE*0.3), sigmaE-10);
+            else if (zone === 'plastic') sigma = randInt(sigmaE+10, sigmaP-10);
+            else sigma = randInt(sigmaP+10, sigmaP+80);
+            return { sigmaE, sigmaP, sigma, zone };
+        },
+        solve: (p) => {
+            const labelsCs = { elastic: 'oblast pružné deformace', plastic: 'oblast tvárné (plastické) deformace', broken: 'materiál je již porušen (přetržen)' };
+            const labelsFr = { elastic: 'domaine de déformation élastique', plastic: 'domaine de déformation plastique', broken: 'le matériau est déjà rompu' };
+            const explCs = {
+                elastic: `Protože $\\sigma=${p.sigma}\\,\\text{MPa} \\lt \\sigma_E=${p.sigmaE}\\,\\text{MPa}$, napětí nepřekročilo mez pružnosti — materiál je v oblasti pružné deformace.`,
+                plastic: `Protože $\\sigma_E=${p.sigmaE}\\,\\text{MPa} \\lt \\sigma=${p.sigma}\\,\\text{MPa} \\lt \\sigma_P=${p.sigmaP}\\,\\text{MPa}$, napětí překročilo mez pružnosti, ale ne mez pevnosti — materiál je v oblasti tvárné deformace.`,
+                broken: `Protože $\\sigma=${p.sigma}\\,\\text{MPa} \\gt \\sigma_P=${p.sigmaP}\\,\\text{MPa}$, napětí překročilo mez pevnosti — materiál je již porušen.`
+            };
+            const explFr = {
+                elastic: `Comme $\\sigma=${p.sigma}\\,\\text{MPa} \\lt \\sigma_E=${p.sigmaE}\\,\\text{MPa}$, la contrainte n'a pas dépassé la limite d'élasticité — le matériau est dans le domaine élastique.`,
+                plastic: `Comme $\\sigma_E=${p.sigmaE}\\,\\text{MPa} \\lt \\sigma=${p.sigma}\\,\\text{MPa} \\lt \\sigma_P=${p.sigmaP}\\,\\text{MPa}$, la contrainte a dépassé la limite d'élasticité mais pas la limite de rupture — le matériau est dans le domaine plastique.`,
+                broken: `Comme $\\sigma=${p.sigma}\\,\\text{MPa} \\gt \\sigma_P=${p.sigmaP}\\,\\text{MPa}$, la contrainte a dépassé la limite de rupture — le matériau est déjà rompu.`
+            };
+            return { res: p.zone, correct: labelsCs[p.zone], correctFr: labelsFr[p.zone], explCs: explCs[p.zone], explFr: explFr[p.zone] };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below */ }
+];
+
+
+
+
+
+
+const CATEGORIES_CS = ['oblast pružné deformace', 'oblast tvárné (plastické) deformace', 'materiál je již porušen (přetržen)'];
+const CATEGORIES_FR = ['domaine de déformation élastique', 'domaine de déformation plastique', 'le matériau est déjà rompu'];
+const DISTRACTOR_CS = 'materiál se vůbec nedeformuje';
+const DISTRACTOR_FR = "le matériau ne se déforme pas du tout";
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm6') {
+            const dictForLang = Object.assign({}, p);
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/%(\w+)%/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            const explKey = lang === 'cs' ? 'explCs' : 'explFr';
+            q.e = sol[explKey];
+            q.a = lang === 'cs' ? sol.correct : sol.correctFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, distractor]);
+
+            const otherLang = lang === 'cs' ? 'fr' : 'cs';
+            tr.q = (otherLang === 'cs' ? template.cs.q : template.fr.q).replace(/%(\w+)%/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            const explKeyOther = otherLang === 'cs' ? 'explCs' : 'explFr';
+            tr.e = sol[explKeyOther];
+            tr.a = otherLang === 'cs' ? sol.correct : sol.correctFr;
+            const catsOther = otherLang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractorOther = otherLang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, distractorOther]);
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/%(\w+)%/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : p[k]));
+                obj.e = obj.e.replace(/%(\w+)%/g, (_, k) => {
+                    if (typeof p[k] === 'number') return fmt(p[k]);
+                    if (p[k] !== undefined) return p[k];
+                    return typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k];
+                });
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+
+
+
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-blue-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-blue-300 font-medium fade-in";
+                btn.dataset.value = opt;
+                const isPlainText = (q.id === 'm6' || q.type === 'concept');
+                btn.innerHTML = isPlainText ? opt : ("$" + opt + "$");
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.dataset.value === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Deformace pevných těles, napětí i Hookův zákon ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat vzorce pro napětí, prodloužení a Hookův zákon."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na vzorce σ=F/S, ε=Δl/l₀ a σ=E·ε."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako pružná/tvárná deformace, druhy namáhání a mez pružnosti/pevnosti.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si rozdíl mezi pružnou a tvárnou deformací a jednotlivé druhy namáhání (tah, tlak, ohyb, smyk, kroucení).");
+            if (mathPercent >= 70) strengths.push("Výpočty (napětí, prodloužení, Hookův zákon) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si vzorce σ=F/S, ε=Δl/l₀ a σ=E·ε na dalších příkladech.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování v studijní příručce a projdi si znovu vzorové úlohy.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus náročnější úlohy s kombinací více vzorců najednou.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít opakovací kartičky k procvičení základních pojmů a vzorců.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odbornou terminologii (napětí, prodloužení, mez pružnosti) ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+    </script>
+
+</body>
+</html>
