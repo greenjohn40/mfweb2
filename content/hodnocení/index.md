@@ -12,4 +12,4 @@ Požadavky a principy klasifikace
 
 Klasifikace probíhá průběžně na základě získaných klasifikačních podkladů 
 podle principů popsaných v tomto dokumentu:<br>
-<a href="/static/hodnoceni/Klasifikace_pruvodce_pro_zaky_a_rodice.pdf" data-router-ignore>Klasifikace v M a F - Průvodce pro žáky a rodiče</a><br>
+<a href="/static/hodnoceni/klasifikace_pruvodce_pro_zaky_a_rodice.pdf" data-router-ignore>Klasifikace v M a F - Průvodce pro žáky a rodiče</a><br>
