@@ -10,4 +10,4 @@
 <a href="/static/fyz-pevne-latky1-deformace/rozcestnik.html" data-router-ignore>Pevné látky - deformace</a><br>
 <a href="/static/fyz-pevne-latky2-delkova-roztaznost/rozcestnik.html" data-router-ignore>Pevné látky - teplotní roztažnost</a><br>
 <a href="/static/fyz-molekulovka5-kapaliny/rozcestnik-liquides.html" data-router-ignore>Kapaliny</a><br>
-<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Změny skupenství</a><br>
+<a href="/static/fyz-molekulovka6-zmeny-skup/rozcestnik-skupenstvi.html" data-router-ignore>Změny skupenství</a><br>
