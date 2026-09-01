@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funkce s absolutní hodnotou — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-absolutni-hodnota.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 class="font-semibold text-sm sm:text-base">Funkce s absolutní hodnotou · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Funkce s absolutní hodnotou</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Absolutní hodnota a funkce $y=|x|$</h2>
+<p class="mb-3">Absolutní hodnota reálného čísla je definována $|x|=x$ pro $x\geq0$ a $|x|=-x$ pro $x\lt0$ — měří vzdálenost čísla od nuly bez ohledu na znaménko. Funkce $f: y=|x|$ má za graf dvě polopřímky se společným počátkem $[0;0]$: pro $x\geq0$ je to část přímky $y=x$, pro $x\lt0$ část přímky $y=-x$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Postup sestrojení grafu funkce s absolutní hodnotou</h2>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Čtyři kroky</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li>Najdeme nulový bod výrazu uvnitř absolutní hodnoty.</li>
+        <li>Tímto bodem rozdělíme číselnou osu na dva nebo více intervalů.</li>
+        <li>V každém intervalu odstraníme absolutní hodnotu podle znaménka výrazu (beze změny, nebo s opačným znaménkem).</li>
+        <li>V každém intervalu sestrojíme graf výsledné lineární funkce jen na tomto intervalu.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> $f(x)=|x-4|+1$. Nulový bod: $x=4$. Pro $x\lt4$: $y=-x+5$. Pro $x\geq4$: $y=x-3$. Body zlomu: $[4;1]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Rychlá metoda: body zlomu</h2>
+<p class="mb-3">Graf je vždy poskládaný z rovných úseků napojených v bodech zlomu. X-ová souřadnice bodu zlomu je nulový bod výrazu v absolutní hodnotě, y-ová souřadnice je hodnota funkce v tomto bodě. Body vyneseme a spojíme úsečkami; krajní části (vlevo od prvního a vpravo od posledního bodu zlomu) dopočítáme pomocí jednoho pomocného bodu zvoleného za krajním bodem zlomu.</p>
+<p class="mb-3"><b>Příklad (tentýž jako výše):</b> bod zlomu $[4;1]$, pomocný bod vlevo $[0;5]$, pomocný bod vpravo $[10;7]$ — spojnice těchto tří bodů dávají celý graf.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Koeficient $a$ ve funkci $y=a\cdot|x|$</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Pro $|a|\gt1$ svírají polopřímky ostrý úhel (graf je strmější).</li>
+        <li>Pro $0\lt|a|\lt1$ svírají tupý úhel (graf je plošší).</li>
+        <li>Pro $a\gt0$ je graf otevřený nahoru, pro $a\lt0$ je zrcadlený podle osy $x$ (otevřený dolů).</li>
+    </ul>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Obecný předpis $y=a\cdot|x-m|+n$</h2>
+<p class="mb-3">Koeficienty $m,n$ určují polohu vrcholu grafu — vrchol je vždy v bodě $[m;n]$. Koeficient $m$ posouvá graf ve směru osy $x$, koeficient $n$ ve směru osy $y$. Tvar (strmost, orientaci) grafu určuje koeficient $a$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Vlastnosti funkce $y=a\cdot|x-m|+n$</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Definiční obor: $D(f)=\mathbb{R}$ vždy.</li>
+        <li>Obor hodnot: pro $a\gt0$ je $H(f)=\langle n;\infty)$, pro $a\lt0$ je $H(f)=(-\infty;n\rangle$.</li>
+        <li>Monotónnost: pro $a\gt0$ funkce klesá na $(-\infty;m\rangle$ a roste na $\langle m;\infty)$ (pro $a\lt0$ opačně).</li>
+        <li>Extrém: v bodě $m$ — minimum pro $a\gt0$, maximum pro $a\lt0$.</li>
+        <li>Omezenost: zdola omezená pro $a\gt0$, shora omezená pro $a\lt0$.</li>
+        <li>Parita: sudá pouze tehdy, když $m=0$; jinak není ani sudá, ani lichá.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> $f(x)=-2\cdot|x+3|+5$ (tedy $a=-2$, $m=-3$, $n=5$): $D(f)=\mathbb{R}$, $H(f)=(-\infty;5\rangle$, rostoucí na $(-\infty;-3\rangle$, klesající na $\langle-3;\infty)$, maximum $5$ v bodě $-3$, shora omezená, ani sudá, ani lichá.</p>
+<div class="warn-box mb-3">
+    <p>Graf s absolutní hodnotou není automaticky sudý! Sudá je funkce $y=a\cdot|x-m|+n$ jen tehdy, když $m=0$ (vrchol leží na ose $y$).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Funkce s více absolutními hodnotami</h2>
+<p class="mb-3">Pokud předpis obsahuje víc absolutních hodnot, postup je stejný — jen s víc nulovými body, a tedy víc intervaly (body zlomu).</p>
+<p class="mb-3"><b>Příklad:</b> $g(x)=|2x-5|-|x+2|$. Nulové body: $x=2{,}5$ a $x=-2$. Tři intervaly: pro $x\lt-2$ je $y=7-x$; pro $-2\leq x\lt2{,}5$ je $y=3-3x$; pro $x\geq2{,}5$ je $y=x-7$. Body zlomu: $[-2;9]$ a $[2{,}5;-4{,}5]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Prvek</th>
+            <th class="text-left py-1">Jak ho najdeme</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">bod zlomu</td><td class="py-1">nulový bod výrazu v absolutní hodnotě (x); hodnota funkce v tomto bodě (y)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">vrchol grafu $y=a|x-m|+n$</td><td class="py-1">bod $[m;n]$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">obor hodnot</td><td class="py-1">$\langle n;\infty)$ pro $a\gt0$, $(-\infty;n\rangle$ pro $a\lt0$</td></tr>
+        <tr><td class="py-1 pr-2">parita</td><td class="py-1">sudá jen pro $m=0$, jinak ani sudá, ani lichá</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Fonctions avec valeur absolue</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Valeur absolue et fonction $y=|x|$</h2>
+<p class="mb-3">La valeur absolue d'un nombre réel est définie par $|x|=x$ pour $x\geq0$ et $|x|=-x$ pour $x\lt0$ — elle mesure la distance du nombre à zéro, indépendamment du signe. Le graphe de la fonction $f: y=|x|$ est constitué de deux demi-droites d'origine commune $[0;0]$ : pour $x\geq0$, une partie de la droite $y=x$ ; pour $x\lt0$, une partie de la droite $y=-x$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Construction du graphe d'une fonction avec valeur absolue</h2>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Quatre étapes</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li>On trouve le zéro de l'expression à l'intérieur de la valeur absolue.</li>
+        <li>Ce point partage l'axe des nombres en deux ou plusieurs intervalles.</li>
+        <li>Sur chaque intervalle, on supprime la valeur absolue selon le signe de l'expression (sans changement, ou avec le signe opposé).</li>
+        <li>Sur chaque intervalle, on construit le graphe de la fonction linéaire obtenue, uniquement sur cet intervalle.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> $f(x)=|x-4|+1$. Zéro : $x=4$. Pour $x\lt4$ : $y=-x+5$. Pour $x\geq4$ : $y=x-3$. Point de rupture : $[4;1]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Méthode rapide : les points de rupture</h2>
+<p class="mb-3">Le graphe est toujours composé de segments droits reliés en des points de rupture. L'abscisse du point de rupture est le zéro de l'expression dans la valeur absolue, l'ordonnée est la valeur de la fonction en ce point. On place ces points et on les relie par des segments ; les parties extrêmes (à gauche du premier et à droite du dernier point de rupture) se calculent à l'aide d'un point auxiliaire choisi au-delà du point de rupture extrême.</p>
+<p class="mb-3"><b>Exemple (identique à ci-dessus) :</b> point de rupture $[4;1]$, point auxiliaire à gauche $[0;5]$, point auxiliaire à droite $[10;7]$ — les segments reliant ces trois points donnent tout le graphe.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Coefficient $a$ dans la fonction $y=a\cdot|x|$</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Pour $|a|\gt1$, les demi-droites forment un angle aigu (le graphe est plus raide).</li>
+        <li>Pour $0\lt|a|\lt1$, elles forment un angle obtus (le graphe est plus plat).</li>
+        <li>Pour $a\gt0$, le graphe est ouvert vers le haut ; pour $a\lt0$, il est le symétrique par rapport à l'axe $x$ (ouvert vers le bas).</li>
+    </ul>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Expression générale $y=a\cdot|x-m|+n$</h2>
+<p class="mb-3">Les coefficients $m,n$ déterminent la position du sommet du graphe — le sommet est toujours au point $[m;n]$. Le coefficient $m$ déplace le graphe dans la direction de l'axe $x$, le coefficient $n$ dans la direction de l'axe $y$. Le coefficient $a$ détermine la forme (raideur, orientation) du graphe.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Propriétés de la fonction $y=a\cdot|x-m|+n$</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Domaine de définition : $D(f)=\mathbb{R}$ toujours.</li>
+        <li>Ensemble des valeurs : pour $a\gt0$, $H(f)=\langle n;\infty)$ ; pour $a\lt0$, $H(f)=(-\infty;n\rangle$.</li>
+        <li>Monotonie : pour $a\gt0$, la fonction décroît sur $(-\infty;m\rangle$ et croît sur $\langle m;\infty)$ (inversement pour $a\lt0$).</li>
+        <li>Extremum : au point $m$ — minimum pour $a\gt0$, maximum pour $a\lt0$.</li>
+        <li>Bornes : minorée pour $a\gt0$, majorée pour $a\lt0$.</li>
+        <li>Parité : paire seulement lorsque $m=0$ ; sinon ni paire, ni impaire.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> $f(x)=-2\cdot|x+3|+5$ (donc $a=-2$, $m=-3$, $n=5$) : $D(f)=\mathbb{R}$, $H(f)=(-\infty;5\rangle$, croissante sur $(-\infty;-3\rangle$, décroissante sur $\langle-3;\infty)$, maximum $5$ au point $-3$, majorée, ni paire, ni impaire.</p>
+<div class="warn-box mb-3">
+    <p>Un graphe avec valeur absolue n'est pas automatiquement pair ! La fonction $y=a\cdot|x-m|+n$ n'est paire que lorsque $m=0$ (le sommet se trouve sur l'axe $y$).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Fonctions avec plusieurs valeurs absolues</h2>
+<p class="mb-3">Si l'expression contient plusieurs valeurs absolues, la démarche est la même — seulement avec plus de zéros, et donc plus d'intervalles (points de rupture).</p>
+<p class="mb-3"><b>Exemple :</b> $g(x)=|2x-5|-|x+2|$. Zéros : $x=2{,}5$ et $x=-2$. Trois intervalles : pour $x\lt-2$, $y=7-x$ ; pour $-2\leq x\lt2{,}5$, $y=3-3x$ ; pour $x\geq2{,}5$, $y=x-7$. Points de rupture : $[-2;9]$ et $[2{,}5;-4{,}5]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Élément</th>
+            <th class="text-left py-1">Comment le trouver</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">point de rupture</td><td class="py-1">zéro de l'expression dans la valeur absolue (x) ; valeur de la fonction en ce point (y)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">sommet du graphe $y=a|x-m|+n$</td><td class="py-1">point $[m;n]$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">ensemble des valeurs</td><td class="py-1">$\langle n;\infty)$ pour $a\gt0$, $(-\infty;n\rangle$ pour $a\lt0$</td></tr>
+        <tr><td class="py-1 pr-2">parité</td><td class="py-1">paire seulement pour $m=0$, sinon ni paire, ni impaire</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

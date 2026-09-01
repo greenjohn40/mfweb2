@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funkce s absolutní hodnotou — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f5f5f4; border-left: 4px solid #78716c; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 class="text-lg sm:text-xl font-bold">Funkce s absolutní hodnotou</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-absolutni-hodnota.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kolik smí činit odchylka?</h2>
+    <p>Ve výrobě se často udává tzv. <b>tolerance</b> — přípustná odchylka rozměru od požadované hodnoty. Řekněme, že součástka má mít délku přesně $50$ mm, ale výrobní stroj se s přesností $\pm2$ mm považuje za vyhovující. Matematicky to zapíšeme jako $|x-50|\leq2$, kde $x$ je skutečně naměřená délka — nezáleží totiž na tom, jestli je součástka o $2$ mm delší, nebo kratší, důležitá je jen <b>velikost</b> odchylky. Přesně tohle je smysl absolutní hodnoty: měří vzdálenost čísla od nuly (nebo od jiného čísla), bez ohledu na znaménko.</p>
+    <p>V této kapitole se podíváme, jak vypadají a jak se sestrojují grafy funkcí, jejichž předpis absolutní hodnotu obsahuje.</p>
+</section>
+
+<section id="sec-definice" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Funkce $y=|x|$</h2>
+    <p>Připomeňme definici absolutní hodnoty reálného čísla:</p>
+    <div class="card text-center">
+        $$|x| = \begin{cases}x & \text{pro } x\geq0\\-x & \text{pro } x\lt0\end{cases}$$
+    </div>
+    <p>Funkce $f: y=|x|$ tedy v každém bodě $x$ vrací nezápornou hodnotu. Jejím grafem jsou <b>dvě polopřímky</b> vycházející ze společného počátku $[0;0]$ — jedna je částí přímky $y=x$ (pro $x\geq0$), druhá částí přímky $y=-x$ (pro $x\lt0$):</p>
+    <div class="card">
+        <svg viewBox="0 0 340 256" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="198.0" x2="310.0" y2="198.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="170.0" y1="226.0" x2="170.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="310.0,198.0 302.0,194.0 302.0,202.0" fill="#57534e"/>
+<polygon points="170.0,30.0 166.0,38.0 174.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="194.0" x2="30.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-5</text>
+<line x1="58.0" y1="194.0" x2="58.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="86.0" y1="194.0" x2="86.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="114.0" y1="194.0" x2="114.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="142.0" y1="194.0" x2="142.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="198.0" y1="194.0" x2="198.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="226.0" y1="194.0" x2="226.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="254.0" y1="194.0" x2="254.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="254.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="282.0" y1="194.0" x2="282.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="310.0" y1="194.0" x2="310.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="166.0" y1="226.0" x2="174.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="166.0" y1="170.0" x2="174.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="166.0" y1="142.0" x2="174.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="166.0" y1="114.0" x2="174.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="166.0" y1="86.0" x2="174.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="166.0" y1="58.0" x2="174.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="166.0" y1="30.0" x2="174.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<text x="161.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="170.0" y1="198.0" x2="310.0" y2="58.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="30.0" y1="58.0" x2="170.0" y2="198.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="170.0" cy="198.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="175.0" y="203.0" width="27.9" height="17" fill="white" opacity="0.85"/>
+<text x="178.0" y="216.0" font-size="13" fill="#b91c1c" font-weight="600">[0;0]</text>
+</svg>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Obě polopřímky poznáváte z minulé kapitoly o lineárních funkcích — jde jen o dvě jejich části slepené v bodě $[0;0]$.
+    </div>
+</section>
+
+<section id="sec-postup" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Jak sestrojit graf funkce s absolutní hodnotou</h2>
+    <p>Postup je vždy stejný:</p>
+    <ol class="list-decimal list-inside space-y-1 ml-2">
+        <li>Najdeme <b>nulový bod</b> výrazu uvnitř absolutní hodnoty (tam, kde se mění jeho znaménko).</li>
+        <li>Tímto bodem rozdělíme číselnou osu na dva nebo více intervalů.</li>
+        <li>V každém intervalu podle znaménka výrazu absolutní hodnotu odstraníme — beze změny, nebo s opačným znaménkem.</li>
+        <li>V každém intervalu tak dostaneme obyčejnou lineární funkci a sestrojíme její graf jen na daném intervalu.</li>
+    </ol>
+    <p><b>Vlastní příklad:</b> sestrojme graf funkce $f(x)=|x-4|+1$.</p>
+    <p>Nulový bod výrazu $x-4$ je $x=4$. Pro $x\lt4$ je $x-4\lt0$, takže $|x-4|=-(x-4)$ a předpis se zjednoduší na $y=-x+5$. Pro $x\geq4$ je $x-4\geq0$, takže $|x-4|=x-4$ a předpis je $y=x-3$. Obě větve se v bodě zlomu $[4;1]$ setkávají (dosazením ověříme: $-4+5=1$ i $4-3=1$):</p>
+    <div class="card">
+        <svg viewBox="0 0 396 312" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="254.0" x2="366.0" y2="254.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="86.0" y1="282.0" x2="86.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="366.0,254.0 358.0,250.0 358.0,258.0" fill="#57534e"/>
+<polygon points="86.0,30.0 82.0,38.0 90.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="250.0" x2="30.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="58.0" y1="250.0" x2="58.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="114.0" y1="250.0" x2="114.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="142.0" y1="250.0" x2="142.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="170.0" y1="250.0" x2="170.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="198.0" y1="250.0" x2="198.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="226.0" y1="250.0" x2="226.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="254.0" y1="250.0" x2="254.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="254.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">6</text>
+<line x1="282.0" y1="250.0" x2="282.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">7</text>
+<line x1="310.0" y1="250.0" x2="310.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">8</text>
+<line x1="338.0" y1="250.0" x2="338.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">9</text>
+<line x1="366.0" y1="250.0" x2="366.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">10</text>
+<line x1="82.0" y1="282.0" x2="90.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="82.0" y1="226.0" x2="90.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="82.0" y1="198.0" x2="90.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="82.0" y1="170.0" x2="90.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="82.0" y1="142.0" x2="90.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="82.0" y1="114.0" x2="90.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="82.0" y1="86.0" x2="90.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="82.0" y1="58.0" x2="90.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<line x1="82.0" y1="30.0" x2="90.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">8</text>
+<text x="77.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="30.0" y1="58.0" x2="198.0" y2="226.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="198.0" y1="226.0" x2="366.0" y2="58.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="198.0" cy="226.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="205.0" y="203.0" width="27.9" height="17" fill="white" opacity="0.85"/>
+<text x="208.0" y="216.0" font-size="13" fill="#b91c1c" font-weight="600">[4;1]</text>
+</svg>
+    </div>
+</section>
+
+
+
+<section id="sec-koeficient-a" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vliv koeficientu $a$ ve funkci $y=a\cdot|x|$</h2>
+    <p>Graf funkce $y=a\cdot|x|$ je vždy dvojice polopřímek se společným počátkem v bodě $[0;0]$. Koeficient $a$ určuje dvě věci:</p>
+    <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>Pro $|a|\gt1$ svírají polopřímky <b>ostrý</b> úhel (graf je strmější), pro $0\lt|a|\lt1$ svírají <b>tupý</b> úhel (graf je plošší).</li>
+        <li>Pro $a\gt0$ míří graf "nahoru" (otevřený vzhůru), pro $a\lt0$ je graf zrcadlený podle osy $x$ — míří "dolů".</li>
+    </ul>
+    <p><b>Vlastní příklad:</b> porovnání $y=2\cdot|x|$ (fialově) a $y=-2\cdot|x|$ (růžově) — druhý graf je přesným zrcadlovým obrazem prvního podle osy $x$:</p>
+    <div class="card">
+        <svg viewBox="0 0 284 564" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="282.0" x2="254.0" y2="282.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="142.0" y1="534.0" x2="142.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="254.0,282.0 246.0,278.0 246.0,286.0" fill="#57534e"/>
+<polygon points="142.0,30.0 138.0,38.0 146.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="278.0" x2="30.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="58.0" y1="278.0" x2="58.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="86.0" y1="278.0" x2="86.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="114.0" y1="278.0" x2="114.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="170.0" y1="278.0" x2="170.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="198.0" y1="278.0" x2="198.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="226.0" y1="278.0" x2="226.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="254.0" y1="278.0" x2="254.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="254.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="138.0" y1="534.0" x2="146.0" y2="534.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="538.0" font-size="11" fill="#57534e" text-anchor="end">-9</text>
+<line x1="138.0" y1="506.0" x2="146.0" y2="506.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="510.0" font-size="11" fill="#57534e" text-anchor="end">-8</text>
+<line x1="138.0" y1="478.0" x2="146.0" y2="478.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="482.0" font-size="11" fill="#57534e" text-anchor="end">-7</text>
+<line x1="138.0" y1="450.0" x2="146.0" y2="450.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="454.0" font-size="11" fill="#57534e" text-anchor="end">-6</text>
+<line x1="138.0" y1="422.0" x2="146.0" y2="422.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="426.0" font-size="11" fill="#57534e" text-anchor="end">-5</text>
+<line x1="138.0" y1="394.0" x2="146.0" y2="394.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="398.0" font-size="11" fill="#57534e" text-anchor="end">-4</text>
+<line x1="138.0" y1="366.0" x2="146.0" y2="366.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="370.0" font-size="11" fill="#57534e" text-anchor="end">-3</text>
+<line x1="138.0" y1="338.0" x2="146.0" y2="338.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="342.0" font-size="11" fill="#57534e" text-anchor="end">-2</text>
+<line x1="138.0" y1="310.0" x2="146.0" y2="310.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="314.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="138.0" y1="254.0" x2="146.0" y2="254.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="258.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="138.0" y1="226.0" x2="146.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="138.0" y1="198.0" x2="146.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="138.0" y1="170.0" x2="146.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="138.0" y1="142.0" x2="146.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="138.0" y1="114.0" x2="146.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="138.0" y1="86.0" x2="146.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<line x1="138.0" y1="58.0" x2="146.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">8</text>
+<line x1="138.0" y1="30.0" x2="146.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">9</text>
+<text x="133.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="142.0" y1="282.0" x2="254.0" y2="58.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="30.0" y1="58.0" x2="142.0" y2="282.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="142.0" y1="282.0" x2="254.0" y2="506.0" stroke="#db2777" stroke-width="3" stroke-linecap="round"/>
+<line x1="30.0" y1="506.0" x2="142.0" y2="282.0" stroke="#db2777" stroke-width="3" stroke-linecap="round"/>
+<circle cx="142.0" cy="282.0" r="4" fill="#57534e" stroke="white" stroke-width="1.5"/>
+</svg>
+    </div>
+</section>
+
+<section id="sec-obecny-tvar" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Obecný předpis $y=a\cdot|x-m|+n$</h2>
+    <p>Koeficienty $m$ a $n$ posouvají celý graf, aniž bychom ho museli znovu sestrojovat od začátku:</p>
+    <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>Koeficient <b>$m$</b> posouvá graf ve směru osy $x$ (vrchol grafu má x-ovou souřadnici $x_0=m$).</li>
+        <li>Koeficient <b>$n$</b> posouvá graf ve směru osy $y$ (vrchol grafu má y-ovou souřadnici $y_0=n$).</li>
+    </ul>
+    <p>Vrchol grafu funkce $y=a\cdot|x-m|+n$ je tedy vždy v bodě $[m;n]$. Vyzkoušejte si to na živém grafu — posuvníky měňte $m$ a $n$ a sledujte, jak se vrchol pohybuje:</p>
+    <div class="card">
+        <div class="flex flex-wrap gap-6 justify-center mb-4">
+            <div class="flex flex-col items-center gap-1">
+                <span class="slider-label">m = <span id="m-val">2</span></span>
+                <input type="range" id="slider-m" min="-6" max="6" step="1" value="2" oninput="updateVGraph()">
+            </div>
+            <div class="flex flex-col items-center gap-1">
+                <span class="slider-label">n = <span id="n-val">-1</span></span>
+                <input type="range" id="slider-n" min="-3" max="6" step="1" value="-1" oninput="updateVGraph()">
+            </div>
+            <div class="flex flex-col items-center gap-1">
+                <span class="slider-label">znaménko a</span>
+                <select id="select-a-sign" onchange="updateVGraph()" class="border rounded px-2 py-1 text-sm">
+                    <option value="1">a &gt; 0</option>
+                    <option value="-1">a &lt; 0</option>
+                </select>
+            </div>
+        </div>
+        <svg id="vgraph-svg" viewBox="0 0 508 368" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+            <line x1="30.0" y1="226.0" x2="478.0" y2="226.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="254.0" y1="338.0" x2="254.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="478.0,226.0 470.0,222.0 470.0,230.0" fill="#57534e"/>
+<polygon points="254.0,30.0 250.0,38.0 258.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="222.0" x2="30.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-8</text>
+<line x1="58.0" y1="222.0" x2="58.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-7</text>
+<line x1="86.0" y1="222.0" x2="86.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-6</text>
+<line x1="114.0" y1="222.0" x2="114.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-5</text>
+<line x1="142.0" y1="222.0" x2="142.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="170.0" y1="222.0" x2="170.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="198.0" y1="222.0" x2="198.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="226.0" y1="222.0" x2="226.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="282.0" y1="222.0" x2="282.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="310.0" y1="222.0" x2="310.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="338.0" y1="222.0" x2="338.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="366.0" y1="222.0" x2="366.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="394.0" y1="222.0" x2="394.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="394.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="422.0" y1="222.0" x2="422.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="422.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">6</text>
+<line x1="450.0" y1="222.0" x2="450.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="450.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">7</text>
+<line x1="478.0" y1="222.0" x2="478.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="478.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">8</text>
+<line x1="250.0" y1="338.0" x2="258.0" y2="338.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="342.0" font-size="11" fill="#57534e" text-anchor="end">-4</text>
+<line x1="250.0" y1="310.0" x2="258.0" y2="310.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="314.0" font-size="11" fill="#57534e" text-anchor="end">-3</text>
+<line x1="250.0" y1="282.0" x2="258.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">-2</text>
+<line x1="250.0" y1="254.0" x2="258.0" y2="254.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="258.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="250.0" y1="198.0" x2="258.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="250.0" y1="170.0" x2="258.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="250.0" y1="142.0" x2="258.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="250.0" y1="114.0" x2="258.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="250.0" y1="86.0" x2="258.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="250.0" y1="58.0" x2="258.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="250.0" y1="30.0" x2="258.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<text x="245.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+            <line id="v-left" x1="0" y1="0" x2="0" y2="0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+            <line id="v-right" x1="0" y1="0" x2="0" y2="0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+            <circle id="v-vertex" cx="0" cy="0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+            <text id="v-vertex-label" x="0" y="0" font-size="13" fill="#b91c1c" font-weight="600"></text>
+        </svg>
+        <p class="text-center text-sm text-stone-500 mt-2">Aktuální předpis: y = <span id="v-formula">$|x-2|-1$</span></p>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Podobně jako u lineárních funkcí i tady platí, že vodorovný a svislý posun grafu nemění jeho tvar — jen polohu vrcholu.
+    </div>
+</section>
+
+<section id="sec-vlastnosti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vlastnosti funkce $y=a\cdot|x-m|+n$</h2>
+    <p><b>Vlastní příklad:</b> $f(x)=-2\cdot|x+3|+5$ (tedy $a=-2$, $m=-3$, $n=5$):</p>
+    <div class="card">
+        <svg viewBox="0 0 396 480" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="226.0" x2="366.0" y2="226.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="254.0" y1="450.0" x2="254.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="366.0,226.0 358.0,222.0 358.0,230.0" fill="#57534e"/>
+<polygon points="254.0,30.0 250.0,38.0 258.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="222.0" x2="30.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-8</text>
+<line x1="58.0" y1="222.0" x2="58.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-7</text>
+<line x1="86.0" y1="222.0" x2="86.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-6</text>
+<line x1="114.0" y1="222.0" x2="114.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-5</text>
+<line x1="142.0" y1="222.0" x2="142.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="170.0" y1="222.0" x2="170.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="198.0" y1="222.0" x2="198.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="226.0" y1="222.0" x2="226.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="282.0" y1="222.0" x2="282.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="310.0" y1="222.0" x2="310.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="338.0" y1="222.0" x2="338.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="366.0" y1="222.0" x2="366.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="250.0" y1="450.0" x2="258.0" y2="450.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="454.0" font-size="11" fill="#57534e" text-anchor="end">-8</text>
+<line x1="250.0" y1="422.0" x2="258.0" y2="422.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="426.0" font-size="11" fill="#57534e" text-anchor="end">-7</text>
+<line x1="250.0" y1="394.0" x2="258.0" y2="394.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="398.0" font-size="11" fill="#57534e" text-anchor="end">-6</text>
+<line x1="250.0" y1="366.0" x2="258.0" y2="366.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="370.0" font-size="11" fill="#57534e" text-anchor="end">-5</text>
+<line x1="250.0" y1="338.0" x2="258.0" y2="338.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="342.0" font-size="11" fill="#57534e" text-anchor="end">-4</text>
+<line x1="250.0" y1="310.0" x2="258.0" y2="310.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="314.0" font-size="11" fill="#57534e" text-anchor="end">-3</text>
+<line x1="250.0" y1="282.0" x2="258.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">-2</text>
+<line x1="250.0" y1="254.0" x2="258.0" y2="254.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="258.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="250.0" y1="198.0" x2="258.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="250.0" y1="170.0" x2="258.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="250.0" y1="142.0" x2="258.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="250.0" y1="114.0" x2="258.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="250.0" y1="86.0" x2="258.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="250.0" y1="58.0" x2="258.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="250.0" y1="30.0" x2="258.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<text x="245.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="30.0" y1="366.0" x2="170.0" y2="86.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="170.0" y1="86.0" x2="352.0" y2="450.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="170.0" cy="86.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="175.0" y="63.0" width="72.5" height="17" fill="white" opacity="0.85"/>
+<text x="178.0" y="76.0" font-size="13" fill="#b91c1c" font-weight="600">vrchol [-3;5]</text>
+<line x1="248.0" y1="86.0" x2="248.0" y2="450.0" stroke="#0d9488" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+</svg>
+    </div>
+    <div class="overflow-x-auto">
+    <table class="w-full text-sm border-collapse">
+        <tbody>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Definiční obor</td><td class="py-2">$D(f)=\mathbb{R}$ — vždy, pro jakékoli $a,m,n$.</td></tr>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Obor hodnot</td><td class="py-2">Zde $a=-2\lt0$, proto $H(f)=(-\infty;5\rangle$. (Obecně: pro $a\gt0$ je $H(f)=\langle n;\infty)$, pro $a\lt0$ je $H(f)=(-\infty;n\rangle$.)</td></tr>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Monotónnost</td><td class="py-2">Rostoucí na $(-\infty;-3\rangle$, klesající na $\langle-3;\infty)$.</td></tr>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Extrém</td><td class="py-2">Maximum v bodě $-3$, hodnota maxima je $5$.</td></tr>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Omezenost</td><td class="py-2">Shora omezená (protože $a\lt0$).</td></tr>
+            <tr><td class="py-2 pr-4 font-semibold text-violet-800">Parita</td><td class="py-2">Není ani sudá, ani lichá (vrchol neleží na ose $y$, protože $m\neq0$).</td></tr>
+        </tbody>
+    </table>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Není pravda, že graf s absolutní hodnotou je vždy souměrný podle osy $y$ (tedy sudý)! Sudá je funkce $y=a\cdot|x-m|+n$ pouze tehdy, když $m=0$ — tedy jen když vrchol leží přímo na ose $y$. Jakmile je vrchol posunutý ($m\neq0$), funkce není ani sudá, ani lichá.
+    </div>
+</section>
+
+<section id="sec-vice-abs" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Funkce s více absolutními hodnotami</h2>
+    <p>Pokud předpis obsahuje víc absolutních hodnot, postup je stejný, jen máme víc nulových bodů, a tedy i víc intervalů (bodů zlomu).</p>
+    <p><b>Vlastní příklad:</b> $g(x)=|2x-5|-|x+2|$. Nulové body výrazů uvnitř absolutních hodnot jsou $x=2{,}5$ a $x=-2$. Ty rozdělí osu na tři intervaly:</p>
+    <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>Pro $x\lt-2$: oba výrazy jsou záporné, $y=-(2x-5)-(-(x+2))=7-x$.</li>
+        <li>Pro $-2\leq x\lt2{,}5$: první výraz je záporný, druhý nezáporný, $y=-(2x-5)-(x+2)=3-3x$.</li>
+        <li>Pro $x\geq2{,}5$: oba výrazy jsou nezáporné, $y=(2x-5)-(x+2)=x-7$.</li>
+    </ul>
+    <p>Body zlomu jsou $[-2;9]$ a $[2{,}5;-4{,}5]$ (ověříme dosazením do libovolné ze sousedních větví):</p>
+    <div class="card">
+        <svg viewBox="0 0 508 620" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="422.0" x2="478.0" y2="422.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="254.0" y1="590.0" x2="254.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="478.0,422.0 470.0,418.0 470.0,426.0" fill="#57534e"/>
+<polygon points="254.0,30.0 250.0,38.0 258.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="418.0" x2="30.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-8</text>
+<line x1="58.0" y1="418.0" x2="58.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-7</text>
+<line x1="86.0" y1="418.0" x2="86.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-6</text>
+<line x1="114.0" y1="418.0" x2="114.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-5</text>
+<line x1="142.0" y1="418.0" x2="142.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="170.0" y1="418.0" x2="170.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="198.0" y1="418.0" x2="198.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="226.0" y1="418.0" x2="226.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="282.0" y1="418.0" x2="282.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="310.0" y1="418.0" x2="310.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="338.0" y1="418.0" x2="338.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="366.0" y1="418.0" x2="366.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="394.0" y1="418.0" x2="394.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="394.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="422.0" y1="418.0" x2="422.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="422.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">6</text>
+<line x1="450.0" y1="418.0" x2="450.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="450.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">7</text>
+<line x1="478.0" y1="418.0" x2="478.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="478.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">8</text>
+<line x1="250.0" y1="590.0" x2="258.0" y2="590.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="594.0" font-size="11" fill="#57534e" text-anchor="end">-6</text>
+<line x1="250.0" y1="562.0" x2="258.0" y2="562.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="566.0" font-size="11" fill="#57534e" text-anchor="end">-5</text>
+<line x1="250.0" y1="534.0" x2="258.0" y2="534.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="538.0" font-size="11" fill="#57534e" text-anchor="end">-4</text>
+<line x1="250.0" y1="506.0" x2="258.0" y2="506.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="510.0" font-size="11" fill="#57534e" text-anchor="end">-3</text>
+<line x1="250.0" y1="478.0" x2="258.0" y2="478.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="482.0" font-size="11" fill="#57534e" text-anchor="end">-2</text>
+<line x1="250.0" y1="450.0" x2="258.0" y2="450.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="454.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="250.0" y1="394.0" x2="258.0" y2="394.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="398.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="250.0" y1="366.0" x2="258.0" y2="366.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="370.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="250.0" y1="338.0" x2="258.0" y2="338.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="342.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="250.0" y1="310.0" x2="258.0" y2="310.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="314.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="250.0" y1="282.0" x2="258.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="250.0" y1="254.0" x2="258.0" y2="254.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="258.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="250.0" y1="226.0" x2="258.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<line x1="250.0" y1="198.0" x2="258.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">8</text>
+<line x1="250.0" y1="170.0" x2="258.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">9</text>
+<line x1="250.0" y1="142.0" x2="258.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">10</text>
+<line x1="250.0" y1="114.0" x2="258.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">11</text>
+<line x1="250.0" y1="86.0" x2="258.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">12</text>
+<line x1="250.0" y1="58.0" x2="258.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">13</text>
+<line x1="250.0" y1="30.0" x2="258.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">14</text>
+<text x="245.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="58.0" y1="30.0" x2="198.0" y2="170.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="198.0" y1="170.0" x2="324.0" y2="548.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="324.0" y1="548.0" x2="478.0" y2="394.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="198.0" cy="170.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="140.0" y="149.0" width="33.5" height="17" fill="white" opacity="0.85"/>
+<text x="143.0" y="162.0" font-size="13" fill="#b91c1c" font-weight="600">[-2;9]</text>
+<circle cx="324.0" cy="548.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="329.0" y="555.0" width="55.8" height="17" fill="white" opacity="0.85"/>
+<text x="332.0" y="568.0" font-size="13" fill="#b91c1c" font-weight="600">[2,5;-4,5]</text>
+</svg>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Zkuste si spočítat $h(x)=|x+1|+|x-3|$. Vyjde vám, že prostřední úsek grafu (mezi body zlomu $-1$ a $3$) je úplně <b>vodorovná úsečka</b> — hodnota funkce je tam konstantní ($h(x)=4$ pro celý interval $\langle-1;3\rangle$). Není to náhoda: sklony obou "větví" se v tomto intervalu přesně vyruší.
+    </div>
+</section>
+
+<section id="sec-rychla-metoda" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Rychlejší cesta: stačí znát body zlomu</h2>
+    <p>Graf funkce s absolutní hodnotou je vždy poskládaný jen z rovných úseků, které na sebe navazují v tzv. <b>bodech zlomu</b>. Nemusíme proto pokaždé rozepisovat celý předpis pro každý interval — stačí znát souřadnice těchto bodů:</p>
+    <ul class="list-disc list-inside space-y-1 ml-2">
+        <li><b>x-ová souřadnice</b> bodu zlomu = nulový bod výrazu uvnitř absolutní hodnoty,</li>
+        <li><b>y-ová souřadnice</b> bodu zlomu = hodnota funkce v tomto bodě (dosadíme do předpisu).</li>
+    </ul>
+    <p>Tyto body vyneseme do grafu a spojíme úsečkami. Zbývá dořešit jen dva "konce" grafu — části vlevo od prvního a vpravo od posledního bodu zlomu, kde graf pokračuje jako polopřímka do nekonečna. Stačí zvolit <b>jeden pomocný bod</b> za krajním bodem zlomu (libovolné $x$ menší, než je x-ová souřadnice prvního bodu zlomu, resp. větší, než je x-ová souřadnice posledního) a jeho $y$ dopočítat dosazením do předpisu. Přímka vedená z krajního bodu zlomu přes tento pomocný bod pak určuje celou danou polopřímku.</p>
+    <p><b>Na příkladu $f(x)=|x-4|+1$ ze sekce „Jak sestrojit graf funkce s absolutní hodnotou“:</b> bod zlomu je $[4;1]$. Zvolíme pomocný bod vlevo, např. pro $x=0$: $f(0)=|0-4|+1=5$, tedy bod $[0;5]$. A pomocný bod vpravo, např. pro $x=10$: $f(10)=|10-4|+1=7$, tedy bod $[10;7]$. Spojnice těchto bodů s bodem zlomu dávají přesně stejný graf jako výše — tentokrát jsme ho ale sestrojili jen ze tří bodů, bez rozepisování intervalů:</p>
+    <div class="card">
+        <svg viewBox="0 0 396 312" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="254.0" x2="366.0" y2="254.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="86.0" y1="282.0" x2="86.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="366.0,254.0 358.0,250.0 358.0,258.0" fill="#57534e"/>
+<polygon points="86.0,30.0 82.0,38.0 90.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="250.0" x2="30.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="58.0" y1="250.0" x2="58.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="114.0" y1="250.0" x2="114.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="142.0" y1="250.0" x2="142.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="170.0" y1="250.0" x2="170.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="198.0" y1="250.0" x2="198.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="226.0" y1="250.0" x2="226.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="254.0" y1="250.0" x2="254.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="254.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">6</text>
+<line x1="282.0" y1="250.0" x2="282.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">7</text>
+<line x1="310.0" y1="250.0" x2="310.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">8</text>
+<line x1="338.0" y1="250.0" x2="338.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">9</text>
+<line x1="366.0" y1="250.0" x2="366.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">10</text>
+<line x1="82.0" y1="282.0" x2="90.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="82.0" y1="226.0" x2="90.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="82.0" y1="198.0" x2="90.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="82.0" y1="170.0" x2="90.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="82.0" y1="142.0" x2="90.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="82.0" y1="114.0" x2="90.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="82.0" y1="86.0" x2="90.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="82.0" y1="58.0" x2="90.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<line x1="82.0" y1="30.0" x2="90.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">8</text>
+<text x="77.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="86.0" y1="114.0" x2="198.0" y2="226.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="198.0" y1="226.0" x2="366.0" y2="58.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="198.0" cy="226.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="205.0" y="203.0" width="83.7" height="17" fill="white" opacity="0.85"/>
+<text x="208.0" y="216.0" font-size="13" fill="#b91c1c" font-weight="600">[4;1] bod zlomu</text>
+<circle cx="86.0" cy="114.0" r="4" fill="#0d9488" stroke="white" stroke-width="1.5"/>
+<rect x="38.0" y="93.0" width="27.9" height="17" fill="white" opacity="0.85"/>
+<text x="41.0" y="106.0" font-size="13" fill="#0d9488" font-weight="600">[0;5]</text>
+<circle cx="366.0" cy="58.0" r="4" fill="#0d9488" stroke="white" stroke-width="1.5"/>
+<rect x="318.0" y="35.0" width="33.5" height="17" fill="white" opacity="0.85"/>
+<text x="321.0" y="48.0" font-size="13" fill="#0d9488" font-weight="600">[10;7]</text>
+</svg>
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <p>Graf funkce s absolutní hodnotou je vždy poskládaný z rovných úseků napojených v bodech zlomu. K jeho sestrojení stačí najít nulové body výrazů uvnitř absolutních hodnot, vypočítat v nich hodnoty funkce, a tyto body spojit úsečkami (krajní části dopočítáme pomocí jednoho pomocného bodu za posledním, resp. před prvním bodem zlomu). U předpisu $y=a\cdot|x-m|+n$ určuje $m,n$ polohu vrcholu a $a$ tvar (strmost a orientaci) grafu.</p>
+    <div class="note-box note-next">
+        <b>Co bude dál:</b> S grafy funkcí s absolutní hodnotou budeme v dalších kapitolách pracovat při grafickém i algebraickém řešení rovnic a nerovnic s absolutní hodnotou.
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="mt-4 space-y-10 hidden">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Quelle marge d'erreur est acceptable ?</h2>
+    <p>Dans l'industrie, on utilise souvent la notion de <b>tolérance</b> — l'écart admissible entre une dimension et sa valeur souhaitée. Supposons qu'une pièce doive mesurer exactement $50$ mm, mais que la machine soit jugée acceptable avec une précision de $\pm2$ mm. On écrit cela mathématiquement $|x-50|\leq2$, où $x$ est la longueur réellement mesurée — peu importe que la pièce soit plus longue ou plus courte de $2$ mm, seule la <b>taille</b> de l'écart compte. C'est exactement le rôle de la valeur absolue : elle mesure la distance d'un nombre à zéro (ou à un autre nombre), indépendamment du signe.</p>
+    <p>Dans ce chapitre, nous verrons à quoi ressemblent et comment se construisent les graphes des fonctions dont l'expression contient une valeur absolue.</p>
+</section>
+
+<section id="sec-definice" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">La fonction $y=|x|$</h2>
+    <p>Rappelons la définition de la valeur absolue d'un nombre réel :</p>
+    <div class="card text-center">
+        $$|x| = \begin{cases}x & \text{si } x\geq0\\-x & \text{si } x\lt0\end{cases}$$
+    </div>
+    <p>La fonction $f: y=|x|$ retourne donc en chaque point $x$ une valeur non négative. Son graphe est constitué de <b>deux demi-droites</b> issues de l'origine commune $[0;0]$ — l'une est une partie de la droite $y=x$ (pour $x\geq0$), l'autre une partie de la droite $y=-x$ (pour $x\lt0$) :</p>
+    <div class="card">
+        <svg viewBox="0 0 340 256" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="198.0" x2="310.0" y2="198.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="170.0" y1="226.0" x2="170.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="310.0,198.0 302.0,194.0 302.0,202.0" fill="#57534e"/>
+<polygon points="170.0,30.0 166.0,38.0 174.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="194.0" x2="30.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-5</text>
+<line x1="58.0" y1="194.0" x2="58.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="86.0" y1="194.0" x2="86.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="114.0" y1="194.0" x2="114.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="142.0" y1="194.0" x2="142.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="198.0" y1="194.0" x2="198.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="226.0" y1="194.0" x2="226.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="254.0" y1="194.0" x2="254.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="254.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="282.0" y1="194.0" x2="282.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="310.0" y1="194.0" x2="310.0" y2="202.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="166.0" y1="226.0" x2="174.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="166.0" y1="170.0" x2="174.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="166.0" y1="142.0" x2="174.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="166.0" y1="114.0" x2="174.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="166.0" y1="86.0" x2="174.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="166.0" y1="58.0" x2="174.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="166.0" y1="30.0" x2="174.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="161.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<text x="161.0" y="215.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="170.0" y1="198.0" x2="310.0" y2="58.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="30.0" y1="58.0" x2="170.0" y2="198.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="170.0" cy="198.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="175.0" y="203.0" width="27.9" height="17" fill="white" opacity="0.85"/>
+<text x="178.0" y="216.0" font-size="13" fill="#b91c1c" font-weight="600">[0;0]</text>
+</svg>
+    </div>
+    <div class="note-box note-link">
+        <b>Lien :</b> Vous reconnaissez les deux demi-droites du chapitre précédent sur les fonctions linéaires — ce ne sont que deux de leurs parties recollées au point $[0;0]$.
+    </div>
+</section>
+
+<section id="sec-postup" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Comment construire le graphe d'une fonction avec valeur absolue</h2>
+    <p>La démarche est toujours la même :</p>
+    <ol class="list-decimal list-inside space-y-1 ml-2">
+        <li>On trouve le <b>zéro</b> de l'expression à l'intérieur de la valeur absolue (là où son signe change).</li>
+        <li>Ce point partage l'axe des nombres en deux (ou plusieurs) intervalles.</li>
+        <li>Sur chaque intervalle, selon le signe de l'expression, on supprime la valeur absolue — sans changement, ou avec le signe opposé.</li>
+        <li>On obtient ainsi sur chaque intervalle une simple fonction linéaire, dont on construit le graphe uniquement sur cet intervalle.</li>
+    </ol>
+    <p><b>Exemple :</b> construisons le graphe de la fonction $f(x)=|x-4|+1$.</p>
+    <p>Le zéro de l'expression $x-4$ est $x=4$. Pour $x\lt4$, on a $x-4\lt0$, donc $|x-4|=-(x-4)$ et l'expression se simplifie en $y=-x+5$. Pour $x\geq4$, on a $x-4\geq0$, donc $|x-4|=x-4$ et l'expression est $y=x-3$. Les deux branches se rejoignent au point de rupture $[4;1]$ (on vérifie : $-4+5=1$ et $4-3=1$) :</p>
+    <div class="card">
+        <svg viewBox="0 0 396 312" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="254.0" x2="366.0" y2="254.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="86.0" y1="282.0" x2="86.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="366.0,254.0 358.0,250.0 358.0,258.0" fill="#57534e"/>
+<polygon points="86.0,30.0 82.0,38.0 90.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="250.0" x2="30.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="58.0" y1="250.0" x2="58.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="114.0" y1="250.0" x2="114.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="142.0" y1="250.0" x2="142.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="170.0" y1="250.0" x2="170.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="198.0" y1="250.0" x2="198.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="226.0" y1="250.0" x2="226.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="254.0" y1="250.0" x2="254.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="254.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">6</text>
+<line x1="282.0" y1="250.0" x2="282.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">7</text>
+<line x1="310.0" y1="250.0" x2="310.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">8</text>
+<line x1="338.0" y1="250.0" x2="338.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">9</text>
+<line x1="366.0" y1="250.0" x2="366.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">10</text>
+<line x1="82.0" y1="282.0" x2="90.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="82.0" y1="226.0" x2="90.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="82.0" y1="198.0" x2="90.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="82.0" y1="170.0" x2="90.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="82.0" y1="142.0" x2="90.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="82.0" y1="114.0" x2="90.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="82.0" y1="86.0" x2="90.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="82.0" y1="58.0" x2="90.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<line x1="82.0" y1="30.0" x2="90.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">8</text>
+<text x="77.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="30.0" y1="58.0" x2="198.0" y2="226.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="198.0" y1="226.0" x2="366.0" y2="58.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="198.0" cy="226.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="205.0" y="203.0" width="27.9" height="17" fill="white" opacity="0.85"/>
+<text x="208.0" y="216.0" font-size="13" fill="#b91c1c" font-weight="600">[4;1]</text>
+</svg>
+    </div>
+</section>
+
+
+
+<section id="sec-koeficient-a" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Influence du coefficient $a$ dans $y=a\cdot|x|$</h2>
+    <p>Le graphe de la fonction $y=a\cdot|x|$ est toujours une paire de demi-droites de origine commune au point $[0;0]$. Le coefficient $a$ détermine deux choses :</p>
+    <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>Pour $|a|\gt1$, les demi-droites forment un angle <b>aigu</b> (le graphe est plus raide) ; pour $0\lt|a|\lt1$, elles forment un angle <b>obtus</b> (le graphe est plus plat).</li>
+        <li>Pour $a\gt0$, le graphe est orienté "vers le haut" (ouvert vers le haut) ; pour $a\lt0$, le graphe est le symétrique par rapport à l'axe $x$ — il est orienté "vers le bas".</li>
+    </ul>
+    <p><b>Exemple :</b> comparaison de $y=2\cdot|x|$ (violet) et $y=-2\cdot|x|$ (rose) — le second graphe est exactement l'image symétrique du premier par rapport à l'axe $x$ :</p>
+    <div class="card">
+        <svg viewBox="0 0 284 564" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="282.0" x2="254.0" y2="282.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="142.0" y1="534.0" x2="142.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="254.0,282.0 246.0,278.0 246.0,286.0" fill="#57534e"/>
+<polygon points="142.0,30.0 138.0,38.0 146.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="278.0" x2="30.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="58.0" y1="278.0" x2="58.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="86.0" y1="278.0" x2="86.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="114.0" y1="278.0" x2="114.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="170.0" y1="278.0" x2="170.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="198.0" y1="278.0" x2="198.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="226.0" y1="278.0" x2="226.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="254.0" y1="278.0" x2="254.0" y2="286.0" stroke="#57534e" stroke-width="1"/>
+<text x="254.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="138.0" y1="534.0" x2="146.0" y2="534.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="538.0" font-size="11" fill="#57534e" text-anchor="end">-9</text>
+<line x1="138.0" y1="506.0" x2="146.0" y2="506.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="510.0" font-size="11" fill="#57534e" text-anchor="end">-8</text>
+<line x1="138.0" y1="478.0" x2="146.0" y2="478.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="482.0" font-size="11" fill="#57534e" text-anchor="end">-7</text>
+<line x1="138.0" y1="450.0" x2="146.0" y2="450.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="454.0" font-size="11" fill="#57534e" text-anchor="end">-6</text>
+<line x1="138.0" y1="422.0" x2="146.0" y2="422.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="426.0" font-size="11" fill="#57534e" text-anchor="end">-5</text>
+<line x1="138.0" y1="394.0" x2="146.0" y2="394.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="398.0" font-size="11" fill="#57534e" text-anchor="end">-4</text>
+<line x1="138.0" y1="366.0" x2="146.0" y2="366.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="370.0" font-size="11" fill="#57534e" text-anchor="end">-3</text>
+<line x1="138.0" y1="338.0" x2="146.0" y2="338.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="342.0" font-size="11" fill="#57534e" text-anchor="end">-2</text>
+<line x1="138.0" y1="310.0" x2="146.0" y2="310.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="314.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="138.0" y1="254.0" x2="146.0" y2="254.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="258.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="138.0" y1="226.0" x2="146.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="138.0" y1="198.0" x2="146.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="138.0" y1="170.0" x2="146.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="138.0" y1="142.0" x2="146.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="138.0" y1="114.0" x2="146.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="138.0" y1="86.0" x2="146.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<line x1="138.0" y1="58.0" x2="146.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">8</text>
+<line x1="138.0" y1="30.0" x2="146.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="133.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">9</text>
+<text x="133.0" y="299.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="142.0" y1="282.0" x2="254.0" y2="58.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="30.0" y1="58.0" x2="142.0" y2="282.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="142.0" y1="282.0" x2="254.0" y2="506.0" stroke="#db2777" stroke-width="3" stroke-linecap="round"/>
+<line x1="30.0" y1="506.0" x2="142.0" y2="282.0" stroke="#db2777" stroke-width="3" stroke-linecap="round"/>
+<circle cx="142.0" cy="282.0" r="4" fill="#57534e" stroke="white" stroke-width="1.5"/>
+</svg>
+    </div>
+</section>
+
+<section id="sec-obecny-tvar" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Expression générale $y=a\cdot|x-m|+n$</h2>
+    <p>Les coefficients $m$ et $n$ déplacent tout le graphe, sans qu'il soit nécessaire de le reconstruire depuis le début :</p>
+    <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>Le coefficient <b>$m$</b> déplace le graphe dans la direction de l'axe $x$ (le sommet du graphe a pour abscisse $x_0=m$).</li>
+        <li>Le coefficient <b>$n$</b> déplace le graphe dans la direction de l'axe $y$ (le sommet du graphe a pour ordonnée $y_0=n$).</li>
+    </ul>
+    <p>Le sommet du graphe de $y=a\cdot|x-m|+n$ se trouve donc toujours au point $[m;n]$. Essayez sur le graphe interactif — modifiez $m$ et $n$ avec les curseurs et observez le déplacement du sommet :</p>
+    <div class="card">
+        <div class="flex flex-wrap gap-6 justify-center mb-4">
+            <div class="flex flex-col items-center gap-1">
+                <span class="slider-label">m = <span id="m-val-fr">2</span></span>
+                <input type="range" id="slider-m-fr" min="-6" max="6" step="1" value="2">
+            </div>
+            <div class="flex flex-col items-center gap-1">
+                <span class="slider-label">n = <span id="n-val-fr">-1</span></span>
+                <input type="range" id="slider-n-fr" min="-3" max="6" step="1" value="-1">
+            </div>
+            <div class="flex flex-col items-center gap-1">
+                <span class="slider-label">signe de a</span>
+                <select id="select-a-sign-fr" class="border rounded px-2 py-1 text-sm">
+                    <option value="1">a &gt; 0</option>
+                    <option value="-1">a &lt; 0</option>
+                </select>
+            </div>
+        </div>
+        <svg id="vgraph-svg-fr" viewBox="0 0 508 368" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+            <line x1="30.0" y1="226.0" x2="478.0" y2="226.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="254.0" y1="338.0" x2="254.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="478.0,226.0 470.0,222.0 470.0,230.0" fill="#57534e"/>
+<polygon points="254.0,30.0 250.0,38.0 258.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="222.0" x2="30.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-8</text>
+<line x1="58.0" y1="222.0" x2="58.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-7</text>
+<line x1="86.0" y1="222.0" x2="86.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-6</text>
+<line x1="114.0" y1="222.0" x2="114.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-5</text>
+<line x1="142.0" y1="222.0" x2="142.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="170.0" y1="222.0" x2="170.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="198.0" y1="222.0" x2="198.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="226.0" y1="222.0" x2="226.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="282.0" y1="222.0" x2="282.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="310.0" y1="222.0" x2="310.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="338.0" y1="222.0" x2="338.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="366.0" y1="222.0" x2="366.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="394.0" y1="222.0" x2="394.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="394.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="422.0" y1="222.0" x2="422.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="422.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">6</text>
+<line x1="450.0" y1="222.0" x2="450.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="450.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">7</text>
+<line x1="478.0" y1="222.0" x2="478.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="478.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">8</text>
+<line x1="250.0" y1="338.0" x2="258.0" y2="338.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="342.0" font-size="11" fill="#57534e" text-anchor="end">-4</text>
+<line x1="250.0" y1="310.0" x2="258.0" y2="310.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="314.0" font-size="11" fill="#57534e" text-anchor="end">-3</text>
+<line x1="250.0" y1="282.0" x2="258.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">-2</text>
+<line x1="250.0" y1="254.0" x2="258.0" y2="254.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="258.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="250.0" y1="198.0" x2="258.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="250.0" y1="170.0" x2="258.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="250.0" y1="142.0" x2="258.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="250.0" y1="114.0" x2="258.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="250.0" y1="86.0" x2="258.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="250.0" y1="58.0" x2="258.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="250.0" y1="30.0" x2="258.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<text x="245.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+            <line id="v-left-fr" x1="0" y1="0" x2="0" y2="0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+            <line id="v-right-fr" x1="0" y1="0" x2="0" y2="0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+            <circle id="v-vertex-fr" cx="0" cy="0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+            <text id="v-vertex-label-fr" x="0" y="0" font-size="13" fill="#b91c1c" font-weight="600"></text>
+        </svg>
+        <p class="text-center text-sm text-stone-500 mt-2">Expression actuelle : y = <span id="v-formula-fr">$|x-2|-1$</span></p>
+    </div>
+    <div class="note-box note-link">
+        <b>Lien :</b> Comme pour les fonctions linéaires, une translation horizontale ou verticale du graphe ne change pas sa forme — seulement sa position.
+    </div>
+</section>
+
+<section id="sec-vlastnosti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Propriétés de la fonction $y=a\cdot|x-m|+n$</h2>
+    <p><b>Exemple :</b> $f(x)=-2\cdot|x+3|+5$ (donc $a=-2$, $m=-3$, $n=5$) :</p>
+    <div class="card">
+        <svg viewBox="0 0 396 480" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="226.0" x2="366.0" y2="226.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="254.0" y1="450.0" x2="254.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="366.0,226.0 358.0,222.0 358.0,230.0" fill="#57534e"/>
+<polygon points="254.0,30.0 250.0,38.0 258.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="222.0" x2="30.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-8</text>
+<line x1="58.0" y1="222.0" x2="58.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-7</text>
+<line x1="86.0" y1="222.0" x2="86.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-6</text>
+<line x1="114.0" y1="222.0" x2="114.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-5</text>
+<line x1="142.0" y1="222.0" x2="142.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="170.0" y1="222.0" x2="170.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="198.0" y1="222.0" x2="198.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="226.0" y1="222.0" x2="226.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="282.0" y1="222.0" x2="282.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="310.0" y1="222.0" x2="310.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="338.0" y1="222.0" x2="338.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="366.0" y1="222.0" x2="366.0" y2="230.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="250.0" y1="450.0" x2="258.0" y2="450.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="454.0" font-size="11" fill="#57534e" text-anchor="end">-8</text>
+<line x1="250.0" y1="422.0" x2="258.0" y2="422.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="426.0" font-size="11" fill="#57534e" text-anchor="end">-7</text>
+<line x1="250.0" y1="394.0" x2="258.0" y2="394.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="398.0" font-size="11" fill="#57534e" text-anchor="end">-6</text>
+<line x1="250.0" y1="366.0" x2="258.0" y2="366.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="370.0" font-size="11" fill="#57534e" text-anchor="end">-5</text>
+<line x1="250.0" y1="338.0" x2="258.0" y2="338.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="342.0" font-size="11" fill="#57534e" text-anchor="end">-4</text>
+<line x1="250.0" y1="310.0" x2="258.0" y2="310.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="314.0" font-size="11" fill="#57534e" text-anchor="end">-3</text>
+<line x1="250.0" y1="282.0" x2="258.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">-2</text>
+<line x1="250.0" y1="254.0" x2="258.0" y2="254.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="258.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="250.0" y1="198.0" x2="258.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="250.0" y1="170.0" x2="258.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="250.0" y1="142.0" x2="258.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="250.0" y1="114.0" x2="258.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="250.0" y1="86.0" x2="258.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="250.0" y1="58.0" x2="258.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="250.0" y1="30.0" x2="258.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<text x="245.0" y="243.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="30.0" y1="366.0" x2="170.0" y2="86.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="170.0" y1="86.0" x2="352.0" y2="450.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="170.0" cy="86.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="175.0" y="63.0" width="72.5" height="17" fill="white" opacity="0.85"/>
+<text x="178.0" y="76.0" font-size="13" fill="#b91c1c" font-weight="600">sommet [-3;5]</text>
+<line x1="248.0" y1="86.0" x2="248.0" y2="450.0" stroke="#0d9488" stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+</svg>
+    </div>
+    <div class="overflow-x-auto">
+    <table class="w-full text-sm border-collapse">
+        <tbody>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Domaine de définition</td><td class="py-2">$D(f)=\mathbb{R}$ — toujours, quels que soient $a,m,n$.</td></tr>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Ensemble des valeurs</td><td class="py-2">Ici $a=-2\lt0$, donc $H(f)=(-\infty;5\rangle$. (En général : pour $a\gt0$, $H(f)=\langle n;\infty)$ ; pour $a\lt0$, $H(f)=(-\infty;n\rangle$.)</td></tr>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Monotonie</td><td class="py-2">Croissante sur $(-\infty;-3\rangle$, décroissante sur $\langle-3;\infty)$.</td></tr>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Extremum</td><td class="py-2">Maximum au point $-3$, valeur du maximum $5$.</td></tr>
+            <tr class="border-b"><td class="py-2 pr-4 font-semibold text-violet-800">Bornes</td><td class="py-2">Majorée (car $a\lt0$).</td></tr>
+            <tr><td class="py-2 pr-4 font-semibold text-violet-800">Parité</td><td class="py-2">Ni paire, ni impaire (le sommet n'est pas sur l'axe $y$, car $m\neq0$).</td></tr>
+        </tbody>
+    </table>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Il n'est pas vrai qu'un graphe avec valeur absolue est toujours symétrique par rapport à l'axe $y$ (donc pair) ! La fonction $y=a\cdot|x-m|+n$ n'est paire que lorsque $m=0$ — c'est-à-dire seulement quand le sommet se trouve exactement sur l'axe $y$. Dès que le sommet est déplacé ($m\neq0$), la fonction n'est ni paire, ni impaire.
+    </div>
+</section>
+
+<section id="sec-vice-abs" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Fonctions avec plusieurs valeurs absolues</h2>
+    <p>Si l'expression contient plusieurs valeurs absolues, la démarche est la même, seulement on a plus de zéros, et donc plus d'intervalles (points de rupture).</p>
+    <p><b>Exemple :</b> $g(x)=|2x-5|-|x+2|$. Les zéros des expressions à l'intérieur des valeurs absolues sont $x=2{,}5$ et $x=-2$. Ils partagent l'axe en trois intervalles :</p>
+    <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>Pour $x\lt-2$ : les deux expressions sont négatives, $y=-(2x-5)-(-(x+2))=7-x$.</li>
+        <li>Pour $-2\leq x\lt2{,}5$ : la première expression est négative, la seconde non négative, $y=-(2x-5)-(x+2)=3-3x$.</li>
+        <li>Pour $x\geq2{,}5$ : les deux expressions sont non négatives, $y=(2x-5)-(x+2)=x-7$.</li>
+    </ul>
+    <p>Les points de rupture sont $[-2;9]$ et $[2{,}5;-4{,}5]$ (on vérifie en substituant dans l'une des branches voisines) :</p>
+    <div class="card">
+        <svg viewBox="0 0 508 620" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="422.0" x2="478.0" y2="422.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="254.0" y1="590.0" x2="254.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="478.0,422.0 470.0,418.0 470.0,426.0" fill="#57534e"/>
+<polygon points="254.0,30.0 250.0,38.0 258.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="418.0" x2="30.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-8</text>
+<line x1="58.0" y1="418.0" x2="58.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-7</text>
+<line x1="86.0" y1="418.0" x2="86.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="86.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-6</text>
+<line x1="114.0" y1="418.0" x2="114.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-5</text>
+<line x1="142.0" y1="418.0" x2="142.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-4</text>
+<line x1="170.0" y1="418.0" x2="170.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-3</text>
+<line x1="198.0" y1="418.0" x2="198.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="226.0" y1="418.0" x2="226.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="282.0" y1="418.0" x2="282.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="310.0" y1="418.0" x2="310.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="338.0" y1="418.0" x2="338.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="366.0" y1="418.0" x2="366.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="394.0" y1="418.0" x2="394.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="394.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="422.0" y1="418.0" x2="422.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="422.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">6</text>
+<line x1="450.0" y1="418.0" x2="450.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="450.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">7</text>
+<line x1="478.0" y1="418.0" x2="478.0" y2="426.0" stroke="#57534e" stroke-width="1"/>
+<text x="478.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">8</text>
+<line x1="250.0" y1="590.0" x2="258.0" y2="590.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="594.0" font-size="11" fill="#57534e" text-anchor="end">-6</text>
+<line x1="250.0" y1="562.0" x2="258.0" y2="562.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="566.0" font-size="11" fill="#57534e" text-anchor="end">-5</text>
+<line x1="250.0" y1="534.0" x2="258.0" y2="534.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="538.0" font-size="11" fill="#57534e" text-anchor="end">-4</text>
+<line x1="250.0" y1="506.0" x2="258.0" y2="506.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="510.0" font-size="11" fill="#57534e" text-anchor="end">-3</text>
+<line x1="250.0" y1="478.0" x2="258.0" y2="478.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="482.0" font-size="11" fill="#57534e" text-anchor="end">-2</text>
+<line x1="250.0" y1="450.0" x2="258.0" y2="450.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="454.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="250.0" y1="394.0" x2="258.0" y2="394.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="398.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="250.0" y1="366.0" x2="258.0" y2="366.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="370.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="250.0" y1="338.0" x2="258.0" y2="338.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="342.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="250.0" y1="310.0" x2="258.0" y2="310.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="314.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="250.0" y1="282.0" x2="258.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="250.0" y1="254.0" x2="258.0" y2="254.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="258.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="250.0" y1="226.0" x2="258.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<line x1="250.0" y1="198.0" x2="258.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">8</text>
+<line x1="250.0" y1="170.0" x2="258.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">9</text>
+<line x1="250.0" y1="142.0" x2="258.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">10</text>
+<line x1="250.0" y1="114.0" x2="258.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">11</text>
+<line x1="250.0" y1="86.0" x2="258.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">12</text>
+<line x1="250.0" y1="58.0" x2="258.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">13</text>
+<line x1="250.0" y1="30.0" x2="258.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="245.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">14</text>
+<text x="245.0" y="439.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="58.0" y1="30.0" x2="198.0" y2="170.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="198.0" y1="170.0" x2="324.0" y2="548.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="324.0" y1="548.0" x2="478.0" y2="394.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="198.0" cy="170.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="140.0" y="149.0" width="33.5" height="17" fill="white" opacity="0.85"/>
+<text x="143.0" y="162.0" font-size="13" fill="#b91c1c" font-weight="600">[-2;9]</text>
+<circle cx="324.0" cy="548.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="329.0" y="555.0" width="55.8" height="17" fill="white" opacity="0.85"/>
+<text x="332.0" y="568.0" font-size="13" fill="#b91c1c" font-weight="600">[2,5;-4,5]</text>
+</svg>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Essayez de calculer $h(x)=|x+1|+|x-3|$. Vous obtiendrez que la partie centrale du graphe (entre les points de rupture $-1$ et $3$) est un <b>segment horizontal</b> — la valeur de la fonction y est constante ($h(x)=4$ sur tout l'intervalle $\langle-1;3\rangle$). Ce n'est pas un hasard : les pentes des deux "branches" s'annulent exactement sur cet intervalle.
+    </div>
+</section>
+
+<section id="sec-rychla-metoda" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Une méthode plus rapide : il suffit de connaître les points de rupture</h2>
+    <p>Le graphe d'une fonction avec valeur absolue est toujours composé uniquement de segments droits qui se rejoignent en des <b>points de rupture</b>. Il n'est donc pas nécessaire de réécrire l'expression complète pour chaque intervalle — il suffit de connaître les coordonnées de ces points :</p>
+    <ul class="list-disc list-inside space-y-1 ml-2">
+        <li>l'<b>abscisse</b> du point de rupture = le zéro de l'expression à l'intérieur de la valeur absolue,</li>
+        <li>l'<b>ordonnée</b> du point de rupture = la valeur de la fonction en ce point (on substitue dans l'expression).</li>
+    </ul>
+    <p>On place ces points sur le graphe et on les relie par des segments. Il ne reste à déterminer que les deux "extrémités" du graphe — les parties à gauche du premier point de rupture et à droite du dernier, où le graphe continue comme une demi-droite vers l'infini. Il suffit de choisir <b>un point auxiliaire</b> au-delà du point de rupture extrême (un $x$ quelconque plus petit que celui du premier point de rupture, resp. plus grand que celui du dernier) et de calculer son $y$ en substituant dans l'expression. La droite menée du point de rupture extrême à travers ce point auxiliaire détermine alors toute la demi-droite en question.</p>
+    <p><b>Sur l'exemple $f(x)=|x-4|+1$ de la section « Comment construire le graphe d'une fonction avec valeur absolue » :</b> le point de rupture est $[4;1]$. Choisissons un point auxiliaire à gauche, par exemple pour $x=0$ : $f(0)=|0-4|+1=5$, donc le point $[0;5]$. Et un point auxiliaire à droite, par exemple pour $x=10$ : $f(10)=|10-4|+1=7$, donc le point $[10;7]$. Les segments reliant ces points au point de rupture donnent exactement le même graphe que ci-dessus — mais cette fois construit à partir de seulement trois points, sans décomposition en intervalles :</p>
+    <div class="card">
+        <svg viewBox="0 0 396 312" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30.0" y1="254.0" x2="366.0" y2="254.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="86.0" y1="282.0" x2="86.0" y2="30.0" stroke="#57534e" stroke-width="1.5"/>
+<polygon points="366.0,254.0 358.0,250.0 358.0,258.0" fill="#57534e"/>
+<polygon points="86.0,30.0 82.0,38.0 90.0,38.0" fill="#57534e"/>
+<line x1="30.0" y1="250.0" x2="30.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="30.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">-2</text>
+<line x1="58.0" y1="250.0" x2="58.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="58.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">-1</text>
+<line x1="114.0" y1="250.0" x2="114.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="114.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">1</text>
+<line x1="142.0" y1="250.0" x2="142.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="142.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">2</text>
+<line x1="170.0" y1="250.0" x2="170.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="170.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">3</text>
+<line x1="198.0" y1="250.0" x2="198.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="198.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">4</text>
+<line x1="226.0" y1="250.0" x2="226.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="226.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">5</text>
+<line x1="254.0" y1="250.0" x2="254.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="254.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">6</text>
+<line x1="282.0" y1="250.0" x2="282.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="282.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">7</text>
+<line x1="310.0" y1="250.0" x2="310.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="310.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">8</text>
+<line x1="338.0" y1="250.0" x2="338.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="338.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">9</text>
+<line x1="366.0" y1="250.0" x2="366.0" y2="258.0" stroke="#57534e" stroke-width="1"/>
+<text x="366.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">10</text>
+<line x1="82.0" y1="282.0" x2="90.0" y2="282.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="286.0" font-size="11" fill="#57534e" text-anchor="end">-1</text>
+<line x1="82.0" y1="226.0" x2="90.0" y2="226.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="230.0" font-size="11" fill="#57534e" text-anchor="end">1</text>
+<line x1="82.0" y1="198.0" x2="90.0" y2="198.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="202.0" font-size="11" fill="#57534e" text-anchor="end">2</text>
+<line x1="82.0" y1="170.0" x2="90.0" y2="170.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="174.0" font-size="11" fill="#57534e" text-anchor="end">3</text>
+<line x1="82.0" y1="142.0" x2="90.0" y2="142.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="146.0" font-size="11" fill="#57534e" text-anchor="end">4</text>
+<line x1="82.0" y1="114.0" x2="90.0" y2="114.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="118.0" font-size="11" fill="#57534e" text-anchor="end">5</text>
+<line x1="82.0" y1="86.0" x2="90.0" y2="86.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="90.0" font-size="11" fill="#57534e" text-anchor="end">6</text>
+<line x1="82.0" y1="58.0" x2="90.0" y2="58.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="62.0" font-size="11" fill="#57534e" text-anchor="end">7</text>
+<line x1="82.0" y1="30.0" x2="90.0" y2="30.0" stroke="#57534e" stroke-width="1"/>
+<text x="77.0" y="34.0" font-size="11" fill="#57534e" text-anchor="end">8</text>
+<text x="77.0" y="271.0" font-size="11" fill="#57534e" text-anchor="middle">0</text>
+<line x1="86.0" y1="114.0" x2="198.0" y2="226.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<line x1="198.0" y1="226.0" x2="366.0" y2="58.0" stroke="#7c3aed" stroke-width="3" stroke-linecap="round"/>
+<circle cx="198.0" cy="226.0" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/>
+<rect x="205.0" y="203.0" width="122.8" height="17" fill="white" opacity="0.85"/>
+<text x="208.0" y="216.0" font-size="13" fill="#b91c1c" font-weight="600">[4;1] point de rupture</text>
+<circle cx="86.0" cy="114.0" r="4" fill="#0d9488" stroke="white" stroke-width="1.5"/>
+<rect x="38.0" y="93.0" width="27.9" height="17" fill="white" opacity="0.85"/>
+<text x="41.0" y="106.0" font-size="13" fill="#0d9488" font-weight="600">[0;5]</text>
+<circle cx="366.0" cy="58.0" r="4" fill="#0d9488" stroke="white" stroke-width="1.5"/>
+<rect x="318.0" y="35.0" width="33.5" height="17" fill="white" opacity="0.85"/>
+<text x="321.0" y="48.0" font-size="13" fill="#0d9488" font-weight="600">[10;7]</text>
+</svg>
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <p>Le graphe d'une fonction avec valeur absolue est toujours composé de segments droits reliés en des points de rupture. Pour le construire, il suffit de trouver les zéros des expressions à l'intérieur des valeurs absolues, de calculer les valeurs de la fonction en ces points, et de relier ces points par des segments (les parties extrêmes se calculent à l'aide d'un point auxiliaire au-delà du dernier, resp. avant le premier point de rupture). Dans l'expression $y=a\cdot|x-m|+n$, $m,n$ déterminent la position du sommet et $a$ la forme (raideur et orientation) du graphe.</p>
+    <div class="note-box note-next">
+        <b>Et ensuite :</b> Nous utiliserons les graphes des fonctions avec valeur absolue dans les prochains chapitres pour la résolution graphique et algébrique d'équations et d'inéquations avec valeur absolue.
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+// ---- Interaktivní graf y = a*|x-m|+n ----
+const VSYS = { xmin:-8, xmax:8, ymin:-4, ymax:7, sx:28, sy:28, margin:30 };
+VSYS.width = (VSYS.xmax-VSYS.xmin)*VSYS.sx + 2*VSYS.margin;
+VSYS.height = (VSYS.ymax-VSYS.ymin)*VSYS.sy + 2*VSYS.margin;
+VSYS.ox = VSYS.margin - VSYS.xmin*VSYS.sx;
+VSYS.oy = VSYS.height - VSYS.margin + VSYS.ymin*VSYS.sy;
+
+function vpx(x,y){ return [VSYS.ox + x*VSYS.sx, VSYS.oy - y*VSYS.sy]; }
+
+function rayEndpoint(m, n, slope, dir){
+    // dir = +1 (doprava) nebo -1 (doleva); vrací [x,y] na hranici okna
+    let xEnd = dir > 0 ? VSYS.xmax : VSYS.xmin;
+    let yAtEnd = n + slope*(xEnd - m);
+    if (yAtEnd >= VSYS.ymin && yAtEnd <= VSYS.ymax){
+        return [xEnd, yAtEnd];
+    }
+    // jinak oříznout podle y hranice
+    const yBound = yAtEnd > VSYS.ymax ? VSYS.ymax : VSYS.ymin;
+    if (slope === 0) return [xEnd, n];
+    const xAt = m + (yBound - n)/slope;
+    return [xAt, yBound];
+}
+
+function updateVGraph(suffix){
+    suffix = suffix || '';
+    const m = parseInt(document.getElementById('slider-m'+suffix).value);
+    const n = parseInt(document.getElementById('slider-n'+suffix).value);
+    const aSign = parseInt(document.getElementById('select-a-sign'+suffix).value);
+    document.getElementById('m-val'+suffix).textContent = m;
+    document.getElementById('n-val'+suffix).textContent = n;
+
+    const slopeRight = aSign * 1;
+    const slopeLeft = -aSign * 1;
+
+    const [vx, vy] = [m, n];
+    const [lx, ly] = rayEndpoint(m, n, slopeLeft, -1);
+    const [rx, ry] = rayEndpoint(m, n, slopeRight, 1);
+
+    const [pvx, pvy] = vpx(vx, vy);
+    const [plx, ply] = vpx(lx, ly);
+    const [prx, pry] = vpx(rx, ry);
+
+    const left = document.getElementById('v-left'+suffix);
+    const right = document.getElementById('v-right'+suffix);
+    const vertex = document.getElementById('v-vertex'+suffix);
+    const vlabel = document.getElementById('v-vertex-label'+suffix);
+
+    left.setAttribute('x1', plx); left.setAttribute('y1', ply);
+    left.setAttribute('x2', pvx); left.setAttribute('y2', pvy);
+    right.setAttribute('x1', pvx); right.setAttribute('y1', pvy);
+    right.setAttribute('x2', prx); right.setAttribute('y2', pry);
+    vertex.setAttribute('cx', pvx); vertex.setAttribute('cy', pvy);
+    vlabel.setAttribute('x', pvx+8); vlabel.setAttribute('y', pvy-10);
+    vlabel.textContent = '['+m+';'+n+']';
+
+    const aStr = aSign > 0 ? '' : '-';
+    const mStr = m === 0 ? 'x' : (m > 0 ? 'x-'+m : 'x+'+(-m));
+    const nStr = n === 0 ? '' : (n > 0 ? '+'+n : ''+n);
+    const formula = aStr + '|' + mStr + '|' + nStr;
+    const formulaEl = document.getElementById('v-formula'+suffix);
+    formulaEl.textContent = '$' + formula + '$';
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([formulaEl]);
+}
+
+updateVGraph('');
+updateVGraph('-fr');
+
+// propojení CZ/FR posuvníků, aby šly ovládat nezávisle, ale obě sady fungovaly stejně
+document.getElementById('slider-m-fr').addEventListener('input', ()=>updateVGraph('-fr'));
+document.getElementById('slider-n-fr').addEventListener('input', ()=>updateVGraph('-fr'));
+document.getElementById('select-a-sign-fr').addEventListener('change', ()=>updateVGraph('-fr'));
+</script>
+
+</body>
+</html>

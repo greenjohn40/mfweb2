@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Funkce s absolutní hodnotou / Fonctions avec valeur absolue</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-absolutni-hodnota.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Absolutní hodnota</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Matematika / Mathématiques · Fonctions avec valeur absolue
+    </footer>
+
+    <script>
+        const rawData = {
+                "cs": [
+                                {
+                                                "q": "Jak je definována absolutní hodnota $|x|$ pro $x\\geq0$?",
+                                                "a": "$|x|=x$"
+                                },
+                                {
+                                                "q": "Jak je definována absolutní hodnota $|x|$ pro $x\\lt0$?",
+                                                "a": "$|x|=-x$"
+                                },
+                                {
+                                                "q": "Co měří absolutní hodnota čísla?",
+                                                "a": "vzdálenost čísla od nuly, bez ohledu na znaménko"
+                                },
+                                {
+                                                "q": "Jak vypadá graf funkce $y=|x|$?",
+                                                "a": "dvě polopřímky se společným počátkem $[0;0]$"
+                                },
+                                {
+                                                "q": "Jaká přímka tvoří graf $y=|x|$ pro $x\\geq0$?",
+                                                "a": "část přímky $y=x$"
+                                },
+                                {
+                                                "q": "Jaká přímka tvoří graf $y=|x|$ pro $x\\lt0$?",
+                                                "a": "část přímky $y=-x$"
+                                },
+                                {
+                                                "q": "Jaký je první krok při sestrojování grafu funkce s absolutní hodnotou?",
+                                                "a": "najít nulový bod výrazu uvnitř absolutní hodnoty"
+                                },
+                                {
+                                                "q": "Co uděláme s nalezeným nulovým bodem výrazu v absolutní hodnotě?",
+                                                "a": "rozdělíme jím číselnou osu na intervaly"
+                                },
+                                {
+                                                "q": "Co uděláme s absolutní hodnotou v každém intervalu?",
+                                                "a": "odstraníme ji podle znaménka výrazu (beze změny, nebo s opačným znaménkem)"
+                                },
+                                {
+                                                "q": "Jaký typ funkce dostaneme na každém intervalu po odstranění absolutní hodnoty?",
+                                                "a": "obyčejnou lineární funkci"
+                                },
+                                {
+                                                "q": "Jaký je nulový bod výrazu $x-4$ ve funkci $f(x)=|x-4|+1$?",
+                                                "a": "$x=4$"
+                                },
+                                {
+                                                "q": "Jak vypadá předpis $f(x)=|x-4|+1$ pro $x\\lt4$?",
+                                                "a": "$y=-x+5$"
+                                },
+                                {
+                                                "q": "Jak vypadá předpis $f(x)=|x-4|+1$ pro $x\\geq4$?",
+                                                "a": "$y=x-3$"
+                                },
+                                {
+                                                "q": "Jaký je bod zlomu funkce $f(x)=|x-4|+1$?",
+                                                "a": "$[4;1]$"
+                                },
+                                {
+                                                "q": "Co je x-ová souřadnice bodu zlomu?",
+                                                "a": "nulový bod výrazu uvnitř absolutní hodnoty"
+                                },
+                                {
+                                                "q": "Co je y-ová souřadnice bodu zlomu?",
+                                                "a": "hodnota funkce v tomto bodě"
+                                },
+                                {
+                                                "q": "Z čeho je vždy poskládaný graf funkce s absolutní hodnotou?",
+                                                "a": "z rovných úseků napojených v bodech zlomu"
+                                },
+                                {
+                                                "q": "Jak určíme pokračování grafu za posledním bodem zlomu?",
+                                                "a": "zvolíme pomocný bod za ním a vedeme přímku z bodu zlomu přes tento bod"
+                                },
+                                {
+                                                "q": "Jaký je vliv koeficientu $a$ ve funkci $y=a\\cdot|x|$ na tvar grafu?",
+                                                "a": "určuje strmost (úhel) a orientaci grafu"
+                                },
+                                {
+                                                "q": "Jaký úhel svírají polopřímky grafu $y=a\\cdot|x|$, když $|a|\\gt1$?",
+                                                "a": "ostrý úhel (graf je strmější)"
+                                },
+                                {
+                                                "q": "Jaký úhel svírají polopřímky grafu $y=a\\cdot|x|$, když $0\\lt|a|\\lt1$?",
+                                                "a": "tupý úhel (graf je plošší)"
+                                },
+                                {
+                                                "q": "Kam míří graf $y=a\\cdot|x|$, když $a\\gt0$?",
+                                                "a": "nahoru (otevřený vzhůru)"
+                                },
+                                {
+                                                "q": "Kam míří graf $y=a\\cdot|x|$, když $a\\lt0$?",
+                                                "a": "dolů (zrcadlený podle osy $x$)"
+                                },
+                                {
+                                                "q": "Jaký je vztah grafů $y=2\\cdot|x|$ a $y=-2\\cdot|x|$?",
+                                                "a": "jsou vzájemně zrcadlově souměrné podle osy $x$"
+                                },
+                                {
+                                                "q": "Co určuje koeficient $m$ v předpisu $y=a\\cdot|x-m|+n$?",
+                                                "a": "posun grafu ve směru osy $x$"
+                                },
+                                {
+                                                "q": "Co určuje koeficient $n$ v předpisu $y=a\\cdot|x-m|+n$?",
+                                                "a": "posun grafu ve směru osy $y$"
+                                },
+                                {
+                                                "q": "Kde leží vrchol grafu funkce $y=a\\cdot|x-m|+n$?",
+                                                "a": "v bodě $[m;n]$"
+                                },
+                                {
+                                                "q": "Jaký je definiční obor funkce $y=a\\cdot|x-m|+n$?",
+                                                "a": "$D(f)=\\mathbb{R}$, vždy"
+                                },
+                                {
+                                                "q": "Jaký je obor hodnot funkce $y=a\\cdot|x-m|+n$, když $a\\gt0$?",
+                                                "a": "$H(f)=\\langle n;\\infty)$"
+                                },
+                                {
+                                                "q": "Jaký je obor hodnot funkce $y=a\\cdot|x-m|+n$, když $a\\lt0$?",
+                                                "a": "$H(f)=(-\\infty;n\\rangle$"
+                                },
+                                {
+                                                "q": "Kde je funkce $y=a\\cdot|x-m|+n$ klesající, když $a\\gt0$?",
+                                                "a": "na intervalu $(-\\infty;m\\rangle$"
+                                },
+                                {
+                                                "q": "Kde je funkce $y=a\\cdot|x-m|+n$ rostoucí, když $a\\gt0$?",
+                                                "a": "na intervalu $\\langle m;\\infty)$"
+                                },
+                                {
+                                                "q": "Jaký extrém má funkce $y=a\\cdot|x-m|+n$ v bodě $m$, když $a\\gt0$?",
+                                                "a": "minimum"
+                                },
+                                {
+                                                "q": "Jaký extrém má funkce $y=a\\cdot|x-m|+n$ v bodě $m$, když $a\\lt0$?",
+                                                "a": "maximum"
+                                },
+                                {
+                                                "q": "Kdy je funkce $y=a\\cdot|x-m|+n$ zdola omezená?",
+                                                "a": "když $a\\gt0$"
+                                },
+                                {
+                                                "q": "Kdy je funkce $y=a\\cdot|x-m|+n$ shora omezená?",
+                                                "a": "když $a\\lt0$"
+                                },
+                                {
+                                                "q": "Kdy je funkce $y=a\\cdot|x-m|+n$ sudá?",
+                                                "a": "pouze tehdy, když $m=0$"
+                                },
+                                {
+                                                "q": "Jaká je parita funkce $y=a\\cdot|x-m|+n$, když $m\\neq0$?",
+                                                "a": "není ani sudá, ani lichá"
+                                },
+                                {
+                                                "q": "Vypočítej vrchol grafu funkce $f(x)=-2\\cdot|x+3|+5$.",
+                                                "a": "$[-3;5]$"
+                                },
+                                {
+                                                "q": "Jaká je hodnota $a$ ve funkci $f(x)=-2\\cdot|x+3|+5$?",
+                                                "a": "$a=-2$"
+                                },
+                                {
+                                                "q": "Jaký je obor hodnot funkce $f(x)=-2\\cdot|x+3|+5$?",
+                                                "a": "$H(f)=(-\\infty;5\\rangle$"
+                                },
+                                {
+                                                "q": "Co se stane s postupem sestrojení grafu, když předpis obsahuje víc absolutních hodnot?",
+                                                "a": "je stejný, jen s víc nulovými body a intervaly"
+                                },
+                                {
+                                                "q": "Kolik nulových bodů má funkce $g(x)=|2x-5|-|x+2|$?",
+                                                "a": "dva: $x=2{,}5$ a $x=-2$"
+                                },
+                                {
+                                                "q": "Jaký je předpis $g(x)=|2x-5|-|x+2|$ pro $x\\lt-2$?",
+                                                "a": "$y=7-x$"
+                                },
+                                {
+                                                "q": "Jaký je předpis $g(x)=|2x-5|-|x+2|$ pro $-2\\leq x\\lt2{,}5$?",
+                                                "a": "$y=3-3x$"
+                                },
+                                {
+                                                "q": "Jaký je předpis $g(x)=|2x-5|-|x+2|$ pro $x\\geq2{,}5$?",
+                                                "a": "$y=x-7$"
+                                },
+                                {
+                                                "q": "Jaké jsou body zlomu funkce $g(x)=|2x-5|-|x+2|$?",
+                                                "a": "$[-2;9]$ a $[2{,}5;-4{,}5]$"
+                                },
+                                {
+                                                "q": "Vypočítej $h(x)=|x+1|+|x-3|$ mezi body zlomu $-1$ a $3$. Jaký je výsledek?",
+                                                "a": "konstanta $h(x)=4$ (vodorovná úsečka)"
+                                },
+                                {
+                                                "q": "Proč je prostřední úsek grafu $h(x)=|x+1|+|x-3|$ vodorovný?",
+                                                "a": "sklony obou větví se v tomto intervalu přesně vyruší"
+                                },
+                                {
+                                                "q": "Kolik bodů stačí znát k sestrojení grafu funkce s absolutní hodnotou rychlou metodou?",
+                                                "a": "body zlomu plus jeden pomocný bod na každém konci"
+                                }
+                ],
+                "fr": [
+                                {
+                                                "q": "Comment est définie la valeur absolue $|x|$ pour $x\\geq0$ ?",
+                                                "a": "$|x|=x$"
+                                },
+                                {
+                                                "q": "Comment est définie la valeur absolue $|x|$ pour $x\\lt0$ ?",
+                                                "a": "$|x|=-x$"
+                                },
+                                {
+                                                "q": "Que mesure la valeur absolue d'un nombre ?",
+                                                "a": "la distance du nombre à zéro, indépendamment du signe"
+                                },
+                                {
+                                                "q": "À quoi ressemble le graphe de la fonction $y=|x|$ ?",
+                                                "a": "deux demi-droites d'origine commune $[0;0]$"
+                                },
+                                {
+                                                "q": "Quelle droite forme le graphe $y=|x|$ pour $x\\geq0$ ?",
+                                                "a": "une partie de la droite $y=x$"
+                                },
+                                {
+                                                "q": "Quelle droite forme le graphe $y=|x|$ pour $x\\lt0$ ?",
+                                                "a": "une partie de la droite $y=-x$"
+                                },
+                                {
+                                                "q": "Quelle est la première étape pour construire le graphe d'une fonction avec valeur absolue ?",
+                                                "a": "trouver le zéro de l'expression à l'intérieur de la valeur absolue"
+                                },
+                                {
+                                                "q": "Que fait-on du zéro trouvé de l'expression dans la valeur absolue ?",
+                                                "a": "il partage l'axe des nombres en intervalles"
+                                },
+                                {
+                                                "q": "Que fait-on de la valeur absolue sur chaque intervalle ?",
+                                                "a": "on la supprime selon le signe de l'expression (sans changement, ou avec le signe opposé)"
+                                },
+                                {
+                                                "q": "Quel type de fonction obtient-on sur chaque intervalle après suppression de la valeur absolue ?",
+                                                "a": "une simple fonction linéaire"
+                                },
+                                {
+                                                "q": "Quel est le zéro de l'expression $x-4$ dans la fonction $f(x)=|x-4|+1$ ?",
+                                                "a": "$x=4$"
+                                },
+                                {
+                                                "q": "À quoi ressemble l'expression $f(x)=|x-4|+1$ pour $x\\lt4$ ?",
+                                                "a": "$y=-x+5$"
+                                },
+                                {
+                                                "q": "À quoi ressemble l'expression $f(x)=|x-4|+1$ pour $x\\geq4$ ?",
+                                                "a": "$y=x-3$"
+                                },
+                                {
+                                                "q": "Quel est le point de rupture de la fonction $f(x)=|x-4|+1$ ?",
+                                                "a": "$[4;1]$"
+                                },
+                                {
+                                                "q": "Qu'est-ce que l'abscisse du point de rupture ?",
+                                                "a": "le zéro de l'expression à l'intérieur de la valeur absolue"
+                                },
+                                {
+                                                "q": "Qu'est-ce que l'ordonnée du point de rupture ?",
+                                                "a": "la valeur de la fonction en ce point"
+                                },
+                                {
+                                                "q": "De quoi est toujours composé le graphe d'une fonction avec valeur absolue ?",
+                                                "a": "de segments droits reliés en des points de rupture"
+                                },
+                                {
+                                                "q": "Comment détermine-t-on la suite du graphe au-delà du dernier point de rupture ?",
+                                                "a": "on choisit un point auxiliaire au-delà et on trace la droite depuis le point de rupture à travers ce point"
+                                },
+                                {
+                                                "q": "Quelle est l'influence du coefficient $a$ dans $y=a\\cdot|x|$ sur la forme du graphe ?",
+                                                "a": "il détermine la raideur (l'angle) et l'orientation du graphe"
+                                },
+                                {
+                                                "q": "Quel angle forment les demi-droites du graphe $y=a\\cdot|x|$ quand $|a|\\gt1$ ?",
+                                                "a": "un angle aigu (le graphe est plus raide)"
+                                },
+                                {
+                                                "q": "Quel angle forment les demi-droites du graphe $y=a\\cdot|x|$ quand $0\\lt|a|\\lt1$ ?",
+                                                "a": "un angle obtus (le graphe est plus plat)"
+                                },
+                                {
+                                                "q": "Vers où est orienté le graphe $y=a\\cdot|x|$ quand $a\\gt0$ ?",
+                                                "a": "vers le haut (ouvert vers le haut)"
+                                },
+                                {
+                                                "q": "Vers où est orienté le graphe $y=a\\cdot|x|$ quand $a\\lt0$ ?",
+                                                "a": "vers le bas (symétrique par rapport à l'axe $x$)"
+                                },
+                                {
+                                                "q": "Quelle est la relation entre les graphes $y=2\\cdot|x|$ et $y=-2\\cdot|x|$ ?",
+                                                "a": "ils sont symétriques l'un de l'autre par rapport à l'axe $x$"
+                                },
+                                {
+                                                "q": "Que détermine le coefficient $m$ dans l'expression $y=a\\cdot|x-m|+n$ ?",
+                                                "a": "le déplacement du graphe dans la direction de l'axe $x$"
+                                },
+                                {
+                                                "q": "Que détermine le coefficient $n$ dans l'expression $y=a\\cdot|x-m|+n$ ?",
+                                                "a": "le déplacement du graphe dans la direction de l'axe $y$"
+                                },
+                                {
+                                                "q": "Où se trouve le sommet du graphe de la fonction $y=a\\cdot|x-m|+n$ ?",
+                                                "a": "au point $[m;n]$"
+                                },
+                                {
+                                                "q": "Quel est le domaine de définition de la fonction $y=a\\cdot|x-m|+n$ ?",
+                                                "a": "$D(f)=\\mathbb{R}$, toujours"
+                                },
+                                {
+                                                "q": "Quel est l'ensemble des valeurs de $y=a\\cdot|x-m|+n$ quand $a\\gt0$ ?",
+                                                "a": "$H(f)=\\langle n;\\infty)$"
+                                },
+                                {
+                                                "q": "Quel est l'ensemble des valeurs de $y=a\\cdot|x-m|+n$ quand $a\\lt0$ ?",
+                                                "a": "$H(f)=(-\\infty;n\\rangle$"
+                                },
+                                {
+                                                "q": "Où la fonction $y=a\\cdot|x-m|+n$ est-elle décroissante, quand $a\\gt0$ ?",
+                                                "a": "sur l'intervalle $(-\\infty;m\\rangle$"
+                                },
+                                {
+                                                "q": "Où la fonction $y=a\\cdot|x-m|+n$ est-elle croissante, quand $a\\gt0$ ?",
+                                                "a": "sur l'intervalle $\\langle m;\\infty)$"
+                                },
+                                {
+                                                "q": "Quel extremum a la fonction $y=a\\cdot|x-m|+n$ au point $m$, quand $a\\gt0$ ?",
+                                                "a": "un minimum"
+                                },
+                                {
+                                                "q": "Quel extremum a la fonction $y=a\\cdot|x-m|+n$ au point $m$, quand $a\\lt0$ ?",
+                                                "a": "un maximum"
+                                },
+                                {
+                                                "q": "Quand la fonction $y=a\\cdot|x-m|+n$ est-elle minorée ?",
+                                                "a": "quand $a\\gt0$"
+                                },
+                                {
+                                                "q": "Quand la fonction $y=a\\cdot|x-m|+n$ est-elle majorée ?",
+                                                "a": "quand $a\\lt0$"
+                                },
+                                {
+                                                "q": "Quand la fonction $y=a\\cdot|x-m|+n$ est-elle paire ?",
+                                                "a": "seulement lorsque $m=0$"
+                                },
+                                {
+                                                "q": "Quelle est la parité de la fonction $y=a\\cdot|x-m|+n$ quand $m\\neq0$ ?",
+                                                "a": "ni paire, ni impaire"
+                                },
+                                {
+                                                "q": "Calcule le sommet du graphe de la fonction $f(x)=-2\\cdot|x+3|+5$.",
+                                                "a": "$[-3;5]$"
+                                },
+                                {
+                                                "q": "Quelle est la valeur de $a$ dans la fonction $f(x)=-2\\cdot|x+3|+5$ ?",
+                                                "a": "$a=-2$"
+                                },
+                                {
+                                                "q": "Quel est l'ensemble des valeurs de la fonction $f(x)=-2\\cdot|x+3|+5$ ?",
+                                                "a": "$H(f)=(-\\infty;5\\rangle$"
+                                },
+                                {
+                                                "q": "Que devient la démarche de construction du graphe quand l'expression contient plusieurs valeurs absolues ?",
+                                                "a": "elle reste la même, avec seulement plus de zéros et d'intervalles"
+                                },
+                                {
+                                                "q": "Combien de zéros a la fonction $g(x)=|2x-5|-|x+2|$ ?",
+                                                "a": "deux : $x=2{,}5$ et $x=-2$"
+                                },
+                                {
+                                                "q": "Quelle est l'expression de $g(x)=|2x-5|-|x+2|$ pour $x\\lt-2$ ?",
+                                                "a": "$y=7-x$"
+                                },
+                                {
+                                                "q": "Quelle est l'expression de $g(x)=|2x-5|-|x+2|$ pour $-2\\leq x\\lt2{,}5$ ?",
+                                                "a": "$y=3-3x$"
+                                },
+                                {
+                                                "q": "Quelle est l'expression de $g(x)=|2x-5|-|x+2|$ pour $x\\geq2{,}5$ ?",
+                                                "a": "$y=x-7$"
+                                },
+                                {
+                                                "q": "Quels sont les points de rupture de la fonction $g(x)=|2x-5|-|x+2|$ ?",
+                                                "a": "$[-2;9]$ et $[2{,}5;-4{,}5]$"
+                                },
+                                {
+                                                "q": "Calcule $h(x)=|x+1|+|x-3|$ entre les points de rupture $-1$ et $3$. Quel est le résultat ?",
+                                                "a": "une constante $h(x)=4$ (segment horizontal)"
+                                },
+                                {
+                                                "q": "Pourquoi la partie centrale du graphe de $h(x)=|x+1|+|x-3|$ est-elle horizontale ?",
+                                                "a": "les pentes des deux branches s'annulent exactement sur cet intervalle"
+                                },
+                                {
+                                                "q": "Combien de points suffit-il de connaître pour construire le graphe par la méthode rapide ?",
+                                                "a": "les points de rupture plus un point auxiliaire à chaque extrémité"
+                                }
+                ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>
