@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vlastnosti funkcí / Propriétés des fonctions</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+    .grid-bg {
+        background-color: #fafaf9;
+        background-image:
+            linear-gradient(to right, rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #ddd6fe; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #7c3aed; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #a21caf; }
+    @media (max-width: 640px) { .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; } }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .formula-box { font-family: 'Cambria Math', Georgia, serif; }
+    input[type="range"] { accent-color: #7c3aed; }
+    .side-note { border-left: 4px solid; }
+    .side-note.curious { border-color: #0d9488; background: #f0fdfa; }
+    .side-note.trap { border-color: #d97706; background: #fffbeb; }
+    .side-note.link { border-color: #6366f1; background: #eef2ff; }
+    .side-note.next { border-color: #64748b; background: #f8fafc; }
+    .checker-input:focus { outline: 2px solid #7c3aed; }
+    mjx-container { display: inline-block !important; white-space: nowrap; }
+    .caveat { border: 2px dashed #d97706; background: #fffbeb; }
+</style>
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="grid-bg text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-violet-800 to-fuchsia-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-violet-200 text-sm font-semibold tracking-wider uppercase">
+            <span>📐 Matematika</span><span>•</span><span>Funkce</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Vlastnosti funkcí</h1>
+        <p class="text-lg md:text-xl text-violet-50 max-w-3xl leading-relaxed">
+            Rostoucí, klesající a konstantní funkce, ryze monotónnost, extrémy, omezenost, sudá a lichá funkce, prostá funkce.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-violet-100">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('s1-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Rostoucí, klesající</span>
+        <span onclick="scrollToId('s2-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Ryze monotónní</span>
+        <span onclick="scrollToId('s3-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Extrémy</span>
+        <span onclick="scrollToId('s4-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Omezenost</span>
+        <span onclick="scrollToId('s5-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Sudá, lichá</span>
+        <span onclick="scrollToId('s6-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Prostá funkce</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- SEKCE 1: ROSTOUCI, KLESAJICI, KONSTANTNI -->
+    <section id="s1-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Rostoucí, klesající a konstantní funkce</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800 mb-2"><strong>Rostoucí funkce:</strong> pro všechna $x_1,x_2\in D(f)$ platí: je-li $x_1\lt x_2$, pak $f(x_1)\lt f(x_2)$.</p>
+                    <p class="text-slate-800 mb-2"><strong>Klesající funkce:</strong> pro všechna $x_1,x_2\in D(f)$ platí: je-li $x_1\lt x_2$, pak $f(x_1)\gt f(x_2)$.</p>
+                    <p class="text-slate-800"><strong>Konstantní funkce:</strong> pro všechna $x_1,x_2\in D(f)$ platí $f(x_1)=f(x_2)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vyzkoušejte si to: dvojice bodů na grafu</h3>
+                    <p class="text-slate-600 text-sm mb-4">Posuňte jezdcem $x_1$ (bod $x_2$ je vždy o 1 dál) a sledujte, jak se mění vztah mezi $f(x_1)$ a $f(x_2)$ v různých částech grafu.</p>
+                    <input id="monoSlider-cs" type="range" min="-4" max="3" step="1" value="-4" class="w-full mb-3">
+                    <svg id="monoSvg-cs" viewBox="0 0 380 300" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center font-bold text-lg mt-2" id="monoLabel-cs">rostoucí na tomto úseku</p>
+                </div>
+                <div class="caveat rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-1">⚠ Pozor — jedna dvojice bodů nic nedokazuje!</p>
+                    <p class="text-slate-700 text-sm">Nástroj výše ukazuje definici jen pro <strong>jednu konkrétní dvojici</strong> $x_1,x_2$. Aby byla funkce na intervalu skutečně rostoucí (nebo klesající), musí dané nerovnosti platit pro <strong>úplně všechny možné dvojice</strong> $x_1\lt x_2$ z tohoto intervalu — a takových dvojic je nekonečně mnoho. Ověření na pár vybraných bodech monotónnost nedokazuje; skutečné zdůvodnění vyžaduje buď obecný algebraický argument, nebo (jak se naučíte později) zkoumání derivace funkce.</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pro zvídavé</p>
+                    <p class="text-sm text-slate-700">Monotónnost obvykle nejrychleji poznáme podle směru křivky — jde-li graf „nahoru", je rostoucí; jde-li „dolů", je klesající.</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Co bude dál</p>
+                    <p class="text-sm text-slate-700">Tytéž definice, jen omezené na určitý interval $I\subset D(f)$, se nazývají „monotónnost na intervalu" — funkce může být na jedné části rostoucí a na jiné klesající.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 2: RYZE MONOTONNI -->
+    <section id="s2-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Ryze monotónní funkce</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800">Funkce, které jsou na <strong>celém svém definičním oboru</strong> rostoucí, nebo na celém definičním oboru klesající, nazýváme <strong>ryze monotónní funkce</strong>.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-3">Vlastní příklady:</p>
+                    <div class="grid sm:grid-cols-2 gap-4 text-center formula-box">
+                        <p class="bg-emerald-100 rounded-lg py-3 text-emerald-900">$f: y = 2x+3$<br><span class="text-sm font-sans">rostoucí na celém $\mathbb{R}$</span></p>
+                        <p class="bg-rose-100 rounded-lg py-3 text-rose-900">$g: y = -3x+1$<br><span class="text-sm font-sans">klesající na celém $\mathbb{R}$</span></p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 text-sm">Funkce z předchozí sekce (rostoucí, pak konstantní, pak klesající) <strong>není</strong> ryze monotónní — je totiž rostoucí jen na části definičního oboru, ne na celém. Ryze monotónní funkce se v žádné části „neláme".</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Souvislosti</p>
+                    <p class="text-sm text-slate-700">S ryze monotónními funkcemi úzce souvisí pojem prosté funkce (viz poslední sekce této stránky) — každá ryze monotónní funkce je totiž automaticky i prostá.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 3: EXTREMY -->
+    <section id="s3-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Extrémy funkce</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800 mb-2"><strong>Maximum:</strong> funkce $f$ má v bodě $x_M$ maximum, právě když pro všechna $x\in D(f)$ platí $f(x)\leq f(x_M)$.</p>
+                    <p class="text-slate-800"><strong>Minimum:</strong> funkce $f$ má v bodě $x_N$ minimum, právě když pro všechna $x\in D(f)$ platí $f(x)\geq f(x_N)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vyzkoušejte si to: najděte extrémy</h3>
+                    <p class="text-slate-600 text-sm mb-4">Posuňte jezdcem po grafu a sledujte, kdy bod dosáhne minima nebo maxima.</p>
+                    <input id="extremSlider-cs" type="range" min="-4" max="4" step="0.1" value="-4" class="w-full mb-3">
+                    <svg id="extremSvg-cs" viewBox="0 0 380 300" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center font-bold text-lg mt-2" id="extremLabel-cs"></p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Pozor na past</p>
+                    <p class="text-sm text-slate-700">Extrém nemusí existovat vůbec! Pokud graf funkce neomezeně roste nebo klesá (jako přímka), maximum ani minimum nemá.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 4: OMEZENOST -->
+    <section id="s4-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Omezenost funkce</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800 mb-2"><strong>Omezená shora:</strong> existuje číslo $h$ takové, že pro všechna $x\in D(f)$ platí $f(x)\leq h$ (horní hranice).</p>
+                    <p class="text-slate-800"><strong>Omezená zdola:</strong> existuje číslo $d$ takové, že pro všechna $x\in D(f)$ platí $f(x)\geq d$ (dolní hranice). Je-li funkce omezená shora i zdola zároveň, nazýváme ji <strong>omezená</strong>.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vyzkoušejte si to: hledejte horní hranici</h3>
+                    <p class="text-slate-600 text-sm mb-4">Pro $f: y = -x^2+4$ posuňte jezdcem vodorovnou přímku a zjistěte, pro která $h$ platí $f(x)\leq h$ všude na obrázku.</p>
+                    <input id="boundSlider-cs" type="range" min="-8" max="5" step="0.5" value="0" class="w-full mb-3">
+                    <svg id="boundSvg-cs" viewBox="0 0 380 300" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center font-bold text-lg mt-2" id="boundLabel-cs"></p>
+                </div>
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="text-slate-700 text-sm">Tato funkce $f: y=-x^2+4$ je <strong>omezená shora</strong> (číslem $h=4$ i každým větším číslem), ale <strong>není omezená zdola</strong> — čím dál od nuly zvolíme $x$, tím hlouběji $f(x)$ klesá, bez jakékoliv spodní hranice (do minus nekonečna).</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pro zvídavé</p>
+                    <p class="text-sm text-slate-700">Horní ani dolní hranice není určena jednoznačně — je-li $h$ horní hranicí, je jí i každé číslo větší než $h$.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 5: SUDA LICHA -->
+    <section id="s5-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Sudá a lichá funkce</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800 mb-2"><strong>Sudá funkce:</strong> $D(f)$ je souměrný podle nuly a pro každé $x\in D(f)$ platí $f(-x)=f(x)$. Graf je souměrný podle osy $y$.</p>
+                    <p class="text-slate-800"><strong>Lichá funkce:</strong> $D(f)$ je souměrný podle nuly a pro každé $x\in D(f)$ platí $f(-x)=-f(x)$. Graf je souměrný podle počátku.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Náhled: graf a jeho zrcadlový obraz</h3>
+                    <p class="text-slate-600 text-sm mb-4">Pro $f: y=x^4-3x^2$ posuňte jezdcem $x$ a sledujte bod $[x;f(x)]$ i jeho zrcadlový protějšek $[-x;f(-x)]$ na téže křivce.</p>
+                    <input id="symSlider-cs" type="range" min="0.2" max="2.2" step="0.1" value="1" class="w-full mb-3">
+                    <svg id="symSvg-cs" viewBox="0 0 380 300" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center text-sm mt-2" id="symLabel-cs"></p>
+                </div>
+                <div class="caveat rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-1">⚠ Pozor — náhled na pár bodech sudost/lichost nedokazuje!</p>
+                    <p class="text-slate-700 text-sm">I kdyby shoda vyšla pro tisíc různých hodnot $x$, pořád by to nebyl důkaz — proměnná $x$ probíhá nekonečně mnoho hodnot. Skutečný důkaz vyžaduje dosadit $-x$ do předpisu <strong>obecně</strong> (algebraicky), ne vyzkoušet konkrétní čísla.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Skutečný důkaz — obecné dosazení</h3>
+                    <p class="text-slate-700 mb-2"><strong>Sudá:</strong> $f: y=x^4-3x^2$, $D(f)=\mathbb{R}$ (souměrný podle nuly).</p>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm mb-4">
+                        <p>$f(-x) = (-x)^4-3\cdot(-x)^2 = x^4-3x^2 = f(x)$ &nbsp;pro každé $x$ &nbsp;$\Rightarrow$ funkce je sudá.</p>
+                    </div>
+                    <p class="text-slate-700 mb-2"><strong>Lichá:</strong> $g: y=x^3-4x$, $D(g)=\mathbb{R}$.</p>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm">
+                        <p>$g(-x) = (-x)^3-4\cdot(-x) = -x^3+4x = -(x^3-4x) = -g(x)$ &nbsp;pro každé $x$ &nbsp;$\Rightarrow$ funkce je lichá.</p>
+                    </div>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Souvislosti</p>
+                    <p class="text-sm text-slate-700">Většina funkcí není ani sudá, ani lichá — sudost a lichost jsou speciální, ne běžné vlastnosti.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 6: PROSTA FUNKCE -->
+    <section id="s6-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Prostá funkce</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800">Funkce $f$ je <strong>prostá</strong>, právě když pro všechna $x_1,x_2\in D(f)$ platí: je-li $x_1\neq x_2$, pak $f(x_1)\neq f(x_2)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Test vodorovnou přímkou</h3>
+                    <p class="text-slate-700 mb-4">Podobně jako test svislou přímkou u definice funkce, existuje i test pro prostotu: <strong>funkce je prostá, právě když každá vodorovná přímka protíná její graf nejvýše v jednom bodě.</strong></p>
+                    <p class="text-slate-600 text-sm mb-4">Vlevo přímka $f:y=2x-5$ (prostá), vpravo parabola $g:y=x^2$ (není prostá). Posuňte jezdcem vodorovnou přímku.</p>
+                    <input id="hltSlider-cs" type="range" min="-90" max="90" step="1" value="0" class="w-full mb-3">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <svg id="hltSvgGood-cs" viewBox="0 0 200 200" class="w-full bg-emerald-50/50 rounded-lg border border-emerald-100"></svg>
+                            <p class="text-center text-xs text-slate-600 mt-1" id="hltGoodLabel-cs"></p>
+                        </div>
+                        <div>
+                            <svg id="hltSvgBad-cs" viewBox="0 0 200 200" class="w-full bg-red-50/50 rounded-lg border border-red-100"></svg>
+                            <p class="text-center text-xs text-slate-600 mt-1" id="hltBadLabel-cs"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-2">Protipříklad:</p>
+                    <p class="text-slate-700 text-sm">$g: y=x^2$ není prostá, protože $g(2)=4$ a zároveň $g(-2)=4$ — dvě různé hodnoty $x$ ($2$ a $-2$) dávají stejnou hodnotu $y$.</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Co bude dál</p>
+                    <p class="text-sm text-slate-700">Prostota funkce je klíčová podmínka pro existenci inverzní funkce — s tou se setkáte v některé z příštích kapitol.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Matematika, CLIL · Vlastnosti funkcí</p>
+</footer>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-violet-800 to-fuchsia-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-violet-200 text-sm font-semibold tracking-wider uppercase">
+            <span>📐 Mathématiques</span><span>•</span><span>Fonctions</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Propriétés des fonctions</h1>
+        <p class="text-lg md:text-xl text-violet-50 max-w-3xl leading-relaxed">
+            Fonctions croissantes, décroissantes et constantes, monotonie stricte, extremums, bornage, fonctions paires et impaires, fonction injective.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-violet-100">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('s1-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Croissante, décroissante</span>
+        <span onclick="scrollToId('s2-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Monotonie stricte</span>
+        <span onclick="scrollToId('s3-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Extremums</span>
+        <span onclick="scrollToId('s4-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Bornage</span>
+        <span onclick="scrollToId('s5-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Paire, impaire</span>
+        <span onclick="scrollToId('s6-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Fonction injective</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- SECTION 1: CROISSANTE, DECROISSANTE, CONSTANTE -->
+    <section id="s1-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Fonctions croissantes, décroissantes et constantes</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800 mb-2"><strong>Fonction croissante :</strong> pour tous $x_1,x_2\in D(f)$ : si $x_1\lt x_2$, alors $f(x_1)\lt f(x_2)$.</p>
+                    <p class="text-slate-800 mb-2"><strong>Fonction décroissante :</strong> pour tous $x_1,x_2\in D(f)$ : si $x_1\lt x_2$, alors $f(x_1)\gt f(x_2)$.</p>
+                    <p class="text-slate-800"><strong>Fonction constante :</strong> pour tous $x_1,x_2\in D(f)$, $f(x_1)=f(x_2)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Essayez par vous-même : une paire de points sur le graphe</h3>
+                    <p class="text-slate-600 text-sm mb-4">Déplacez le curseur $x_1$ (le point $x_2$ est toujours 1 plus loin) et observez comment la relation entre $f(x_1)$ et $f(x_2)$ change selon la portion du graphe.</p>
+                    <input id="monoSlider-fr" type="range" min="-4" max="3" step="1" value="-4" class="w-full mb-3">
+                    <svg id="monoSvg-fr" viewBox="0 0 380 300" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center font-bold text-lg mt-2" id="monoLabel-fr"></p>
+                </div>
+                <div class="caveat rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-1">⚠ Attention — une seule paire de points ne prouve rien !</p>
+                    <p class="text-slate-700 text-sm">L'outil ci-dessus illustre la définition pour <strong>une seule paire</strong> $x_1,x_2$. Pour qu'une fonction soit réellement croissante (ou décroissante) sur un intervalle, les inégalités doivent être vérifiées pour <strong>absolument toutes les paires possibles</strong> $x_1\lt x_2$ de cet intervalle — et il en existe une infinité. Vérifier quelques points ne prouve pas la monotonie ; une véritable justification exige soit un argument algébrique général, soit (comme vous l'apprendrez plus tard) l'étude de la dérivée de la fonction.</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pour les curieux</p>
+                    <p class="text-sm text-slate-700">On reconnaît généralement la monotonie le plus vite grâce à la direction de la courbe — si le graphe « monte », la fonction est croissante ; s'il « descend », elle est décroissante.</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Et la suite ?</p>
+                    <p class="text-sm text-slate-700">Les mêmes définitions, restreintes à un intervalle $I\subset D(f)$, s'appellent la « monotonie sur un intervalle » — une fonction peut être croissante sur une partie et décroissante sur une autre.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 2: MONOTONIE STRICTE -->
+    <section id="s2-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Fonction strictement monotone</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800">Les fonctions qui sont croissantes sur <strong>tout leur domaine de définition</strong>, ou décroissantes sur tout leur domaine de définition, sont appelées <strong>fonctions strictement monotones</strong>.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-3">Exemples personnels :</p>
+                    <div class="grid sm:grid-cols-2 gap-4 text-center formula-box">
+                        <p class="bg-emerald-100 rounded-lg py-3 text-emerald-900">$f: y = 2x+3$<br><span class="text-sm font-sans">croissante sur tout $\mathbb{R}$</span></p>
+                        <p class="bg-rose-100 rounded-lg py-3 text-rose-900">$g: y = -3x+1$<br><span class="text-sm font-sans">décroissante sur tout $\mathbb{R}$</span></p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 text-sm">La fonction de la section précédente (croissante, puis constante, puis décroissante) <strong>n'est pas</strong> strictement monotone — elle n'est croissante que sur une partie du domaine, pas sur sa totalité. Une fonction strictement monotone ne « se brise » nulle part.</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Liens</p>
+                    <p class="text-sm text-slate-700">La monotonie stricte est étroitement liée à la notion de fonction injective (voir la dernière section de cette page) — toute fonction strictement monotone est en effet automatiquement injective.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 3: EXTREMUMS -->
+    <section id="s3-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Extremums d'une fonction</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800 mb-2"><strong>Maximum :</strong> la fonction $f$ a un maximum au point $x_M$ si et seulement si pour tout $x\in D(f)$, $f(x)\leq f(x_M)$.</p>
+                    <p class="text-slate-800"><strong>Minimum :</strong> la fonction $f$ a un minimum au point $x_N$ si et seulement si pour tout $x\in D(f)$, $f(x)\geq f(x_N)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Essayez par vous-même : trouvez les extremums</h3>
+                    <p class="text-slate-600 text-sm mb-4">Déplacez le curseur le long du graphe et observez quand le point atteint le minimum ou le maximum.</p>
+                    <input id="extremSlider-fr" type="range" min="-4" max="4" step="0.1" value="-4" class="w-full mb-3">
+                    <svg id="extremSvg-fr" viewBox="0 0 380 300" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center font-bold text-lg mt-2" id="extremLabel-fr"></p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Attention au piège</p>
+                    <p class="text-sm text-slate-700">Un extremum peut ne pas exister du tout ! Si le graphe d'une fonction croît ou décroît indéfiniment (comme une droite), elle n'a ni maximum ni minimum.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 4: BORNAGE -->
+    <section id="s4-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Bornage d'une fonction</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800 mb-2"><strong>Majorée :</strong> il existe un nombre $h$ tel que pour tout $x\in D(f)$, $f(x)\leq h$ (majorant).</p>
+                    <p class="text-slate-800"><strong>Minorée :</strong> il existe un nombre $d$ tel que pour tout $x\in D(f)$, $f(x)\geq d$ (minorant). Si une fonction est à la fois majorée et minorée, on l'appelle <strong>bornée</strong>.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Essayez par vous-même : cherchez un majorant</h3>
+                    <p class="text-slate-600 text-sm mb-4">Pour $f: y = -x^2+4$, déplacez le curseur de la droite horizontale et déterminez pour quels $h$ on a $f(x)\leq h$ partout sur la figure.</p>
+                    <input id="boundSlider-fr" type="range" min="-8" max="5" step="0.5" value="0" class="w-full mb-3">
+                    <svg id="boundSvg-fr" viewBox="0 0 380 300" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center font-bold text-lg mt-2" id="boundLabel-fr"></p>
+                </div>
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="text-slate-700 text-sm">Cette fonction $f: y=-x^2+4$ est <strong>majorée</strong> (par $h=4$ et par tout nombre plus grand), mais <strong>n'est pas minorée</strong> — plus $x$ s'éloigne de zéro, plus $f(x)$ descend, sans aucune limite inférieure (vers moins l'infini).</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pour les curieux</p>
+                    <p class="text-sm text-slate-700">Ni le majorant ni le minorant ne sont uniques — si $h$ est un majorant, tout nombre supérieur à $h$ l'est aussi.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 5: PAIRE IMPAIRE -->
+    <section id="s5-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Fonction paire et impaire</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800 mb-2"><strong>Fonction paire :</strong> $D(f)$ est symétrique par rapport à zéro et pour tout $x\in D(f)$, $f(-x)=f(x)$. Le graphe est symétrique par rapport à l'axe $y$.</p>
+                    <p class="text-slate-800"><strong>Fonction impaire :</strong> $D(f)$ est symétrique par rapport à zéro et pour tout $x\in D(f)$, $f(-x)=-f(x)$. Le graphe est symétrique par rapport à l'origine.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Aperçu : le graphe et son image miroir</h3>
+                    <p class="text-slate-600 text-sm mb-4">Pour $f: y=x^4-3x^2$, déplacez le curseur $x$ et observez le point $[x;f(x)]$ ainsi que son symétrique $[-x;f(-x)]$ sur la même courbe.</p>
+                    <input id="symSlider-fr" type="range" min="0.2" max="2.2" step="0.1" value="1" class="w-full mb-3">
+                    <svg id="symSvg-fr" viewBox="0 0 380 300" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center text-sm mt-2" id="symLabel-fr"></p>
+                </div>
+                <div class="caveat rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-1">⚠ Attention — un aperçu sur quelques points ne prouve pas la parité !</p>
+                    <p class="text-slate-700 text-sm">Même si la coïncidence se vérifiait pour mille valeurs différentes de $x$, cela ne constituerait toujours pas une preuve — la variable $x$ parcourt une infinité de valeurs. Une véritable preuve exige de substituer $-x$ dans l'expression <strong>de façon générale</strong> (algébriquement), pas de tester des nombres particuliers.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">La véritable preuve — substitution générale</h3>
+                    <p class="text-slate-700 mb-2"><strong>Paire :</strong> $f: y=x^4-3x^2$, $D(f)=\mathbb{R}$ (symétrique par rapport à zéro).</p>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm mb-4">
+                        <p>$f(-x) = (-x)^4-3\cdot(-x)^2 = x^4-3x^2 = f(x)$ &nbsp;pour tout $x$ &nbsp;$\Rightarrow$ la fonction est paire.</p>
+                    </div>
+                    <p class="text-slate-700 mb-2"><strong>Impaire :</strong> $g: y=x^3-4x$, $D(g)=\mathbb{R}$.</p>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm">
+                        <p>$g(-x) = (-x)^3-4\cdot(-x) = -x^3+4x = -(x^3-4x) = -g(x)$ &nbsp;pour tout $x$ &nbsp;$\Rightarrow$ la fonction est impaire.</p>
+                    </div>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Liens</p>
+                    <p class="text-sm text-slate-700">La plupart des fonctions ne sont ni paires ni impaires — la parité et l'imparité sont des propriétés spéciales, pas courantes.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 6: FONCTION INJECTIVE -->
+    <section id="s6-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Fonction injective</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-slate-800">Une fonction $f$ est <strong>injective</strong> si et seulement si pour tous $x_1,x_2\in D(f)$ : si $x_1\neq x_2$, alors $f(x_1)\neq f(x_2)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Test de la droite horizontale</h3>
+                    <p class="text-slate-700 mb-4">Comme le test de la droite verticale pour la définition d'une fonction, il existe un test pour l'injectivité : <strong>une fonction est injective si et seulement si toute droite horizontale coupe son graphe en au plus un point.</strong></p>
+                    <p class="text-slate-600 text-sm mb-4">À gauche la droite $f:y=2x-5$ (injective), à droite la parabole $g:y=x^2$ (non injective). Déplacez le curseur de la droite horizontale.</p>
+                    <input id="hltSlider-fr" type="range" min="-90" max="90" step="1" value="0" class="w-full mb-3">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <svg id="hltSvgGood-fr" viewBox="0 0 200 200" class="w-full bg-emerald-50/50 rounded-lg border border-emerald-100"></svg>
+                            <p class="text-center text-xs text-slate-600 mt-1" id="hltGoodLabel-fr"></p>
+                        </div>
+                        <div>
+                            <svg id="hltSvgBad-fr" viewBox="0 0 200 200" class="w-full bg-red-50/50 rounded-lg border border-red-100"></svg>
+                            <p class="text-center text-xs text-slate-600 mt-1" id="hltBadLabel-fr"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-2">Contre-exemple :</p>
+                    <p class="text-slate-700 text-sm">$g: y=x^2$ n'est pas injective, car $g(2)=4$ et en même temps $g(-2)=4$ — deux valeurs différentes de $x$ ($2$ et $-2$) donnent la même valeur de $y$.</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Et la suite ?</p>
+                    <p class="text-sm text-slate-700">L'injectivité d'une fonction est une condition clé pour l'existence d'une fonction réciproque — vous la rencontrerez dans un prochain chapitre.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Mathématiques, CLIL · Propriétés des fonctions</p>
+</footer>
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+
+        const showingCz = !cz.classList.contains('hidden');
+        const oldContainer = showingCz ? cz : fr;
+        const newContainer = showingCz ? fr : cz;
+        const oldSections = oldContainer.querySelectorAll('main > section[id]');
+
+        const scrollY = window.pageYOffset;
+        let currentIndex = -1;
+        let oldSectionTopAbs = 0;
+        oldSections.forEach((sec, i) => {
+            const topAbs = sec.getBoundingClientRect().top + scrollY;
+            if (topAbs <= scrollY) { currentIndex = i; oldSectionTopAbs = topAbs; }
+        });
+        const offsetWithinSection = currentIndex === -1 ? null : scrollY - oldSectionTopAbs;
+
+        if (showingCz) {
+            cz.classList.add('hidden'); fr.classList.remove('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        } else {
+            fr.classList.add('hidden'); cz.classList.remove('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        }
+
+        const newSections = newContainer.querySelectorAll('main > section[id]');
+        if (currentIndex !== -1 && newSections[currentIndex]) {
+            const newTopAbs = newSections[currentIndex].getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo(0, newTopAbs + offsetWithinSection);
+        } else {
+            window.scrollTo(0, 0);
+        }
+
+        if (window.MathJax) { setTimeout(() => MathJax.typesetPromise && MathJax.typesetPromise(), 50); }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+
+    function buildAxesWithTicks(toSvgFn, xMin,xMax,yMin,yMax) {
+        const [ox,oy] = toSvgFn(0,0);
+        let s = '';
+        for (let xi=xMin; xi<=xMax; xi++) {
+            const [px] = toSvgFn(xi,0);
+            s += `<line x1="${px}" y1="${oy-4}" x2="${px}" y2="${oy+4}" stroke="#94a3b8" stroke-width="1"/>`;
+            if (xi !== 0) s += `<text x="${px}" y="${oy+16}" font-size="9" fill="#64748b" text-anchor="middle">${xi}</text>`;
+        }
+        for (let yi=yMin; yi<=yMax; yi++) {
+            const [,py] = toSvgFn(0,yi);
+            s += `<line x1="${ox-4}" y1="${py}" x2="${ox+4}" y2="${py}" stroke="#94a3b8" stroke-width="1"/>`;
+            if (yi !== 0) s += `<text x="${ox-8}" y="${py+3}" font-size="9" fill="#64748b" text-anchor="end">${yi}</text>`;
+        }
+        return s;
+    }
+
+    // ============ SEKCE 1: rostouci/klesajici/konstantni ============
+    const MONO = { xMin:-5, xMax:5, yMin:-5, yMax:5, W:380, H:300, padL:35, padR:20, padT:20, padB:35 };
+    function monoToSvg(x,y) {
+        const scaleX = (MONO.W-MONO.padL-MONO.padR)/(MONO.xMax-MONO.xMin);
+        const scaleY = (MONO.H-MONO.padT-MONO.padB)/(MONO.yMax-MONO.yMin);
+        return [MONO.padL+(x-MONO.xMin)*scaleX, MONO.H-MONO.padB-(y-MONO.yMin)*scaleY];
+    }
+    function monoF(x) {
+        if (x <= -1) return -3 + 2*(x+4);
+        if (x <= 1) return 3;
+        return 3 - 2*(x-1);
+    }
+    function drawMono(suffix) {
+        const svg = document.getElementById('monoSvg-'+suffix);
+        if (!svg) return;
+        const x1 = parseFloat(document.getElementById('monoSlider-'+suffix).value);
+        const x2 = x1 + 1;
+        const [ox,oy] = monoToSvg(0,0);
+        const [xa,ya] = monoToSvg(MONO.xMin,0), [xb] = monoToSvg(MONO.xMax,0);
+        const ticks = buildAxesWithTicks(monoToSvg, MONO.xMin, MONO.xMax, MONO.yMin, MONO.yMax);
+        const curvePts = [[-4,-3],[-1,3],[1,3],[4,-3]].map(p => monoToSvg(...p));
+        const curvePath = 'M ' + curvePts.map(p => p.join(',')).join(' L ');
+        const [p1x,p1y] = monoToSvg(x1, monoF(x1));
+        const [p2x,p2y] = monoToSvg(x2, monoF(x2));
+        svg.innerHTML = `
+            <line x1="${xa}" y1="${oy}" x2="${xb}" y2="${oy}" stroke="#7c3aed" stroke-width="1.5"/>
+            <line x1="${ox}" y1="20" x2="${ox}" y2="280" stroke="#7c3aed" stroke-width="1.5"/>
+            ${ticks}
+            <path d="${curvePath}" fill="none" stroke="#a21caf" stroke-width="3"/>
+            <line x1="${p1x}" y1="${p1y}" x2="${p2x}" y2="${p2y}" stroke="#059669" stroke-width="1.5" stroke-dasharray="4"/>
+            <circle cx="${p1x}" cy="${p1y}" r="6" fill="#059669"/>
+            <circle cx="${p2x}" cy="${p2y}" r="6" fill="#dc2626"/>
+        `;
+        const f1 = monoF(x1), f2 = monoF(x2);
+        const label = document.getElementById('monoLabel-'+suffix);
+        if (f1 < f2) { label.textContent = suffix==='cs' ? 'rostoucí na tomto úseku (f(x₁) < f(x₂))' : 'croissante sur ce segment (f(x₁) < f(x₂))'; label.style.color = '#059669'; }
+        else if (f1 > f2) { label.textContent = suffix==='cs' ? 'klesající na tomto úseku (f(x₁) > f(x₂))' : 'décroissante sur ce segment (f(x₁) > f(x₂))'; label.style.color = '#dc2626'; }
+        else { label.textContent = suffix==='cs' ? 'konstantní na tomto úseku (f(x₁) = f(x₂))' : 'constante sur ce segment (f(x₁) = f(x₂))'; label.style.color = '#7c3aed'; }
+    }
+    ['cs','fr'].forEach(suffix => {
+        const el = document.getElementById('monoSlider-'+suffix);
+        if (el) el.addEventListener('input', () => drawMono(suffix));
+        drawMono(suffix);
+    });
+
+    // ============ SEKCE 3: extremy ============
+    const EXT = { xMin:-5, xMax:5, yMin:-5, yMax:6, W:380, H:300, padL:35, padR:20, padT:20, padB:35 };
+    function extToSvg(x,y) {
+        const scaleX = (EXT.W-EXT.padL-EXT.padR)/(EXT.xMax-EXT.xMin);
+        const scaleY = (EXT.H-EXT.padT-EXT.padB)/(EXT.yMax-EXT.yMin);
+        return [EXT.padL+(x-EXT.xMin)*scaleX, EXT.H-EXT.padB-(y-EXT.yMin)*scaleY];
+    }
+    function drawExtrem(suffix) {
+        const svg = document.getElementById('extremSvg-'+suffix);
+        if (!svg) return;
+        const x0 = parseFloat(document.getElementById('extremSlider-'+suffix).value);
+        const [ox,oy] = extToSvg(0,0);
+        const [xa] = extToSvg(EXT.xMin,0), [xb] = extToSvg(EXT.xMax,0);
+        const ticks = buildAxesWithTicks(extToSvg, EXT.xMin, EXT.xMax, EXT.yMin, EXT.yMax);
+        const curvePath = 'M 67.5,109.1 C 72.9,120.2 89.2,157.3 100.0,175.9 C 110.8,194.5 119.0,227.9 132.5,220.5 C 146.0,213.0 165.0,161.1 181.2,131.4 C 197.5,101.7 213.8,46.0 230.0,42.3 C 246.2,38.6 262.5,86.8 278.8,109.1 C 295.0,131.4 319.4,164.8 327.5,175.9';
+        // piecewise approx for live value (matches control points used for the curve)
+        const ctrl = [[-4,2],[-3,-1],[-2,-3],[-0.5,1],[1,5],[2.5,2],[4,-1]];
+        function interp(x) {
+            for (let i=0;i<ctrl.length-1;i++) {
+                const [x1,y1]=ctrl[i], [x2,y2]=ctrl[i+1];
+                if (x>=x1 && x<=x2) return y1 + (y2-y1)*(x-x1)/(x2-x1);
+            }
+            return ctrl[ctrl.length-1][1];
+        }
+        const y0 = interp(x0);
+        const [px,py] = extToSvg(x0,y0);
+        const [minx,miny] = extToSvg(-2,-3);
+        const [maxx,maxy] = extToSvg(1,5);
+        svg.innerHTML = `
+            <line x1="${xa}" y1="${oy}" x2="${xb}" y2="${oy}" stroke="#7c3aed" stroke-width="1.5"/>
+            <line x1="${ox}" y1="20" x2="${ox}" y2="280" stroke="#7c3aed" stroke-width="1.5"/>
+            ${ticks}
+            <path d="${curvePath}" fill="none" stroke="#a21caf" stroke-width="3"/>
+            <circle cx="${px}" cy="${py}" r="7" fill="#059669"/>
+        `;
+        const label = document.getElementById('extremLabel-'+suffix);
+        if (Math.abs(x0-(-2))<0.15) { label.textContent = suffix==='cs' ? 'Toto je MINIMUM: [-2; -3]' : "C'est le MINIMUM : [-2; -3]"; label.style.color='#dc2626'; }
+        else if (Math.abs(x0-1)<0.15) { label.textContent = suffix==='cs' ? 'Toto je MAXIMUM: [1; 5]' : "C'est le MAXIMUM : [1; 5]"; label.style.color='#059669'; }
+        else { label.textContent = suffix==='cs' ? `bod [${x0.toFixed(1)}; ${y0.toFixed(1)}] — ani min, ani max` : `point [${x0.toFixed(1)}; ${y0.toFixed(1)}] — ni min, ni max`; label.style.color='#475569'; }
+    }
+    ['cs','fr'].forEach(suffix => {
+        const el = document.getElementById('extremSlider-'+suffix);
+        if (el) el.addEventListener('input', () => drawExtrem(suffix));
+        drawExtrem(suffix);
+    });
+
+    // ============ SEKCE 4: omezenost ============
+    const BND = { xMin:-3.5, xMax:3.5, yMin:-8, yMax:5, W:380, H:300, padL:35, padR:20, padT:20, padB:35 };
+    function bndToSvg(x,y) {
+        const scaleX = (BND.W-BND.padL-BND.padR)/(BND.xMax-BND.xMin);
+        const scaleY = (BND.H-BND.padT-BND.padB)/(BND.yMax-BND.yMin);
+        return [BND.padL+(x-BND.xMin)*scaleX, BND.H-BND.padB-(y-BND.yMin)*scaleY];
+    }
+    function boundF(x) { return -x*x+4; }
+    function drawBound(suffix) {
+        const svg = document.getElementById('boundSvg-'+suffix);
+        if (!svg) return;
+        const h = parseFloat(document.getElementById('boundSlider-'+suffix).value);
+        const [ox,oy] = bndToSvg(0,0);
+        const [xa] = bndToSvg(BND.xMin,0), [xb] = bndToSvg(BND.xMax,0);
+        const ticks = buildAxesWithTicks(bndToSvg, -3, 3, -8, 5);
+        const curvePath = 'M 35.0,269.7 C 37.3,263.6 44.0,244.6 48.5,232.8 C 53.1,221.1 57.6,209.9 62.1,199.2 C 66.6,188.5 71.1,178.3 75.6,168.7 C 80.1,159.1 84.7,150.0 89.2,141.5 C 93.7,132.9 98.2,124.9 102.7,117.4 C 107.2,109.9 111.7,103.0 116.2,96.6 C 120.8,90.1 125.3,84.3 129.8,78.9 C 134.3,73.6 138.8,68.8 143.3,64.5 C 147.8,60.2 152.4,56.5 156.9,53.3 C 161.4,50.1 165.9,47.4 170.4,45.3 C 174.9,43.1 179.4,41.5 184.0,40.4 C 188.5,39.4 193.0,38.8 197.5,38.8 C 202.0,38.8 206.5,39.4 211.0,40.4 C 215.6,41.5 220.1,43.1 224.6,45.3 C 229.1,47.4 233.6,50.1 238.1,53.3 C 242.6,56.5 247.2,60.2 251.7,64.5 C 256.2,68.8 260.7,73.6 265.2,78.9 C 269.7,84.3 274.2,90.1 278.8,96.6 C 283.3,103.0 287.8,109.9 292.3,117.4 C 296.8,124.9 301.3,132.9 305.8,141.5 C 310.3,150.0 314.9,159.1 319.4,168.7 C 323.9,178.3 328.4,188.5 332.9,199.2 C 337.4,209.9 341.9,221.1 346.5,232.8 C 351.0,244.6 357.7,263.6 360.0,269.7';
+        const [,hy] = bndToSvg(0,h);
+        svg.innerHTML = `
+            <line x1="${xa}" y1="${oy}" x2="${xb}" y2="${oy}" stroke="#7c3aed" stroke-width="1.5"/>
+            <line x1="${ox}" y1="20" x2="${ox}" y2="280" stroke="#7c3aed" stroke-width="1.5"/>
+            ${ticks}
+            <path d="${curvePath}" fill="none" stroke="#a21caf" stroke-width="3"/>
+            <line x1="${xa}" y1="${hy}" x2="${xb}" y2="${hy}" stroke="#dc2626" stroke-width="2" stroke-dasharray="5"/>
+        `;
+        // check within displayed range whether curve ever exceeds h
+        let exceeds = false;
+        for (let xx=BND.xMin; xx<=BND.xMax; xx+=0.05) { if (boundF(xx) > h + 1e-9) { exceeds = true; break; } }
+        const label = document.getElementById('boundLabel-'+suffix);
+        const hStr = h.toFixed(1).replace(/\\.0$/,'');
+        if (!exceeds) {
+            label.textContent = suffix==='cs' ? `h = ${hStr}: JE horní hranicí (f(x) ≤ ${hStr} všude)` : `h = ${hStr} : c'est un majorant (f(x) ≤ ${hStr} partout)`;
+            label.style.color = '#059669';
+        } else {
+            label.textContent = suffix==='cs' ? `h = ${hStr}: NENÍ horní hranicí (graf ji na obrázku překračuje)` : `h = ${hStr} : ce n'est pas un majorant (le graphe le dépasse sur la figure)`;
+            label.style.color = '#dc2626';
+        }
+    }
+    ['cs','fr'].forEach(suffix => {
+        const el = document.getElementById('boundSlider-'+suffix);
+        if (el) el.addEventListener('input', () => drawBound(suffix));
+        drawBound(suffix);
+    });
+
+    // ============ SEKCE 5: suda/licha nahled ============
+    const SYM = { xMin:-3, xMax:3, yMin:-4, yMax:8, W:380, H:300, padL:35, padR:20, padT:20, padB:35 };
+    function symToSvg(x,y) {
+        const scaleX = (SYM.W-SYM.padL-SYM.padR)/(SYM.xMax-SYM.xMin);
+        const scaleY = (SYM.H-SYM.padT-SYM.padB)/(SYM.yMax-SYM.yMin);
+        return [SYM.padL+(x-SYM.xMin)*scaleX, SYM.H-SYM.padB-(y-SYM.yMin)*scaleY];
+    }
+    function symF(x) { return x*x*x*x - 3*x*x; }
+    function drawSym(suffix) {
+        const svg = document.getElementById('symSvg-'+suffix);
+        if (!svg) return;
+        const xv = parseFloat(document.getElementById('symSlider-'+suffix).value);
+        const [ox,oy] = symToSvg(0,0);
+        const [xa] = symToSvg(SYM.xMin,0), [xb] = symToSvg(SYM.xMax,0);
+        const ticks = buildAxesWithTicks(symToSvg, -3, 3, -4, 8);
+        let pts = [];
+        for (let xx=SYM.xMin; xx<=SYM.xMax; xx+=0.15) pts.push(symToSvg(xx, symF(xx)));
+        const curvePath = 'M ' + pts.map(p=>p.join(',')).join(' L ');
+        const [p1x,p1y] = symToSvg(xv, symF(xv));
+        const [p2x,p2y] = symToSvg(-xv, symF(-xv));
+        svg.innerHTML = `
+            <line x1="${xa}" y1="${oy}" x2="${xb}" y2="${oy}" stroke="#7c3aed" stroke-width="1.5"/>
+            <line x1="${ox}" y1="20" x2="${ox}" y2="280" stroke="#7c3aed" stroke-width="1.5"/>
+            ${ticks}
+            <path d="${curvePath}" fill="none" stroke="#a21caf" stroke-width="3"/>
+            <circle cx="${p1x}" cy="${p1y}" r="6" fill="#059669"/>
+            <circle cx="${p2x}" cy="${p2y}" r="6" fill="#059669"/>
+        `;
+        const fx = symF(xv);
+        const label = document.getElementById('symLabel-'+suffix);
+        label.textContent = suffix==='cs'
+            ? `f(${xv.toFixed(1)}) = ${fx.toFixed(2)} = f(${(-xv).toFixed(1)}) — shoda v tomto bodě`
+            : `f(${xv.toFixed(1)}) = ${fx.toFixed(2)} = f(${(-xv).toFixed(1)}) — coïncidence en ce point`;
+    }
+    ['cs','fr'].forEach(suffix => {
+        const el = document.getElementById('symSlider-'+suffix);
+        if (el) el.addEventListener('input', () => drawSym(suffix));
+        drawSym(suffix);
+    });
+
+    // ============ SEKCE 6: horizontalni test primkou (prosta funkce) ============
+    function prusecikSlovoH(n) {
+        if (n === 1) return 'průsečík';
+        if (n === 2 || n === 3 || n === 4) return 'průsečíky';
+        return 'průsečíků';
+    }
+    function intersectionMotH(n) { return n === 1 ? 'intersection' : 'intersections'; }
+    function drawHLT(suffix) {
+        const val = parseFloat(document.getElementById('hltSlider-'+suffix).value);
+        const svgGood = document.getElementById('hltSvgGood-'+suffix);
+        const svgBad = document.getElementById('hltSvgBad-'+suffix);
+        if (!svgGood || !svgBad) return;
+        const lineY = 100 + val;
+
+        const goodPath = 'M 20.0,180.0 L 180.0,20.0';
+        let goodCount = (lineY >= 20 && lineY <= 180) ? 1 : 0;
+        svgGood.innerHTML = `
+            <path d="${goodPath}" fill="none" stroke="#059669" stroke-width="3"/>
+            <line x1="10" y1="${lineY}" x2="190" y2="${lineY}" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/>
+        `;
+        document.getElementById('hltGoodLabel-'+suffix).textContent =
+            (suffix==='cs' ? `${goodCount} ${prusecikSlovoH(goodCount)} — je prostá` : `${goodCount} ${intersectionMotH(goodCount)} — c'est injective`);
+
+        const badPath = 'M 20.0,20.0 C 21.1,24.3 24.4,37.4 26.7,45.6 C 28.9,53.7 31.1,61.5 33.3,68.9 C 35.6,76.3 37.8,83.3 40.0,90.0 C 42.2,96.7 44.4,103.0 46.7,108.9 C 48.9,114.8 51.1,120.4 53.3,125.6 C 55.6,130.7 57.8,135.6 60.0,140.0 C 62.2,144.4 64.4,148.5 66.7,152.2 C 68.9,155.9 71.1,159.3 73.3,162.2 C 75.6,165.2 77.8,167.8 80.0,170.0 C 82.2,172.2 84.4,174.1 86.7,175.6 C 88.9,177.0 91.1,178.1 93.3,178.9 C 95.6,179.6 97.8,180.0 100.0,180.0 C 102.2,180.0 104.4,179.6 106.7,178.9 C 108.9,178.1 111.1,177.0 113.3,175.6 C 115.6,174.1 117.8,172.2 120.0,170.0 C 122.2,167.8 124.4,165.2 126.7,162.2 C 128.9,159.3 131.1,155.9 133.3,152.2 C 135.6,148.5 137.8,144.4 140.0,140.0 C 142.2,135.6 144.4,130.7 146.7,125.6 C 148.9,120.4 151.1,114.8 153.3,108.9 C 155.6,103.0 157.8,96.7 160.0,90.0 C 162.2,83.3 164.4,76.3 166.7,68.9 C 168.9,61.5 171.1,53.7 173.3,45.6 C 175.6,37.4 178.9,24.3 180.0,20.0';
+        let badCount = 0;
+        if (lineY > 20 && lineY < 180) badCount = 2;
+        else if (Math.abs(lineY-20)<0.5 || Math.abs(lineY-180)<0.5) badCount = 1;
+        svgBad.innerHTML = `
+            <path d="${badPath}" fill="none" stroke="#dc2626" stroke-width="3"/>
+            <line x1="10" y1="${lineY}" x2="190" y2="${lineY}" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/>
+        `;
+        document.getElementById('hltBadLabel-'+suffix).textContent =
+            (suffix==='cs' ? `${badCount} ${prusecikSlovoH(badCount)} — není prostá` : `${badCount} ${intersectionMotH(badCount)} — pas injective`);
+    }
+    ['cs','fr'].forEach(suffix => {
+        const el = document.getElementById('hltSlider-'+suffix);
+        if (el) el.addEventListener('input', () => drawHLT(suffix));
+        drawHLT(suffix);
+    });
+</script>
+
+</body>
+</html>

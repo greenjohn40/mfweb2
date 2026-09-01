@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Définition d'une fonction / Definice funkce, základní pojmy</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+    .grid-bg {
+        background-color: #fafaf9;
+        background-image:
+            linear-gradient(to right, rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #ddd6fe; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #7c3aed; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #a21caf; }
+    @media (max-width: 640px) {
+        .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; }
+    }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .formula-box { font-family: 'Cambria Math', Georgia, serif; }
+    input[type="range"] { accent-color: #7c3aed; }
+    .side-note { border-left: 4px solid; }
+    .side-note.curious { border-color: #0d9488; background: #f0fdfa; }
+    .side-note.trap { border-color: #d97706; background: #fffbeb; }
+    .side-note.link { border-color: #6366f1; background: #eef2ff; }
+    .side-note.next { border-color: #64748b; background: #f8fafc; }
+    .checker-input:focus { outline: 2px solid #7c3aed; }
+</style>
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="grid-bg text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-violet-800 to-fuchsia-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-violet-200 text-sm font-semibold tracking-wider uppercase">
+            <span>📐 Matematika</span><span>•</span><span>Funkce</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Definice funkce, základní pojmy</h1>
+        <p class="text-lg md:text-xl text-violet-50 max-w-3xl leading-relaxed">
+            Co je to funkce, definiční obor a obor hodnot, rovnost funkcí, způsoby zadání a práce s funkční hodnotou.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-violet-100">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('s1-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Co je funkce</span>
+        <span onclick="scrollToId('s2-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">D(f), H(f), f(x)</span>
+        <span onclick="scrollToId('s3-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Rovnost a zadání</span>
+        <span onclick="scrollToId('s4-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Určení D(f)</span>
+        <span onclick="scrollToId('s5-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Práce s hodnotou</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- SEKCE 1: CO JE FUNKCE -->
+    <section id="s1-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Co je funkce</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">Představte si šatnu v divadle. Při příchodu odevzdáte kabát a dostanete číslovaný lístek. Po představení lístek vrátíte a dostanete zpět <strong>svůj</strong> kabát — vždy přesně ten svůj, ne cizí. Každé číslo lístku tak jednoznačně určuje jeden konkrétní kabát.</p>
+                    <p class="text-slate-700">Naopak ale klidně může nastat, že dva různí návštěvníci mají úplně stejný kabát (stejná barva, stejná velikost) — přesto jde o dva různé lístky. Přesně na tomhle principu — <strong>každému vstupu patří právě jeden výstup</strong>, i když se výstupy mohou opakovat — je založený pojem <strong>funkce</strong>.</p>
+                </div>
+
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Definice</p>
+                    <p class="text-slate-800">Funkce na množině $D$ je předpis, který každému číslu $x$ z množiny $D$ přiřadí <strong>právě jedno</strong> reálné číslo $y$. Toto přiřazené číslo nazýváme <strong>hodnotou funkce v bodě $x$</strong>.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vyzkoušejte si to: cena taxi jízdy</h3>
+                    <p class="text-slate-600 text-sm mb-4">Taxislužba účtuje jízdu podle vzorce <span class="formula-box">cena = 40 + 25·km</span> (nástupní sazba 40 Kč + 25 Kč za každý kilometr). Posuňte jezdcem a sledujte, jak se mění cena.</p>
+
+                    <div class="grid sm:grid-cols-[1fr_140px] gap-6 items-center">
+                        <div>
+                            <label class="text-xs font-bold text-violet-700 flex justify-between mb-1"><span>počet kilometrů</span><span id="kmVal-cs">4</span></label>
+                            <input id="kmSlider-cs" type="range" min="0" max="10" step="1" value="4" class="w-full">
+                            <svg id="taxiGraph-cs" viewBox="0 0 300 160" class="w-full mt-4 bg-violet-50/50 rounded-lg border border-violet-100"></svg>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xs text-slate-500 mb-1">nezávisle proměnná</p>
+                            <p class="font-bold text-slate-700 mb-3" id="kmOut-cs">4 km</p>
+                            <p class="text-xs text-slate-500 mb-1">závisle proměnná</p>
+                            <p class="text-2xl font-bold text-violet-800" id="cenaOut-cs">140 Kč</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pro zvídavé</p>
+                    <p class="text-sm text-slate-700">Slovo „funkce" pochází z latinského <em>functio</em>, což znamená „vykonávání" nebo „plnění úkolu" — funkce skutečně „vykonává" přiřazení čísla k číslu.</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Co bude dál</p>
+                    <p class="text-sm text-slate-700">V dalších kapitolách se podíváme na konkrétní typy funkcí — lineární, kvadratické, mocninné a další — a naučíme se rozpoznat jejich grafy.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 2: D(f), H(f), f(x) -->
+    <section id="s2-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Definiční obor, obor hodnot, funkční hodnota</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4"><strong>Definiční obor funkce</strong> $D(f)$ je množina všech čísel $x$, kterým funkce přiřazuje nějakou hodnotu. <strong>Obor hodnot funkce</strong> $H(f)$ je množina všech hodnot $y$, kterých funkce skutečně nabývá.</p>
+                    <div class="grid sm:grid-cols-2 gap-4 text-center formula-box">
+                        <p class="bg-violet-100 rounded-lg py-3 text-violet-900">$f: y = 3x+2$<br><span class="text-sm font-sans">$D(f) = \mathbb{R}$</span></p>
+                        <p class="bg-violet-100 rounded-lg py-3 text-violet-900">$g: y = \dfrac{5}{x}$<br><span class="text-sm font-sans">$D(g) = \mathbb{R} - \{0\}$, $H(g) = \mathbb{R} - \{0\}$</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Živý ověřovač: patří x do definičního oboru g?</h3>
+                    <p class="text-slate-600 text-sm mb-4">Pro $g: y = \dfrac{5}{x}$ zadejte libovolné číslo a zjistěte, jestli v něm funkce žije, a pokud ano, jakou má hodnotu.</p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input id="gCheckerInput-cs" type="number" step="any" placeholder="zadejte x" class="checker-input border border-violet-300 rounded-lg px-3 py-2 w-40">
+                        <button onclick="checkG('cs')" class="bg-violet-700 hover:bg-violet-800 text-white font-bold px-5 py-2 rounded-lg">Ověřit</button>
+                        <span id="gCheckerResult-cs" class="font-semibold text-slate-700"></span>
+                    </div>
+                </div>
+
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Funkční hodnota v bodě</p>
+                    <p class="text-slate-700 mb-3">Hodnotu funkce v bodě $x_0$ získáme tak, že za $x$ dosadíme $x_0$ a vypočítáme výsledné číslo.</p>
+                    <div class="bg-white rounded-lg py-3 px-4 text-sm space-y-1">
+                        <p>Za $x$ dosadíme $x_0=4$: &nbsp; $f(4) = 3\cdot4+2$</p>
+                        <p>Vypočítáme: &nbsp; $f(4) = 12+2$</p>
+                        <p class="font-bold text-violet-800">$f(4) = 14$</p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Pozor na past</p>
+                    <p class="text-sm text-slate-700">Hodnotu funkce smíme určovat jen v bodech, které patří do $D(f)$. Mimo definiční obor funkce prostě „neexistuje" — nemá tam žádnou hodnotu.</p>
+                </div>
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Souvislosti</p>
+                    <p class="text-sm text-slate-700">Ve fyzice se s podobným zápisem setkáte často, např. $s(t)$ vyjadřuje, že dráha $s$ je funkcí času $t$.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 3: ROVNOST A ZPUSOBY ZADANI -->
+    <section id="s3-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Rovnost funkcí a způsoby zadání</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">Dvě funkce $f$ a $g$ jsou si rovny, právě když mají <strong>stejný definiční obor</strong> a <strong>ve všech bodech tohoto oboru se shodují jejich hodnoty</strong>.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-2">Časná past — vyzkoušejte sami:</p>
+                    <p class="text-slate-700 text-sm mb-3">Porovnejte $f: y = \dfrac{x^2-1}{x-1}$ a $g: y = x+1$.</p>
+                    <button onclick="toggleReveal('equalityReveal-cs', this)" class="text-amber-800 font-bold text-sm underline mb-3">Zobrazit řešení</button>
+                    <div id="equalityReveal-cs" class="hidden text-slate-700 text-sm space-y-2">
+                        <p>Čitatel rozložíme na součin: $x^2-1 = (x-1)(x+1)$, takže $f(x) = \dfrac{(x-1)(x+1)}{x-1}$.</p>
+                        <p>Pro $x \neq 1$ můžeme zlomek zkrátit: $f(x) = x+1$ — vypadá to, že $f=g$.</p>
+                        <p>Jenže $D(f) = \mathbb{R} - \{1\}$ (v bodě $x=1$ bychom dělili nulou), zatímco $D(g) = \mathbb{R}$.</p>
+                        <p class="font-bold">Definiční obory se liší → funkce si NEJSOU rovny, přestože se jejich hodnoty shodují všude, kde je $f$ definovaná.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-4">Čtyři způsoby, jak zadat funkci</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-violet-50 rounded-lg p-4">
+                            <p class="text-xs font-bold text-violet-700 uppercase mb-2">1. Tabulkou</p>
+                            <table class="w-full text-sm text-center">
+                                <tr class="border-b border-violet-200"><td class="py-1 font-semibold">x</td><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+                                <tr><td class="py-1 font-semibold">y</td><td>5</td><td>8</td><td>11</td><td>14</td></tr>
+                            </table>
+                        </div>
+                        <div class="bg-violet-50 rounded-lg p-4">
+                            <p class="text-xs font-bold text-violet-700 uppercase mb-2">2. Vzorcem</p>
+                            <p class="text-center formula-box text-lg mt-4">$f: y = 2x - 1$</p>
+                        </div>
+                        <div class="bg-violet-50 rounded-lg p-4 sm:col-span-2">
+                            <p class="text-xs font-bold text-violet-700 uppercase mb-2">3. Grafem — návštěvnost muzea podle měsíce</p>
+                            <svg id="museumGraph-cs" viewBox="0 0 500 180" class="w-full bg-white rounded border border-violet-100"></svg>
+                        </div>
+                        <div class="bg-violet-50 rounded-lg p-4 sm:col-span-2">
+                            <p class="text-xs font-bold text-violet-700 uppercase mb-2">4. Slovním popisem</p>
+                            <p class="text-slate-700 text-sm mb-2">„Funkce přiřadí každému celému číslu jeho druhou mocninu zmenšenou o 5."</p>
+                            <p class="text-center formula-box">$f: y = x^2 - 5,\ x \in \mathbb{Z}$</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pro zvídavé</p>
+                    <p class="text-sm text-slate-700">Zápis funkce tabulkou používáme hlavně tam, kde je definiční obor konečný nebo kde hodnoty pocházejí z měření — např. teplota naměřená jednou za hodinu.</p>
+                </div>
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Souvislosti</p>
+                    <p class="text-sm text-slate-700">Se zadáním funkce vzorcem jste se vlastně setkali už dřív — třeba vzorec pro obsah kruhu $S = \pi r^2$ je funkce, která poloměru přiřazuje obsah.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 4: URCENI DEFINICNIHO OBORU -->
+    <section id="s4-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Určování definičního oboru ze vzorce</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Dvě pravidla</p>
+                    <ol class="list-decimal ml-5 space-y-1 text-slate-800">
+                        <li>Jmenovatel zlomku se nesmí rovnat nule.</li>
+                        <li>Pod odmocninou musí být číslo nezáporné.</li>
+                    </ol>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8 space-y-5">
+                    <div>
+                        <p class="formula-box mb-2">$f: y = \dfrac{3x-6}{x+2}$</p>
+                        <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-700 space-y-1">
+                            <p>Jmenovatel nesmí být nulový: $x + 2 \neq 0$</p>
+                            <p>$x \neq -2$</p>
+                            <p class="text-violet-800 font-semibold pt-1">$D(f) = \mathbb{R} - \{-2\}$</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="formula-box mb-2">$g: y = \sqrt{5-x}$</p>
+                        <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-700 space-y-1">
+                            <p>Pod odmocninou musí být nezáporné číslo: $5 - x \geq 0$</p>
+                            <p>$-x \geq -5$</p>
+                            <p>$x \leq 5$ &nbsp;<span class="text-slate-400">(při dělení/násobení −1 se otočí znaménko nerovnosti)</span></p>
+                            <p class="text-violet-800 font-semibold pt-1">$D(g) = (-\infty; 5\rangle$</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="formula-box mb-2">$h: y = \dfrac{1}{x^2+4}$</p>
+                        <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-700 space-y-1">
+                            <p>Jmenovatel nesmí být nulový: $x^2 + 4 \neq 0$</p>
+                            <p>Protože $x^2 \geq 0$ pro každé reálné $x$, platí $x^2+4 \geq 4 > 0$ — jmenovatel je vždy kladný, podmínka je splněna pro každé $x$.</p>
+                            <p class="text-violet-800 font-semibold pt-1">$D(h) = \mathbb{R}$</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Složitější příklad — a živý ověřovač</h3>
+                    <p class="text-slate-700 mb-4">$f: y = \sqrt{x^2-2x-3} + \dfrac{1}{\sqrt{16-x^2}}$</p>
+                    <button onclick="toggleReveal('domainReveal-cs', this)" class="text-violet-700 font-bold text-sm underline mb-3">Zobrazit postup řešení</button>
+                    <div id="domainReveal-cs" class="hidden text-slate-700 text-sm space-y-4 mb-4">
+                        <div>
+                            <p class="font-semibold text-violet-800 mb-2">Podmínka 1 (výraz pod první odmocninou musí být nezáporný):</p>
+                            <div class="bg-slate-50 rounded-lg p-4 space-y-1">
+                                <p>$x^2-2x-3 \geq 0$</p>
+                                <p>Výraz rozložíme na součin kořenových činitelů: $x^2-2x-3 = (x-3)(x+1)$</p>
+                                <p>$(x-3)(x+1) \geq 0$</p>
+                                <p>Nulové body součinu jsou $x=3$ a $x=-1$. Součin dvou závorek je nezáporný tam, kde jsou obě závorky kladné, nebo obě záporné.</p>
+                                <svg viewBox="0 0 320 70" class="w-full max-w-sm mx-auto my-2">
+                                    <line x1="20" y1="35" x2="300" y2="35" stroke="#94a3b8" stroke-width="1.5"/>
+                                    <circle cx="90" cy="35" r="4" fill="#7c3aed"/>
+                                    <circle cx="230" cy="35" r="4" fill="#7c3aed"/>
+                                    <text x="90" y="55" font-size="11" fill="#475569" text-anchor="middle">−1</text>
+                                    <text x="230" y="55" font-size="11" fill="#475569" text-anchor="middle">3</text>
+                                    <text x="50" y="22" font-size="12" fill="#059669" text-anchor="middle">+</text>
+                                    <text x="160" y="22" font-size="12" fill="#dc2626" text-anchor="middle">−</text>
+                                    <text x="270" y="22" font-size="12" fill="#059669" text-anchor="middle">+</text>
+                                </svg>
+                                <p class="font-bold">Řešení: $x \leq -1$ nebo $x \geq 3$</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-violet-800 mb-2">Podmínka 2 (jmenovatel je jediná odmocnina — obě jeho podmínky spojíme rovnou do jedné ostré nerovnosti):</p>
+                            <div class="bg-slate-50 rounded-lg p-4 space-y-1">
+                                <p>$16-x^2 > 0$</p>
+                                <p>$16 > x^2$, neboli $x^2 < 16$</p>
+                                <p>Rozložením na součin: $(4-x)(4+x) > 0$, nulové body $x=-4$ a $x=4$</p>
+                                <svg viewBox="0 0 320 70" class="w-full max-w-sm mx-auto my-2">
+                                    <line x1="20" y1="35" x2="300" y2="35" stroke="#94a3b8" stroke-width="1.5"/>
+                                    <circle cx="70" cy="35" r="4" fill="#7c3aed"/>
+                                    <circle cx="250" cy="35" r="4" fill="#7c3aed"/>
+                                    <text x="70" y="55" font-size="11" fill="#475569" text-anchor="middle">−4</text>
+                                    <text x="250" y="55" font-size="11" fill="#475569" text-anchor="middle">4</text>
+                                    <text x="40" y="22" font-size="12" fill="#dc2626" text-anchor="middle">−</text>
+                                    <text x="160" y="22" font-size="12" fill="#059669" text-anchor="middle">+</text>
+                                    <text x="280" y="22" font-size="12" fill="#dc2626" text-anchor="middle">−</text>
+                                </svg>
+                                <p class="font-bold">Řešení: $-4 < x < 4$</p>
+                            </div>
+                        </div>
+                        <div class="bg-violet-50 rounded-lg p-4">
+                            <p class="mb-1">Definiční obor je <strong>průnik</strong> obou řešení — čísla, která vyhovují oběma podmínkám zároveň:</p>
+                            <p>$(-\infty; -1\rangle \cup \langle 3; \infty)$ &nbsp;∩&nbsp; $(-4; 4)$</p>
+                            <p class="font-bold text-violet-900 pt-1">$D(f) = (-4; -1\rangle \cup \langle 3; 4)$</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-3">Zkuste zadat vlastní číslo a ověřit, jestli patří do $D(f)$:</p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input id="domainCheckerInput-cs" type="number" step="any" placeholder="zadejte x" class="checker-input border border-violet-300 rounded-lg px-3 py-2 w-40">
+                        <button onclick="checkDomain('cs')" class="bg-violet-700 hover:bg-violet-800 text-white font-bold px-5 py-2 rounded-lg">Ověřit</button>
+                        <span id="domainCheckerResult-cs" class="font-semibold text-slate-700"></span>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Pozor na past</p>
+                    <p class="text-sm text-slate-700">Je-li jmenovatel zlomku tvořen jedinou odmocninou, obě podmínky (nezápornost pod odmocninou a nenulovost jmenovatele) spojíme do jedné — výraz pod odmocninou musí být <strong>ostře větší</strong> než nula.</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Co bude dál</p>
+                    <p class="text-sm text-slate-700">U logaritmických a goniometrických funkcí přibudou další vlastní podmínky pro definiční obor — probereme je v samostatných kapitolách.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 5: PRACE S FUNKCNI HODNOTOU -->
+    <section id="s5-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Práce s funkční hodnotou</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Hledání x pro dané y</h3>
+                    <p class="text-slate-700 mb-3">Pro $f: y = \dfrac{3}{x-2}$ najděte $x$, pro které platí a) $y=6$, b) $y=0$. (Podmínka: $x \neq 2$)</p>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm space-y-3">
+                        <div>
+                            <p class="font-semibold text-violet-800 mb-1">a) $y=6$:</p>
+                            <div class="space-y-0.5 pl-2">
+                                <p>$6 = \dfrac{3}{x-2}$</p>
+                                <p>$6(x-2) = 3$ &nbsp;<span class="text-slate-400">(vynásobíme obě strany výrazem $x-2$)</span></p>
+                                <p>$6x - 12 = 3$</p>
+                                <p>$6x = 15$</p>
+                                <p>$x = 2{,}5$ &nbsp;<span class="text-slate-400">(ověříme podmínku $x\neq2$ — splněna)</span></p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-violet-800 mb-1">b) $y=0$:</p>
+                            <div class="space-y-0.5 pl-2">
+                                <p>$0 = \dfrac{3}{x-2}$</p>
+                                <p>$0 \cdot (x-2) = 3$</p>
+                                <p>$0 = 3$ &nbsp;<span class="text-slate-400">— nepravdivé tvrzení, rovnice nemá řešení</span></p>
+                                <p class="font-bold">$\Rightarrow 0 \notin H(f)$ (funkce nikdy nenabývá hodnoty 0)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-2">S omezeným definičním oborem — vyzkoušejte sami:</p>
+                    <p class="text-slate-700 text-sm mb-3">Pro $f: y = x^2-2$, $x \in (-4;3)$, najděte body, kde $y=7$.</p>
+                    <button onclick="toggleReveal('restrictedReveal-cs', this)" class="text-amber-800 font-bold text-sm underline mb-3">Zobrazit řešení</button>
+                    <div id="restrictedReveal-cs" class="hidden text-slate-700 text-sm space-y-1">
+                        <p>Dosadíme $y=7$ do předpisu funkce: $7 = x^2 - 2$</p>
+                        <p>$x^2 = 9$ &nbsp;<span class="text-slate-400">(přičteme 2 k oběma stranám)</span></p>
+                        <p>$x = -3$ nebo $x = 3$ &nbsp;<span class="text-slate-400">(odmocníme, dvě možná řešení)</span></p>
+                        <p>Ověření oboru: $x=-3$ patří do $(-4;3)$ ✓, ale $x=3$ do otevřeného intervalu nepatří ✗</p>
+                        <p class="font-bold">Funkce nabývá hodnoty 7 jen v bodě x = −3.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">D(f) a H(f) z tabulky</h3>
+                    <table class="w-full text-sm text-center mb-3 max-w-xs">
+                        <tr class="border-b border-slate-200"><td class="py-1 font-semibold">x</td><td>2</td><td>5</td><td>1</td><td>4</td><td>3</td></tr>
+                        <tr><td class="py-1 font-semibold">y</td><td>8</td><td>14</td><td>2</td><td>8</td><td>5</td></tr>
+                    </table>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-700 space-y-1.5">
+                        <p>Definiční obor tvoří všechny hodnoty x z tabulky, seřazené vzestupně: $2;5;1;4;3 \;\rightarrow\; D(f) = \{1;2;3;4;5\}$</p>
+                        <p>Obor hodnot tvoří všechny hodnoty y z tabulky; opakující se hodnotu píšeme jen jednou a seřadíme vzestupně: $8;14;2;8;5 \;\rightarrow\; H(f) = \{2;5;8;14\}$ &nbsp;<span class="text-slate-400">(8 se objevilo dvakrát)</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-4">Kdy je tabulka platným zadáním funkce</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <p class="text-xs font-bold text-red-700 uppercase mb-2">Neplatná tabulka</p>
+                            <table class="w-full text-xs text-center mb-2">
+                                <tr class="border-b border-red-200"><td class="py-1 font-semibold">x</td><td>−3</td><td>9/2</td><td>4,5</td><td>2</td><td>√5</td></tr>
+                                <tr><td class="py-1 font-semibold">f(x)</td><td>2</td><td>1,2</td><td>7</td><td>5</td><td>√3</td></tr>
+                            </table>
+                            <p class="text-slate-600 text-xs">9/2 = 4,5, takže x=4,5 má dvě různé hodnoty (1,2 a 7) → není funkce.</p>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                            <p class="text-xs font-bold text-emerald-700 uppercase mb-2">Platná tabulka</p>
+                            <table class="w-full text-xs text-center mb-2">
+                                <tr class="border-b border-emerald-200"><td class="py-1 font-semibold">x</td><td>0,25</td><td>1/4</td><td>3</td><td>6/2</td><td>5</td></tr>
+                                <tr><td class="py-1 font-semibold">f(x)</td><td>7</td><td>7</td><td>1</td><td>1</td><td>9</td></tr>
+                            </table>
+                            <p class="text-slate-600 text-xs">1/4=0,25 a 6/2=3, ale pokaždé se stejnou hodnotou → je funkce (jen 3 různé body).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Pozor na past</p>
+                    <p class="text-sm text-slate-700">Pokud při hledání x pro dané y dostanete neplatnou rovnost (jako 0=3), znamená to, že daná hodnota y vůbec nepatří do oboru hodnot funkce — ne že jste se spletli ve výpočtu.</p>
+                </div>
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pro zvídavé</p>
+                    <p class="text-sm text-slate-700">Kolik hodnot y může mít jedno x? Vždy nejvýše jedno (to je podstata funkce). Kolik hodnot x může vést ke stejnému y? Klidně žádné, jedno, nebo i více.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Matematika, CLIL · Definice funkce, základní pojmy</p>
+</footer>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-violet-800 to-fuchsia-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-violet-200 text-sm font-semibold tracking-wider uppercase">
+            <span>📐 Mathématiques</span><span>•</span><span>Fonctions</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Définition d'une fonction, notions de base</h1>
+        <p class="text-lg md:text-xl text-violet-50 max-w-3xl leading-relaxed">
+            Qu'est-ce qu'une fonction, domaine de définition et image, égalité de fonctions, modes de définition et manipulation de la valeur d'une fonction.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-violet-100">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('s1-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Qu'est-ce qu'une fonction</span>
+        <span onclick="scrollToId('s2-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">D(f), H(f), f(x)</span>
+        <span onclick="scrollToId('s3-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Égalité et définition</span>
+        <span onclick="scrollToId('s4-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Détermination de D(f)</span>
+        <span onclick="scrollToId('s5-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Travailler avec la valeur</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- SECTION 1: QU'EST-CE QU'UNE FONCTION -->
+    <section id="s1-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Qu'est-ce qu'une fonction</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">Imaginez le vestiaire d'un théâtre. En arrivant, vous déposez votre manteau et recevez un jeton numéroté. Après la représentation, vous rendez le jeton et récupérez <strong>votre</strong> manteau — toujours exactement le vôtre, jamais celui d'un autre. Chaque numéro de jeton détermine ainsi de façon unique un manteau précis.</p>
+                    <p class="text-slate-700">En revanche, il peut très bien arriver que deux visiteurs différents aient exactement le même manteau (même couleur, même taille) — il s'agit pourtant bien de deux jetons différents. C'est exactement sur ce principe — <strong>à chaque entrée correspond exactement une sortie</strong>, même si les sorties peuvent se répéter — que repose la notion de <strong>fonction</strong>.</p>
+                </div>
+
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Définition</p>
+                    <p class="text-slate-800">Une fonction sur un ensemble $D$ est un procédé qui associe à chaque nombre $x$ de l'ensemble $D$ <strong>exactement un</strong> nombre réel $y$. Ce nombre associé s'appelle la <strong>valeur de la fonction au point $x$</strong>.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Essayez par vous-même : le prix d'une course de taxi</h3>
+                    <p class="text-slate-600 text-sm mb-4">Une société de taxi facture la course selon la formule <span class="formula-box">prix = 40 + 25·km</span> (prise en charge de 40 Kč + 25 Kč par kilomètre). Déplacez le curseur et observez comment le prix évolue.</p>
+
+                    <div class="grid sm:grid-cols-[1fr_140px] gap-6 items-center">
+                        <div>
+                            <label class="text-xs font-bold text-violet-700 flex justify-between mb-1"><span>nombre de kilomètres</span><span id="kmVal-fr">4</span></label>
+                            <input id="kmSlider-fr" type="range" min="0" max="10" step="1" value="4" class="w-full">
+                            <svg id="taxiGraph-fr" viewBox="0 0 300 160" class="w-full mt-4 bg-violet-50/50 rounded-lg border border-violet-100"></svg>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-xs text-slate-500 mb-1">variable indépendante</p>
+                            <p class="font-bold text-slate-700 mb-3" id="kmOut-fr">4 km</p>
+                            <p class="text-xs text-slate-500 mb-1">variable dépendante</p>
+                            <p class="text-2xl font-bold text-violet-800" id="cenaOut-fr">140 Kč</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pour les curieux</p>
+                    <p class="text-sm text-slate-700">Le mot « fonction » vient du latin <em>functio</em>, qui signifie « exécution » ou « accomplissement d'une tâche » — une fonction « exécute » réellement l'association d'un nombre à un autre.</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Et la suite ?</p>
+                    <p class="text-sm text-slate-700">Dans les chapitres suivants, nous étudierons des types de fonctions concrets — fonctions linéaires, quadratiques, puissances et d'autres — et apprendrons à reconnaître leurs graphes.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 2: D(f), H(f), f(x) -->
+    <section id="s2-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Domaine de définition, image, valeur de la fonction</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">Le <strong>domaine de définition</strong> $D(f)$ est l'ensemble de tous les nombres $x$ auxquels la fonction associe une valeur. L'<strong>image de la fonction</strong> $H(f)$ est l'ensemble de toutes les valeurs $y$ que la fonction atteint réellement.</p>
+                    <div class="grid sm:grid-cols-2 gap-4 text-center formula-box">
+                        <p class="bg-violet-100 rounded-lg py-3 text-violet-900">$f: y = 3x+2$<br><span class="text-sm font-sans">$D(f) = \mathbb{R}$</span></p>
+                        <p class="bg-violet-100 rounded-lg py-3 text-violet-900">$g: y = \dfrac{5}{x}$<br><span class="text-sm font-sans">$D(g) = \mathbb{R} - \{0\}$, $H(g) = \mathbb{R} - \{0\}$</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vérificateur en direct : x appartient-il au domaine de définition de g ?</h3>
+                    <p class="text-slate-600 text-sm mb-4">Pour $g: y = \dfrac{5}{x}$, entrez un nombre quelconque et découvrez si la fonction y est définie, et si oui, quelle est sa valeur.</p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input id="gCheckerInput-fr" type="number" step="any" placeholder="entrez x" class="checker-input border border-violet-300 rounded-lg px-3 py-2 w-40">
+                        <button onclick="checkG('fr')" class="bg-violet-700 hover:bg-violet-800 text-white font-bold px-5 py-2 rounded-lg">Vérifier</button>
+                        <span id="gCheckerResult-fr" class="font-semibold text-slate-700"></span>
+                    </div>
+                </div>
+
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Valeur de la fonction en un point</p>
+                    <p class="text-slate-700 mb-3">Pour obtenir la valeur de la fonction au point $x_0$, on remplace $x$ par $x_0$ et on calcule le nombre obtenu.</p>
+                    <div class="bg-white rounded-lg py-3 px-4 text-sm space-y-1">
+                        <p>On remplace $x$ par $x_0=4$ : &nbsp; $f(4) = 3\cdot4+2$</p>
+                        <p>On calcule : &nbsp; $f(4) = 12+2$</p>
+                        <p class="font-bold text-violet-800">$f(4) = 14$</p>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Attention au piège</p>
+                    <p class="text-sm text-slate-700">On ne peut déterminer la valeur d'une fonction qu'aux points appartenant à $D(f)$. En dehors du domaine de définition, la fonction « n'existe tout simplement pas » — elle n'y a aucune valeur.</p>
+                </div>
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Liens</p>
+                    <p class="text-sm text-slate-700">En physique, vous rencontrerez souvent une notation similaire, par exemple $s(t)$ exprime que la distance $s$ est fonction du temps $t$.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 3: EGALITE ET MODES DE DEFINITION -->
+    <section id="s3-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Égalité de fonctions et modes de définition</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">Deux fonctions $f$ et $g$ sont égales si et seulement si elles ont <strong>le même domaine de définition</strong> et <strong>leurs valeurs coïncident en tout point de ce domaine</strong>.</p>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-2">Un piège classique — essayez par vous-même :</p>
+                    <p class="text-slate-700 text-sm mb-3">Comparez $f: y = \dfrac{x^2-1}{x-1}$ et $g: y = x+1$.</p>
+                    <button onclick="toggleReveal('equalityReveal-fr', this)" class="text-amber-800 font-bold text-sm underline mb-3">Afficher la solution</button>
+                    <div id="equalityReveal-fr" class="hidden text-slate-700 text-sm space-y-2">
+                        <p>On factorise le numérateur : $x^2-1 = (x-1)(x+1)$, donc $f(x) = \dfrac{(x-1)(x+1)}{x-1}$.</p>
+                        <p>Pour $x \neq 1$, on peut simplifier la fraction : $f(x) = x+1$ — on pourrait croire que $f=g$.</p>
+                        <p>Or $D(f) = \mathbb{R} - \{1\}$ (au point $x=1$, on diviserait par zéro), tandis que $D(g) = \mathbb{R}$.</p>
+                        <p class="font-bold">Les domaines de définition diffèrent → les fonctions NE SONT PAS égales, bien que leurs valeurs coïncident partout où $f$ est définie.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-4">Quatre façons de définir une fonction</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-violet-50 rounded-lg p-4">
+                            <p class="text-xs font-bold text-violet-700 uppercase mb-2">1. Par un tableau</p>
+                            <table class="w-full text-sm text-center">
+                                <tr class="border-b border-violet-200"><td class="py-1 font-semibold">x</td><td>0</td><td>1</td><td>2</td><td>3</td></tr>
+                                <tr><td class="py-1 font-semibold">y</td><td>5</td><td>8</td><td>11</td><td>14</td></tr>
+                            </table>
+                        </div>
+                        <div class="bg-violet-50 rounded-lg p-4">
+                            <p class="text-xs font-bold text-violet-700 uppercase mb-2">2. Par une formule</p>
+                            <p class="text-center formula-box text-lg mt-4">$f: y = 2x - 1$</p>
+                        </div>
+                        <div class="bg-violet-50 rounded-lg p-4 sm:col-span-2">
+                            <p class="text-xs font-bold text-violet-700 uppercase mb-2">3. Par un graphique — fréquentation du musée par mois</p>
+                            <svg id="museumGraph-fr" viewBox="0 0 500 180" class="w-full bg-white rounded border border-violet-100"></svg>
+                        </div>
+                        <div class="bg-violet-50 rounded-lg p-4 sm:col-span-2">
+                            <p class="text-xs font-bold text-violet-700 uppercase mb-2">4. Par une description verbale</p>
+                            <p class="text-slate-700 text-sm mb-2">« La fonction associe à chaque entier son carré diminué de 5. »</p>
+                            <p class="text-center formula-box">$f: y = x^2 - 5,\ x \in \mathbb{Z}$</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pour les curieux</p>
+                    <p class="text-sm text-slate-700">On utilise la définition par tableau surtout lorsque le domaine de définition est fini ou lorsque les valeurs proviennent d'une mesure — par exemple une température relevée une fois par heure.</p>
+                </div>
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Liens</p>
+                    <p class="text-sm text-slate-700">Vous avez en fait déjà rencontré la définition par formule auparavant — par exemple, la formule de l'aire du disque $S = \pi r^2$ est une fonction qui associe une aire à un rayon.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 4: DETERMINATION DU DOMAINE DE DEFINITION -->
+    <section id="s4-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Détermination du domaine de définition à partir d'une formule</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Deux règles</p>
+                    <ol class="list-decimal ml-5 space-y-1 text-slate-800">
+                        <li>Le dénominateur d'une fraction ne doit pas être égal à zéro.</li>
+                        <li>Sous une racine carrée, le nombre doit être non négatif.</li>
+                    </ol>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8 space-y-5">
+                    <div>
+                        <p class="formula-box mb-2">$f: y = \dfrac{3x-6}{x+2}$</p>
+                        <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-700 space-y-1">
+                            <p>Le dénominateur ne doit pas être nul : $x + 2 \neq 0$</p>
+                            <p>$x \neq -2$</p>
+                            <p class="text-violet-800 font-semibold pt-1">$D(f) = \mathbb{R} - \{-2\}$</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="formula-box mb-2">$g: y = \sqrt{5-x}$</p>
+                        <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-700 space-y-1">
+                            <p>Sous la racine, le nombre doit être non négatif : $5 - x \geq 0$</p>
+                            <p>$-x \geq -5$</p>
+                            <p>$x \leq 5$ &nbsp;<span class="text-slate-400">(en divisant/multipliant par −1, le sens de l'inégalité s'inverse)</span></p>
+                            <p class="text-violet-800 font-semibold pt-1">$D(g) = (-\infty; 5\rangle$</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="formula-box mb-2">$h: y = \dfrac{1}{x^2+4}$</p>
+                        <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-700 space-y-1">
+                            <p>Le dénominateur ne doit pas être nul : $x^2 + 4 \neq 0$</p>
+                            <p>Comme $x^2 \geq 0$ pour tout réel $x$, on a $x^2+4 \geq 4 > 0$ — le dénominateur est toujours positif, la condition est vérifiée pour tout $x$.</p>
+                            <p class="text-violet-800 font-semibold pt-1">$D(h) = \mathbb{R}$</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Un exemple plus complexe — et un vérificateur en direct</h3>
+                    <p class="text-slate-700 mb-4">$f: y = \sqrt{x^2-2x-3} + \dfrac{1}{\sqrt{16-x^2}}$</p>
+                    <button onclick="toggleReveal('domainReveal-fr', this)" class="text-violet-700 font-bold text-sm underline mb-3">Afficher la démarche</button>
+                    <div id="domainReveal-fr" class="hidden text-slate-700 text-sm space-y-4 mb-4">
+                        <div>
+                            <p class="font-semibold text-violet-800 mb-2">Condition 1 (l'expression sous la première racine doit être non négative) :</p>
+                            <div class="bg-slate-50 rounded-lg p-4 space-y-1">
+                                <p>$x^2-2x-3 \geq 0$</p>
+                                <p>On factorise l'expression : $x^2-2x-3 = (x-3)(x+1)$</p>
+                                <p>$(x-3)(x+1) \geq 0$</p>
+                                <p>Les racines du produit sont $x=3$ et $x=-1$. Le produit de deux facteurs est non négatif lorsque les deux facteurs sont positifs, ou tous deux négatifs.</p>
+                                <svg viewBox="0 0 320 70" class="w-full max-w-sm mx-auto my-2">
+                                    <line x1="20" y1="35" x2="300" y2="35" stroke="#94a3b8" stroke-width="1.5"/>
+                                    <circle cx="90" cy="35" r="4" fill="#7c3aed"/>
+                                    <circle cx="230" cy="35" r="4" fill="#7c3aed"/>
+                                    <text x="90" y="55" font-size="11" fill="#475569" text-anchor="middle">−1</text>
+                                    <text x="230" y="55" font-size="11" fill="#475569" text-anchor="middle">3</text>
+                                    <text x="50" y="22" font-size="12" fill="#059669" text-anchor="middle">+</text>
+                                    <text x="160" y="22" font-size="12" fill="#dc2626" text-anchor="middle">−</text>
+                                    <text x="270" y="22" font-size="12" fill="#059669" text-anchor="middle">+</text>
+                                </svg>
+                                <p class="font-bold">Solution : $x \leq -1$ ou $x \geq 3$</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-violet-800 mb-2">Condition 2 (le dénominateur est une racine carrée seule — on combine directement ses deux conditions en une inégalité stricte) :</p>
+                            <div class="bg-slate-50 rounded-lg p-4 space-y-1">
+                                <p>$16-x^2 > 0$</p>
+                                <p>$16 > x^2$, autrement dit $x^2 < 16$</p>
+                                <p>En factorisant : $(4-x)(4+x) > 0$, racines $x=-4$ et $x=4$</p>
+                                <svg viewBox="0 0 320 70" class="w-full max-w-sm mx-auto my-2">
+                                    <line x1="20" y1="35" x2="300" y2="35" stroke="#94a3b8" stroke-width="1.5"/>
+                                    <circle cx="70" cy="35" r="4" fill="#7c3aed"/>
+                                    <circle cx="250" cy="35" r="4" fill="#7c3aed"/>
+                                    <text x="70" y="55" font-size="11" fill="#475569" text-anchor="middle">−4</text>
+                                    <text x="250" y="55" font-size="11" fill="#475569" text-anchor="middle">4</text>
+                                    <text x="40" y="22" font-size="12" fill="#dc2626" text-anchor="middle">−</text>
+                                    <text x="160" y="22" font-size="12" fill="#059669" text-anchor="middle">+</text>
+                                    <text x="280" y="22" font-size="12" fill="#dc2626" text-anchor="middle">−</text>
+                                </svg>
+                                <p class="font-bold">Solution : $-4 < x < 4$</p>
+                            </div>
+                        </div>
+                        <div class="bg-violet-50 rounded-lg p-4">
+                            <p class="mb-1">Le domaine de définition est l'<strong>intersection</strong> des deux solutions — les nombres qui vérifient les deux conditions à la fois :</p>
+                            <p>$(-\infty; -1\rangle \cup \langle 3; \infty)$ &nbsp;∩&nbsp; $(-4; 4)$</p>
+                            <p class="font-bold text-violet-900 pt-1">$D(f) = (-4; -1\rangle \cup \langle 3; 4)$</p>
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-sm mb-3">Essayez d'entrer votre propre nombre et de vérifier s'il appartient à $D(f)$ :</p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input id="domainCheckerInput-fr" type="number" step="any" placeholder="entrez x" class="checker-input border border-violet-300 rounded-lg px-3 py-2 w-40">
+                        <button onclick="checkDomain('fr')" class="bg-violet-700 hover:bg-violet-800 text-white font-bold px-5 py-2 rounded-lg">Vérifier</button>
+                        <span id="domainCheckerResult-fr" class="font-semibold text-slate-700"></span>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Attention au piège</p>
+                    <p class="text-sm text-slate-700">Si le dénominateur d'une fraction est constitué d'une seule racine carrée, on combine les deux conditions (non-négativité sous la racine et non-nullité du dénominateur) en une seule — l'expression sous la racine doit être <strong>strictement supérieure</strong> à zéro.</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Et la suite ?</p>
+                    <p class="text-sm text-slate-700">Pour les fonctions logarithmiques et trigonométriques, d'autres conditions spécifiques s'ajouteront pour le domaine de définition — nous les aborderons dans des chapitres séparés.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 5: TRAVAILLER AVEC LA VALEUR DE LA FONCTION -->
+    <section id="s5-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Travailler avec la valeur de la fonction</h2>
+
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Rechercher x pour un y donné</h3>
+                    <p class="text-slate-700 mb-3">Pour $f: y = \dfrac{3}{x-2}$, trouvez $x$ tel que a) $y=6$, b) $y=0$. (Condition : $x \neq 2$)</p>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm space-y-3">
+                        <div>
+                            <p class="font-semibold text-violet-800 mb-1">a) $y=6$ :</p>
+                            <div class="space-y-0.5 pl-2">
+                                <p>$6 = \dfrac{3}{x-2}$</p>
+                                <p>$6(x-2) = 3$ &nbsp;<span class="text-slate-400">(on multiplie les deux membres par $x-2$)</span></p>
+                                <p>$6x - 12 = 3$</p>
+                                <p>$6x = 15$</p>
+                                <p>$x = 2{,}5$ &nbsp;<span class="text-slate-400">(on vérifie la condition $x\neq2$ — satisfaite)</span></p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-violet-800 mb-1">b) $y=0$ :</p>
+                            <div class="space-y-0.5 pl-2">
+                                <p>$0 = \dfrac{3}{x-2}$</p>
+                                <p>$0 \cdot (x-2) = 3$</p>
+                                <p>$0 = 3$ &nbsp;<span class="text-slate-400">— affirmation fausse, l'équation n'a pas de solution</span></p>
+                                <p class="font-bold">$\Rightarrow 0 \notin H(f)$ (la fonction n'atteint jamais la valeur 0)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-2">Avec un domaine de définition restreint — essayez par vous-même :</p>
+                    <p class="text-slate-700 text-sm mb-3">Pour $f: y = x^2-2$, $x \in (-4;3)$, trouvez les points où $y=7$.</p>
+                    <button onclick="toggleReveal('restrictedReveal-fr', this)" class="text-amber-800 font-bold text-sm underline mb-3">Afficher la solution</button>
+                    <div id="restrictedReveal-fr" class="hidden text-slate-700 text-sm space-y-1">
+                        <p>On remplace $y$ par 7 dans l'expression de la fonction : $7 = x^2 - 2$</p>
+                        <p>$x^2 = 9$ &nbsp;<span class="text-slate-400">(on ajoute 2 aux deux membres)</span></p>
+                        <p>$x = -3$ ou $x = 3$ &nbsp;<span class="text-slate-400">(on prend la racine carrée, deux solutions possibles)</span></p>
+                        <p>Vérification du domaine : $x=-3$ appartient à $(-4;3)$ ✓, mais $x=3$ n'appartient pas à l'intervalle ouvert ✗</p>
+                        <p class="font-bold">La fonction atteint la valeur 7 uniquement au point x = −3.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">D(f) et H(f) à partir d'un tableau</h3>
+                    <table class="w-full text-sm text-center mb-3 max-w-xs">
+                        <tr class="border-b border-slate-200"><td class="py-1 font-semibold">x</td><td>2</td><td>5</td><td>1</td><td>4</td><td>3</td></tr>
+                        <tr><td class="py-1 font-semibold">y</td><td>8</td><td>14</td><td>2</td><td>8</td><td>5</td></tr>
+                    </table>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm text-slate-700 space-y-1.5">
+                        <p>Le domaine de définition est constitué de toutes les valeurs de x du tableau, classées par ordre croissant : $2;5;1;4;3 \;\rightarrow\; D(f) = \{1;2;3;4;5\}$</p>
+                        <p>L'image est constituée de toutes les valeurs de y du tableau, classées par ordre croissant, une valeur répétée n'étant écrite qu'une seule fois : $8;14;2;8;5 \;\rightarrow\; H(f) = \{2;5;8;14\}$ &nbsp;<span class="text-slate-400">(8 apparaît deux fois)</span></p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-4">Quand un tableau définit-il valablement une fonction</h3>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <p class="text-xs font-bold text-red-700 uppercase mb-2">Tableau non valide</p>
+                            <table class="w-full text-xs text-center mb-2">
+                                <tr class="border-b border-red-200"><td class="py-1 font-semibold">x</td><td>−3</td><td>9/2</td><td>4,5</td><td>2</td><td>√5</td></tr>
+                                <tr><td class="py-1 font-semibold">f(x)</td><td>2</td><td>1,2</td><td>7</td><td>5</td><td>√3</td></tr>
+                            </table>
+                            <p class="text-slate-600 text-xs">9/2 = 4,5, donc x=4,5 a deux valeurs différentes (1,2 et 7) → ce n'est pas une fonction.</p>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                            <p class="text-xs font-bold text-emerald-700 uppercase mb-2">Tableau valide</p>
+                            <table class="w-full text-xs text-center mb-2">
+                                <tr class="border-b border-emerald-200"><td class="py-1 font-semibold">x</td><td>0,25</td><td>1/4</td><td>3</td><td>6/2</td><td>5</td></tr>
+                                <tr><td class="py-1 font-semibold">f(x)</td><td>7</td><td>7</td><td>1</td><td>1</td><td>9</td></tr>
+                            </table>
+                            <p class="text-slate-600 text-xs">1/4=0,25 et 6/2=3, mais à chaque fois avec la même valeur → c'est une fonction (seulement 3 points distincts).</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Attention au piège</p>
+                    <p class="text-sm text-slate-700">Si, en recherchant x pour un y donné, vous obtenez une égalité fausse (comme 0=3), cela signifie que cette valeur de y n'appartient tout simplement pas à l'image de la fonction — pas que vous vous êtes trompé dans le calcul.</p>
+                </div>
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pour les curieux</p>
+                    <p class="text-sm text-slate-700">Combien de valeurs y un seul x peut-il avoir ? Toujours au plus une (c'est l'essence même d'une fonction). Combien de valeurs x peuvent mener au même y ? Éventuellement aucune, une seule, ou même plusieurs.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Mathématiques, CLIL · Définition d'une fonction, notions de base</p>
+</footer>
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+
+        const showingCz = !cz.classList.contains('hidden');
+        const oldContainer = showingCz ? cz : fr;
+        const newContainer = showingCz ? fr : cz;
+        const oldSections = oldContainer.querySelectorAll('main > section[id]');
+
+        // Najdeme sekci, ve které se právě nacházíme, a náš posun uvnitř ní
+        const scrollY = window.pageYOffset;
+        let currentIndex = -1;
+        let oldSectionTopAbs = 0;
+        oldSections.forEach((sec, i) => {
+            const topAbs = sec.getBoundingClientRect().top + scrollY;
+            if (topAbs <= scrollY) { currentIndex = i; oldSectionTopAbs = topAbs; }
+        });
+        const offsetWithinSection = currentIndex === -1 ? null : scrollY - oldSectionTopAbs;
+
+        if (showingCz) {
+            cz.classList.add('hidden'); fr.classList.remove('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        } else {
+            fr.classList.add('hidden'); cz.classList.remove('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        }
+
+        // Po přepnutí najdeme odpovídající sekci v novém jazyce a nastavíme stejný posun
+        const newSections = newContainer.querySelectorAll('main > section[id]');
+        if (currentIndex !== -1 && newSections[currentIndex]) {
+            const newTopAbs = newSections[currentIndex].getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo(0, newTopAbs + offsetWithinSection);
+        } else {
+            window.scrollTo(0, 0);
+        }
+
+        if (window.MathJax) { setTimeout(() => MathJax.typesetPromise && MathJax.typesetPromise(), 50); }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+
+    function toggleReveal(id, btn) {
+        const el = document.getElementById(id);
+        const isHidden = el.classList.toggle('hidden');
+        const showWords = ['Zobrazit', 'Afficher'];
+        const hideWords = ['Skrýt', 'Masquer'];
+        let txt = btn.textContent;
+        if (isHidden) {
+            hideWords.forEach((w,i) => { txt = txt.replace(w, showWords[i]); });
+        } else {
+            showWords.forEach((w,i) => { txt = txt.replace(w, hideWords[i]); });
+        }
+        btn.textContent = txt;
+    }
+
+    // ---- Taxi slider + mini graph (funguje pro obě jazykové verze pomocí suffixu) ----
+    function taxiPrice(km) { return 40 + 25*km; }
+
+    function drawTaxiGraph(suffix, currentKm) {
+        const svg = document.getElementById('taxiGraph-' + suffix);
+        if (!svg) return;
+        const w = 300, h = 160, pad = 30;
+        const xMax = 10, yMax = taxiPrice(10);
+        const toSvg = (km, cena) => [pad + (km/xMax)*(w-2*pad), h-pad-(cena/yMax)*(h-2*pad)];
+
+        let pts = [];
+        for (let km=0; km<=10; km++) pts.push(toSvg(km, taxiPrice(km)));
+        const line = pts.map(p => p.join(',')).join(' ');
+
+        const [cx, cy] = toSvg(currentKm, taxiPrice(currentKm));
+
+        svg.innerHTML = `
+            <line x1="${pad}" y1="${h-pad}" x2="${w-10}" y2="${h-pad}" stroke="#c4b5fd" stroke-width="1"/>
+            <line x1="${pad}" y1="${h-pad}" x2="${pad}" y2="10" stroke="#c4b5fd" stroke-width="1"/>
+            <polyline points="${line}" fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+            <circle cx="${cx}" cy="${cy}" r="5" fill="#a21caf"/>
+            <text x="${pad}" y="${h-pad+16}" font-size="9" fill="#64748b">0</text>
+            <text x="${w-30}" y="${h-pad+16}" font-size="9" fill="#64748b">km</text>
+        `;
+    }
+
+    function updateTaxi(suffix) {
+        const slider = document.getElementById('kmSlider-' + suffix);
+        if (!slider) return;
+        const km = parseInt(slider.value);
+        const cena = taxiPrice(km);
+        document.getElementById('kmVal-' + suffix).textContent = km;
+        document.getElementById('kmOut-' + suffix).textContent = km + ' km';
+        document.getElementById('cenaOut-' + suffix).textContent = cena + ' Kč';
+        drawTaxiGraph(suffix, km);
+    }
+
+    ['cs','fr'].forEach(suffix => {
+        const slider = document.getElementById('kmSlider-' + suffix);
+        if (slider) slider.addEventListener('input', () => updateTaxi(suffix));
+        updateTaxi(suffix);
+    });
+
+    // ---- Museum bar chart (static demo data), pro obe jazykove verze ----
+    function drawMuseumGraph(suffix) {
+        const svg = document.getElementById('museumGraph-' + suffix);
+        if (!svg) return;
+        const data = [120,150,210,300,450,600,720,690,400,250,160,140];
+        const labels = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+        const w = 500, h = 180, pad = 30;
+        const maxV = Math.max(...data);
+        const barW = (w-2*pad)/data.length - 6;
+        let bars = '';
+        data.forEach((v,i) => {
+            const bh = (v/maxV)*(h-2*pad-15);
+            const x = pad + i*((w-2*pad)/data.length) + 3;
+            const y = h-pad-bh;
+            bars += `<rect x="${x}" y="${y}" width="${barW}" height="${bh}" fill="#7c3aed" opacity="0.75" rx="2"/>`;
+            bars += `<text x="${x+barW/2}" y="${h-pad+14}" font-size="8" fill="#64748b" text-anchor="middle">${labels[i]}</text>`;
+        });
+        svg.innerHTML = `<line x1="${pad}" y1="${h-pad}" x2="${w-10}" y2="${h-pad}" stroke="#c4b5fd" stroke-width="1"/>` + bars;
+    }
+    ['cs','fr'].forEach(suffix => drawMuseumGraph(suffix));
+
+    // ---- Domain checker for g: y=5/x ----
+    function checkG(suffix) {
+        const val = document.getElementById('gCheckerInput-' + suffix).value;
+        const resultEl = document.getElementById('gCheckerResult-' + suffix);
+        const msgEmpty = suffix === 'cs' ? 'Zadejte číslo.' : 'Entrez un nombre.';
+        if (val === '') { resultEl.textContent = msgEmpty; resultEl.className = 'font-semibold text-slate-500'; return; }
+        const xNum = parseFloat(val);
+        if (xNum === 0) {
+            resultEl.textContent = suffix === 'cs'
+                ? `x = 0 nepatří do D(g) — dělení nulou není definováno.`
+                : `x = 0 n'appartient pas à D(g) — la division par zéro n'est pas définie.`;
+            resultEl.className = 'font-semibold text-red-600';
+        } else {
+            const g = 5/xNum;
+            const gStr = g.toFixed(3).replace(/\.?0+$/,'');
+            resultEl.textContent = suffix === 'cs'
+                ? `x = ${xNum} patří do D(g), g(${xNum}) = ${gStr}`
+                : `x = ${xNum} appartient à D(g), g(${xNum}) = ${gStr}`;
+            resultEl.className = 'font-semibold text-emerald-700';
+        }
+    }
+
+    // ---- Domain checker for the complex example ----
+    function checkDomain(suffix) {
+        const val = document.getElementById('domainCheckerInput-' + suffix).value;
+        const resultEl = document.getElementById('domainCheckerResult-' + suffix);
+        const msgEmpty = suffix === 'cs' ? 'Zadejte číslo.' : 'Entrez un nombre.';
+        if (val === '') { resultEl.textContent = msgEmpty; resultEl.className = 'font-semibold text-slate-500'; return; }
+        const x = parseFloat(val);
+        const cond1 = (x*x - 2*x - 3) >= 0;
+        const cond2 = (16 - x*x) > 0;
+        const inDomain = cond1 && cond2;
+        if (inDomain) {
+            resultEl.textContent = suffix === 'cs'
+                ? `x = ${x} patří do D(f). ✓ (obě podmínky splněny)`
+                : `x = ${x} appartient à D(f). ✓ (les deux conditions sont vérifiées)`;
+            resultEl.className = 'font-semibold text-emerald-700';
+        } else {
+            let reason;
+            if (suffix === 'cs') {
+                reason = !cond1 ? 'nesplňuje x²−2x−3 ≥ 0' : 'nesplňuje 16−x² > 0';
+                resultEl.textContent = `x = ${x} nepatří do D(f) — ${reason}.`;
+            } else {
+                reason = !cond1 ? 'ne vérifie pas x²−2x−3 ≥ 0' : 'ne vérifie pas 16−x² > 0';
+                resultEl.textContent = `x = ${x} n'appartient pas à D(f) — ${reason}.`;
+            }
+            resultEl.className = 'font-semibold text-red-600';
+        }
+    }
+</script>
+
+</body>
+</html>

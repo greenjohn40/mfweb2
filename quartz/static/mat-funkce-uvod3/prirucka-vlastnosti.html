@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vlastnosti funkcí / Propriétés des fonctions</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 720px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: center; }
+        th { background: #f5f5f5; }
+        .law-box { border-left: 3px solid #1f1f1f; padding-left: 16px; margin: 1.25rem 0; }
+        .step-box { margin: 0.85rem 0 0.85rem 1rem; padding-left: 14px; border-left: 2px solid #ccc; font-size: 0.95rem; }
+        .trap-box { border-left: 3px solid #1f1f1f; padding-left: 16px; margin: 1.25rem 0; }
+
+        @media print {
+            .lang-switcher { display: none !important; }
+            body { padding-top: 0 !important; max-width: 100%; }
+            a { color: inherit; text-decoration: none; }
+            h2 { break-after: avoid; page-break-after: avoid; }
+            .law-box, .step-box, .trap-box { break-inside: avoid; page-break-inside: avoid; }
+        }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Vlastnosti funkcí</h1>
+        <p><strong>Předmět:</strong> Matematika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Rostoucí, klesající a konstantní funkce</h2>
+        <div class="law-box">
+            <p><strong>Rostoucí funkce:</strong> pro všechna $x_1,x_2\in D(f)$ platí: je-li $x_1\lt x_2$, pak $f(x_1)\lt f(x_2)$.</p>
+            <p><strong>Klesající funkce:</strong> pro všechna $x_1,x_2\in D(f)$ platí: je-li $x_1\lt x_2$, pak $f(x_1)\gt f(x_2)$.</p>
+            <p><strong>Konstantní funkce:</strong> pro všechna $x_1,x_2\in D(f)$ platí $f(x_1)=f(x_2)$.</p>
+        </div>
+        <p>Tytéž definice, omezené na interval $I\subset D(f)$, se nazývají <strong>monotónnost na intervalu</strong> — funkce může být na jedné části rostoucí a na jiné klesající.</p>
+        <div class="trap-box">
+            <p><strong>Pozor:</strong> Ověření na pár vybraných bodech monotónnost nedokazuje — nerovnosti musí platit pro úplně všechny dvojice $x_1\lt x_2$ z daného intervalu, a takových dvojic je nekonečně mnoho.</p>
+        </div>
+
+        <h2>2. Ryze monotónní funkce</h2>
+        <p>Funkce, které jsou na <strong>celém svém definičním oboru</strong> rostoucí, nebo na celém definičním oboru klesající, nazýváme <strong>ryze monotónní funkce</strong>.</p>
+        <div class="step-box">
+            <p>Vlastní příklady: $f: y = 2x+3$ (rostoucí na celém $\mathbb{R}$), $g: y = -3x+1$ (klesající na celém $\mathbb{R}$).</p>
+        </div>
+        <p>Každá ryze monotónní funkce je automaticky i prostá (viz sekce 6).</p>
+
+        <h2>3. Extrémy funkce</h2>
+        <div class="law-box">
+            <p><strong>Maximum:</strong> funkce $f$ má v bodě $x_M$ maximum, právě když pro všechna $x\in D(f)$ platí $f(x)\leq f(x_M)$.</p>
+            <p><strong>Minimum:</strong> funkce $f$ má v bodě $x_N$ minimum, právě když pro všechna $x\in D(f)$ platí $f(x)\geq f(x_N)$.</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Pozor:</strong> Extrém nemusí existovat vůbec! Pokud graf funkce neomezeně roste nebo klesá (jako přímka), maximum ani minimum nemá.</p>
+        </div>
+
+        <h2>4. Omezenost funkce</h2>
+        <div class="law-box">
+            <p><strong>Omezená shora:</strong> existuje číslo $h$ takové, že pro všechna $x\in D(f)$ platí $f(x)\leq h$ (horní hranice).</p>
+            <p><strong>Omezená zdola:</strong> existuje číslo $d$ takové, že pro všechna $x\in D(f)$ platí $f(x)\geq d$ (dolní hranice). Je-li funkce omezená shora i zdola zároveň, nazýváme ji <strong>omezená</strong>.</p>
+        </div>
+        <div class="step-box">
+            <p>Vlastní příklad: $f: y=-x^2+4$ je omezená shora ($h=4$), ale není omezená zdola — čím dál od nuly zvolíme $x$, tím hlouběji $f(x)$ klesá, bez jakékoliv spodní hranice.</p>
+        </div>
+
+        <h2>5. Sudá a lichá funkce</h2>
+        <div class="law-box">
+            <p><strong>Sudá funkce:</strong> $D(f)$ je souměrný podle nuly a pro každé $x\in D(f)$ platí $f(-x)=f(x)$. Graf je souměrný podle osy $y$.</p>
+            <p><strong>Lichá funkce:</strong> $D(f)$ je souměrný podle nuly a pro každé $x\in D(f)$ platí $f(-x)=-f(x)$. Graf je souměrný podle počátku.</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Pozor:</strong> Ověření na několika bodech sudost/lichost nedokazuje — i shoda pro tisíc hodnot $x$ by nebyla důkazem. Skutečný důkaz vyžaduje dosadit $-x$ do předpisu <strong>obecně</strong> (algebraicky).</p>
+        </div>
+        <div class="step-box">
+            <p><strong>Sudá:</strong> $f: y=x^4-3x^2$, $D(f)=\mathbb{R}$.</p>
+            <p>$f(-x) = (-x)^4-3\cdot(-x)^2 = x^4-3x^2 = f(x)$ pro každé $x$ $\Rightarrow$ funkce je sudá.</p>
+            <p><strong>Lichá:</strong> $g: y=x^3-4x$, $D(g)=\mathbb{R}$.</p>
+            <p>$g(-x) = (-x)^3-4\cdot(-x) = -x^3+4x = -(x^3-4x) = -g(x)$ pro každé $x$ $\Rightarrow$ funkce je lichá.</p>
+        </div>
+
+        <h2>6. Prostá funkce</h2>
+        <div class="law-box">
+            <p>Funkce $f$ je <strong>prostá</strong>, právě když pro všechna $x_1,x_2\in D(f)$ platí: je-li $x_1\neq x_2$, pak $f(x_1)\neq f(x_2)$.</p>
+        </div>
+        <p><strong>Test vodorovnou přímkou:</strong> funkce je prostá, právě když každá vodorovná přímka protíná její graf nejvýše v jednom bodě.</p>
+        <div class="step-box">
+            <p>Protipříklad: $g: y=x^2$ není prostá, protože $g(2)=4$ a zároveň $g(-2)=4$ — dvě různé hodnoty $x$ dávají stejnou funkční hodnotu.</p>
+        </div>
+        <p>Prostota funkce je klíčová podmínka pro existenci inverzní funkce.</p>
+
+        <h2>7. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Rostoucí/klesající/konstantní:</strong> $x_1\lt x_2 \Rightarrow f(x_1)\lt f(x_2)$ (resp. $\gt$, resp. $=$).</li>
+            <li><strong>Ryze monotónní:</strong> rostoucí nebo klesající na celém $D(f)$.</li>
+            <li><strong>Extrémy:</strong> maximum $f(x)\leq f(x_M)$, minimum $f(x)\geq f(x_N)$ pro všechna $x\in D(f)$.</li>
+            <li><strong>Omezenost:</strong> shora $f(x)\leq h$, zdola $f(x)\geq d$, obojí zároveň = omezená.</li>
+            <li><strong>Sudá/lichá:</strong> $f(-x)=f(x)$ (sudá) nebo $f(-x)=-f(x)$ (lichá) — nutno dokázat obecně, ne na příkladech.</li>
+            <li><strong>Prostá:</strong> $x_1\neq x_2 \Rightarrow f(x_1)\neq f(x_2)$; test vodorovnou přímkou.</li>
+        </ul>
+    </div>
+
+    <div id="content-fr">
+        <h1>Propriétés des fonctions</h1>
+        <p><strong>Matière :</strong> Mathématiques
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. Fonctions croissantes, décroissantes et constantes</h2>
+        <div class="law-box">
+            <p><strong>Fonction croissante :</strong> pour tous $x_1,x_2\in D(f)$ : si $x_1\lt x_2$, alors $f(x_1)\lt f(x_2)$.</p>
+            <p><strong>Fonction décroissante :</strong> pour tous $x_1,x_2\in D(f)$ : si $x_1\lt x_2$, alors $f(x_1)\gt f(x_2)$.</p>
+            <p><strong>Fonction constante :</strong> pour tous $x_1,x_2\in D(f)$, $f(x_1)=f(x_2)$.</p>
+        </div>
+        <p>Les mêmes définitions, restreintes à un intervalle $I\subset D(f)$, s'appellent la <strong>monotonie sur un intervalle</strong> — une fonction peut être croissante sur une partie et décroissante sur une autre.</p>
+        <div class="trap-box">
+            <p><strong>Attention :</strong> Vérifier quelques points ne prouve pas la monotonie — les inégalités doivent être vérifiées pour absolument toutes les paires $x_1\lt x_2$ de l'intervalle, et il en existe une infinité.</p>
+        </div>
+
+        <h2>2. Fonction strictement monotone</h2>
+        <p>Les fonctions qui sont croissantes sur <strong>tout leur domaine de définition</strong>, ou décroissantes sur tout leur domaine, sont appelées <strong>fonctions strictement monotones</strong>.</p>
+        <div class="step-box">
+            <p>Exemples personnels : $f: y = 2x+3$ (croissante sur tout $\mathbb{R}$), $g: y = -3x+1$ (décroissante sur tout $\mathbb{R}$).</p>
+        </div>
+        <p>Toute fonction strictement monotone est automatiquement injective (voir section 6).</p>
+
+        <h2>3. Extremums d'une fonction</h2>
+        <div class="law-box">
+            <p><strong>Maximum :</strong> la fonction $f$ a un maximum au point $x_M$ si et seulement si pour tout $x\in D(f)$, $f(x)\leq f(x_M)$.</p>
+            <p><strong>Minimum :</strong> la fonction $f$ a un minimum au point $x_N$ si et seulement si pour tout $x\in D(f)$, $f(x)\geq f(x_N)$.</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Attention :</strong> Un extremum peut ne pas exister du tout ! Si le graphe croît ou décroît indéfiniment (comme une droite), il n'y a ni maximum ni minimum.</p>
+        </div>
+
+        <h2>4. Bornage d'une fonction</h2>
+        <div class="law-box">
+            <p><strong>Majorée :</strong> il existe un nombre $h$ tel que pour tout $x\in D(f)$, $f(x)\leq h$ (majorant).</p>
+            <p><strong>Minorée :</strong> il existe un nombre $d$ tel que pour tout $x\in D(f)$, $f(x)\geq d$ (minorant). Si une fonction est majorée et minorée à la fois, on l'appelle <strong>bornée</strong>.</p>
+        </div>
+        <div class="step-box">
+            <p>Exemple personnel : $f: y=-x^2+4$ est majorée ($h=4$), mais n'est pas minorée — plus $x$ s'éloigne de zéro, plus $f(x)$ descend, sans aucune limite inférieure.</p>
+        </div>
+
+        <h2>5. Fonction paire et impaire</h2>
+        <div class="law-box">
+            <p><strong>Fonction paire :</strong> $D(f)$ est symétrique par rapport à zéro et pour tout $x\in D(f)$, $f(-x)=f(x)$. Le graphe est symétrique par rapport à l'axe $y$.</p>
+            <p><strong>Fonction impaire :</strong> $D(f)$ est symétrique par rapport à zéro et pour tout $x\in D(f)$, $f(-x)=-f(x)$. Le graphe est symétrique par rapport à l'origine.</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Attention :</strong> Vérifier quelques points ne prouve pas la parité — même une coïncidence pour mille valeurs de $x$ ne serait pas une preuve. Une véritable preuve exige de substituer $-x$ <strong>de façon générale</strong> (algébriquement).</p>
+        </div>
+        <div class="step-box">
+            <p><strong>Paire :</strong> $f: y=x^4-3x^2$, $D(f)=\mathbb{R}$.</p>
+            <p>$f(-x) = (-x)^4-3\cdot(-x)^2 = x^4-3x^2 = f(x)$ pour tout $x$ $\Rightarrow$ la fonction est paire.</p>
+            <p><strong>Impaire :</strong> $g: y=x^3-4x$, $D(g)=\mathbb{R}$.</p>
+            <p>$g(-x) = (-x)^3-4\cdot(-x) = -x^3+4x = -(x^3-4x) = -g(x)$ pour tout $x$ $\Rightarrow$ la fonction est impaire.</p>
+        </div>
+
+        <h2>6. Fonction injective</h2>
+        <div class="law-box">
+            <p>Une fonction $f$ est <strong>injective</strong> si et seulement si pour tous $x_1,x_2\in D(f)$ : si $x_1\neq x_2$, alors $f(x_1)\neq f(x_2)$.</p>
+        </div>
+        <p><strong>Test de la droite horizontale :</strong> une fonction est injective si et seulement si toute droite horizontale coupe son graphe en au plus un point.</p>
+        <div class="step-box">
+            <p>Contre-exemple : $g: y=x^2$ n'est pas injective, car $g(2)=4$ et en même temps $g(-2)=4$ — deux valeurs différentes de $x$ donnent la même valeur de la fonction.</p>
+        </div>
+        <p>L'injectivité est une condition clé pour l'existence d'une fonction réciproque.</p>
+
+        <h2>7. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Croissante/décroissante/constante :</strong> $x_1\lt x_2 \Rightarrow f(x_1)\lt f(x_2)$ (resp. $\gt$, resp. $=$).</li>
+            <li><strong>Strictement monotone :</strong> croissante ou décroissante sur tout $D(f)$.</li>
+            <li><strong>Extremums :</strong> maximum $f(x)\leq f(x_M)$, minimum $f(x)\geq f(x_N)$ pour tout $x\in D(f)$.</li>
+            <li><strong>Bornage :</strong> majorée $f(x)\leq h$, minorée $f(x)\geq d$, les deux à la fois = bornée.</li>
+            <li><strong>Paire/impaire :</strong> $f(-x)=f(x)$ (paire) ou $f(-x)=-f(x)$ (impaire) — à prouver de façon générale.</li>
+            <li><strong>Injective :</strong> $x_1\neq x_2 \Rightarrow f(x_1)\neq f(x_2)$ ; test de la droite horizontale.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang, preserveScroll) {
+                var oldContent = document.getElementById(lang === 'cs' ? 'content-fr' : 'content-cs');
+                var newLangIsCs = lang === 'cs';
+                var scrollFraction = null;
+
+                if (preserveScroll) {
+                    var oldScrollable = oldContent.scrollHeight;
+                    if (oldScrollable > 0) {
+                        scrollFraction = window.pageYOffset / oldScrollable;
+                    }
+                }
+
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (newLangIsCs) {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangGraf', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                        if (scrollFraction !== null) {
+                            var newContent = document.getElementById(newLangIsCs ? 'content-cs' : 'content-fr');
+                            var newScrollable = newContent.scrollHeight;
+                            window.scrollTo(0, scrollFraction * newScrollable);
+                        }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangGraf');
+            if (saved === 'fr') { setLanguage('fr', false); } else { setLanguage('cs', false); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs', true); });
+            btnFr.addEventListener('click', function() { setLanguage('fr', true); });
+        })();
+    </script>
+
+</body>
+</html>

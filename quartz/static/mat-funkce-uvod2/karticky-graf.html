@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Graf funkce / Graphe d'une fonction</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Graf funkce</h1>
+        <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je funkce?</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Předpis, který každému číslu x z množiny D přiřadí právě jedno reálné číslo y.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Matematika / Mathématiques
+    </footer>
+
+    <script>
+        const rawData = {
+            cs: [
+                { q: "Jak je určena poloha bodu v rovině?", a: "Uspořádanou dvojicí čísel $[x;y]$." },
+                { q: "Kde se protínají osy x a y?", a: "V počátku $O[0;0]$." },
+                { q: "Na kolik kvadrantů dělí osy x a y rovinu?", a: "Na čtyři kvadranty." },
+                { q: "Je bod $[2;-3]$ stejný jako bod $[-3;2]$?", a: "Ne — na pořadí souřadnic záleží." },
+                { q: "Kdo zavedl kartézskou soustavu souřadnic?", a: "René Descartes, francouzský matematik a filozof (17. století)." },
+                { q: "Co je graf funkce f?", a: "Množina všech bodů $[x_0; f(x_0)]$, kde $x_0$ probíhá celý definiční obor $D(f)$." },
+                { q: "Jaké dvě souřadnice má bod grafu funkce?", a: "První souřadnici $x_0$ z definičního oboru a druhou souřadnici $f(x_0)$." },
+                { q: "Jak zní test svislou přímkou?", a: "Množina bodů je grafem funkce, právě když každá přímka rovnoběžná s osou y ji protíná nejvýše v jednom bodě." },
+                { q: "Proč svislá přímka protíná graf funkce nejvýše jednou?", a: "Protože podle definice funkce má každé $x_0$ přiřazenu právě jednu hodnotu y; dva průsečíky by znamenaly dvě hodnoty y pro stejné x." },
+                { q: "Je kružnice grafem nějaké funkce?", a: "Ne — svislá přímka ji protíná ve dvou bodech (kromě krajních bodů), test svislou přímkou neprochází." },
+                { q: "Jak najdeme definiční obor funkce z grafu?", a: "Jako kolmý průmět grafu na osu x." },
+                { q: "Jak najdeme obor hodnot funkce z grafu?", a: "Jako kolmý průmět grafu na osu y." },
+                { q: "Co je asymptota grafu?", a: "Přímka, ke které se graf přibližuje, ale nikdy se jí nedotkne." },
+                { q: "Jak asymptota ovlivňuje $D(f)$ nebo $H(f)$?", a: "Hodnota, které asymptota odpovídá, se z příslušného oboru vylučuje." },
+                { q: "Výpočet: Graf má svislou asymptotu $x=2$ a vodorovnou asymptotu $y=1$. Jaký je $D(f)$?", a: "$D(f) = (-\\infty;2)\\cup(2;\\infty)$." },
+                { q: "Výpočet: Graf má svislou asymptotu $x=2$ a vodorovnou asymptotu $y=1$. Jaký je $H(f)$?", a: "$H(f) = (-\\infty;1)\\cup(1;\\infty)$." },
+                { q: "Jak ověříme, zda bod leží na grafu funkce?", a: "Dosadíme souřadnici x bodu do předpisu funkce a porovnáme výsledek se souřadnicí y." },
+                { q: "Co znamená, že se dosazená hodnota $f(x)$ shoduje se souřadnicí y bodu?", a: "Bod na grafu funkce leží." },
+                { q: "Výpočet: Pro $f: y = 3x²−2$ ověřte, zda bod A$[1;1]$ leží na grafu.", a: "$f(1)=3\\cdot1^2-2=1=1$, tedy A leží na grafu." },
+                { q: "Výpočet: Pro $f: y = 3x²−2$ ověřte, zda bod B$[−2;5]$ leží na grafu.", a: "$f(-2)=3\\cdot(-2)^2-2=10\\neq5$, tedy B na grafu neleží." },
+                { q: "Je totéž „bod leží na grafu funkce\" a „bod leží v definičním oboru funkce\"?", a: "Ne — definiční obor se týká jen souřadnice x, přináležitost ke grafu se týká celé dvojice [x;y]." },
+                { q: "Jak najdeme průsečík grafu funkce s osou x?", a: "Položíme $y=0$ a řešíme rovnici $0=f(x)$ pro x." },
+                { q: "Jak najdeme průsečík grafu funkce s osou y?", a: "Položíme $x=0$ a vypočítáme $y=f(0)$." },
+                { q: "Proč při hledání průsečíku s osou x pokládáme $y=0$?", a: "Protože každý bod ležící na ose x má druhou souřadnici (y) rovnu nule." },
+                { q: "Proč při hledání průsečíku s osou y pokládáme $x=0$?", a: "Protože každý bod ležící na ose y má první souřadnici (x) rovnu nule." },
+                { q: "Kolik průsečíků s osou y může mít graf funkce nejvýše?", a: "Nejvýše jeden, protože $x=0$ dává nejvýše jednu hodnotu y." },
+                { q: "Kolik průsečíků s osou x může mít graf funkce?", a: "Libovolně mnoho, žádný, nebo i nekonečně mnoho." },
+                { q: "Výpočet: Má funkce $g: y = 1/(2x+6)$ průsečík s osou x?", a: "Ne — rovnice $0=1/(2x+6)$ nemá řešení, zlomek nemůže být roven nule." },
+                { q: "Výpočet: Jaký je průsečík funkce $g: y = 1/(2x+6)$ s osou y?", a: "$P_y[0; 1/6]$, protože $g(0)$=1/(2·0+6)=1/6." },
+                { q: "Výpočet: Určete průsečíky funkce $f: y = x²+2x−15$ s osou x.", a: "Rozklad (x+5)(x−3)=0 dává $x_1$=−5, $x_2$=3, tedy $P_{x_1}[-5;0]$, $P_{x_2}[3;0]$." },
+                { q: "Výpočet: Určete průsečík funkce $f: y = x²+2x−15$ s osou y.", a: "$f(0)=0^2+2\\cdot0-15=-15$, tedy $P_y[0;-15]$." },
+                { q: "Co znamená, když rovnice pro hledání průsečíku s osou x nemá řešení?", a: "Graf funkce osu x vůbec neprotíná." },
+                { q: "Jaký je rozdíl mezi hledáním hodnoty $f(x₀)$ a hledáním souřadnic bodu na grafu?", a: "Je to v podstatě totéž — bod grafu je [$x_0$; $f(x₀)$], tedy dvojice x a k němu vypočtené hodnoty $f(x)$." },
+                { q: "Co představuje graf funkce oproti tabulkovému zadání?", a: "Obrázkovou podobu téhož — jen s nekonečně mnoha body místo pár řádků tabulky." },
+                { q: "Kolik hodnot y odpovídá jednomu x na grafu funkce?", a: "Právě jedna (pro x z definičního oboru), to je podstata funkce." },
+                { q: "Jak se nazývá bod, ve kterém se osy x a y protínají?", a: "Počátek soustavy souřadnic, značený O$[0;0]$." },
+                { q: "Je možné, aby graf funkce vypadal jako přímka?", a: "Ano, pokud je funkce lineární — přímka splňuje test svislou přímkou (není-li svislá)." },
+                { q: "Proč svislá přímka x=k sama o sobě není grafem funkce?", a: "Protože ona sama sebe protíná v nekonečně mnoha bodech — test svislou přímkou aplikovaný na tuto stejnou přímku selhává." },
+                { q: "Co je kvadrant roviny?", a: "Jedna ze čtyř částí, na které dělí rovinu osy x a y." },
+                { q: "Ve kterém kvadrantu leží bod $[3;3]$?", a: "V I. kvadrantu (obě souřadnice kladné)." },
+                { q: "Ve kterém kvadrantu leží bod $[-1;4]$?", a: "Ve II. kvadrantu (x záporné, y kladné)." },
+                { q: "Ve kterém kvadrantu leží bod $[-3;-3]$?", a: "Ve III. kvadrantu (obě souřadnice záporné)." },
+                { q: "Ve kterém kvadrantu leží bod $[2;-3]$?", a: "Ve IV. kvadrantu (x kladné, y záporné)." },
+                { q: "Patří bod ležící přímo na ose x do některého kvadrantu?", a: "Ne — body na osách neleží v žádném kvadrantu." },
+                { q: "Co je nutné znát, abychom mohli graf funkce sestrojit?", a: "Předpis funkce (nebo dostatek bodů [x;$f(x)$]) a definiční obor, na kterém funkci sestrojujeme." },
+                { q: "Může mít graf funkce svislou i vodorovnou asymptotu zároveň?", a: "Ano, typicky u lomených (racionálních) funkcí." },
+                { q: "Jak zjistíme z grafu, že funkce v daném bodě x0 není definována?", a: "Svislá přímka x=x0 graf vůbec neprotne." },
+                { q: "Souvisí definiční obor funkce s tím, kde má smysl dosazovat do vzorce?", a: "Ano — definiční obor je množina všech x, pro která má předpis funkce smysl (a odpovídá kolmému průmětu grafu na osu x)." },
+                { q: "Co je to vlastně obor hodnot $H(f)$ intuitivně?", a: "Množina všech \"výšek\", kterých graf funkce na svém průběhu dosáhne." },
+                { q: "Proč je důležité u příkladů s omezeným oborem kontrolovat, zda řešení leží v $D(f)$?", a: "Protože i matematicky správné řešení rovnice může ležet mimo definiční obor, a pak není platným řešením úlohy." }
+            ],
+            fr: [
+                { q: "Comment la position d'un point dans le plan est-elle déterminée ?", a: "Par un couple ordonné de nombres $[x;y]$." },
+                { q: "Où les axes x et y se coupent-ils ?", a: "À l'origine $O[0;0]$." },
+                { q: "En combien de quadrants les axes x et y divisent-ils le plan ?", a: "En quatre quadrants." },
+                { q: "Le point $[2;-3]$ est-il le même que le point $[-3;2]$ ?", a: "Non — l'ordre des coordonnées compte." },
+                { q: "Qui a introduit le repère cartésien ?", a: "René Descartes, mathématicien et philosophe français (XVIIe siècle)." },
+                { q: "Qu'est-ce que le graphe d'une fonction f ?", a: "L'ensemble de tous les points $[x_0; f(x_0)]$, où $x_0$ parcourt tout le domaine de définition $D(f)$." },
+                { q: "Quelles sont les deux coordonnées d'un point du graphe d'une fonction ?", a: "La première coordonnée $x_0$ du domaine de définition et la seconde $f(x_0)$." },
+                { q: "Quel est l'énoncé du test de la droite verticale ?", a: "Un ensemble de points est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe y le coupe en au plus un point." },
+                { q: "Pourquoi une droite verticale coupe-t-elle le graphe d'une fonction au plus une fois ?", a: "Parce que par définition, chaque $x_0$ a exactement une valeur y ; deux intersections signifieraient deux valeurs de y pour le même x." },
+                { q: "Un cercle est-il le graphe d'une fonction ?", a: "Non — une droite verticale le coupe en deux points (sauf aux points extrêmes), le test de la droite verticale échoue." },
+                { q: "Comment trouve-t-on le domaine de définition d'une fonction à partir du graphe ?", a: "Par projection perpendiculaire du graphe sur l'axe x." },
+                { q: "Comment trouve-t-on l'image d'une fonction à partir du graphe ?", a: "Par projection perpendiculaire du graphe sur l'axe y." },
+                { q: "Qu'est-ce qu'une asymptote du graphe ?", a: "Une droite dont le graphe se rapproche sans jamais la toucher." },
+                { q: "Comment une asymptote influence-t-elle $D(f)$ ou $H(f)$ ?", a: "La valeur correspondant à l'asymptote est exclue de l'ensemble correspondant." },
+                { q: "Calcul : Un graphe a une asymptote verticale $x=2$ et horizontale $y=1$. Quel est $D(f)$ ?", a: "$D(f) = (-\\infty;2)\\cup(2;\\infty)$." },
+                { q: "Calcul : Un graphe a une asymptote verticale $x=2$ et horizontale $y=1$. Quel est $H(f)$ ?", a: "$H(f) = (-\\infty;1)\\cup(1;\\infty)$." },
+                { q: "Comment vérifie-t-on qu'un point appartient au graphe d'une fonction ?", a: "On remplace la coordonnée x du point dans l'expression de la fonction et on compare le résultat avec la coordonnée y." },
+                { q: "Que signifie le fait que $f(x)$ calculé coïncide avec la coordonnée y du point ?", a: "Le point appartient au graphe de la fonction." },
+                { q: "Calcul : Pour $f: y = 3x²−2$, vérifiez si le point A$[1;1]$ appartient au graphe.", a: "$f(1)=3\\cdot1^2-2=1=1$, donc A appartient au graphe." },
+                { q: "Calcul : Pour $f: y = 3x²−2$, vérifiez si le point B$[−2;5]$ appartient au graphe.", a: "$f(-2)=3\\cdot(-2)^2-2=10\\neq5$, donc B n'appartient pas au graphe." },
+                { q: "« Le point appartient au graphe » et « le point appartient au domaine de définition » sont-ils identiques ?", a: "Non — le domaine ne concerne que la coordonnée x, l'appartenance au graphe concerne le couple [x;y] tout entier." },
+                { q: "Comment trouve-t-on l'intersection du graphe d'une fonction avec l'axe x ?", a: "On pose $y=0$ et on résout l'équation $0=f(x)$ pour x." },
+                { q: "Comment trouve-t-on l'intersection du graphe d'une fonction avec l'axe y ?", a: "On pose $x=0$ et on calcule $y=f(0)$." },
+                { q: "Pourquoi pose-t-on $y=0$ pour chercher l'intersection avec l'axe x ?", a: "Parce que tout point situé sur l'axe x a sa seconde coordonnée (y) égale à zéro." },
+                { q: "Pourquoi pose-t-on $x=0$ pour chercher l'intersection avec l'axe y ?", a: "Parce que tout point situé sur l'axe y a sa première coordonnée (x) égale à zéro." },
+                { q: "Combien d'intersections avec l'axe y un graphe de fonction peut-il avoir au maximum ?", a: "Au plus une, car $x=0$ donne au plus une valeur de y." },
+                { q: "Combien d'intersections avec l'axe x un graphe de fonction peut-il avoir ?", a: "Un nombre quelconque, aucune, ou même une infinité." },
+                { q: "Calcul : La fonction $g: y = 1/(2x+6)$ a-t-elle une intersection avec l'axe x ?", a: "Non — l'équation $0=1/(2x+6)$ n'a pas de solution, une fraction ne peut jamais être nulle." },
+                { q: "Calcul : Quelle est l'intersection de $g: y = 1/(2x+6)$ avec l'axe y ?", a: "$P_y[0; 1/6]$, car $g(0)$=1/(2·0+6)=1/6." },
+                { q: "Calcul : Déterminez les intersections de $f: y = x²+2x−15$ avec l'axe x.", a: "La factorisation (x+5)(x−3)=0 donne $x_1$=−5, $x_2$=3, soit $P_{x_1}[-5;0]$, $P_{x_2}[3;0]$." },
+                { q: "Calcul : Déterminez l'intersection de $f: y = x²+2x−15$ avec l'axe y.", a: "$f(0)=0^2+2\\cdot0-15=-15$, soit $P_y[0;-15]$." },
+                { q: "Que signifie le fait que l'équation pour chercher l'intersection avec l'axe x n'a pas de solution ?", a: "Le graphe de la fonction ne coupe jamais l'axe x." },
+                { q: "Quelle est la différence entre chercher $f(x₀)$ et chercher les coordonnées d'un point du graphe ?", a: "C'est essentiellement la même chose — un point du graphe est [$x_0$; $f(x₀)$], soit x et la valeur $f(x)$ calculée." },
+                { q: "Que représente le graphe d'une fonction par rapport à une définition par tableau ?", a: "La version visuelle de la même chose — avec une infinité de points au lieu de quelques lignes du tableau." },
+                { q: "Combien de valeurs y correspondent à un seul x sur le graphe d'une fonction ?", a: "Exactement une (pour x du domaine de définition), c'est l'essence même d'une fonction." },
+                { q: "Comment appelle-t-on le point où les axes x et y se coupent ?", a: "L'origine du repère, notée O$[0;0]$." },
+                { q: "Le graphe d'une fonction peut-il être une droite ?", a: "Oui, si la fonction est linéaire — une droite satisfait le test de la droite verticale (sauf si elle est elle-même verticale)." },
+                { q: "Pourquoi une droite verticale x=k n'est-elle pas elle-même le graphe d'une fonction ?", a: "Parce qu'elle se coupe elle-même en une infinité de points — le test de la droite verticale appliqué à cette même droite échoue." },
+                { q: "Qu'est-ce qu'un quadrant du plan ?", a: "Une des quatre parties en lesquelles les axes x et y divisent le plan." },
+                { q: "Dans quel quadrant se trouve le point $[3;3]$ ?", a: "Dans le Ier quadrant (les deux coordonnées sont positives)." },
+                { q: "Dans quel quadrant se trouve le point $[-1;4]$ ?", a: "Dans le IIe quadrant (x négatif, y positif)." },
+                { q: "Dans quel quadrant se trouve le point $[-3;-3]$ ?", a: "Dans le IIIe quadrant (les deux coordonnées sont négatives)." },
+                { q: "Dans quel quadrant se trouve le point $[2;-3]$ ?", a: "Dans le IVe quadrant (x positif, y négatif)." },
+                { q: "Un point situé exactement sur l'axe x appartient-il à un quadrant ?", a: "Non — les points situés sur les axes n'appartiennent à aucun quadrant." },
+                { q: "Que faut-il connaître pour pouvoir tracer le graphe d'une fonction ?", a: "L'expression de la fonction (ou suffisamment de points [x;$f(x)$]) et le domaine de définition sur lequel on la trace." },
+                { q: "Un graphe peut-il avoir à la fois une asymptote verticale et horizontale ?", a: "Oui, typiquement pour les fonctions rationnelles." },
+                { q: "Comment voit-on sur le graphe qu'une fonction n'est pas définie en un point x0 ?", a: "La droite verticale x=x0 ne coupe pas du tout le graphe." },
+                { q: "Le domaine de définition est-il lié à l'endroit où il est possible de substituer dans la formule ?", a: "Oui — le domaine de définition est l'ensemble des x pour lesquels l'expression de la fonction a un sens (et correspond à la projection du graphe sur l'axe x)." },
+                { q: "Qu'est-ce que l'image $H(f)$ intuitivement ?", a: "L'ensemble de toutes les « hauteurs » que le graphe de la fonction atteint au cours de son parcours." },
+                { q: "Pourquoi est-il important de vérifier qu'une solution appartient à $D(f)$ dans les exercices à domaine restreint ?", a: "Parce qu'une solution mathématiquement correcte de l'équation peut se trouver hors du domaine de définition, et n'est alors pas une solution valide du problème." }
+            ]
+        };
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

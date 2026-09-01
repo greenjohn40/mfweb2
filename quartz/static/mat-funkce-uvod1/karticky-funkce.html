@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Definice funkce, základní pojmy / Définition d'une fonction</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Definice funkce, základní pojmy</h1>
+        <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je funkce?</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Předpis, který každému číslu x z množiny D přiřadí právě jedno reálné číslo y.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Matematika / Mathématiques
+    </footer>
+
+    <script>
+        const rawData = {
+            cs: [
+                { q: "Co je funkce?", a: "Předpis, který každému číslu x z množiny D přiřadí právě jedno reálné číslo y." },
+                { q: "Jak se nazývá číslo y přiřazené číslu x funkcí?", a: "Hodnota funkce v bodě x." },
+                { q: "Co je definiční obor funkce $D(f)$?", a: "Množina všech čísel x, kterým funkce přiřazuje nějakou hodnotu." },
+                { q: "Co je obor hodnot funkce $H(f)$?", a: "Množina všech hodnot y, kterých funkce skutečně nabývá." },
+                { q: "Jak se nazývá proměnná x ve funkci?", a: "Nezávisle proměnná (argument funkce)." },
+                { q: "Jak se nazývá proměnná y ve funkci?", a: "Závisle proměnná." },
+                { q: "Jaký je definiční obor funkce $f: y = 3x+2$?", a: "$D(f)$ = R (celá množina reálných čísel)." },
+                { q: "Jaký je definiční obor funkce $g: y=\\dfrac{5}{x}$?", a: "$D(g) = \\mathbb{R} - \\{0\\}$." },
+                { q: "Jaký je obor hodnot funkce $g: y=\\dfrac{5}{x}$?", a: "$H(g) = \\mathbb{R} - \\{0\\}$." },
+                { q: "Jak postupujeme při výpočtu hodnoty funkce $f(x₀)$?", a: "Za x dosadíme $x_0$ a vypočítáme výsledné číslo y." },
+                { q: "V jakých bodech smíme určovat hodnotu funkce?", a: "Jen v bodech, které patří do definičního oboru $D(f)$." },
+                { q: "Kdy jsou si dvě funkce f a g rovny?", a: "Když mají stejný definiční obor a ve všech jeho bodech se shodují jejich hodnoty." },
+                { q: "Proč si nejsou rovny $f: y=\\dfrac{x^2-1}{x-1}$ a $g: y=x+1$?", a: "Protože $D(f)=\\mathbb{R}-\\{1\\}$ (v $x=1$ by se dělilo nulou), zatímco $D(g)=\\mathbb{R}$ — definiční obory se liší." },
+                { q: "Co platí pro dvě funkce, jejichž hodnoty se po zkrácení shodují, ale mají různý definiční obor?", a: "Nejsou si rovny — rovnost funkcí vyžaduje shodu $D(f)$ i hodnot současně." },
+                { q: "Jmenujte čtyři způsoby zadání funkce.", a: "Tabulkou, vzorcem, grafem, slovním popisem." },
+                { q: "Kdy je vhodné zadat funkci tabulkou?", a: "Když má funkce malý (konečný) počet bodů, nebo hodnoty pocházejí z měření." },
+                { q: "Jaký způsob zadání funkce je nejvhodnější pro definiční obor typu interval?", a: "Zadání vzorcem (předpisem) ve tvaru $y=f(x)$." },
+                { q: "Uveďte příklad funkce zadané slovním popisem.", a: "Např. „funkce přiřadí každému celému číslu jeho druhou mocninu zmenšenou o 5“ → $f: y=x^2-5,\\ x\\in\\mathbb{Z}$." },
+                { q: "Jaká dvě pravidla platí pro určování definičního oboru ze vzorce?", a: "1) Jmenovatel zlomku se nesmí rovnat nule. 2) Pod odmocninou musí být číslo nezáporné." },
+                { q: "Jaký je definiční obor funkce $f: y=\\dfrac{3x-6}{x+2}$?", a: "$D(f) = \\mathbb{R} - \\{-2\\}$." },
+                { q: "Jaký je definiční obor funkce $g: y=\\sqrt{5-x}$?", a: "$D(g) = (-\\infty; 5\\rangle$." },
+                { q: "Jaký je definiční obor funkce $h: y=\\dfrac{1}{x^2+4}$?", a: "$D(h) = \\mathbb{R}$, protože $x^2+4$ je vždy kladné." },
+                { q: "Co uděláme, je-li jmenovatel zlomku tvořen jedinou odmocninou?", a: "Obě podmínky (nezápornost a nenulovost) spojíme do jedné — výraz pod odmocninou musí být ostře větší než nula." },
+                { q: "Jak určíme definiční obor funkce se dvěma podmínkami zároveň?", a: "Definiční obor je průnik intervalů, které vyhovují oběma podmínkám." },
+                { q: "Výpočet: Jaký je definiční obor $f: y=\\sqrt{x^2-2x-3} + \\dfrac{1}{\\sqrt{16-x^2}}$?", a: "$D(f) = (-4; -1\\rangle \\cup \\langle3; 4)$." },
+                { q: "Jak postupujeme při hledání x pro dané y?", a: "Za y dosadíme požadovanou hodnotu a vzniklou rovnici vyřešíme pro x." },
+                { q: "Výpočet: Pro $f: y=\\dfrac{3}{x-2}$ najděte x, pro které y=6.", a: "$x = 2{,}5$." },
+                { q: "Co znamená, když při hledání x pro dané y dostaneme neplatnou rovnost (např. $0=3$)?", a: "Daná hodnota y nepatří do oboru hodnot funkce — $H(f)$ ji neobsahuje." },
+                { q: "Výpočet: Pro $f: y=x^2-2$, $x\\in(-4;3)$, najděte body, kde y=7.", a: "Jen $x=-3$ (řešení $x=3$ nepatří do otevřeného intervalu $(-4;3)$)." },
+                { q: "Proč musíme u omezeného definičního oboru ověřovat, zda řešení patří do $D(f)$?", a: "Protože funkce má hodnotu jen v bodech definičního oboru; řešení mimo $D(f)$ je neplatné." },
+                { q: "Jak určíme $D(f)$ z tabulky?", a: "Vypíšeme všechny hodnoty x, seřadíme vzestupně (bez opakování)." },
+                { q: "Jak určíme $H(f)$ z tabulky?", a: "Vypíšeme všechny hodnoty y, odstraníme duplicity, seřadíme vzestupně." },
+                { q: "Kdy je tabulka platným zadáním funkce?", a: "Když každé hodnotě x odpovídá právě jedna hodnota y (i po převedení zlomků na desetinná čísla)." },
+                { q: "Proč tabulka s $x=7/2$ a $x=3{,}5$ (obě hodnoty uvedené zvlášť s různým $f(x)$) není funkce?", a: "Protože $7/2=3{,}5$, jde o stejné x se dvěma různými přiřazenými hodnotami — porušuje definici funkce." },
+                { q: "Proč tabulka s $x=1/4$ a $x=0{,}25$ (obě se stejným $f(x)$) může být platnou funkcí?", a: "Protože $1/4=0{,}25$ je stejné x se stejnou hodnotou — nejde o rozpor, jen o dva zápisy téhož bodu." },
+                { q: "Kolik hodnot y může mít jedno x podle definice funkce?", a: "Vždy nejvýše jedno (přesně jedno, pokud x patří do $D(f)$)." },
+                { q: "Kolik hodnot x může vést ke stejné hodnotě y?", a: "Klidně žádné, jedno, nebo i více — funkce to nijak neomezuje." },
+                { q: "Jaký je vztah mezi definičním oborem výrazu a definičním oborem funkce zadané tímto výrazem?", a: "Definiční obor funkce dané vzorcem $y=f(x)$ je shodný s definičním oborem výrazu $f(x)$." },
+                { q: "Co znamená zápis $f(a)$?", a: "Hodnota funkce f v bodě a." },
+                { q: "Jaký je rozdíl mezi hledáním $f(x₀)$ a hledáním x pro dané y?", a: "V prvním případě dosazujeme za x a počítáme y; ve druhém dosazujeme za y a počítáme x." },
+                { q: "Výpočet: Pro $f: y = 3x+2$ určete $f(4)$.", a: "$f(4)$ = 14." },
+                { q: "Může být hodnota funkce $h: y=\\dfrac{1}{x^2+4}$ v nějakém bodě záporná?", a: "Nikdy — jmenovatel $x^2+4$ je vždy kladný, takže $h(x)$ je vždy kladné pro každé reálné x." },
+                { q: "Co je to argument funkce?", a: "Jiné označení pro nezávisle proměnnou x." },
+                { q: "Proč se ve fyzice zápis $s(t)$ považuje za funkci?", a: "Protože dráha s závisí na čase t podle stejného principu — každému t je přiřazena právě jedna hodnota s." },
+                { q: "Je vzorec pro obsah kruhu S=πr² funkcí?", a: "Ano — přiřazuje poloměru r právě jednu hodnotu obsahu S." },
+                { q: "Co je nutné zkontrolovat před vynásobením obou stran rovnice výrazem obsahujícím neznámou?", a: "Podmínky existence (např. že jmenovatel nebo výraz pod odmocninou nejsou nulové/záporné)." },
+                { q: "Jaký je obor hodnot funkce $f: y=x^2-2$ na celém R?", a: "$H(f) = \\langle-2; \\infty)$ — protože $x^2 \\geq 0$, tedy $x^2-2 \\geq -2$." },
+                { q: "Proč je definiční obor v úloze s omezeným oborem (např. $x\\in (−4;3)$) důležitý i po vyřešení rovnice?", a: "Protože rovnice může mít matematická řešení, která do daného omezeného oboru nepatří, a ta je nutné vyloučit." },
+                { q: "Je funkce zadaná tabulkou vždy zadaná i vzorcem?", a: "Ne — některé funkce (např. s nekonečným nebo nepravidelným oborem) nelze snadno vyjádřit vzorcem." },
+                { q: "Co znamená, že $D(f)=\\mathbb{R}-\\{0\\}$ u funkce $g: y=\\dfrac{5}{x}$?", a: "Že funkce je definovaná pro všechna reálná čísla kromě nuly (dělení nulou není definováno)." }
+            ],
+            fr: [
+                { q: "Qu'est-ce qu'une fonction ?", a: "Un procédé qui associe à chaque nombre x d'un ensemble D exactement un nombre réel y." },
+                { q: "Comment appelle-t-on le nombre y associé au nombre x par une fonction ?", a: "La valeur de la fonction au point x." },
+                { q: "Qu'est-ce que le domaine de définition $D(f)$ ?", a: "L'ensemble de tous les nombres x auxquels la fonction associe une valeur." },
+                { q: "Qu'est-ce que l'image de la fonction $H(f)$ ?", a: "L'ensemble de toutes les valeurs y que la fonction atteint réellement." },
+                { q: "Comment appelle-t-on la variable x d'une fonction ?", a: "La variable indépendante (l'argument de la fonction)." },
+                { q: "Comment appelle-t-on la variable y d'une fonction ?", a: "La variable dépendante." },
+                { q: "Quel est le domaine de définition de $f: y = 3x+2$ ?", a: "$D(f)$ = R (l'ensemble de tous les réels)." },
+                { q: "Quel est le domaine de définition de $g: y=\\dfrac{5}{x}$ ?", a: "$D(g) = \\mathbb{R} - \\{0\\}$." },
+                { q: "Quelle est l'image de la fonction $g: y=\\dfrac{5}{x}$ ?", a: "$H(g) = \\mathbb{R} - \\{0\\}$." },
+                { q: "Comment procède-t-on pour calculer la valeur $f(x₀)$ ?", a: "On remplace x par $x_0$ et on calcule le nombre y obtenu." },
+                { q: "En quels points peut-on déterminer la valeur d'une fonction ?", a: "Uniquement aux points appartenant au domaine de définition $D(f)$." },
+                { q: "Quand deux fonctions f et g sont-elles égales ?", a: "Lorsqu'elles ont le même domaine de définition et que leurs valeurs coïncident en tout point de ce domaine." },
+                { q: "Pourquoi $f: y=\\dfrac{x^2-1}{x-1}$ et $g: y=x+1$ ne sont-elles pas égales ?", a: "Parce que $D(f)=\\mathbb{R}-\\{1\\}$ (en $x=1$ on diviserait par zéro), tandis que $D(g)=\\mathbb{R}$ — les domaines diffèrent." },
+                { q: "Que se passe-t-il si les valeurs de deux fonctions coïncident après simplification mais que les domaines diffèrent ?", a: "Elles ne sont pas égales — l'égalité de fonctions exige à la fois le même domaine et les mêmes valeurs." },
+                { q: "Citez les quatre modes de définition d'une fonction.", a: "Par un tableau, par une formule, par un graphique, par une description verbale." },
+                { q: "Quand est-il approprié de définir une fonction par un tableau ?", a: "Quand la fonction a un nombre (fini) réduit de points, ou que les valeurs proviennent d'une mesure." },
+                { q: "Quel mode de définition convient le mieux pour un domaine de type intervalle ?", a: "La définition par une formule sous la forme $y=f(x)$." },
+                { q: "Donnez un exemple de fonction définie par une description verbale.", a: "Par ex. « la fonction associe à chaque entier son carré diminué de 5 » → $f: y=x^2-5,\\ x\\in\\mathbb{Z}$." },
+                { q: "Quelles sont les deux règles pour déterminer le domaine de définition à partir d'une formule ?", a: "1) Le dénominateur d'une fraction ne doit pas être nul. 2) Sous une racine carrée, le nombre doit être non négatif." },
+                { q: "Quel est le domaine de définition de $f: y=\\dfrac{3x-6}{x+2}$ ?", a: "$D(f) = \\mathbb{R} - \\{-2\\}$." },
+                { q: "Quel est le domaine de définition de $g: y=\\sqrt{5-x}$ ?", a: "$D(g) = (-\\infty; 5\\rangle$." },
+                { q: "Quel est le domaine de définition de $h: y=\\dfrac{1}{x^2+4}$ ?", a: "$D(h) = \\mathbb{R}$, car $x^2+4$ est toujours positif." },
+                { q: "Que fait-on si le dénominateur d'une fraction est constitué d'une seule racine carrée ?", a: "On combine les deux conditions (non-négativité et non-nullité) en une seule — l'expression sous la racine doit être strictement supérieure à zéro." },
+                { q: "Comment détermine-t-on le domaine de définition d'une fonction avec deux conditions à la fois ?", a: "Le domaine de définition est l'intersection des intervalles qui satisfont les deux conditions." },
+                { q: "Calcul : Quel est le domaine de définition de $f: y=\\sqrt{x^2-2x-3} + \\dfrac{1}{\\sqrt{16-x^2}}$ ?", a: "$D(f) = (-4; -1\\rangle \\cup \\langle3; 4)$." },
+                { q: "Comment procède-t-on pour chercher x pour un y donné ?", a: "On remplace y par la valeur souhaitée et on résout l'équation obtenue pour x." },
+                { q: "Calcul : Pour $f: y=\\dfrac{3}{x-2}$, trouvez x tel que y=6.", a: "$x = 2{,}5$." },
+                { q: "Que signifie obtenir une égalité fausse (par ex. $0=3$) en cherchant x pour un y donné ?", a: "Cette valeur de y n'appartient pas à l'image de la fonction — elle n'est pas dans $H(f)$." },
+                { q: "Calcul : Pour $f: y=x^2-2$, $x\\in(-4;3)$, trouvez les points où y=7.", a: "Seulement $x=-3$ (la solution $x=3$ n'appartient pas à l'intervalle ouvert $(-4;3)$)." },
+                { q: "Pourquoi faut-il vérifier qu'une solution appartient à $D(f)$ dans un domaine restreint ?", a: "Parce que la fonction n'a de valeur qu'aux points du domaine de définition ; une solution hors $D(f)$ est invalide." },
+                { q: "Comment détermine-t-on $D(f)$ à partir d'un tableau ?", a: "On liste toutes les valeurs de x, classées par ordre croissant (sans répétition)." },
+                { q: "Comment détermine-t-on $H(f)$ à partir d'un tableau ?", a: "On liste toutes les valeurs de y, on retire les doublons, on classe par ordre croissant." },
+                { q: "Quand un tableau définit-il valablement une fonction ?", a: "Quand chaque valeur de x correspond à exactement une valeur de y (même après conversion des fractions en décimaux)." },
+                { q: "Pourquoi un tableau avec $x=7/2$ et $x=3{,}5$ (valeurs séparées avec des $f(x)$ différents) n'est-il pas une fonction ?", a: "Parce que $7/2=3{,}5$ : il s'agit du même x avec deux valeurs différentes associées — cela viole la définition d'une fonction." },
+                { q: "Pourquoi un tableau avec $x=1/4$ et $x=0{,}25$ (avec le même $f(x)$) peut-il être une fonction valide ?", a: "Parce que $1/4=0{,}25$ est le même x avec la même valeur — ce n'est pas une contradiction, juste deux écritures du même point." },
+                { q: "Combien de valeurs y un seul x peut-il avoir selon la définition d'une fonction ?", a: "Toujours au plus une (exactement une, si x appartient à $D(f)$)." },
+                { q: "Combien de valeurs x peuvent mener à la même valeur y ?", a: "Éventuellement aucune, une seule, ou même plusieurs — la fonction ne limite pas cela." },
+                { q: "Quel est le lien entre le domaine de définition d'une expression et celui de la fonction définie par cette expression ?", a: "Le domaine de définition de la fonction $y=f(x)$ coïncide avec celui de l'expression $f(x)$." },
+                { q: "Que signifie la notation $f(a)$ ?", a: "La valeur de la fonction f au point a." },
+                { q: "Quelle est la différence entre chercher $f(x₀)$ et chercher x pour un y donné ?", a: "Dans le premier cas, on remplace x et on calcule y ; dans le second, on remplace y et on calcule x." },
+                { q: "Calcul : Pour $f: y = 3x+2$, déterminez $f(4)$.", a: "$f(4)$ = 14." },
+                { q: "La fonction $h: y=\\dfrac{1}{x^2+4}$ peut-elle être négative en un point quelconque ?", a: "Jamais — le dénominateur $x^2+4$ est toujours positif, donc $h(x)$ est toujours positif pour tout réel x." },
+                { q: "Qu'est-ce que l'argument d'une fonction ?", a: "Une autre appellation pour la variable indépendante x." },
+                { q: "Pourquoi la notation $s(t)$ en physique est-elle considérée comme une fonction ?", a: "Parce que la distance s dépend du temps t selon le même principe — à chaque t correspond exactement une valeur s." },
+                { q: "La formule de l'aire du disque S=πr² est-elle une fonction ?", a: "Oui — elle associe au rayon r exactement une valeur d'aire S." },
+                { q: "Que faut-il vérifier avant de multiplier les deux membres d'une équation par une expression contenant l'inconnue ?", a: "Les conditions d'existence (par ex. que le dénominateur ou l'expression sous la racine ne soient pas nuls/négatifs)." },
+                { q: "Quelle est l'image de la fonction $f: y=x^2-2$ sur R tout entier ?", a: "$H(f) = \\langle-2; \\infty)$ — car $x^2 \\geq 0$, donc $x^2-2 \\geq -2$." },
+                { q: "Pourquoi le domaine de définition reste-t-il important après avoir résolu l'équation dans un exercice à domaine restreint (par ex. $x\\in (−4;3)$) ?", a: "Parce que l'équation peut avoir des solutions mathématiques qui n'appartiennent pas à ce domaine restreint, et il faut les exclure." },
+                { q: "Une fonction définie par un tableau est-elle toujours définissable aussi par une formule ?", a: "Non — certaines fonctions (par ex. à domaine infini ou irrégulier) ne peuvent pas facilement s'exprimer par une formule." },
+                { q: "Que signifie $D(f)=\\mathbb{R}-\\{0\\}$ pour la fonction $g: y=\\dfrac{5}{x}$ ?", a: "Que la fonction est définie pour tous les réels sauf zéro (la division par zéro n'est pas définie)." }
+            ]
+        };
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

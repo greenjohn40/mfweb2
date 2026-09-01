@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Grafické řešení / Résolution graphique</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-graficke-reseni.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Grafické řešení</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je anulovaný tvar rovnice?</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Tvar $ax+b=0$.</p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Matematika / Mathématiques · Grafické řešení
+    </footer>
+
+    <script>
+        const rawData = {
+            cs: [
+                { q: "Jak nazýváme tvar rovnice $ax+b=0$?", a: "anulovaný tvar" },
+                { q: "Jak graficky najdeme řešení rovnice $ax+b=0$?", a: "sestrojíme graf $y=ax+b$ a najdeme jeho průsečík s osou $x$" },
+                { q: "Kdy má rovnice $ax+b=0$ právě jedno řešení?", a: "když $a\\neq0$ (přímka je s osou $x$ různoběžná)" },
+                { q: "Kdy nemá rovnice $ax+b=0$ žádné řešení?", a: "když $a=0$ a $b\\neq0$" },
+                { q: "Kdy má rovnice $ax+b=0$ nekonečně mnoho řešení?", a: "když $a=0$ a $b=0$" },
+                { q: "Jaké je řešení rovnice $x+3=2x+1$?", a: "$K=\\{2\\}$" },
+                { q: "Jaké je řešení rovnice $2x+4=2x-1$?", a: "$K=\\emptyset$ (žádné řešení)" },
+                { q: "Jaké je řešení rovnice $3(x+2)=3x+6$?", a: "$K=\\mathbb{R}$ (nekonečně mnoho řešení)" },
+                { q: "Jak vypadá graf, když má rovnice $ax+b=0$ nekonečně mnoho řešení?", a: "splývá přímo s osou $x$" },
+                { q: "Jak se nazývá alternativní metoda řešení rovnice $ax+b=cx+d$?", a: "srovnání grafů dvou funkcí" },
+                { q: "Při srovnání grafů $f(x)=ax+b$ a $g(x)=cx+d$, co je řešením rovnice?", a: "$x$-ová souřadnice jejich průsečíku" },
+                { q: "Jaké je řešení rovnice $3x-1=x+5$ metodou srovnání funkcí?", a: "$x=3$ (grafy se protnou v bodě $[3;8]$)" },
+                { q: "Kolik řešení má rovnice o dvou neznámých $ax+by+c=0$?", a: "nekonečně mnoho" },
+                { q: "Co je množinou všech řešení rovnice $ax+by+c=0$?", a: "celá přímka" },
+                { q: "Jaký je graf rovnice $2x-y+1=0$?", a: "přímka $y=2x+1$" },
+                { q: "Je bod $[1;3]$ řešením rovnice $2x-y+1=0$?", a: "ano, leží na přímce $y=2x+1$" },
+                { q: "Je bod $[0;0]$ řešením rovnice $2x-y+1=0$?", a: "ne, $2\\cdot0-0+1=1\\neq0$" },
+                { q: "Co sestrojíme ke každé rovnici soustavy dvou lineárních rovnic?", a: "graf příslušné lineární funkce" },
+                { q: "Kdy má soustava dvou lineárních rovnic právě jedno řešení?", a: "když jsou přímky různoběžné" },
+                { q: "Kdy nemá soustava dvou lineárních rovnic žádné řešení?", a: "když jsou přímky rovnoběžné různé" },
+                { q: "Kdy má soustava dvou lineárních rovnic nekonečně mnoho řešení?", a: "když jsou přímky totožné" },
+                { q: "Jaké je řešení soustavy $x+y=5$, $x-y=1$?", a: "$K=\\{[3;2]\\}$" },
+                { q: "Proč nemá soustava $x+y=5$, $2x+2y=4$ žádné řešení?", a: "protože přímky jsou rovnoběžné (stejný sklon, jiný $q$)" },
+                { q: "Proč má soustava $x+y=4$, $2x+2y=8$ nekonečně mnoho řešení?", a: "protože druhá rovnice je násobkem první — přímky jsou totožné" },
+                { q: "Co je hraniční přímka u nerovnice $ax+by+c\\leq0$?", a: "přímka $ax+by+c=0$, která dělí rovinu na dvě poloroviny" },
+                { q: "Jak zjistíme, která polorovina je řešením nerovnice?", a: "dosazením zkušebního bodu, který na hraniční přímce neleží" },
+                { q: "Jaký bod nejčastěji volíme jako zkušební?", a: "bod $[0;0]$, pokud neleží na hraniční přímce" },
+                { q: "Jakou čarou kreslíme hraniční přímku u neostré nerovnosti ($\\leq,\\geq$)?", a: "plnou čarou" },
+                { q: "Jakou čarou kreslíme hraniční přímku u ostré nerovnosti ($\\lt,\\gt$)?", a: "přerušovanou čarou" },
+                { q: "Proč nesmí zkušební bod ležet na hraniční přímce?", a: "protože bychom nerozhodli, do které poloroviny patří" },
+                { q: "Je bod $[0;0]$ řešením nerovnice $2x-y-2\\leq0$?", a: "ano, $-2\\leq0$ platí" },
+                { q: "Jaká je hraniční přímka nerovnice $2x-y-2\\leq0$?", a: "$y=2x-2$" },
+                { q: "Co je řešením soustavy dvou lineárních nerovnic o dvou neznámých?", a: "průnik obou polorovin" },
+                { q: "Jaký tvar má typicky množina řešení soustavy dvou nerovnic s různým sklonem přímek?", a: "klínovitá (ohraničená částmi obou přímek)" },
+                { q: "Kde se protínají hraniční přímky $y=2x-2$ a $y=-x+3$?", a: "v bodě $\\left[\\tfrac{5}{3};\\tfrac{4}{3}\\right]$" },
+                { q: "Jak se nazývá matematická disciplína založená na soustavách lineárních nerovnic?", a: "lineární programování" },
+                { q: "Jak se nazývá množina všech řešení soustavy nerovnic v lineárním programování?", a: "množina přípustných řešení" },
+                { q: "K čemu slouží grafické porovnání dvou nabídek se stejnou strukturou?", a: "k nalezení bodu zvratu, od kterého je výhodnější jedna, nebo druhá varianta" },
+                { q: "Co je bod zvratu při porovnání dvou tarifů?", a: "průsečík grafů obou tarifů" },
+                { q: "Tarif A stojí $200+2t$ Kč, tarif B stojí $350+0{,}5t$ Kč. Kde se protnou?", a: "v bodě $[100;400]$" },
+                { q: "Do kdy je výhodnější tarif A z předchozí otázky?", a: "do $100$ minut" },
+                { q: "Jaký je rozdíl mezi rovnicí o jedné a o dvou neznámých co do počtu řešení?", a: "rovnice o 1 neznámé má nejvýše jedno řešení (nebo žádné/nekonečně), rovnice o 2 neznámých má vždy nekonečně mnoho" },
+                { q: "Jak zapisujeme množinu všech reálných čísel jako řešení rovnice?", a: "$K=\\mathbb{R}$" },
+                { q: "Jak zapisujeme prázdnou množinu jako řešení rovnice?", a: "$K=\\emptyset$" },
+                { q: "Jaký je první krok při řešení nerovnice o dvou neznámých?", a: "nahradit nerovnost rovností a sestrojit hraniční přímku" },
+                { q: "Co musí platit v bodě průsečíku grafů $f$ a $g$?", a: "$f(x)=g(x)$" },
+                { q: "Kolik případů může nastat při řešení soustavy dvou lineárních rovnic o dvou neznámých?", a: "tři (jedno řešení, žádné, nekonečně mnoho)" },
+                { q: "Může mít rovnice o dvou neznámých konečný, nenulový počet řešení?", a: "ne — buď žádné (pokud $a=0,b=0,c\\neq0$), nebo nekonečně mnoho" },
+                { q: "Jak poznáme z předpisů $y=a_1x+b_1$, $y=a_2x+b_2$, že jsou přímky rovnoběžné různé?", a: "$a_1=a_2$ a zároveň $b_1\\neq b_2$" },
+                { q: "Jak poznáme z předpisů $y=a_1x+b_1$, $y=a_2x+b_2$, že jsou přímky totožné?", a: "$a_1=a_2$ a zároveň $b_1=b_2$" }
+            ],
+            fr: [
+                { q: "Comment appelle-t-on la forme de l'équation $ax+b=0$ ?", a: "forme réduite" },
+                { q: "Comment résout-on graphiquement l'équation $ax+b=0$ ?", a: "on construit le graphe $y=ax+b$ et on cherche son intersection avec l'axe $x$" },
+                { q: "Quand l'équation $ax+b=0$ a-t-elle une seule solution ?", a: "quand $a\\neq0$ (la droite est sécante à l'axe $x$)" },
+                { q: "Quand l'équation $ax+b=0$ n'a-t-elle aucune solution ?", a: "quand $a=0$ et $b\\neq0$" },
+                { q: "Quand l'équation $ax+b=0$ a-t-elle une infinité de solutions ?", a: "quand $a=0$ et $b=0$" },
+                { q: "Quelle est la solution de $x+3=2x+1$ ?", a: "$K=\\{2\\}$" },
+                { q: "Quelle est la solution de $2x+4=2x-1$ ?", a: "$K=\\emptyset$ (aucune solution)" },
+                { q: "Quelle est la solution de $3(x+2)=3x+6$ ?", a: "$K=\\mathbb{R}$ (infinité de solutions)" },
+                { q: "À quoi ressemble le graphe quand l'équation $ax+b=0$ a une infinité de solutions ?", a: "il coïncide directement avec l'axe $x$" },
+                { q: "Comment appelle-t-on la méthode alternative pour résoudre $ax+b=cx+d$ ?", a: "comparaison des graphes de deux fonctions" },
+                { q: "En comparant les graphes de $f(x)=ax+b$ et $g(x)=cx+d$, qu'est-ce que la solution de l'équation ?", a: "l'abscisse de leur point d'intersection" },
+                { q: "Quelle est la solution de $3x-1=x+5$ par comparaison de fonctions ?", a: "$x=3$ (les graphes se coupent au point $[3;8]$)" },
+                { q: "Combien de solutions a une équation à deux inconnues $ax+by+c=0$ ?", a: "une infinité" },
+                { q: "Qu'est-ce que l'ensemble des solutions de $ax+by+c=0$ ?", a: "une droite entière" },
+                { q: "Quel est le graphe de l'équation $2x-y+1=0$ ?", a: "la droite $y=2x+1$" },
+                { q: "Le point $[1;3]$ est-il une solution de $2x-y+1=0$ ?", a: "oui, il est sur la droite $y=2x+1$" },
+                { q: "Le point $[0;0]$ est-il une solution de $2x-y+1=0$ ?", a: "non, $2\\cdot0-0+1=1\\neq0$" },
+                { q: "Que construit-on pour chaque équation d'un système de deux équations linéaires ?", a: "le graphe de la fonction affine correspondante" },
+                { q: "Quand un système de deux équations linéaires a-t-il une seule solution ?", a: "quand les droites sont sécantes" },
+                { q: "Quand un système de deux équations linéaires n'a-t-il aucune solution ?", a: "quand les droites sont parallèles distinctes" },
+                { q: "Quand un système de deux équations linéaires a-t-il une infinité de solutions ?", a: "quand les droites sont confondues" },
+                { q: "Quelle est la solution du système $x+y=5$, $x-y=1$ ?", a: "$K=\\{[3;2]\\}$" },
+                { q: "Pourquoi le système $x+y=5$, $2x+2y=4$ n'a-t-il pas de solution ?", a: "parce que les droites sont parallèles (même pente, $q$ différent)" },
+                { q: "Pourquoi le système $x+y=4$, $2x+2y=8$ a-t-il une infinité de solutions ?", a: "parce que la seconde équation est un multiple de la première — droites confondues" },
+                { q: "Qu'est-ce que la droite frontière d'une inéquation $ax+by+c\\leq0$ ?", a: "la droite $ax+by+c=0$, qui partage le plan en deux demi-plans" },
+                { q: "Comment détermine-t-on quel demi-plan est solution de l'inéquation ?", a: "en substituant un point d'essai qui n'est pas sur la droite frontière" },
+                { q: "Quel point choisit-on le plus souvent comme point d'essai ?", a: "le point $[0;0]$, s'il n'est pas sur la droite frontière" },
+                { q: "Quel trait utilise-t-on pour la droite frontière d'une inégalité large ($\\leq,\\geq$) ?", a: "un trait plein" },
+                { q: "Quel trait utilise-t-on pour la droite frontière d'une inégalité stricte ($\\lt,\\gt$) ?", a: "un trait pointillé" },
+                { q: "Pourquoi le point d'essai ne doit-il pas être sur la droite frontière ?", a: "car on ne pourrait pas décider à quel demi-plan il appartient" },
+                { q: "Le point $[0;0]$ est-il solution de l'inéquation $2x-y-2\\leq0$ ?", a: "oui, $-2\\leq0$ est vérifié" },
+                { q: "Quelle est la droite frontière de l'inéquation $2x-y-2\\leq0$ ?", a: "$y=2x-2$" },
+                { q: "Qu'est-ce que la solution d'un système de deux inéquations à deux inconnues ?", a: "l'intersection des deux demi-plans" },
+                { q: "Quelle forme a typiquement l'ensemble des solutions d'un système de deux inéquations à pentes différentes ?", a: "une forme de coin (délimitée par des portions des deux droites)" },
+                { q: "Où se coupent les droites frontières $y=2x-2$ et $y=-x+3$ ?", a: "au point $\\left[\\tfrac{5}{3};\\tfrac{4}{3}\\right]$" },
+                { q: "Comment appelle-t-on la discipline mathématique basée sur les systèmes d'inéquations linéaires ?", a: "la programmation linéaire" },
+                { q: "Comment appelle-t-on l'ensemble des solutions d'un système d'inéquations en programmation linéaire ?", a: "l'ensemble des solutions admissibles" },
+                { q: "À quoi sert la comparaison graphique de deux offres de même structure ?", a: "à trouver le point d'équilibre, à partir duquel l'une ou l'autre devient plus avantageuse" },
+                { q: "Qu'est-ce que le point d'équilibre lors de la comparaison de deux forfaits ?", a: "le point d'intersection des graphes des deux forfaits" },
+                { q: "Le forfait A coûte $200+2t$ Kč, le forfait B coûte $350+0{,}5t$ Kč. Où se coupent-ils ?", a: "au point $[100;400]$" },
+                { q: "Jusqu'à quand le forfait A de la question précédente est-il plus avantageux ?", a: "jusqu'à $100$ minutes" },
+                { q: "Quelle est la différence entre une équation à une et à deux inconnues quant au nombre de solutions ?", a: "l'équation à 1 inconnue a au plus une solution (ou aucune/infinité), celle à 2 inconnues en a toujours une infinité" },
+                { q: "Comment note-t-on l'ensemble de tous les réels comme solution d'une équation ?", a: "$K=\\mathbb{R}$" },
+                { q: "Comment note-t-on l'ensemble vide comme solution d'une équation ?", a: "$K=\\emptyset$" },
+                { q: "Quelle est la première étape pour résoudre une inéquation à deux inconnues ?", a: "remplacer l'inégalité par une égalité et construire la droite frontière" },
+                { q: "Que doit vérifier le point d'intersection des graphes de $f$ et $g$ ?", a: "$f(x)=g(x)$" },
+                { q: "Combien de cas peuvent se présenter en résolvant un système de deux équations linéaires à deux inconnues ?", a: "trois (une solution, aucune, une infinité)" },
+                { q: "Une équation à deux inconnues peut-elle avoir un nombre fini et non nul de solutions ?", a: "non — soit aucune (si $a=0,b=0,c\\neq0$), soit une infinité" },
+                { q: "Comment reconnaît-on, à partir de $y=a_1x+b_1$, $y=a_2x+b_2$, que les droites sont parallèles distinctes ?", a: "$a_1=a_2$ et $b_1\\neq b_2$" },
+                { q: "Comment reconnaît-on, à partir de $y=a_1x+b_1$, $y=a_2x+b_2$, que les droites sont confondues ?", a: "$a_1=a_2$ et $b_1=b_2$" }
+            ]
+        };
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

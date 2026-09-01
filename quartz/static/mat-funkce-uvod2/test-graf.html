@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Graf funkce (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Graf funkce</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (kvadranty, body na grafu, průsečíky s osami).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+        const N_THEORY = 4;
+        const N_MATH = 6;
+
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            if (Math.abs(x) < 1 && x !== 0) {
+                let s = x.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+                return s;
+            }
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+        function signTerm(v) { return v >= 0 ? '+ ' + v : '- ' + Math.abs(v); }
+        function coefTerm(v) {
+            if (v === 0) return '';
+            const av = Math.abs(v);
+            const numPart = av === 1 ? 'x' : av + 'x';
+            return v >= 0 ? '+ ' + numPart : '- ' + numPart;
+        }
+
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Co je graf funkce f?", a: "Množina všech bodů [$x_0$; $f(x₀)$], kde $x_0$ probíhá celý $D(f)$", o: ["Množina všech bodů [$x_0$; $f(x₀)$], kde $x_0$ probíhá celý $D(f)$", "Množina všech bodů [$f(x₀)$; $x_0$], kde $x_0$ probíhá celý $D(f)$", "Jen ty body, kde $f(x₀)$=0", "Libovolná křivka v rovině"], h: "Graf tvoří dvojice (vstup, výstup) pro každé x z definičního oboru.", e: "Graf funkce f je množina všech bodů [$x_0$; $f(x₀)$], kde $x_0$ postupně probíhá celý definiční obor $D(f)$." }, fr: { q: "Qu'est-ce que le graphe d'une fonction f ?", a: "L'ensemble de tous les points [$x_0$; $f(x₀)$], où $x_0$ parcourt tout $D(f)$", o: ["L'ensemble de tous les points [$x_0$; $f(x₀)$], où $x_0$ parcourt tout $D(f)$", "L'ensemble de tous les points [$f(x₀)$; $x_0$], où $x_0$ parcourt tout $D(f)$", "Seulement les points où $f(x₀)$=0", "N'importe quelle courbe dans le plan"], h: "Le graphe est formé des couples (entrée, sortie) pour chaque x du domaine.", e: "Le graphe d'une fonction f est l'ensemble de tous les points [$x_0$; $f(x₀)$], où $x_0$ parcourt tout le domaine de définition $D(f)$." } },
+            { id: 't2', type: 'concept', cs: { q: "Jak zní test svislou přímkou?", a: "Množina bodů je grafem funkce, právě když každá přímka rovnoběžná s osou y ji protíná nejvýše v jednom bodě", o: ["Množina bodů je grafem funkce, právě když každá přímka rovnoběžná s osou y ji protíná nejvýše v jednom bodě", "Množina bodů je grafem funkce, právě když každá přímka rovnoběžná s osou x ji protíná nejvýše v jednom bodě", "Množina bodů je grafem funkce, právě když je souvislá", "Množina bodů je grafem funkce, právě když prochází počátkem"], h: "Test se týká svislých přímek, tedy rovnoběžných s osou y.", e: "Množina bodů v rovině je grafem nějaké funkce, právě když každá přímka rovnoběžná s osou y protíná tuto množinu nejvýše v jednom bodě." }, fr: { q: "Quel est l'énoncé du test de la droite verticale ?", a: "Un ensemble de points est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe y le coupe en au plus un point", o: ["Un ensemble de points est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe y le coupe en au plus un point", "Un ensemble de points est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe x le coupe en au plus un point", "Un ensemble de points est le graphe d'une fonction si et seulement si il est connexe", "Un ensemble de points est le graphe d'une fonction si et seulement si il passe par l'origine"], h: "Le test concerne les droites verticales, donc parallèles à l'axe y.", e: "Un ensemble de points du plan est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe y coupe cet ensemble en au plus un point." } },
+            { id: 't3', type: 'concept', cs: { q: "Proč svislá přímka protíná graf funkce nejvýše jednou?", a: "Protože podle definice funkce má každé x přiřazenu právě jednu hodnotu y", o: ["Protože podle definice funkce má každé x přiřazenu právě jednu hodnotu y", "Protože grafy funkcí jsou vždy přímky", "Protože osa y je kolmá na osu x", "Je to jen dohoda bez hlubšího důvodu"], h: "Zamysli se nad tím, co by znamenaly dva průsečíky pro stejné x.", e: "Kdyby svislá přímka $x=x_0$ protla graf ve dvou bodech, znamenalo by to, že $x_0$ odpovídají dvě různé hodnoty y — a to by odporovalo definici funkce, podle které má každé x přiřazenu právě jednu hodnotu y." }, fr: { q: "Pourquoi une droite verticale coupe-t-elle le graphe d'une fonction au plus une fois ?", a: "Parce que par définition, chaque x a exactement une valeur y associée", o: ["Parce que par définition, chaque x a exactement une valeur y associée", "Parce que les graphes de fonctions sont toujours des droites", "Parce que l'axe y est perpendiculaire à l'axe x", "C'est juste une convention sans raison plus profonde"], h: "Réfléchis à ce que signifieraient deux intersections pour le même x.", e: "Si la droite verticale $x=x_0$ coupait le graphe en deux points, cela signifierait que deux valeurs différentes de y correspondent à $x_0$ — ce qui contredirait la définition d'une fonction, selon laquelle chaque x a exactement une valeur y." } },
+            { id: 't4', type: 'concept', cs: { q: "Je kružnice grafem nějaké funkce?", a: "Ne, svislá přímka ji protíná ve dvou bodech", o: ["Ne, svislá přímka ji protíná ve dvou bodech", "Ano, je grafem konstantní funkce", "Ano, pokud má střed v počátku", "Ne, protože nemá žádný definiční obor"], h: "Zkus si představit svislou přímku procházející středem kružnice.", e: "Kružnice test svislou přímkou nesplňuje — svislá přímka procházející jejím vnitřkem ji protíná ve dvou bodech (kromě krajních bodů). Kružnice proto není grafem žádné funkce $y=f(x)$." }, fr: { q: "Un cercle est-il le graphe d'une fonction ?", a: "Non, une droite verticale le coupe en deux points", o: ["Non, une droite verticale le coupe en deux points", "Oui, c'est le graphe d'une fonction constante", "Oui, s'il est centré à l'origine", "Non, car il n'a pas de domaine de définition"], h: "Imagine une droite verticale passant par le centre du cercle.", e: "Un cercle ne satisfait pas le test de la droite verticale — une droite verticale passant par son intérieur le coupe en deux points (sauf aux points extrêmes). Un cercle n'est donc le graphe d'aucune fonction $y=f(x)$." } },
+            { id: 't5', type: 'concept', cs: { q: "Jak najdeme definiční obor funkce z jejího grafu?", a: "Jako kolmý průmět grafu na osu x", o: ["Jako kolmý průmět grafu na osu x", "Jako kolmý průmět grafu na osu y", "Jako nejvyšší bod grafu", "Jako vzdálenost krajních bodů grafu"], h: "$D(f)$ se týká vodorovné osy.", e: "Definiční obor $D(f)$ najdeme jako kolmý průmět grafu na osu x." }, fr: { q: "Comment trouve-t-on le domaine de définition d'une fonction à partir de son graphe ?", a: "Par projection perpendiculaire du graphe sur l'axe x", o: ["Par projection perpendiculaire du graphe sur l'axe x", "Par projection perpendiculaire du graphe sur l'axe y", "Par le point le plus haut du graphe", "Par la distance entre les points extrêmes du graphe"], h: "$D(f)$ concerne l'axe horizontal.", e: "Le domaine de définition $D(f)$ s'obtient par projection perpendiculaire du graphe sur l'axe x." } },
+            { id: 't6', type: 'concept', cs: { q: "Co je asymptota grafu funkce?", a: "Přímka, ke které se graf přibližuje, ale nikdy se jí nedotkne", o: ["Přímka, ke které se graf přibližuje, ale nikdy se jí nedotkne", "Přímka, která graf protíná přesně jednou", "Jiný název pro osu x", "Bod, kde graf má maximum"], h: "Jde o hranici, kterou graf jen \"cítí\", ale nikdy nedosáhne.", e: "Asymptota je přímka, ke které se graf funkce přibližuje, ale nikdy se jí nedotkne. Hodnota, které asymptota odpovídá, se z příslušného oboru ($D(f)$ nebo $H(f)$) vylučuje." }, fr: { q: "Qu'est-ce qu'une asymptote du graphe d'une fonction ?", a: "Une droite dont le graphe se rapproche sans jamais la toucher", o: ["Une droite dont le graphe se rapproche sans jamais la toucher", "Une droite qui coupe le graphe exactement une fois", "Un autre nom pour l'axe x", "Un point où le graphe a un maximum"], h: "C'est une frontière que le graphe ne fait qu'approcher, sans jamais l'atteindre.", e: "Une asymptote est une droite dont le graphe d'une fonction se rapproche sans jamais la toucher. La valeur correspondant à l'asymptote est exclue de l'ensemble concerné ($D(f)$ ou $H(f)$)." } },
+            { id: 't7', type: 'concept', cs: { q: "Jak ověříme, že bod [$x_0$;$y_0$] leží na grafu funkce f?", a: "Dosadíme $x_0$ do předpisu funkce a porovnáme výsledek s $y_0$", o: ["Dosadíme $x_0$ do předpisu funkce a porovnáme výsledek s $y_0$", "Ověříme, že $x_0$ patří do $D(f)$, a to stačí", "Dosadíme $y_0$ do předpisu a porovnáme výsledek s $x_0$", "Zkontrolujeme, že bod leží v I. kvadrantu"], h: "Nestačí ověřit jen definiční obor — musí sedět i konkrétní hodnota.", e: "Bod [$x_0$;$y_0$] leží na grafu funkce f, právě když $f(x₀)$=$y_0$. Ověříme to dosazením $x_0$ do předpisu a porovnáním výsledku s $y_0$." }, fr: { q: "Comment vérifie-t-on qu'un point [$x_0$;$y_0$] appartient au graphe d'une fonction f ?", a: "On substitue $x_0$ dans l'expression de la fonction et on compare le résultat à $y_0$", o: ["On substitue $x_0$ dans l'expression de la fonction et on compare le résultat à $y_0$", "Il suffit de vérifier que $x_0$ appartient à $D(f)$", "On substitue $y_0$ dans l'expression et on compare le résultat à $x_0$", "On vérifie que le point est dans le Ier quadrant"], h: "Il ne suffit pas de vérifier seulement le domaine de définition — la valeur précise doit aussi correspondre.", e: "Le point [$x_0$;$y_0$] appartient au graphe de f si et seulement si $f(x₀)$=$y_0$. On le vérifie en substituant $x_0$ dans l'expression et en comparant le résultat à $y_0$." } },
+            { id: 't8', type: 'concept', cs: { q: "Kolik průsečíků s osou y může mít graf funkce nejvýše?", a: "Nejvýše jeden", o: ["Nejvýše jeden", "Nejvýše dva", "Libovolně mnoho", "Přesně dva"], h: "Kolik hodnot y může dát dosazení $x=0$?", e: "Graf funkce má vždy nejvýše jeden průsečík s osou y, protože $x=0$ dává (podle definice funkce) nejvýše jednu hodnotu y." }, fr: { q: "Combien d'intersections avec l'axe y un graphe de fonction peut-il avoir au maximum ?", a: "Au plus une", o: ["Au plus une", "Au plus deux", "Un nombre quelconque", "Exactement deux"], h: "Combien de valeurs y la substitution $x=0$ peut-elle donner ?", e: "Le graphe d'une fonction a toujours au plus une intersection avec l'axe y, car $x=0$ donne (par définition d'une fonction) au plus une valeur de y." } }
+        ];
+
+        // ======== VÝPOČETNÍ ÚLOHY ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Ve kterém kvadrantu leží bod [{x};{y}]?", h: "Podívej se na znaménka obou souřadnic.", e: "Souřadnice x={x} je {xSignCs} a y={y} je {ySignCs}, což odpovídá {res}. kvadrantu." },
+                fr: { q: "Dans quel quadrant se trouve le point [{x};{y}] ?", h: "Regarde les signes des deux coordonnées.", e: "La coordonnée x={x} est {xSignFr} et y={y} est {ySignFr}, ce qui correspond au {res}e quadrant." },
+                params: () => { const vals=[-5,-4,-3,-2,-1,1,2,3,4,5]; const x=randChoice(vals); const y=randChoice(vals); const xSignCs=x>0?'kladná':'záporná'; const ySignCs=y>0?'kladná':'záporná'; const xSignFr=x>0?'positive':'négative'; const ySignFr=y>0?'positive':'négative'; return {x,y,xSignCs,ySignCs,xSignFr,ySignFr}; },
+                solve: (p) => { let res; if(p.x>0&&p.y>0) res=1; else if(p.x<0&&p.y>0) res=2; else if(p.x<0&&p.y<0) res=3; else res=4; return { res, unit:'', correct: fmt(res) }; },
+                wrongOptions: (p, sol) => { const others = [1,2,3,4].filter(n => n !== sol.res).map(fmt); return shuffleArray([fmt(sol.res), ...others]); } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Pro f: y = {aTerm}x² {bTerm} určete f({x0}).", h: "Dosaď x0 za x a vypočítej.", e: "f({x0}) = {a}·({x0})² {bTerm} = {res}." },
+                fr: { q: "Pour f: y = {aTerm}x² {bTerm}, déterminez f({x0}).", h: "Remplace x par x0 et calcule.", e: "f({x0}) = {a}·({x0})² {bTerm} = {res}." },
+                params: () => { const a = randChoice([1,2,3,-1,-2]); const b = randChoice([-5,-3,-1,1,3,5]); const x0 = randChoice([-3,-2,-1,1,2,3]); const aTerm = a===1?'':a===-1?'-':a; return { a, b, x0, aTerm, bTerm: signTerm(b) }; },
+                solve: (p) => { const res = p.a*p.x0*p.x0+p.b; return { res, unit:'', correct: fmt(res) }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Pro f: y = {k}/(x−({m})) určete průsečík s osou y.", h: "Dosaď x=0 do předpisu funkce.", e: "f(0) = {k}/(0−({m})) = {k}/{negM} = {res}." },
+                fr: { q: "Pour f: y = {k}/(x−({m})), déterminez l'intersection avec l'axe y.", h: "Remplace x par 0 dans l'expression de la fonction.", e: "f(0) = {k}/(0−({m})) = {k}/{negM} = {res}." },
+                params: () => { const m = randChoice([-4,-3,-2,2,3,4]); const y0 = randChoice([-4,-3,-2,-1,1,2,3,4]); const k = -y0*m; const negM = -m; return { m, k, negM }; },
+                solve: (p) => { const res = p.k/p.negM; return { res, unit:'', correct: fmt(res) }; } },
+            { id: 'm4', type: 'math',
+                cs: { q: "Funkce f: y = x² {bTerm} {cTerm} má dva průsečíky s osou x. Jaký je ten větší z nich?", h: "Rozlož výraz na součin kořenových činitelů.", e: "Rozklad: x² {bTerm} {cTerm} = {factor1}{factor2}. Kořeny jsou {r1} a {r2}, větší z nich je {res}." },
+                fr: { q: "La fonction f: y = x² {bTerm} {cTerm} a deux intersections avec l'axe x. Quelle est la plus grande ?", h: "Factorise l'expression en produit de facteurs.", e: "Factorisation : x² {bTerm} {cTerm} = {factor1}{factor2}. Les racines sont {r1} et {r2}, la plus grande est {res}." },
+                params: () => { const r1 = randChoice([-6,-5,-4,-3,-2,-1]); const r2 = randChoice([2,3,4,5,6,7]); const b = -(r1+r2); const c = r1*r2; const factorTerm = (r) => r>=0 ? `(x - ${r})` : `(x + ${Math.abs(r)})`; return { r1, r2, b, c, bTerm: coefTerm(b), cTerm: signTerm(c), factor1: factorTerm(r1), factor2: factorTerm(r2) }; },
+                solve: (p) => { const res = Math.max(p.r1,p.r2); return { res, unit:'', correct: fmt(res) }; } },
+            { id: 'm5', type: 'math',
+                cs: { q: "Graf funkce má svislou asymptotu x={c}. Jaké jediné číslo NENÍ v definičním oboru?", h: "Asymptota přímo určuje vyloučenou hodnotu.", e: "Hodnota x={c}, které odpovídá svislá asymptota, se z definičního oboru vylučuje." },
+                fr: { q: "Le graphe d'une fonction a une asymptote verticale x={c}. Quel est l'unique nombre qui N'appartient PAS au domaine de définition ?", h: "L'asymptote détermine directement la valeur exclue.", e: "La valeur x={c}, à laquelle correspond l'asymptote verticale, est exclue du domaine de définition." },
+                params: () => { const c = randChoice([-5,-4,-3,-2,-1,1,2,3,4,5]); return { c }; },
+                solve: (p) => { return { res: p.c, unit:'', correct: fmt(p.c) }; } },
+            { id: 'm6', type: 'math',
+                cs: { q: "Funkce f: y = x² {bTerm} {cTerm} má průsečíky s osou x v bodech P₁ a P₂. Jaká je vzdálenost mezi nimi na ose x?", h: "Najdi oba kořeny a spočítej jejich rozdíl.", e: "Kořeny jsou {r1} a {r2}. Vzdálenost je |{r2}−({r1})| = {res}." },
+                fr: { q: "La fonction f: y = x² {bTerm} {cTerm} a des intersections avec l'axe x aux points P₁ et P₂. Quelle est la distance entre eux sur l'axe x ?", h: "Trouve les deux racines et calcule leur différence.", e: "Les racines sont {r1} et {r2}. La distance est |{r2}−({r1})| = {res}." },
+                params: () => { const r1 = randChoice([-6,-5,-4,-3,-2,-1]); const r2 = randChoice([2,3,4,5,6,7]); const b = -(r1+r2); const c = r1*r2; return { r1, r2, b, c, bTerm: coefTerm(b), cTerm: signTerm(c) }; },
+                solve: (p) => { const res = Math.abs(p.r2-p.r1); return { res, unit:'', correct: fmt(res) }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<N_THEORY; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<N_MATH; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.a = sol.correct;
+                    if (template.wrongOptions) {
+                        obj.o = template.wrongOptions(p, sol);
+                    } else {
+                        const val = parseFloat(sol.res);
+                        const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                        const opts = new Set([sol.correct, mk(val*2), mk(val/2), mk(val*10)]);
+                        while (opts.size < 4) opts.add(mk(val + opts.size));
+                        obj.o = Array.from(opts).slice(0,4);
+                    }
+                };
+                inject(q); inject(tr);
+            }
+
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Definice funkce i francouzština ti jdou skvěle.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat definiční obor a rovnost funkcí.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat – zaměř se na určování definičního oboru a práci s funkční hodnotou.";
+                overallIcon = "🔍";
+            }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako definiční obor, obor hodnot či rovnost funkcí.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definici funkce, D(f)/H(f) a podmínky platnosti tabulky.");
+            if (mathPercent >= 70) strengths.push("Výpočty s definičním oborem a funkční hodnotou ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si určování definičního oboru a hledání x pro dané y.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování definičního oboru, oboru hodnot a rovnosti funkcí – projdi si příručku a vzorové příklady.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o lineárních funkcích.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení základních pojmů.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek ve francouzštině)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

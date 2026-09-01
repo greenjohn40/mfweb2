@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Vlastnosti funkcí / Propriétés des fonctions</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Vlastnosti funkcí</h1>
+        <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je funkce?</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Předpis, který každému číslu x z množiny D přiřadí právě jedno reálné číslo y.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Matematika / Mathématiques
+    </footer>
+
+    <script>
+        const rawData = {
+            cs: [
+                { q: "Kdy je funkce rostoucí?", a: "Když pro všechna $x_1,x_2\\in D(f)$ platí: je-li $x_1\\lt x_2$, pak $f(x_1)\\lt f(x_2)$." },
+                { q: "Kdy je funkce klesající?", a: "Když pro všechna $x_1,x_2\\in D(f)$ platí: je-li $x_1\\lt x_2$, pak $f(x_1)\\gt f(x_2)$." },
+                { q: "Kdy je funkce konstantní?", a: "Když pro všechna $x_1,x_2\\in D(f)$ platí $f(x_1)=f(x_2)$." },
+                { q: "Výpočet: $f: y = 2x+3$, porovnejte $f(1)$ a $f(3)$.", a: "$f(1)=5$, $f(3)=9$, tedy $f(1)$<$f(3)$ — funkce roste." },
+                { q: "Výpočet: $g: y = -3x+1$, porovnejte $g(1)$ a $g(3)$.", a: "$g(1)=-2$, $g(3)=-8$, tedy $g(1)$>$g(3)$ — funkce klesá." },
+                { q: "Co znamená „monotónnost na intervalu\"?", a: "Tytéž definice rostoucí/klesající funkce, ale omezené jen na interval $I\\subset D(f)$, ne na celý definiční obor." },
+                { q: "Proč ověření na pár bodech nedokazuje monotónnost na intervalu?", a: "Protože nerovnosti musí platit pro úplně všechny dvojice $x1 \\lt x2$ z intervalu, a těch je nekonečně mnoho." },
+                { q: "Co je ryze monotónní funkce?", a: "Funkce, která je na celém svém definičním oboru rostoucí, nebo na celém definičním oboru klesající." },
+                { q: "Je funkce rostoucí na části $D(f)$ a klesající na jiné části ryze monotónní?", a: "Ne — ryze monotónní musí být rostoucí (nebo klesající) na celém definičním oboru, ne jen na části." },
+                { q: "Jaký je vztah mezi ryze monotónní a prostou funkcí?", a: "Každá ryze monotónní funkce je automaticky i prostá." },
+                { q: "Kdy má funkce v bodě x_M maximum?", a: "Když pro všechna $x\\in D(f)$ platí $f(x)\\leq f(x_M)$." },
+                { q: "Kdy má funkce v bodě x_N minimum?", a: "Když pro všechna $x\\in D(f)$ platí $f(x)\\geq f(x_N)$." },
+                { q: "Musí mít každá funkce maximum nebo minimum?", a: "Ne — pokud graf funkce neomezeně roste nebo klesá (např. přímka), extrém nemá." },
+                { q: "Kdy je funkce omezená shora?", a: "Když existuje číslo $h$ takové, že pro všechna $x\\in D(f)$ platí $f(x)\\leq h$." },
+                { q: "Kdy je funkce omezená zdola?", a: "Když existuje číslo $d$ takové, že pro všechna $x\\in D(f)$ platí $f(x)\\geq d$." },
+                { q: "Kdy je funkce omezená?", a: "Když je omezená shora i zdola zároveň." },
+                { q: "Je horní hranice funkce určena jednoznačně?", a: "Ne — je-li $h$ horní hranicí, je jí i každé číslo větší než $h$." },
+                { q: "Výpočet: $f: y = -x²+4$. Je tato funkce omezená shora?", a: "Ano, číslem $h=4$ (maximum funkce)." },
+                { q: "Výpočet: $f: y = -x²+4$. Je tato funkce omezená zdola?", a: "Ne — čím dál od nuly zvolíme x, tím hlouběji $f(x)$ klesá, bez jakékoliv spodní hranice." },
+                { q: "Kdy je funkce sudá?", a: "Když je $D(f)$ souměrný podle nuly a pro každé $x\\in D(f)$ platí $f(-x)=f(x)$." },
+                { q: "Kdy je funkce lichá?", a: "Když je $D(f)$ souměrný podle nuly a pro každé $x\\in D(f)$ platí $f(-x)=-f(x)$." },
+                { q: "Jak vypadá graf sudé funkce?", a: "Je souměrný podle osy y." },
+                { q: "Jak vypadá graf liché funkce?", a: "Je souměrný podle počátku." },
+                { q: "Dokazuje shoda $f(-x)=f(x)$ pro několik konkrétních x, že je funkce sudá?", a: "Ne — musí to platit pro úplně všechna x z definičního oboru, což se dokazuje obecným (algebraickým) dosazením, ne na příkladech." },
+                { q: "Výpočet: $f: y = x⁴-3x²$, ověřte sudost obecným dosazením.", a: "$f(-x)=(-x)^4-3\\cdot(-x)^2=x^4-3x^2=f(x)$ pro každé x, tedy funkce je sudá." },
+                { q: "Výpočet: $g: y = x³-4x$, ověřte lichost obecným dosazením.", a: "$g(-x)=(-x)^3-4\\cdot(-x)=-x^3+4x=-(x^3-4x)=-g(x)$ pro každé x, tedy funkce je lichá." },
+                { q: "Je většina funkcí sudá nebo lichá?", a: "Ne — většina funkcí není ani sudá, ani lichá; sudost a lichost jsou speciální vlastnosti." },
+                { q: "Kdy je funkce prostá?", a: "Když pro všechna $x_1,x_2\\in D(f)$ platí: je-li $x_1\\neq x_2$, pak $f(x_1)\\neq f(x_2)$." },
+                { q: "Jak zní test vodorovnou přímkou?", a: "Funkce je prostá, právě když každá vodorovná přímka protíná její graf nejvýše v jednom bodě." },
+                { q: "Výpočet: $g: y = x²$, je tato funkce prostá?", a: "Ne — $g(2)=4$ a zároveň $g(-2)=4$, takže dvě různé hodnoty x dávají stejnou funkční hodnotu." },
+                { q: "K čemu je prostota funkce klíčová podmínka?", a: "Pro existenci inverzní funkce." },
+                { q: "Je test vodorovnou přímkou obdobou testu svislou přímkou?", a: "Ano — test svislou přímkou ověřuje, zda je něco grafem funkce; test vodorovnou přímkou ověřuje, zda je funkce prostá." },
+                { q: "Výpočet: $f: y = 2x-5$, je tato funkce prostá?", a: "Ano — je to rostoucí přímka, každá vodorovná přímka ji protíná právě jednou." },
+                { q: "Co je horní hranice (h) funkce?", a: "Číslo, pro které platí $f(x)$≤h pro všechna x z definičního oboru." },
+                { q: "Co je dolní hranice (d) funkce?", a: "Číslo, pro které platí $f(x)$≥d pro všechna x z definičního oboru." },
+                { q: "Může mít omezená shora funkce nekonečně mnoho horních hranic?", a: "Ano — každé číslo větší nebo rovné nejmenší horní hranici je také horní hranicí." },
+                { q: "Je funkce $y=4$ (konstantní) rostoucí, klesající, nebo ani jedno?", a: "Ani jedno — je to konstantní funkce, $f(x1) = f(x2)$ pro všechna x1,x2." },
+                { q: "Jak souvisí sudost/lichost funkce s definičním oborem?", a: "Definiční obor musí být souměrný podle nuly — jinak funkce nemůže být ani sudá, ani lichá." },
+                { q: "Proč graf liché funkce vždy prochází počátkem, je-li 0 v $D(f)$?", a: "Protože $f(-0)=-f(0)$, tedy $f(0)=-f(0)$, což dává $f(0)=0$ — graf prochází bodem $[0;0]$." },
+                { q: "Je funkce $f: y = x$ (identita) sudá, lichá, nebo ani jedno?", a: "Lichá — $f(-x)=-x=-f(x)$ pro každé x." },
+                { q: "Je funkce $f: y = x²$ sudá, lichá, nebo ani jedno?", a: "Sudá — $f(-x)=(-x)^2=x^2=f(x)$ pro každé x." },
+                { q: "Co znamená, že funkce „se nikde neláme\" (ryze monotónní)?", a: "Že nemění směr — je buď stále rostoucí, nebo stále klesající, na celém definičním oboru." },
+                { q: "Jaký je rozdíl mezi maximem funkce a maximem na intervalu?", a: "Maximum funkce se týká celého $D(f)$; maximum na intervalu se týká jen vybrané části definičního oboru." },
+                { q: "Proč je důležité u extrémů uvažovat celý definiční obor?", a: "Protože bod, který vypadá jako nejvyšší v jedné části grafu, nemusí být nejvyšší vzhledem k celé funkci." },
+                { q: "Souvisí prostota funkce s řešením rovnice $f(x)=k$?", a: "Ano — je-li f prostá, má rovnice $f(x)=k$ nejvýše jedno řešení." },
+                { q: "Je konstantní funkce (jiná než na jediném bodě) prostá?", a: "Ne — konstantní funkce má nekonečně mnoho různých x se stejnou hodnotou y, takže není prostá (pokud má $D(f)$ víc než jeden prvek)." },
+                { q: "Jak byste ověřili, že funkce NENÍ prostá?", a: "Stačí najít dvě různé hodnoty $x1 \\neq x2$, pro které $f(x1) = f(x2)$ — jeden protipříklad stačí." },
+                { q: "Jak byste dokázali, že funkce JE prostá?", a: "Je nutné to ukázat obecně pro všechny možné dvojice $x1 \\neq x2$ — např. algebraickou úpravou nebo pomocí ryzí monotónnosti." },
+                { q: "Může být funkce zároveň sudá i lichá?", a: "Ano, ale pouze nulová funkce $f(x)=0$ na souměrném definičním oboru splňuje obě podmínky zároveň." },
+                { q: "Proč lomená funkce typu 1/x může být neomezená shora i zdola zároveň?", a: "Protože se blíží k nekonečnu z obou stran (kladné i záporné hodnoty) v blízkosti své asymptoty." }
+            ],
+            fr: [
+                { q: "Quand une fonction est-elle croissante ?", a: "Quand pour tous $x_1,x_2\\in D(f)$ : si $x_1\\lt x_2$, alors $f(x_1)\\lt f(x_2)$." },
+                { q: "Quand une fonction est-elle décroissante ?", a: "Quand pour tous $x_1,x_2\\in D(f)$ : si $x_1\\lt x_2$, alors $f(x_1)\\gt f(x_2)$." },
+                { q: "Quand une fonction est-elle constante ?", a: "Quand pour tous $x_1,x_2\\in D(f)$, $f(x_1)=f(x_2)$." },
+                { q: "Calcul : $f: y = 2x+3$, comparez $f(1)$ et $f(3)$.", a: "$f(1)=5$, $f(3)=9$, donc $f(1)$<$f(3)$ — la fonction croît." },
+                { q: "Calcul : $g: y = -3x+1$, comparez $g(1)$ et $g(3)$.", a: "$g(1)=-2$, $g(3)=-8$, donc $g(1)$>$g(3)$ — la fonction décroît." },
+                { q: "Que signifie « monotonie sur un intervalle » ?", a: "Les mêmes définitions de fonction croissante/décroissante, mais restreintes à un intervalle $I\\subset D(f)$, pas à tout le domaine." },
+                { q: "Pourquoi vérifier quelques points ne prouve-t-il pas la monotonie sur un intervalle ?", a: "Parce que les inégalités doivent être vérifiées pour absolument toutes les paires $x1 \\lt x2$ de l'intervalle, et il en existe une infinité." },
+                { q: "Qu'est-ce qu'une fonction strictement monotone ?", a: "Une fonction qui est croissante sur tout son domaine de définition, ou décroissante sur tout son domaine." },
+                { q: "Une fonction croissante sur une partie de $D(f)$ et décroissante sur une autre est-elle strictement monotone ?", a: "Non — elle doit être croissante (ou décroissante) sur tout le domaine, pas seulement sur une partie." },
+                { q: "Quel est le lien entre fonction strictement monotone et fonction injective ?", a: "Toute fonction strictement monotone est automatiquement injective." },
+                { q: "Quand une fonction a-t-elle un maximum au point x_M ?", a: "Quand pour tout $x\\in D(f)$, $f(x)\\leq f(x_M)$." },
+                { q: "Quand une fonction a-t-elle un minimum au point x_N ?", a: "Quand pour tout $x\\in D(f)$, $f(x)\\geq f(x_N)$." },
+                { q: "Toute fonction doit-elle avoir un maximum ou un minimum ?", a: "Non — si le graphe croît ou décroît indéfiniment (par ex. une droite), il n'y a pas d'extremum." },
+                { q: "Quand une fonction est-elle majorée ?", a: "Quand il existe un nombre $h$ tel que pour tout $x\\in D(f)$, $f(x)\\leq h$." },
+                { q: "Quand une fonction est-elle minorée ?", a: "Quand il existe un nombre $d$ tel que pour tout $x\\in D(f)$, $f(x)\\geq d$." },
+                { q: "Quand une fonction est-elle bornée ?", a: "Quand elle est à la fois majorée et minorée." },
+                { q: "Le majorant d'une fonction est-il unique ?", a: "Non — si $h$ est un majorant, tout nombre supérieur à $h$ l'est aussi." },
+                { q: "Calcul : $f: y = -x²+4$. Cette fonction est-elle majorée ?", a: "Oui, par $h=4$ (le maximum de la fonction)." },
+                { q: "Calcul : $f: y = -x²+4$. Cette fonction est-elle minorée ?", a: "Non — plus x s'éloigne de zéro, plus $f(x)$ descend, sans aucune limite inférieure." },
+                { q: "Quand une fonction est-elle paire ?", a: "Quand $D(f)$ est symétrique par rapport à zéro et pour tout $x\\in D(f)$, $f(-x)=f(x)$." },
+                { q: "Quand une fonction est-elle impaire ?", a: "Quand $D(f)$ est symétrique par rapport à zéro et pour tout $x\\in D(f)$, $f(-x)=-f(x)$." },
+                { q: "À quoi ressemble le graphe d'une fonction paire ?", a: "Il est symétrique par rapport à l'axe y." },
+                { q: "À quoi ressemble le graphe d'une fonction impaire ?", a: "Il est symétrique par rapport à l'origine." },
+                { q: "La coïncidence $f(-x)=f(x)$ pour quelques valeurs de x prouve-t-elle qu'une fonction est paire ?", a: "Non — cela doit être vrai pour absolument tout x du domaine, ce qui se prouve par substitution générale (algébrique), pas sur des exemples." },
+                { q: "Calcul : $f: y = x⁴-3x²$, vérifiez la parité par substitution générale.", a: "$f(-x)=(-x)^4-3\\cdot(-x)^2=x^4-3x^2=f(x)$ pour tout x, donc la fonction est paire." },
+                { q: "Calcul : $g: y = x³-4x$, vérifiez l'imparité par substitution générale.", a: "$g(-x)=(-x)^3-4\\cdot(-x)=-x^3+4x=-(x^3-4x)=-g(x)$ pour tout x, donc la fonction est impaire." },
+                { q: "La plupart des fonctions sont-elles paires ou impaires ?", a: "Non — la plupart des fonctions ne sont ni paires ni impaires ; ce sont des propriétés spéciales." },
+                { q: "Quand une fonction est-elle injective ?", a: "Quand pour tous $x_1,x_2\\in D(f)$ : si $x_1\\neq x_2$, alors $f(x_1)\\neq f(x_2)$." },
+                { q: "Quel est l'énoncé du test de la droite horizontale ?", a: "Une fonction est injective si et seulement si toute droite horizontale coupe son graphe en au plus un point." },
+                { q: "Calcul : $g: y = x²$, cette fonction est-elle injective ?", a: "Non — $g(2)=4$ et en même temps $g(-2)=4$, donc deux valeurs différentes de x donnent la même valeur de la fonction." },
+                { q: "Pourquoi l'injectivité d'une fonction est-elle une condition clé ?", a: "Pour l'existence d'une fonction réciproque." },
+                { q: "Le test de la droite horizontale est-il l'analogue du test de la droite verticale ?", a: "Oui — le test de la droite verticale vérifie si quelque chose est le graphe d'une fonction ; celui de la droite horizontale vérifie si la fonction est injective." },
+                { q: "Calcul : $f: y = 2x-5$, cette fonction est-elle injective ?", a: "Oui — c'est une droite croissante, toute droite horizontale la coupe exactement une fois." },
+                { q: "Qu'est-ce qu'un majorant (h) d'une fonction ?", a: "Un nombre pour lequel $f(x)$≤h pour tout x du domaine de définition." },
+                { q: "Qu'est-ce qu'un minorant (d) d'une fonction ?", a: "Un nombre pour lequel $f(x)$≥d pour tout x du domaine de définition." },
+                { q: "Une fonction majorée peut-elle avoir une infinité de majorants ?", a: "Oui — tout nombre supérieur ou égal au plus petit majorant est aussi un majorant." },
+                { q: "La fonction $y=4$ (constante) est-elle croissante, décroissante, ou ni l'un ni l'autre ?", a: "Ni l'un ni l'autre — c'est une fonction constante, $f(x1) = f(x2)$ pour tous x1,x2." },
+                { q: "Comment la parité/imparité est-elle liée au domaine de définition ?", a: "Le domaine de définition doit être symétrique par rapport à zéro — sinon la fonction ne peut être ni paire ni impaire." },
+                { q: "Pourquoi le graphe d'une fonction impaire passe-t-il toujours par l'origine si 0 appartient à $D(f)$ ?", a: "Parce que $f(-0)=-f(0)$, donc $f(0)=-f(0)$, ce qui donne $f(0)=0$ — le graphe passe par le point $[0;0]$." },
+                { q: "La fonction $f: y = x$ (identité) est-elle paire, impaire, ou ni l'un ni l'autre ?", a: "Impaire — $f(-x)=-x=-f(x)$ pour tout x." },
+                { q: "La fonction $f: y = x²$ est-elle paire, impaire, ou ni l'un ni l'autre ?", a: "Paire — $f(-x)=(-x)^2=x^2=f(x)$ pour tout x." },
+                { q: "Que signifie qu'une fonction « ne se brise nulle part » (strictement monotone) ?", a: "Qu'elle ne change pas de direction — elle est soit toujours croissante, soit toujours décroissante, sur tout le domaine." },
+                { q: "Quelle est la différence entre le maximum d'une fonction et le maximum sur un intervalle ?", a: "Le maximum d'une fonction concerne tout $D(f)$ ; le maximum sur un intervalle ne concerne qu'une partie choisie du domaine." },
+                { q: "Pourquoi est-il important de considérer tout le domaine de définition pour les extremums ?", a: "Parce qu'un point qui semble le plus haut sur une partie du graphe peut ne pas l'être par rapport à la fonction entière." },
+                { q: "L'injectivité d'une fonction est-elle liée à la résolution de l'équation $f(x)=k$ ?", a: "Oui — si f est injective, l'équation $f(x)=k$ a au plus une solution." },
+                { q: "Une fonction constante (autre qu'en un seul point) est-elle injective ?", a: "Non — une fonction constante a une infinité de valeurs x différentes donnant la même valeur y, donc elle n'est pas injective (si $D(f)$ a plus d'un élément)." },
+                { q: "Comment vérifier qu'une fonction N'EST PAS injective ?", a: "Il suffit de trouver deux valeurs différentes $x1 \\neq x2$ telles que $f(x1) = f(x2)$ — un seul contre-exemple suffit." },
+                { q: "Comment prouver qu'une fonction EST injective ?", a: "Il faut le montrer de façon générale pour toutes les paires possibles $x1 \\neq x2$ — par exemple par transformation algébrique ou via la monotonie stricte." },
+                { q: "Une fonction peut-elle être à la fois paire et impaire ?", a: "Oui, mais seule la fonction nulle $f(x)=0$ sur un domaine symétrique satisfait les deux conditions à la fois." },
+                { q: "Pourquoi une fonction rationnelle comme 1/x peut-elle être non majorée et non minorée à la fois ?", a: "Parce qu'elle tend vers l'infini des deux côtés (valeurs positives et négatives) au voisinage de son asymptote." }
+            ]
+        };
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

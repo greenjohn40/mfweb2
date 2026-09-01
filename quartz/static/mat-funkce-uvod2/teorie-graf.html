@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graf funkce / Graphe d'une fonction</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+    .grid-bg {
+        background-color: #fafaf9;
+        background-image:
+            linear-gradient(to right, rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #ddd6fe; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #7c3aed; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #a21caf; }
+    @media (max-width: 640px) { .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; } }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .formula-box { font-family: 'Cambria Math', Georgia, serif; }
+    input[type="range"] { accent-color: #7c3aed; }
+    .side-note { border-left: 4px solid; }
+    .side-note.curious { border-color: #0d9488; background: #f0fdfa; }
+    .side-note.trap { border-color: #d97706; background: #fffbeb; }
+    .side-note.link { border-color: #6366f1; background: #eef2ff; }
+    .side-note.next { border-color: #64748b; background: #f8fafc; }
+    .checker-input:focus { outline: 2px solid #7c3aed; }
+    mjx-container { display: inline-block !important; white-space: nowrap; }
+</style>
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="grid-bg text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-violet-800 to-fuchsia-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-violet-200 text-sm font-semibold tracking-wider uppercase">
+            <span>📐 Matematika</span><span>•</span><span>Funkce</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Graf funkce</h1>
+        <p class="text-lg md:text-xl text-violet-50 max-w-3xl leading-relaxed">
+            Kartézská soustava souřadnic, definice grafu funkce, test svislou přímkou, čtení definičního oboru a oboru hodnot z grafu, ověřování bodů a průsečíky s osami.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-violet-100">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('s1-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Soustava souřadnic</span>
+        <span onclick="scrollToId('s2-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Graf funkce</span>
+        <span onclick="scrollToId('s3-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Test svislou přímkou</span>
+        <span onclick="scrollToId('s4-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">D(f), H(f) z grafu</span>
+        <span onclick="scrollToId('s5-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Body na grafu</span>
+        <span onclick="scrollToId('s6-cs')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Průsečíky s osami</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- SEKCE 1: SOUSTAVA SOURADNIC -->
+    <section id="s1-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Kartézská soustava souřadnic</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">Poloha bodu v rovině je určena <strong>uspořádanou dvojicí</strong> čísel $[x;y]$. Dvě navzájem kolmé číselné osy — vodorovná osa $x$ a svislá osa $y$ — se protínají v <strong>počátku</strong> $O[0;0]$ a rozdělují rovinu na čtyři <strong>kvadranty</strong>.</p>
+                    <p class="text-slate-700">Záleží na pořadí: bod $[2;-3]$ je jiný bod než $[-3;2]$.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vyzkoušejte si to: pohyblivý bod</h3>
+                    <p class="text-slate-600 text-sm mb-4">Posuňte jezdci a sledujte, jak se mění souřadnice bodu a ve kterém kvadrantu leží.</p>
+                    <div class="grid sm:grid-cols-[1fr_160px] gap-6 items-center">
+                        <svg id="plotterSvg-cs" viewBox="0 0 320 320" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs font-bold text-violet-700 flex justify-between mb-1"><span>x</span><span id="plotterXVal-cs">2</span></label>
+                                <input id="plotterXSlider-cs" type="range" min="-5" max="5" step="1" value="2" class="w-full">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-violet-700 flex justify-between mb-1"><span>y</span><span id="plotterYVal-cs">-3</span></label>
+                                <input id="plotterYSlider-cs" type="range" min="-5" max="5" step="1" value="-3" class="w-full">
+                            </div>
+                            <p class="text-center bg-violet-100 rounded-lg py-2 text-violet-900 font-bold" id="plotterCoord-cs">[2; -3]</p>
+                            <p class="text-center text-sm text-slate-600" id="plotterQuadrant-cs">IV. kvadrant</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pro zvídavé</p>
+                    <p class="text-sm text-slate-700">Soustavu souřadnic zavedl v 17. století francouzský matematik a filozof René Descartes — proto „kartézská" (z latinského Cartesius).</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Co bude dál</p>
+                    <p class="text-sm text-slate-700">Tuto soustavu budeme používat po celý zbytek kapitoly — k vykreslování grafů i ke čtení jejich vlastností.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 2: GRAF FUNKCE DEFINICE -->
+    <section id="s2-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Graf funkce</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Definice</p>
+                    <p class="text-slate-800">Graf funkce $f$ je množina všech bodů $[x_0; f(x_0)]$, kde $x_0$ postupně probíhá celý definiční obor $D(f)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vyzkoušejte si to: bod putující po grafu</h3>
+                    <p class="text-slate-600 text-sm mb-4">Graf ukazuje ohřívání vody v konvici — čas na ose $x$, teplota na ose $y$. Posuňte jezdcem $x_0$ a sledujte bod $[x_0; f(x_0)]$ na křivce.</p>
+                    <input id="traceSlider-cs" type="range" min="0" max="10" step="0.5" value="3" class="w-full mb-3">
+                    <svg id="traceSvg-cs" viewBox="0 0 400 220" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center text-sm text-slate-600 mt-2" id="traceLabel-cs">Bod [3; 45] na grafu</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Souvislosti</p>
+                    <p class="text-sm text-slate-700">Graf je vlastně obrázková podoba téhož, co dřív zapisovala tabulka — jen s nekonečně mnoha body místo pár řádků.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 3: TEST SVISLOU PRIMKOU -->
+    <section id="s3-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Je obrázek grafem funkce?</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Test svislou přímkou</p>
+                    <p class="text-slate-800">Množina bodů v rovině je grafem nějaké funkce, právě když <strong>každá přímka rovnoběžná s osou $y$</strong> protíná tuto množinu <strong>nejvýše v jednom bodě</strong>.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700">Proč to platí? Podle definice funkce je každému číslu $x_0 \in D(f)$ přiřazena <strong>právě jedna</strong> hodnota $y$. Svislá přímka $x=x_0$ prochází všemi body roviny, které mají první souřadnici rovnu $x_0$. Kdyby tato přímka protla graf ve dvou (nebo více) bodech, znamenalo by to, že číslu $x_0$ odpovídají dvě různé hodnoty $y$ — a to by odporovalo samotné definici funkce.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vyzkoušejte si to: posuňte svislou přímku</h3>
+                    <p class="text-slate-600 text-sm mb-4">Vlevo rostoucí křivka (je grafem funkce), vpravo kružnice (není grafem funkce). Posuňte jezdcem a sledujte počet průsečíků.</p>
+                    <input id="vltSlider-cs" type="range" min="-90" max="90" step="1" value="0" class="w-full mb-3">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <svg id="vltSvgGood-cs" viewBox="0 0 200 200" class="w-full bg-emerald-50/50 rounded-lg border border-emerald-100"></svg>
+                            <p class="text-center text-xs text-slate-600 mt-1" id="vltGoodLabel-cs">1 průsečík — je funkce</p>
+                        </div>
+                        <div>
+                            <svg id="vltSvgBad-cs" viewBox="0 0 200 200" class="w-full bg-red-50/50 rounded-lg border border-red-100"></svg>
+                            <p class="text-center text-xs text-slate-600 mt-1" id="vltBadLabel-cs">2 průsečíky — není funkce</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Pozor na past</p>
+                    <p class="text-sm text-slate-700">Kružnice test svislou přímkou nesplňuje skoro nikde (kromě krajních bodů) — proto kružnice není grafem žádné funkce $y=f(x)$.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 4: D(f) H(f) Z GRAFU -->
+    <section id="s4-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Definiční obor a obor hodnot z grafu</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-2"><strong>Definiční obor</strong> najdeme jako kolmý průmět grafu na osu $x$. <strong>Obor hodnot</strong> najdeme jako kolmý průmět grafu na osu $y$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vyzkoušejte si to: zobrazte průmět</h3>
+                    <p class="text-slate-600 text-sm mb-4">Graf funkce $f$ je na obrázku. Klikněte na tlačítko a na obou osách se zvýrazní úsek odpovídající $D(f)$ a $H(f)$.</p>
+                    <svg id="projSvg-cs" viewBox="0 0 380 320" class="w-full bg-white rounded-lg border border-violet-100 mb-3"></svg>
+                    <button onclick="toggleProjection('cs')" id="projBtn-cs" class="bg-violet-700 hover:bg-violet-800 text-white font-bold px-5 py-2 rounded-lg text-sm">Zobrazit průmět</button>
+                    <p class="text-slate-700 text-sm mt-3" id="projResult-cs"></p>
+                </div>
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-2">Graf s asymptotami:</p>
+                    <p class="text-slate-700 text-sm mb-3">Pokud se graf k nějaké svislé nebo vodorovné přímce jen přibližuje, ale nikdy se jí nedotkne (tzv. <strong>asymptota</strong>), tato přímka se z $D(f)$, resp. $H(f)$, vyloučí. Na obrázku má graf svislou asymptotu $x=2$ a vodorovnou asymptotu $y=1$ (čárkované):</p>
+                    <svg id="asymSvg-cs" viewBox="0 0 300 260" class="w-full max-w-sm mx-auto bg-white rounded-lg border border-amber-200 mb-3"></svg>
+                    <p class="text-slate-700 text-sm">$D(f) = (-\infty;2)\cup(2;\infty)$, &nbsp; $H(f) = (-\infty;1)\cup(1;\infty)$.</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Co bude dál</p>
+                    <p class="text-sm text-slate-700">S asymptotami se podrobněji setkáte u lomených a exponenciálních funkcí v příštích kapitolách.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 5: PATRI BOD GRAFU -->
+    <section id="s5-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Patří bod grafu funkce?</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">Dosadíme souřadnici $x$ bodu do předpisu funkce a porovnáme výsledek se souřadnicí $y$. Shodují-li se, bod na grafu leží.</p>
+                    <p class="text-slate-700 mb-2">Pro $f: y = 3x^2-2$ ověřte body $A[1;1]$ a $B[-2;5]$:</p>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm space-y-1">
+                        <p>$f(1) = 3\cdot1^2-2 = 1$, shoduje se s $y=1$ &nbsp;$\Rightarrow A \in f$</p>
+                        <p>$f(-2) = 3\cdot(-2)^2-2 = 10 \neq 5$ &nbsp;$\Rightarrow B \notin f$</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Živý ověřovač</h3>
+                    <p class="text-slate-600 text-sm mb-4">Pro $f: y = 3x^2-2$ zadejte souřadnice bodu a zjistěte, jestli na grafu leží.</p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input id="pointCheckX-cs" type="number" step="any" placeholder="x" class="checker-input border border-violet-300 rounded-lg px-3 py-2 w-24">
+                        <input id="pointCheckY-cs" type="number" step="any" placeholder="y" class="checker-input border border-violet-300 rounded-lg px-3 py-2 w-24">
+                        <button onclick="checkPoint('cs')" class="bg-violet-700 hover:bg-violet-800 text-white font-bold px-5 py-2 rounded-lg">Ověřit</button>
+                    </div>
+                    <p class="font-semibold text-slate-700 mt-3" id="pointCheckResult-cs"></p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Pozor na past</p>
+                    <p class="text-sm text-slate-700">Nezaměňujte „bod leží na grafu" s „bod leží v definičním oboru". Definiční obor se týká jen souřadnice $x$, přináležitost ke grafu se týká dvojice $[x;y]$ zároveň.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SEKCE 6: PRUSECIKY S OSAMI -->
+    <section id="s6-cs" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Průsečíky grafu funkce se souřadnicovými osami</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Postup</p>
+                    <p class="text-slate-700 mb-3">Každý bod ležící na ose $x$ má druhou souřadnici (souřadnici $y$) rovnu nule — proto při hledání průsečíku s osou $x$ položíme $y=0$. Podobně každý bod na ose $y$ má první souřadnici (souřadnici $x$) rovnu nule.</p>
+                    <p class="text-slate-800 mb-2"><strong>Průsečík s osou $x$:</strong> položíme $y=0$ a řešíme rovnici $0=f(x)$ pro $x$.</p>
+                    <p class="text-slate-800"><strong>Průsečík s osou $y$:</strong> položíme $x=0$ a vypočítáme $y=f(0)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Příklad bez průsečíku s osou x</h3>
+                    <p class="text-slate-700 mb-3">$g: y = \dfrac{1}{2x+6}$</p>
+                    <svg id="interceptSvg1-cs" viewBox="0 0 300 240" class="w-full max-w-sm mx-auto bg-white rounded-lg border border-violet-100 mb-3"></svg>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm space-y-1">
+                        <p>Osa $x$: $0 = \dfrac{1}{2x+6}$ — tato rovnice nemá řešení (zlomek nemůže být roven nule) $\Rightarrow$ průsečík neexistuje.</p>
+                        <p>Osa $y$: $y = \dfrac{1}{2\cdot0+6} = \dfrac{1}{6}$ &nbsp;$\Rightarrow P_y\left[0;\dfrac16\right]$</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Příklad s kvadratickou funkcí</h3>
+                    <p class="text-slate-700 mb-3">$f: y = x^2+2x-15$</p>
+                    <svg id="interceptSvg2-cs" viewBox="0 0 300 280" class="w-full max-w-sm mx-auto bg-white rounded-lg border border-violet-100 mb-3"></svg>
+                    <button onclick="toggleReveal('interceptReveal-cs', this)" class="text-violet-700 font-bold text-sm underline mb-3">Zobrazit řešení</button>
+                    <div id="interceptReveal-cs" class="hidden bg-slate-50 rounded-lg p-4 text-sm space-y-1">
+                        <p>Osa $x$: $0 = x^2+2x-15$. Rozklad na součin: $x^2+2x-15 = (x+5)(x-3)$</p>
+                        <p>$(x+5)(x-3) = 0 \Rightarrow x_1=-5,\ x_2=3$</p>
+                        <p>$\Rightarrow P_{x_1}[-5;0],\ P_{x_2}[3;0]$</p>
+                        <p>Osa $y$: $y = 0^2+2\cdot0-15 = -15 \Rightarrow P_y[0;-15]$</p>
+                    </div>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pro zvídavé</p>
+                    <p class="text-sm text-slate-700">Graf funkce má vždy nejvýše jeden průsečík s osou $y$ (protože $x=0$ dává nejvýše jednu hodnotu $y$), ale s osou $x$ jich může mít libovolně mnoho, žádný, nebo i nekonečně mnoho.</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Co bude dál</p>
+                    <p class="text-sm text-slate-700">Rozklad kvadratického trojčlenu na součin budeme podrobně procvičovat v kapitole o kvadratické funkci.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Matematika, CLIL · Graf funkce</p>
+</footer>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-violet-800 to-fuchsia-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-violet-200 text-sm font-semibold tracking-wider uppercase">
+            <span>📐 Mathématiques</span><span>•</span><span>Fonctions</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Graphe d'une fonction</h1>
+        <p class="text-lg md:text-xl text-violet-50 max-w-3xl leading-relaxed">
+            Repère cartésien, définition du graphe d'une fonction, test de la droite verticale, lecture du domaine de définition et de l'image sur un graphe, vérification de points et intersections avec les axes.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-violet-100">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('s1-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Repère cartésien</span>
+        <span onclick="scrollToId('s2-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Graphe d'une fonction</span>
+        <span onclick="scrollToId('s3-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Test de la droite verticale</span>
+        <span onclick="scrollToId('s4-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">D(f), H(f) sur le graphe</span>
+        <span onclick="scrollToId('s5-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Points sur le graphe</span>
+        <span onclick="scrollToId('s6-fr')" class="nav-pill hover:text-violet-700 px-3 py-1 rounded-full hover:bg-violet-50">Intersections avec les axes</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- SECTION 1: REPERE CARTESIEN -->
+    <section id="s1-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Repère cartésien</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">La position d'un point dans le plan est déterminée par un <strong>couple ordonné</strong> de nombres $[x;y]$. Deux axes numériques perpendiculaires — l'axe horizontal $x$ et l'axe vertical $y$ — se coupent à l'<strong>origine</strong> $O[0;0]$ et divisent le plan en quatre <strong>quadrants</strong>.</p>
+                    <p class="text-slate-700">L'ordre compte : le point $[2;-3]$ est différent du point $[-3;2]$.</p>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Essayez par vous-même : un point mobile</h3>
+                    <p class="text-slate-600 text-sm mb-4">Déplacez les curseurs et observez comment les coordonnées du point changent, ainsi que le quadrant dans lequel il se trouve.</p>
+                    <div class="grid sm:grid-cols-[1fr_160px] gap-6 items-center">
+                        <svg id="plotterSvg-fr" viewBox="0 0 320 320" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="text-xs font-bold text-violet-700 flex justify-between mb-1"><span>x</span><span id="plotterXVal-fr">2</span></label>
+                                <input id="plotterXSlider-fr" type="range" min="-5" max="5" step="1" value="2" class="w-full">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-violet-700 flex justify-between mb-1"><span>y</span><span id="plotterYVal-fr">-3</span></label>
+                                <input id="plotterYSlider-fr" type="range" min="-5" max="5" step="1" value="-3" class="w-full">
+                            </div>
+                            <p class="text-center bg-violet-100 rounded-lg py-2 text-violet-900 font-bold" id="plotterCoord-fr">[2; -3]</p>
+                            <p class="text-center text-sm text-slate-600" id="plotterQuadrant-fr">IVe quadrant</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pour les curieux</p>
+                    <p class="text-sm text-slate-700">Ce repère a été introduit au XVIIe siècle par le mathématicien et philosophe français René Descartes — d'où le nom « cartésien » (du latin Cartesius).</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Et la suite ?</p>
+                    <p class="text-sm text-slate-700">Nous utiliserons ce repère tout au long du chapitre — pour tracer des graphes et pour en lire les propriétés.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 2: GRAPHE D'UNE FONCTION -->
+    <section id="s2-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Graphe d'une fonction</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Définition</p>
+                    <p class="text-slate-800">Le graphe d'une fonction $f$ est l'ensemble de tous les points $[x_0; f(x_0)]$, où $x_0$ parcourt tout le domaine de définition $D(f)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Essayez par vous-même : un point qui parcourt le graphe</h3>
+                    <p class="text-slate-600 text-sm mb-4">Le graphe montre le chauffage de l'eau dans une bouilloire — le temps en abscisse, la température en ordonnée. Déplacez le curseur $x_0$ et observez le point $[x_0; f(x_0)]$ sur la courbe.</p>
+                    <input id="traceSlider-fr" type="range" min="0" max="10" step="0.5" value="3" class="w-full mb-3">
+                    <svg id="traceSvg-fr" viewBox="0 0 400 220" class="w-full bg-violet-50/40 rounded-lg border border-violet-100"></svg>
+                    <p class="text-center text-sm text-slate-600 mt-2" id="traceLabel-fr">Point [3; 45] sur le graphe</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note link rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-indigo-700 uppercase mb-1">Liens</p>
+                    <p class="text-sm text-slate-700">Le graphe est en fait la version visuelle de ce qu'exprimait déjà un tableau — simplement avec une infinité de points au lieu de quelques lignes.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 3: TEST DE LA DROITE VERTICALE -->
+    <section id="s3-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Une figure est-elle le graphe d'une fonction ?</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Test de la droite verticale</p>
+                    <p class="text-slate-800">Un ensemble de points du plan est le graphe d'une fonction si et seulement si <strong>toute droite parallèle à l'axe $y$</strong> coupe cet ensemble en <strong>au plus un point</strong>.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700">Pourquoi cela est-il vrai ? Par définition d'une fonction, à chaque nombre $x_0 \in D(f)$ correspond <strong>exactement une</strong> valeur $y$. La droite verticale $x=x_0$ passe par tous les points du plan dont la première coordonnée vaut $x_0$. Si cette droite coupait le graphe en deux points (ou plus), cela signifierait que deux valeurs différentes de $y$ correspondent au même $x_0$ — ce qui contredirait la définition même d'une fonction.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Essayez par vous-même : déplacez la droite verticale</h3>
+                    <p class="text-slate-600 text-sm mb-4">À gauche une courbe croissante (c'est un graphe de fonction), à droite un cercle (ce n'en est pas un). Déplacez le curseur et observez le nombre de points d'intersection.</p>
+                    <input id="vltSlider-fr" type="range" min="-90" max="90" step="1" value="0" class="w-full mb-3">
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div>
+                            <svg id="vltSvgGood-fr" viewBox="0 0 200 200" class="w-full bg-emerald-50/50 rounded-lg border border-emerald-100"></svg>
+                            <p class="text-center text-xs text-slate-600 mt-1" id="vltGoodLabel-fr">1 intersection — c'est une fonction</p>
+                        </div>
+                        <div>
+                            <svg id="vltSvgBad-fr" viewBox="0 0 200 200" class="w-full bg-red-50/50 rounded-lg border border-red-100"></svg>
+                            <p class="text-center text-xs text-slate-600 mt-1" id="vltBadLabel-fr">2 intersections — pas une fonction</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Attention au piège</p>
+                    <p class="text-sm text-slate-700">Un cercle ne satisfait le test de la droite verticale presque nulle part (sauf aux points extrêmes) — un cercle n'est donc le graphe d'aucune fonction $y=f(x)$.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 4: D(f) H(f) SUR LE GRAPHE -->
+    <section id="s4-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Domaine de définition et image à partir du graphe</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-2">Le <strong>domaine de définition</strong> s'obtient par projection perpendiculaire du graphe sur l'axe $x$. L'<strong>image</strong> s'obtient par projection perpendiculaire du graphe sur l'axe $y$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Essayez par vous-même : afficher la projection</h3>
+                    <p class="text-slate-600 text-sm mb-4">Le graphe de la fonction $f$ est représenté ci-dessous. Cliquez sur le bouton pour mettre en évidence sur chaque axe l'intervalle correspondant à $D(f)$ et $H(f)$.</p>
+                    <svg id="projSvg-fr" viewBox="0 0 380 320" class="w-full bg-white rounded-lg border border-violet-100 mb-3"></svg>
+                    <button onclick="toggleProjection('fr')" id="projBtn-fr" class="bg-violet-700 hover:bg-violet-800 text-white font-bold px-5 py-2 rounded-lg text-sm">Afficher la projection</button>
+                    <p class="text-slate-700 text-sm mt-3" id="projResult-fr"></p>
+                </div>
+                <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+                    <p class="font-semibold text-amber-900 mb-2">Graphe avec asymptotes :</p>
+                    <p class="text-slate-700 text-sm mb-3">Si le graphe se rapproche d'une droite verticale ou horizontale sans jamais la toucher (une <strong>asymptote</strong>), cette droite est exclue de $D(f)$, respectivement $H(f)$. Sur la figure, le graphe a une asymptote verticale $x=2$ et une asymptote horizontale $y=1$ (en pointillés) :</p>
+                    <svg id="asymSvg-fr" viewBox="0 0 300 260" class="w-full max-w-sm mx-auto bg-white rounded-lg border border-amber-200 mb-3"></svg>
+                    <p class="text-slate-700 text-sm">$D(f) = (-\infty;2)\cup(2;\infty)$, &nbsp; $H(f) = (-\infty;1)\cup(1;\infty)$.</p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Et la suite ?</p>
+                    <p class="text-sm text-slate-700">Vous rencontrerez les asymptotes plus en détail avec les fonctions rationnelles et exponentielles dans les chapitres suivants.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 5: POINTS SUR LE GRAPHE -->
+    <section id="s5-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Un point appartient-il au graphe de la fonction ?</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <p class="text-slate-700 mb-4">On remplace la coordonnée $x$ du point dans l'expression de la fonction et on compare le résultat avec la coordonnée $y$. S'ils coïncident, le point appartient au graphe.</p>
+                    <p class="text-slate-700 mb-2">Pour $f: y = 3x^2-2$, vérifiez les points $A[1;1]$ et $B[-2;5]$ :</p>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm space-y-1">
+                        <p>$f(1) = 3\cdot1^2-2 = 1$, coïncide avec $y=1$ &nbsp;$\Rightarrow A \in f$</p>
+                        <p>$f(-2) = 3\cdot(-2)^2-2 = 10 \neq 5$ &nbsp;$\Rightarrow B \notin f$</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Vérificateur en direct</h3>
+                    <p class="text-slate-600 text-sm mb-4">Pour $f: y = 3x^2-2$, entrez les coordonnées d'un point et découvrez s'il appartient au graphe.</p>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <input id="pointCheckX-fr" type="number" step="any" placeholder="x" class="checker-input border border-violet-300 rounded-lg px-3 py-2 w-24">
+                        <input id="pointCheckY-fr" type="number" step="any" placeholder="y" class="checker-input border border-violet-300 rounded-lg px-3 py-2 w-24">
+                        <button onclick="checkPoint('fr')" class="bg-violet-700 hover:bg-violet-800 text-white font-bold px-5 py-2 rounded-lg">Vérifier</button>
+                    </div>
+                    <p class="font-semibold text-slate-700 mt-3" id="pointCheckResult-fr"></p>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note trap rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-amber-700 uppercase mb-1">Attention au piège</p>
+                    <p class="text-sm text-slate-700">Ne confondez pas « le point appartient au graphe » avec « le point appartient au domaine de définition ». Le domaine ne concerne que la coordonnée $x$ ; l'appartenance au graphe concerne le couple $[x;y]$ tout entier.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    <!-- SECTION 6: INTERSECTIONS AVEC LES AXES -->
+    <section id="s6-fr" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Intersections du graphe avec les axes</h2>
+        <div class="grid md:grid-cols-[1fr_260px] gap-6">
+            <div class="space-y-6">
+                <div class="bg-violet-50 rounded-2xl border border-violet-200 p-6 md:p-8">
+                    <p class="text-xs font-bold text-violet-700 uppercase tracking-wide mb-2">Démarche</p>
+                    <p class="text-slate-700 mb-3">Tout point situé sur l'axe $x$ a sa seconde coordonnée (la coordonnée $y$) égale à zéro — c'est pourquoi, pour trouver l'intersection avec l'axe $x$, on pose $y=0$. De même, tout point sur l'axe $y$ a sa première coordonnée (la coordonnée $x$) égale à zéro.</p>
+                    <p class="text-slate-800 mb-2"><strong>Intersection avec l'axe $x$ :</strong> on pose $y=0$ et on résout l'équation $0=f(x)$ pour $x$.</p>
+                    <p class="text-slate-800"><strong>Intersection avec l'axe $y$ :</strong> on pose $x=0$ et on calcule $y=f(0)$.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Exemple sans intersection avec l'axe x</h3>
+                    <p class="text-slate-700 mb-3">$g: y = \dfrac{1}{2x+6}$</p>
+                    <svg id="interceptSvg1-fr" viewBox="0 0 300 240" class="w-full max-w-sm mx-auto bg-white rounded-lg border border-violet-100 mb-3"></svg>
+                    <div class="bg-slate-50 rounded-lg p-4 text-sm space-y-1">
+                        <p>Axe $x$ : $0 = \dfrac{1}{2x+6}$ — cette équation n'a pas de solution (une fraction ne peut jamais être nulle) $\Rightarrow$ l'intersection n'existe pas.</p>
+                        <p>Axe $y$ : $y = \dfrac{1}{2\cdot0+6} = \dfrac{1}{6}$ &nbsp;$\Rightarrow P_y\left[0;\dfrac16\right]$</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-violet-100 p-6 md:p-8">
+                    <h3 class="font-bold text-violet-800 mb-3">Exemple avec une fonction quadratique</h3>
+                    <p class="text-slate-700 mb-3">$f: y = x^2+2x-15$</p>
+                    <svg id="interceptSvg2-fr" viewBox="0 0 300 280" class="w-full max-w-sm mx-auto bg-white rounded-lg border border-violet-100 mb-3"></svg>
+                    <button onclick="toggleReveal('interceptReveal-fr', this)" class="text-violet-700 font-bold text-sm underline mb-3">Afficher la solution</button>
+                    <div id="interceptReveal-fr" class="hidden bg-slate-50 rounded-lg p-4 text-sm space-y-1">
+                        <p>Axe $x$ : $0 = x^2+2x-15$. Factorisation : $x^2+2x-15 = (x+5)(x-3)$</p>
+                        <p>$(x+5)(x-3) = 0 \Rightarrow x_1=-5,\ x_2=3$</p>
+                        <p>$\Rightarrow P_{x_1}[-5;0],\ P_{x_2}[3;0]$</p>
+                        <p>Axe $y$ : $y = 0^2+2\cdot0-15 = -15 \Rightarrow P_y[0;-15]$</p>
+                    </div>
+                </div>
+            </div>
+            <aside class="space-y-4">
+                <div class="side-note curious rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-teal-700 uppercase mb-1">Pour les curieux</p>
+                    <p class="text-sm text-slate-700">Le graphe d'une fonction a toujours au plus une intersection avec l'axe $y$ (car $x=0$ donne au plus une valeur de $y$), mais peut avoir un nombre quelconque d'intersections avec l'axe $x$ — aucune, plusieurs, voire une infinité.</p>
+                </div>
+                <div class="side-note next rounded-r-xl p-4">
+                    <p class="text-xs font-bold text-slate-600 uppercase mb-1">Et la suite ?</p>
+                    <p class="text-sm text-slate-700">La factorisation d'un trinôme quadratique sera travaillée en détail dans le chapitre sur la fonction quadratique.</p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-400 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Mathématiques, CLIL · Graphe d'une fonction</p>
+</footer>
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+
+        const showingCz = !cz.classList.contains('hidden');
+        const oldContainer = showingCz ? cz : fr;
+        const newContainer = showingCz ? fr : cz;
+        const oldSections = oldContainer.querySelectorAll('main > section[id]');
+
+        const scrollY = window.pageYOffset;
+        let currentIndex = -1;
+        let oldSectionTopAbs = 0;
+        oldSections.forEach((sec, i) => {
+            const topAbs = sec.getBoundingClientRect().top + scrollY;
+            if (topAbs <= scrollY) { currentIndex = i; oldSectionTopAbs = topAbs; }
+        });
+        const offsetWithinSection = currentIndex === -1 ? null : scrollY - oldSectionTopAbs;
+
+        if (showingCz) {
+            cz.classList.add('hidden'); fr.classList.remove('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        } else {
+            fr.classList.add('hidden'); cz.classList.remove('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        }
+
+        const newSections = newContainer.querySelectorAll('main > section[id]');
+        if (currentIndex !== -1 && newSections[currentIndex]) {
+            const newTopAbs = newSections[currentIndex].getBoundingClientRect().top + window.pageYOffset;
+            window.scrollTo(0, newTopAbs + offsetWithinSection);
+        } else {
+            window.scrollTo(0, 0);
+        }
+
+        if (window.MathJax) { setTimeout(() => MathJax.typesetPromise && MathJax.typesetPromise(), 50); }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+
+    function toggleReveal(id, btn) {
+        const el = document.getElementById(id);
+        const isHidden = el.classList.toggle('hidden');
+        const showWords = ['Zobrazit', 'Afficher'];
+        const hideWords = ['Skrýt', 'Masquer'];
+        let txt = btn.textContent;
+        if (isHidden) { hideWords.forEach((w,i) => { txt = txt.replace(w, showWords[i]); }); }
+        else { showWords.forEach((w,i) => { txt = txt.replace(w, hideWords[i]); }); }
+        btn.textContent = txt;
+    }
+
+    // ---- SEKCE 1: bod v souradnicich ----
+    function quadrantName(x, y, suffix) {
+        if (x === 0 || y === 0) return suffix === 'cs' ? 'na ose' : 'sur un axe';
+        if (x > 0 && y > 0) return suffix === 'cs' ? 'I. kvadrant' : 'Ier quadrant';
+        if (x < 0 && y > 0) return suffix === 'cs' ? 'II. kvadrant' : 'IIe quadrant';
+        if (x < 0 && y < 0) return suffix === 'cs' ? 'III. kvadrant' : 'IIIe quadrant';
+        return suffix === 'cs' ? 'IV. kvadrant' : 'IVe quadrant';
+    }
+
+    function drawPlotter(suffix) {
+        const svg = document.getElementById('plotterSvg-' + suffix);
+        if (!svg) return;
+        const w = 320, h = 320, pad = 25;
+        const xMin=-5, xMax=5, yMin=-5, yMax=5;
+        const scaleX = (w-2*pad)/(xMax-xMin), scaleY = (h-2*pad)/(yMax-yMin);
+        const toSvg = (x,y) => [pad+(x-xMin)*scaleX, h-pad-(y-yMin)*scaleY];
+        const x = parseFloat(document.getElementById('plotterXSlider-'+suffix).value);
+        const y = parseFloat(document.getElementById('plotterYSlider-'+suffix).value);
+        const [ox, oy] = toSvg(0,0);
+        const [px, py] = toSvg(x,y);
+        let grid = '';
+        for (let i=xMin; i<=xMax; i++) { const [gx] = toSvg(i,0); grid += `<line x1="${gx}" y1="${pad}" x2="${gx}" y2="${h-pad}" stroke="#e9d5ff" stroke-width="1"/>`; }
+        for (let i=yMin; i<=yMax; i++) { const [,gy] = toSvg(0,i); grid += `<line x1="${pad}" y1="${gy}" x2="${w-pad}" y2="${gy}" stroke="#e9d5ff" stroke-width="1"/>`; }
+        svg.innerHTML = `
+            ${grid}
+            <line x1="${pad}" y1="${oy}" x2="${w-pad}" y2="${oy}" stroke="#7c3aed" stroke-width="1.5"/>
+            <line x1="${ox}" y1="${pad}" x2="${ox}" y2="${h-pad}" stroke="#7c3aed" stroke-width="1.5"/>
+            <line x1="${ox}" y1="${oy}" x2="${px}" y2="${oy}" stroke="#a21caf" stroke-width="1" stroke-dasharray="3"/>
+            <line x1="${px}" y1="${oy}" x2="${px}" y2="${py}" stroke="#a21caf" stroke-width="1" stroke-dasharray="3"/>
+            <circle cx="${px}" cy="${py}" r="6" fill="#a21caf"/>
+        `;
+        document.getElementById('plotterXVal-'+suffix).textContent = x;
+        document.getElementById('plotterYVal-'+suffix).textContent = y;
+        document.getElementById('plotterCoord-'+suffix).textContent = `[${x}; ${y}]`;
+        document.getElementById('plotterQuadrant-'+suffix).textContent = quadrantName(x,y,suffix);
+    }
+    ['cs','fr'].forEach(suffix => {
+        ['plotterXSlider-','plotterYSlider-'].forEach(id => {
+            const el = document.getElementById(id+suffix);
+            if (el) el.addEventListener('input', () => drawPlotter(suffix));
+        });
+        drawPlotter(suffix);
+    });
+
+    // ---- SEKCE 2: bod putujici po grafu (ohrev vody) ----
+    function kettleTemp(t) { return 20 + (95-20)*(1-Math.exp(-0.35*t)); }
+    function drawTrace(suffix) {
+        const svg = document.getElementById('traceSvg-'+suffix);
+        if (!svg) return;
+        const w=400, h=220, pad=35;
+        const xMin=0, xMax=10, yMin=15, yMax=100;
+        const toSvg = (t,temp) => [pad+(t-xMin)/(xMax-xMin)*(w-2*pad), h-pad-(temp-yMin)/(yMax-yMin)*(h-2*pad)];
+        let pts = [];
+        for (let t=0; t<=10; t+=0.2) pts.push(toSvg(t, kettleTemp(t)));
+        const line = pts.map(p=>p.join(',')).join(' ');
+        const t0 = parseFloat(document.getElementById('traceSlider-'+suffix).value);
+        const temp0 = kettleTemp(t0);
+        const [px,py] = toSvg(t0, temp0);
+        const [ox,oy] = toSvg(0, yMin);
+        svg.innerHTML = `
+            <line x1="${pad}" y1="${h-pad}" x2="${w-10}" y2="${h-pad}" stroke="#c4b5fd" stroke-width="1"/>
+            <line x1="${pad}" y1="${h-pad}" x2="${pad}" y2="10" stroke="#c4b5fd" stroke-width="1"/>
+            <polyline points="${line}" fill="none" stroke="#7c3aed" stroke-width="2.5"/>
+            <line x1="${px}" y1="${py}" x2="${px}" y2="${h-pad}" stroke="#a21caf" stroke-width="1" stroke-dasharray="3"/>
+            <circle cx="${px}" cy="${py}" r="6" fill="#a21caf"/>
+            <text x="${pad}" y="${h-pad+16}" font-size="9" fill="#64748b">0</text>
+        `;
+        document.getElementById('traceLabel-'+suffix).textContent =
+            (suffix==='cs' ? `Bod [${t0}; ${temp0.toFixed(0)}] na grafu` : `Point [${t0}; ${temp0.toFixed(0)}] sur le graphe`);
+    }
+    ['cs','fr'].forEach(suffix => {
+        const el = document.getElementById('traceSlider-'+suffix);
+        if (el) el.addEventListener('input', () => drawTrace(suffix));
+        drawTrace(suffix);
+    });
+
+    // ---- SEKCE 3: test svislou primkou ----
+    function prusecikSlovo(n) {
+        if (n === 1) return 'průsečík';
+        if (n === 2 || n === 3 || n === 4) return 'průsečíky';
+        return 'průsečíků';
+    }
+    function intersectionMot(n) { return n === 1 ? 'intersection' : 'intersections'; }
+
+    function drawVLT(suffix) {
+        const val = parseFloat(document.getElementById('vltSlider-'+suffix).value);
+        const svgGood = document.getElementById('vltSvgGood-'+suffix);
+        const svgBad = document.getElementById('vltSvgBad-'+suffix);
+        if (!svgGood || !svgBad) return;
+        const lineX = 100 + val;
+
+        // "Good" shape: monotonic curve y = 180 - 0.9x (roughly), always exactly one intersection
+        const goodCurve = 'M 20,180 Q 100,160 180,20';
+        let goodCount = (lineX >= 20 && lineX <= 180) ? 1 : 0;
+        svgGood.innerHTML = `
+            <path d="${goodCurve}" fill="none" stroke="#059669" stroke-width="3"/>
+            <line x1="${lineX}" y1="10" x2="${lineX}" y2="190" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/>
+        `;
+        document.getElementById('vltGoodLabel-'+suffix).textContent =
+            (suffix==='cs' ? `${goodCount} ${prusecikSlovo(goodCount)} — je funkce` : `${goodCount} ${intersectionMot(goodCount)} — c'est une fonction`);
+
+        // "Bad" shape: circle centered at 100,100 r=70; vertical line at lineX intersects 0,1, or 2 times
+        const cx=100, cy=100, r=70;
+        let badCount = 0;
+        if (Math.abs(lineX-cx) < r) badCount = 2;
+        else if (Math.abs(lineX-cx) === r) badCount = 1;
+        svgBad.innerHTML = `
+            <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#dc2626" stroke-width="3"/>
+            <line x1="${lineX}" y1="10" x2="${lineX}" y2="190" stroke="#dc2626" stroke-width="2" stroke-dasharray="4"/>
+        `;
+        document.getElementById('vltBadLabel-'+suffix).textContent =
+            (suffix==='cs' ? `${badCount} ${prusecikSlovo(badCount)} — není funkce` : `${badCount} ${intersectionMot(badCount)} — pas une fonction`);
+    }
+    ['cs','fr'].forEach(suffix => {
+        const el = document.getElementById('vltSlider-'+suffix);
+        if (el) el.addEventListener('input', () => drawVLT(suffix));
+        drawVLT(suffix);
+    });
+
+    // ---- SEKCE 4: projekce D(f) H(f) ----
+    // Souradnicova soustava: xMin=-5,xMax=7,yMin=-4,yMax=8; W=380,H=320
+    const PROJ = { xMin:-5, xMax:7, yMin:-4, yMax:8, W:380, H:320, padL:45, padR:20, padT:20, padB:35 };
+    function projToSvg(x,y) {
+        const scaleX = (PROJ.W-PROJ.padL-PROJ.padR)/(PROJ.xMax-PROJ.xMin);
+        const scaleY = (PROJ.H-PROJ.padT-PROJ.padB)/(PROJ.yMax-PROJ.yMin);
+        return [PROJ.padL+(x-PROJ.xMin)*scaleX, PROJ.H-PROJ.padB-(y-PROJ.yMin)*scaleY];
+    }
+    function buildAxesWithTicks(toSvgFn, xMin,xMax,yMin,yMax) {
+        const [ox,oy] = toSvgFn(0,0);
+        let s = '';
+        for (let xi=xMin; xi<=xMax; xi++) {
+            const [px] = toSvgFn(xi,0);
+            s += `<line x1="${px}" y1="${oy-4}" x2="${px}" y2="${oy+4}" stroke="#94a3b8" stroke-width="1"/>`;
+            if (xi !== 0) s += `<text x="${px}" y="${oy+16}" font-size="9" fill="#64748b" text-anchor="middle">${xi}</text>`;
+        }
+        for (let yi=yMin; yi<=yMax; yi++) {
+            const [,py] = toSvgFn(0,yi);
+            s += `<line x1="${ox-4}" y1="${py}" x2="${ox+4}" y2="${py}" stroke="#94a3b8" stroke-width="1"/>`;
+            if (yi !== 0) s += `<text x="${ox-8}" y="${py+3}" font-size="9" fill="#64748b" text-anchor="end">${yi}</text>`;
+        }
+        return s;
+    }
+
+    let projShown = { cs: false, fr: false };
+    function drawProjBase(suffix) {
+        const svg = document.getElementById('projSvg-'+suffix);
+        if (!svg) return;
+        const {xMin,xMax,yMin,yMax,W,H} = PROJ;
+        const [x0,y0] = projToSvg(xMin,0), [x1] = projToSvg(xMax,0);
+        const [,ya0] = projToSvg(0,yMin), [,ya1] = projToSvg(0,yMax);
+        const [ox,oy] = projToSvg(0,0);
+        const ticks = buildAxesWithTicks(projToSvg, xMin, xMax, yMin, yMax);
+        const curvePath = 'M 97.5,196.7 C 101.9,202.2 115.0,222.5 123.8,229.8 C 132.6,237.2 141.3,242.6 150.0,240.8 C 158.7,239.0 167.4,233.5 176.2,218.8 C 184.9,204.1 193.7,172.8 202.5,152.5 C 211.3,132.2 220.1,112.0 228.8,97.3 C 237.6,82.6 246.3,64.2 255.0,64.2 C 263.7,64.2 272.4,86.3 281.2,97.3 C 289.9,108.3 303.1,124.9 307.5,130.4';
+        svg.innerHTML = `
+            <line x1="${x0}" y1="${oy}" x2="${x1}" y2="${oy}" stroke="#7c3aed" stroke-width="1.5"/>
+            <line x1="${ox}" y1="${ya0}" x2="${ox}" y2="${ya1}" stroke="#7c3aed" stroke-width="1.5"/>
+            ${ticks}
+            <text x="${x1+8}" y="${oy+4}" font-size="11" fill="#7c3aed" font-weight="bold">x</text>
+            <text x="${ox-6}" y="${ya1-6}" font-size="11" fill="#7c3aed" font-weight="bold">y</text>
+            <path d="${curvePath}" fill="none" stroke="#a21caf" stroke-width="3"/>
+            <text x="${ox+8}" y="${ya1+14}" font-size="11" fill="#a21caf" font-weight="bold">f</text>
+        `;
+    }
+    function toggleProjection(suffix) {
+        projShown[suffix] = !projShown[suffix];
+        drawProjBase(suffix);
+        const svg = document.getElementById('projSvg-'+suffix);
+        const btn = document.getElementById('projBtn-'+suffix);
+        const result = document.getElementById('projResult-'+suffix);
+        if (projShown[suffix]) {
+            const [xa] = projToSvg(-3,0), [xb] = projToSvg(5,0);
+            const [,ya] = projToSvg(0,-2), [,yb] = projToSvg(0,6);
+            const [ox,oy] = projToSvg(0,0);
+            // krajni body krivky pro vynasecí čáry
+            const [curveLeftX, curveLeftY] = projToSvg(-3,0);   // leva hranice D(f) - lezi primo na ose
+            const [curveRightX, curveRightY] = projToSvg(5,3);  // prava hranice D(f)
+            const [curveMinX, curveMinY] = projToSvg(-1,-2);    // minimum - dolni hranice H(f)
+            const [curveMaxX, curveMaxY] = projToSvg(3,6);      // maximum - horni hranice H(f)
+            svg.innerHTML += `
+                <line x1="${curveRightX}" y1="${curveRightY}" x2="${curveRightX}" y2="${oy}" stroke="#a21caf" stroke-width="1.5" stroke-dasharray="4"/>
+                <line x1="${curveMinX}" y1="${curveMinY}" x2="${ox}" y2="${curveMinY}" stroke="#a21caf" stroke-width="1.5" stroke-dasharray="4"/>
+                <line x1="${curveMaxX}" y1="${curveMaxY}" x2="${ox}" y2="${curveMaxY}" stroke="#a21caf" stroke-width="1.5" stroke-dasharray="4"/>
+                <line x1="${xa}" y1="${oy}" x2="${xb}" y2="${oy}" stroke="#059669" stroke-width="5"/>
+                <line x1="${ox}" y1="${ya}" x2="${ox}" y2="${yb}" stroke="#2563eb" stroke-width="5"/>
+            `;
+            btn.textContent = suffix==='cs' ? 'Skrýt průmět' : 'Masquer la projection';
+            result.innerHTML = suffix==='cs'
+                ? 'Průmět na osu x (<span style="color:#059669">zeleně</span>): $D(f) = \\langle -3; 5 \\rangle$ &nbsp;|&nbsp; Průmět na osu y (<span style="color:#2563eb">modře</span>): $H(f) = \\langle -2; 6 \\rangle$'
+                : 'Projection sur x (en <span style="color:#059669">vert</span>) : $D(f) = \\langle -3; 5 \\rangle$ &nbsp;|&nbsp; Projection sur y (en <span style="color:#2563eb">bleu</span>) : $H(f) = \\langle -2; 6 \\rangle$';
+            if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([result]).catch(()=>{});
+        } else {
+            btn.textContent = suffix==='cs' ? 'Zobrazit průmět' : 'Afficher la projection';
+            result.textContent = '';
+        }
+    }
+    ['cs','fr'].forEach(suffix => drawProjBase(suffix));
+
+    // ---- Asymptoty: f(x) = 1/(x-2) + 1 ----
+    function drawAsymptote(suffix) {
+        const svg = document.getElementById('asymSvg-'+suffix);
+        if (!svg) return;
+        const xMin=-2,xMax=6,yMin=-3,yMax=5,W=300,H=260,padL=40,padR=15,padT=15,padB=30;
+        const scaleX=(W-padL-padR)/(xMax-xMin), scaleY=(H-padT-padB)/(yMax-yMin);
+        const toSvg = (x,y) => [padL+(x-xMin)*scaleX, H-padB-(y-yMin)*scaleY];
+        const ticks = buildAxesWithTicks(toSvg, xMin, xMax, yMin, yMax);
+        const [ox,oy] = toSvg(0,0);
+        const [x0] = toSvg(xMin,0), [x1] = toSvg(xMax,0);
+        const [,ya0] = toSvg(0,yMin), [,ya1] = toSvg(0,yMax);
+        const [asymXpx] = toSvg(2,0);
+        const [,asymYpx] = toSvg(0,1);
+        const leftPath = 'M 40.0,129.2 C 40.7,129.3 42.6,129.4 44.0,129.4 C 45.3,129.5 46.6,129.6 47.9,129.7 C 49.2,129.8 50.6,129.9 51.9,129.9 C 53.2,130.0 54.5,130.1 55.8,130.2 C 57.2,130.3 58.5,130.4 59.8,130.5 C 61.1,130.6 62.4,130.7 63.8,130.8 C 65.1,130.9 66.4,131.1 67.7,131.2 C 69.0,131.3 70.4,131.4 71.7,131.6 C 73.0,131.7 74.3,131.8 75.6,132.0 C 77.0,132.1 78.3,132.3 79.6,132.4 C 80.9,132.6 82.2,132.8 83.6,132.9 C 84.9,133.1 86.2,133.3 87.5,133.5 C 88.8,133.7 90.2,133.9 91.5,134.1 C 92.8,134.3 94.1,134.5 95.4,134.8 C 96.8,135.0 98.1,135.3 99.4,135.5 C 100.7,135.8 102.0,136.1 103.4,136.4 C 104.7,136.7 106.0,137.1 107.3,137.4 C 108.6,137.8 110.0,138.2 111.3,138.6 C 112.6,139.0 113.9,139.4 115.2,139.9 C 116.6,140.4 117.9,140.9 119.2,141.5 C 120.5,142.1 121.8,142.7 123.2,143.4 C 124.5,144.1 125.8,144.9 127.1,145.8 C 128.4,146.6 129.8,147.6 131.1,148.7 C 132.4,149.8 133.7,151.0 135.0,152.5 C 136.4,153.9 137.7,155.5 139.0,157.5 C 140.3,159.6 141.6,161.7 143.0,164.6 C 144.3,167.6 145.6,170.6 146.9,175.3 C 148.2,180.1 149.6,184.2 150.9,193.4 C 152.2,202.5 154.2,223.9 154.8,230.0';
+        const rightPath = 'M 170.2,15.0 C 170.8,21.1 172.8,42.5 174.1,51.6 C 175.4,60.8 176.8,64.9 178.1,69.7 C 179.4,74.4 180.7,77.4 182.0,80.4 C 183.4,83.3 184.7,85.4 186.0,87.5 C 187.3,89.5 188.6,91.1 190.0,92.5 C 191.3,94.0 192.6,95.2 193.9,96.3 C 195.2,97.4 196.6,98.4 197.9,99.2 C 199.2,100.1 200.5,100.9 201.8,101.6 C 203.2,102.3 204.5,102.9 205.8,103.5 C 207.1,104.1 208.4,104.6 209.8,105.1 C 211.1,105.6 212.4,106.0 213.7,106.4 C 215.0,106.8 216.4,107.2 217.7,107.6 C 219.0,107.9 220.3,108.3 221.6,108.6 C 223.0,108.9 224.3,109.2 225.6,109.5 C 226.9,109.7 228.2,110.0 229.6,110.2 C 230.9,110.5 232.2,110.7 233.5,110.9 C 234.8,111.1 236.2,111.3 237.5,111.5 C 238.8,111.7 240.1,111.9 241.4,112.1 C 242.8,112.2 244.1,112.4 245.4,112.6 C 246.7,112.7 248.0,112.9 249.4,113.0 C 250.7,113.2 252.0,113.3 253.3,113.4 C 254.6,113.6 256.0,113.7 257.3,113.8 C 258.6,113.9 259.9,114.1 261.2,114.2 C 262.6,114.3 263.9,114.4 265.2,114.5 C 266.5,114.6 267.8,114.7 269.2,114.8 C 270.5,114.9 271.8,115.0 273.1,115.1 C 274.4,115.1 275.8,115.2 277.1,115.3 C 278.4,115.4 279.7,115.5 281.0,115.6 C 282.4,115.6 284.3,115.7 285.0,115.8';
+        svg.innerHTML = `
+            <line x1="${x0}" y1="${oy}" x2="${x1}" y2="${oy}" stroke="#94a3b8" stroke-width="1.5"/>
+            <line x1="${ox}" y1="${ya0}" x2="${ox}" y2="${ya1}" stroke="#94a3b8" stroke-width="1.5"/>
+            ${ticks}
+            <line x1="${asymXpx}" y1="${padT}" x2="${asymXpx}" y2="${H-padB}" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5"/>
+            <line x1="${padL}" y1="${asymYpx}" x2="${W-padR}" y2="${asymYpx}" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="5"/>
+            <path d="${leftPath}" fill="none" stroke="#7c3aed" stroke-width="3"/>
+            <path d="${rightPath}" fill="none" stroke="#7c3aed" stroke-width="3"/>
+            <text x="${asymXpx-38}" y="26" font-size="10" fill="#dc2626">x=2</text>
+            <text x="${padL+3}" y="${asymYpx-14}" font-size="10" fill="#dc2626">y=1</text>
+        `;
+    }
+    ['cs','fr'].forEach(suffix => drawAsymptote(suffix));
+
+    // ---- Priklad g: y = 1/(2x+6) - bez prusečíku s osou x ----
+    function drawIntercept1(suffix) {
+        const svg = document.getElementById('interceptSvg1-'+suffix);
+        if (!svg) return;
+        const xMin=-6,xMax=4,yMin=-3,yMax=3,W=300,H=240,padL=40,padR=15,padT=15,padB=30;
+        const scaleX=(W-padL-padR)/(xMax-xMin), scaleY=(H-padT-padB)/(yMax-yMin);
+        const toSvg = (x,y) => [padL+(x-xMin)*scaleX, H-padB-(y-yMin)*scaleY];
+        const ticks = buildAxesWithTicks(toSvg, xMin, xMax, yMin, yMax);
+        const [ox,oy] = toSvg(0,0);
+        const [x0] = toSvg(xMin,0), [x1] = toSvg(xMax,0);
+        const [,ya0] = toSvg(0,yMin), [,ya1] = toSvg(0,yMax);
+        const rightPath = 'M 117.6,15.0 C 118.5,24.5 121.4,60.1 123.4,72.1 C 125.3,84.1 127.2,83.4 129.1,87.0 C 131.1,90.7 133.0,92.1 134.9,93.9 C 136.8,95.7 138.8,96.8 140.7,97.8 C 142.6,98.9 144.5,99.7 146.4,100.4 C 148.4,101.1 150.3,101.7 152.2,102.2 C 154.1,102.7 156.1,103.2 158.0,103.6 C 159.9,103.9 161.8,104.3 163.8,104.6 C 165.7,104.9 167.6,105.1 169.5,105.4 C 171.5,105.6 173.4,105.9 175.3,106.1 C 177.2,106.3 179.2,106.4 181.1,106.6 C 183.0,106.8 184.9,106.9 186.9,107.1 C 188.8,107.2 190.7,107.3 192.6,107.5 C 194.6,107.6 196.5,107.7 198.4,107.8 C 200.3,107.9 202.3,108.0 204.2,108.1 C 206.1,108.2 208.0,108.3 210.0,108.4 C 211.9,108.5 213.8,108.5 215.7,108.6 C 217.6,108.7 219.6,108.7 221.5,108.8 C 223.4,108.9 225.3,108.9 227.3,109.0 C 229.2,109.1 231.1,109.1 233.0,109.2 C 235.0,109.2 236.9,109.3 238.8,109.3 C 240.7,109.4 242.7,109.4 244.6,109.5 C 246.5,109.5 248.4,109.6 250.4,109.6 C 252.3,109.6 254.2,109.7 256.1,109.7 C 258.1,109.7 260.0,109.8 261.9,109.8 C 263.8,109.9 265.8,109.9 267.7,109.9 C 269.6,110.0 271.5,110.0 273.5,110.0 C 275.4,110.0 277.3,110.1 279.2,110.1 C 281.2,110.1 284.0,110.2 285.0,110.2';
+        const leftPath = 'M 40.0,117.9 C 40.4,117.9 41.6,118.0 42.4,118.1 C 43.2,118.2 44.0,118.2 44.8,118.3 C 45.6,118.4 46.4,118.4 47.2,118.5 C 48.0,118.6 48.8,118.7 49.6,118.7 C 50.4,118.8 51.2,118.9 52.0,119.0 C 52.8,119.1 53.6,119.1 54.4,119.2 C 55.2,119.3 56.0,119.4 56.8,119.5 C 57.6,119.6 58.4,119.7 59.1,119.8 C 59.9,119.9 60.7,120.0 61.5,120.2 C 62.3,120.3 63.1,120.4 63.9,120.5 C 64.7,120.7 65.5,120.8 66.3,120.9 C 67.1,121.1 67.9,121.2 68.7,121.4 C 69.5,121.6 70.3,121.7 71.1,121.9 C 71.9,122.1 72.7,122.3 73.5,122.5 C 74.3,122.7 75.1,122.9 75.9,123.1 C 76.7,123.3 77.5,123.6 78.3,123.8 C 79.1,124.1 79.9,124.3 80.7,124.6 C 81.5,124.9 82.3,125.2 83.1,125.6 C 83.9,125.9 84.7,126.3 85.5,126.7 C 86.3,127.1 87.1,127.5 87.9,128.0 C 88.7,128.5 89.5,129.0 90.3,129.6 C 91.1,130.2 91.9,130.9 92.7,131.6 C 93.5,132.3 94.3,133.1 95.1,134.1 C 95.9,135.0 96.7,136.0 97.4,137.3 C 98.2,138.6 99.0,139.9 99.8,141.6 C 100.6,143.4 101.4,145.2 102.2,147.8 C 103.0,150.5 103.8,153.0 104.6,157.4 C 105.4,161.7 106.2,165.2 107.0,174.0 C 107.8,182.7 109.0,204.0 109.4,210.0';
+        const [asymXpx] = toSvg(-3,0);
+        const [yipx_x, yipx_y] = toSvg(0, 1/6);
+        svg.innerHTML = `
+            <line x1="${x0}" y1="${oy}" x2="${x1}" y2="${oy}" stroke="#94a3b8" stroke-width="1.5"/>
+            <line x1="${ox}" y1="${ya0}" x2="${ox}" y2="${ya1}" stroke="#94a3b8" stroke-width="1.5"/>
+            ${ticks}
+            <line x1="${asymXpx}" y1="${padT}" x2="${asymXpx}" y2="${H-padB}" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5"/>
+            <path d="${leftPath}" fill="none" stroke="#7c3aed" stroke-width="3"/>
+            <path d="${rightPath}" fill="none" stroke="#7c3aed" stroke-width="3"/>
+            <circle cx="${yipx_x}" cy="${yipx_y}" r="5" fill="#a21caf"/>
+            <text x="${yipx_x+12}" y="${yipx_y-14}" font-size="11" fill="#a21caf" font-weight="bold">P<tspan baseline-shift="sub" font-size="8">y</tspan></text>
+        `;
+    }
+
+    // ---- Priklad f: y = x^2+2x-15 - kvadraticka funkce ----
+    function drawIntercept2(suffix) {
+        const svg = document.getElementById('interceptSvg2-'+suffix);
+        if (!svg) return;
+        const xMin=-6,xMax=4,yMin=-17,yMax=10,W=300,H=280,padL=40,padR=15,padT=15,padB=30;
+        const scaleX=(W-padL-padR)/(xMax-xMin), scaleY=(H-padT-padB)/(yMax-yMin);
+        const toSvg = (x,y) => [padL+(x-xMin)*scaleX, H-padB-(y-yMin)*scaleY];
+        const ticks = buildAxesWithTicks(toSvg, xMin, xMax, yMin, yMax);
+        const [ox,oy] = toSvg(0,0);
+        const [x0] = toSvg(xMin,0), [x1] = toSvg(xMax,0);
+        const [,ya0] = toSvg(0,yMin), [,ya1] = toSvg(0,yMax);
+        const curvePath = 'M 40.0,23.7 C 41.4,28.5 45.6,43.4 48.4,52.7 C 51.3,62.0 54.1,71.0 56.9,79.6 C 59.7,88.2 62.5,96.5 65.3,104.4 C 68.2,112.4 71.0,120.0 73.8,127.2 C 76.6,134.4 79.4,141.3 82.2,147.9 C 85.1,154.4 87.9,160.7 90.7,166.5 C 93.5,172.4 96.3,177.9 99.1,183.1 C 102.0,188.3 104.8,193.1 107.6,197.6 C 110.4,202.1 113.2,206.2 116.0,210.0 C 118.9,213.8 121.7,217.2 124.5,220.3 C 127.3,223.4 130.1,226.2 132.9,228.6 C 135.7,231.0 138.6,233.1 141.4,234.8 C 144.2,236.6 147.0,237.9 149.8,239.0 C 152.6,240.0 155.5,240.7 158.3,241.0 C 161.1,241.4 163.9,241.4 166.7,241.0 C 169.5,240.7 172.4,240.0 175.2,239.0 C 178.0,237.9 180.8,236.6 183.6,234.8 C 186.4,233.1 189.3,231.0 192.1,228.6 C 194.9,226.2 197.7,223.4 200.5,220.3 C 203.3,217.2 206.1,213.8 209.0,210.0 C 211.8,206.2 214.6,202.1 217.4,197.6 C 220.2,193.1 223.0,188.3 225.9,183.1 C 228.7,177.9 231.5,172.4 234.3,166.5 C 237.1,160.7 239.9,154.4 242.8,147.9 C 245.6,141.3 248.4,134.4 251.2,127.2 C 254.0,120.0 256.8,112.4 259.7,104.4 C 262.5,96.5 265.3,88.2 268.1,79.6 C 270.9,71.0 273.7,62.0 276.6,52.7 C 279.4,43.4 283.6,28.5 285.0,23.7';
+        const [r1x,r1y] = toSvg(-5,0), [r2x,r2y] = toSvg(3,0);
+        const [yix,yiy] = toSvg(0,-15);
+        svg.innerHTML = `
+            <line x1="${x0}" y1="${oy}" x2="${x1}" y2="${oy}" stroke="#94a3b8" stroke-width="1.5"/>
+            <line x1="${ox}" y1="${ya0}" x2="${ox}" y2="${ya1}" stroke="#94a3b8" stroke-width="1.5"/>
+            ${ticks}
+            <path d="${curvePath}" fill="none" stroke="#7c3aed" stroke-width="3"/>
+            <circle cx="${r1x}" cy="${r1y}" r="5" fill="#a21caf"/>
+            <circle cx="${r2x}" cy="${r2y}" r="5" fill="#a21caf"/>
+            <circle cx="${yix}" cy="${yiy}" r="5" fill="#a21caf"/>
+            <text x="${r1x-30}" y="${r1y-8}" font-size="11" fill="#a21caf" font-weight="bold">P<tspan baseline-shift="sub" font-size="8">x1</tspan></text>
+            <text x="${r2x+8}" y="${r2y-8}" font-size="11" fill="#a21caf" font-weight="bold">P<tspan baseline-shift="sub" font-size="8">x2</tspan></text>
+            <text x="${yix+10}" y="${yiy+4}" font-size="11" fill="#a21caf" font-weight="bold">P<tspan baseline-shift="sub" font-size="8">y</tspan></text>
+        `;
+    }
+    ['cs','fr'].forEach(suffix => { drawIntercept1(suffix); drawIntercept2(suffix); });
+
+    // ---- SEKCE 5: bod na grafu checker (f: y=3x^2-2) ----
+    function checkPoint(suffix) {
+        const xVal = document.getElementById('pointCheckX-'+suffix).value;
+        const yVal = document.getElementById('pointCheckY-'+suffix).value;
+        const resultEl = document.getElementById('pointCheckResult-'+suffix);
+        if (xVal === '' || yVal === '') {
+            resultEl.textContent = suffix==='cs' ? 'Zadejte obě souřadnice.' : 'Entrez les deux coordonnées.';
+            resultEl.className = 'font-semibold text-slate-500 mt-3';
+            return;
+        }
+        const x = parseFloat(xVal), y = parseFloat(yVal);
+        const fx = 3*x*x - 2;
+        const matches = Math.abs(fx - y) < 1e-9;
+        if (matches) {
+            resultEl.textContent = suffix==='cs'
+                ? `f(${x}) = ${fx} = ${y} ✓ — bod [${x};${y}] leží na grafu.`
+                : `f(${x}) = ${fx} = ${y} ✓ — le point [${x};${y}] appartient au graphe.`;
+            resultEl.className = 'font-semibold text-emerald-700 mt-3';
+        } else {
+            resultEl.textContent = suffix==='cs'
+                ? `f(${x}) = ${fx} ≠ ${y} ✗ — bod [${x};${y}] neleží na grafu.`
+                : `f(${x}) = ${fx} ≠ ${y} ✗ — le point [${x};${y}] n'appartient pas au graphe.`;
+            resultEl.className = 'font-semibold text-red-600 mt-3';
+        }
+    }
+</script>
+
+</body>
+</html>

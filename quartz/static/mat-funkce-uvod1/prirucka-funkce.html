@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definice funkce, základní pojmy / Définition d'une fonction, notions de base</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 720px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: center; }
+        th { background: #f5f5f5; }
+        .law-box { border-left: 3px solid #1f1f1f; padding-left: 16px; margin: 1.25rem 0; }
+        .step-box { margin: 0.85rem 0 0.85rem 1rem; padding-left: 14px; border-left: 2px solid #ccc; font-size: 0.95rem; }
+        .trap-box { border-left: 3px solid #1f1f1f; padding-left: 16px; margin: 1.25rem 0; }
+
+        @media print {
+            .lang-switcher { display: none !important; }
+            body { padding-top: 0 !important; max-width: 100%; }
+            a { color: inherit; text-decoration: none; }
+            h2 { break-after: avoid; page-break-after: avoid; }
+            .law-box, .step-box, .trap-box { break-inside: avoid; page-break-inside: avoid; }
+        }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Definice funkce, základní pojmy</h1>
+        <p><strong>Předmět:</strong> Matematika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Co je funkce</h2>
+        <p>Představte si šatnu v divadle. Při příchodu odevzdáte kabát a dostanete číslovaný lístek. Po představení lístek vrátíte a dostanete zpět svůj kabát — vždy přesně ten svůj. Každé číslo lístku tak jednoznačně určuje jeden konkrétní kabát, i když dva různí návštěvníci mohou mít úplně stejný kabát. Přesně na tomhle principu — <strong>každému vstupu patří právě jeden výstup</strong> — je založený pojem funkce.</p>
+        <div class="law-box">
+            <p><strong>Definice:</strong> Funkce na množině $D$ je předpis, který každému číslu $x$ z množiny $D$ přiřadí <strong>právě jedno</strong> reálné číslo $y$. Toto přiřazené číslo nazýváme <strong>hodnotou funkce v bodě $x$</strong>.</p>
+        </div>
+        <p><strong>Příklad:</strong> Taxislužba účtuje jízdu podle vzorce $cena = 40 + 25\cdot km$ (nástupní sazba 40 Kč + 25 Kč za kilometr). Počet kilometrů je zde nezávisle proměnná, cena závisle proměnná.</p>
+
+        <h2>2. Definiční obor, obor hodnot, funkční hodnota</h2>
+        <p><strong>Definiční obor funkce</strong> $D(f)$ je množina všech čísel $x$, kterým funkce přiřazuje nějakou hodnotu. <strong>Obor hodnot funkce</strong> $H(f)$ je množina všech hodnot $y$, kterých funkce skutečně nabývá.</p>
+        <p>Příklady: $f: y = 3x+2$ má $D(f) = \mathbb{R}$; $g: y = \dfrac{5}{x}$ má $D(g) = \mathbb{R} - \{0\}$ a $H(g) = \mathbb{R} - \{0\}$.</p>
+        <p>Hodnotu funkce v bodě $x_0$ získáme tak, že za $x$ dosadíme $x_0$ a vypočítáme výsledné číslo:</p>
+        <div class="step-box">
+            <p>Pro $f: y=3x+2$ určete $f(4)$.</p>
+            <p>$f(4) = 3\cdot4+2 = 12+2 = 14$</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Pozor:</strong> Hodnotu funkce smíme určovat jen v bodech, které patří do $D(f)$. Mimo definiční obor funkce „neexistuje" — nemá tam žádnou hodnotu.</p>
+        </div>
+
+        <h2>3. Rovnost funkcí</h2>
+        <p>Dvě funkce $f$ a $g$ jsou si rovny, právě když mají <strong>stejný definiční obor</strong> a <strong>ve všech bodech tohoto oboru se shodují jejich hodnoty</strong>.</p>
+        <div class="trap-box">
+            <p><strong>Časná past:</strong> Porovnejte $f: y = \dfrac{x^2-1}{x-1}$ a $g: y = x+1$. Po rozkladu čitatele $x^2-1=(x-1)(x+1)$ a zkrácení zlomku pro $x\neq1$ dostaneme $f(x)=x+1$ — vypadá to, že $f=g$. Jenže $D(f) = \mathbb{R}-\{1\}$ (v bodě $x=1$ bychom dělili nulou), zatímco $D(g)=\mathbb{R}$. <strong>Definiční obory se liší → funkce si NEJSOU rovny</strong>, přestože se jejich hodnoty shodují všude, kde je $f$ definovaná.</p>
+        </div>
+
+        <h2>4. Způsoby zadání funkce</h2>
+        <p>Funkci lze zadat čtyřmi způsoby:</p>
+        <ol>
+            <li><strong>Tabulkou</strong> — vhodné pro funkce s malým počtem bodů, např. $x: 0,1,2,3$ / $y: 5,8,11,14$.</li>
+            <li><strong>Vzorcem</strong> — nejvhodnější zápis, jejímž definičním oborem bývá interval, např. $f: y = 2x-1$.</li>
+            <li><strong>Grafem</strong> — typicky u funkcí, jejichž hodnoty pocházejí z měření nebo pozorování (např. návštěvnost muzea podle měsíce).</li>
+            <li><strong>Slovním popisem</strong> — nejméně obvyklý způsob, snažíme se ho převést na některý z předchozích, např. „funkce přiřadí každému celému číslu jeho druhou mocninu zmenšenou o 5" zapíšeme jako $f: y=x^2-5,\ x\in\mathbb{Z}$.</li>
+        </ol>
+
+        <h2>5. Určování definičního oboru ze vzorce</h2>
+        <p>Platí dvě pravidla: (1) jmenovatel zlomku se nesmí rovnat nule, (2) pod odmocninou musí být číslo nezáporné.</p>
+        <div class="step-box">
+            <p>$f: y = \dfrac{3x-6}{x+2}$ &nbsp;→&nbsp; $x+2\neq0 \Rightarrow x\neq-2$ &nbsp;→&nbsp; $D(f)=\mathbb{R}-\{-2\}$</p>
+            <p>$g: y = \sqrt{5-x}$ &nbsp;→&nbsp; $5-x\geq0 \Rightarrow x\leq5$ &nbsp;→&nbsp; $D(g)=(-\infty;5\rangle$</p>
+            <p>$h: y = \dfrac{1}{x^2+4}$ &nbsp;→&nbsp; $x^2+4$ je vždy kladné &nbsp;→&nbsp; $D(h)=\mathbb{R}$</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Pozor:</strong> Je-li jmenovatel zlomku tvořen jedinou odmocninou, obě podmínky spojíme do jedné — výraz pod odmocninou musí být <strong>ostře větší</strong> než nula.</p>
+        </div>
+        <p><strong>Složitější příklad:</strong> $f: y = \sqrt{x^2-2x-3} + \dfrac{1}{\sqrt{16-x^2}}$</p>
+        <div class="step-box">
+            <p><strong>Podmínka 1:</strong> $x^2-2x-3\geq0 \Rightarrow (x-3)(x+1)\geq0 \Rightarrow x\leq-1$ nebo $x\geq3$</p>
+            <p><strong>Podmínka 2</strong> (jmenovatel je jediná odmocnina, spojujeme rovnou do ostré nerovnosti): $16-x^2>0 \Rightarrow -4<x<4$</p>
+            <p><strong>Průnik:</strong> $D(f) = (-4;-1\rangle \cup \langle3;4)$</p>
+        </div>
+
+        <h2>6. Hledání x pro dané y</h2>
+        <p>Opačný postup: za $y$ dosadíme požadovanou hodnotu a dopočítáme $x$.</p>
+        <div class="step-box">
+            <p>Pro $f: y=\dfrac{3}{x-2}$ ($x\neq2$) najděte $x$ pro a) $y=6$, b) $y=0$.</p>
+            <p>a) $6=\dfrac{3}{x-2} \Rightarrow 6x-12=3 \Rightarrow 6x=15 \Rightarrow x=2{,}5$ (vyhovuje podmínce)</p>
+            <p>b) $0=\dfrac{3}{x-2} \Rightarrow 0=3$ — spor, řešení neexistuje $\Rightarrow 0\notin H(f)$</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Pozor:</strong> Pokud dostanete neplatnou rovnost (jako 0=3), znamená to, že daná hodnota y nepatří do oboru hodnot funkce — ne že jste se spletli ve výpočtu.</p>
+        </div>
+        <p><strong>S omezeným definičním oborem:</strong> Pro $f: y=x^2-2$, $x\in(-4;3)$, najděte body, kde $y=7$.</p>
+        <div class="step-box">
+            <p>$7=x^2-2 \Rightarrow x^2=9 \Rightarrow x=-3$ nebo $x=3$</p>
+            <p>Ověření oboru: $x=-3$ patří do $(-4;3)$ ✓, ale $x=3$ do otevřeného intervalu nepatří ✗</p>
+            <p><strong>Funkce nabývá hodnoty 7 jen v bodě $x=-3$.</strong></p>
+        </div>
+
+        <h2>7. D(f) a H(f) z tabulky, platnost tabulky</h2>
+        <p>Z tabulky $x: 2,5,1,4,3$ / $y: 8,14,2,8,5$ určíme $D(f)=\{1;2;3;4;5\}$ (hodnoty x seřazené vzestupně) a $H(f)=\{2;5;8;14\}$ (hodnoty y bez duplicit, seřazené vzestupně).</p>
+        <p>Ne každá tabulka je ale platným zadáním funkce — musí platit, že každé $x$ má <strong>právě jednu</strong> hodnotu $y$:</p>
+        <div class="step-box">
+            <p><strong>Neplatná tabulka:</strong> $x: -3, 9/2, 4{,}5, 2, \sqrt5$ / $f(x): 2, 1{,}2, 7, 5, \sqrt3$. Protože $9/2=4{,}5$, hodnotě $x=4{,}5$ jsou přiřazeny dvě různé hodnoty (1,2 a 7) → <strong>není funkce</strong>.</p>
+            <p><strong>Platná tabulka:</strong> $x: 0{,}25, 1/4, 3, 6/2, 5$ / $f(x): 7, 7, 1, 1, 9$. Zde $1/4=0{,}25$ a $6/2=3$, ale pokaždé se stejnou hodnotou → <strong>je funkce</strong> (reprezentuje jen 3 různé body).</p>
+        </div>
+
+        <h2>8. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Funkce:</strong> každému $x\in D$ patří právě jedno $y$.</li>
+            <li><strong>D(f), H(f):</strong> definiční obor (kde funkce žije) a obor hodnot (čeho funkce nabývá).</li>
+            <li><strong>Rovnost funkcí:</strong> stejný D(f) + shodné hodnoty všude v D(f) — pozor na zdánlivě stejné funkce s různým D(f)!</li>
+            <li><strong>Čtyři způsoby zadání:</strong> tabulka, vzorec, graf, slovní popis.</li>
+            <li><strong>Určení D(f):</strong> jmenovatel ≠ 0, pod odmocninou ≥ 0; u odmocniny ve jmenovateli rovnou > 0.</li>
+            <li><strong>Hledání x pro dané y:</strong> dosadit za y, řešit rovnici, ověřit podmínky/omezený obor.</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>Définition d'une fonction, notions de base</h1>
+        <p><strong>Matière :</strong> Mathématiques
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. Qu'est-ce qu'une fonction</h2>
+        <p>Imaginez le vestiaire d'un théâtre. En arrivant, vous déposez votre manteau et recevez un jeton numéroté. Après la représentation, vous rendez le jeton et récupérez votre manteau — toujours exactement le vôtre. Chaque numéro de jeton détermine ainsi un manteau précis, même si deux visiteurs différents peuvent avoir exactement le même manteau. C'est sur ce principe — <strong>à chaque entrée correspond exactement une sortie</strong> — que repose la notion de fonction.</p>
+        <div class="law-box">
+            <p><strong>Définition :</strong> Une fonction sur un ensemble $D$ est un procédé qui associe à chaque nombre $x$ de l'ensemble $D$ <strong>exactement un</strong> nombre réel $y$. Ce nombre associé s'appelle la <strong>valeur de la fonction au point $x$</strong>.</p>
+        </div>
+        <p><strong>Exemple :</strong> Une société de taxi facture la course selon la formule $prix = 40 + 25\cdot km$ (prise en charge de 40 Kč + 25 Kč par kilomètre). Le nombre de kilomètres est ici la variable indépendante, le prix la variable dépendante.</p>
+
+        <h2>2. Domaine de définition, image, valeur de la fonction</h2>
+        <p>Le <strong>domaine de définition</strong> $D(f)$ est l'ensemble de tous les nombres $x$ auxquels la fonction associe une valeur. L'<strong>image de la fonction</strong> $H(f)$ est l'ensemble de toutes les valeurs $y$ que la fonction atteint réellement.</p>
+        <p>Exemples : $f: y = 3x+2$ a $D(f) = \mathbb{R}$ ; $g: y = \dfrac{5}{x}$ a $D(g) = \mathbb{R} - \{0\}$ et $H(g) = \mathbb{R} - \{0\}$.</p>
+        <p>Pour obtenir la valeur de la fonction au point $x_0$, on remplace $x$ par $x_0$ et on calcule le nombre obtenu :</p>
+        <div class="step-box">
+            <p>Pour $f: y=3x+2$, déterminez $f(4)$.</p>
+            <p>$f(4) = 3\cdot4+2 = 12+2 = 14$</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Attention :</strong> On ne peut déterminer la valeur d'une fonction qu'aux points appartenant à $D(f)$. En dehors du domaine de définition, la fonction « n'existe pas » — elle n'y a aucune valeur.</p>
+        </div>
+
+        <h2>3. Égalité de fonctions</h2>
+        <p>Deux fonctions $f$ et $g$ sont égales si et seulement si elles ont <strong>le même domaine de définition</strong> et <strong>leurs valeurs coïncident en tout point de ce domaine</strong>.</p>
+        <div class="trap-box">
+            <p><strong>Un piège classique :</strong> Comparez $f: y = \dfrac{x^2-1}{x-1}$ et $g: y = x+1$. Après factorisation du numérateur $x^2-1=(x-1)(x+1)$ et simplification pour $x\neq1$, on obtient $f(x)=x+1$ — on pourrait croire que $f=g$. Or $D(f) = \mathbb{R}-\{1\}$ (au point $x=1$, on diviserait par zéro), tandis que $D(g)=\mathbb{R}$. <strong>Les domaines diffèrent → les fonctions NE SONT PAS égales</strong>, bien que leurs valeurs coïncident partout où $f$ est définie.</p>
+        </div>
+
+        <h2>4. Modes de définition d'une fonction</h2>
+        <p>Une fonction peut être définie de quatre façons :</p>
+        <ol>
+            <li><strong>Par un tableau</strong> — adapté aux fonctions à petit nombre de points, par ex. $x: 0,1,2,3$ / $y: 5,8,11,14$.</li>
+            <li><strong>Par une formule</strong> — l'écriture la plus adaptée lorsque le domaine est un intervalle, par ex. $f: y = 2x-1$.</li>
+            <li><strong>Par un graphique</strong> — typiquement pour les fonctions dont les valeurs proviennent d'une mesure ou d'une observation (par ex. fréquentation d'un musée selon le mois).</li>
+            <li><strong>Par une description verbale</strong> — le mode le moins courant ; on cherche à le convertir vers l'un des précédents, par ex. « la fonction associe à chaque entier son carré diminué de 5 » s'écrit $f: y=x^2-5,\ x\in\mathbb{Z}$.</li>
+        </ol>
+
+        <h2>5. Détermination du domaine de définition à partir d'une formule</h2>
+        <p>Deux règles s'appliquent : (1) le dénominateur d'une fraction ne doit pas être nul, (2) sous une racine carrée, le nombre doit être non négatif.</p>
+        <div class="step-box">
+            <p>$f: y = \dfrac{3x-6}{x+2}$ &nbsp;→&nbsp; $x+2\neq0 \Rightarrow x\neq-2$ &nbsp;→&nbsp; $D(f)=\mathbb{R}-\{-2\}$</p>
+            <p>$g: y = \sqrt{5-x}$ &nbsp;→&nbsp; $5-x\geq0 \Rightarrow x\leq5$ &nbsp;→&nbsp; $D(g)=(-\infty;5\rangle$</p>
+            <p>$h: y = \dfrac{1}{x^2+4}$ &nbsp;→&nbsp; $x^2+4$ est toujours positif &nbsp;→&nbsp; $D(h)=\mathbb{R}$</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Attention :</strong> Si le dénominateur d'une fraction est constitué d'une seule racine carrée, on combine les deux conditions en une seule — l'expression sous la racine doit être <strong>strictement supérieure</strong> à zéro.</p>
+        </div>
+        <p><strong>Exemple plus complexe :</strong> $f: y = \sqrt{x^2-2x-3} + \dfrac{1}{\sqrt{16-x^2}}$</p>
+        <div class="step-box">
+            <p><strong>Condition 1 :</strong> $x^2-2x-3\geq0 \Rightarrow (x-3)(x+1)\geq0 \Rightarrow x\leq-1$ ou $x\geq3$</p>
+            <p><strong>Condition 2</strong> (dénominateur = racine carrée seule, on combine directement en inégalité stricte) : $16-x^2>0 \Rightarrow -4<x<4$</p>
+            <p><strong>Intersection :</strong> $D(f) = (-4;-1\rangle \cup \langle3;4)$</p>
+        </div>
+
+        <h2>6. Recherche de x pour un y donné</h2>
+        <p>Démarche inverse : on remplace $y$ par la valeur souhaitée et on calcule $x$.</p>
+        <div class="step-box">
+            <p>Pour $f: y=\dfrac{3}{x-2}$ ($x\neq2$), trouvez $x$ pour a) $y=6$, b) $y=0$.</p>
+            <p>a) $6=\dfrac{3}{x-2} \Rightarrow 6x-12=3 \Rightarrow 6x=15 \Rightarrow x=2{,}5$ (satisfait la condition)</p>
+            <p>b) $0=\dfrac{3}{x-2} \Rightarrow 0=3$ — contradiction, aucune solution $\Rightarrow 0\notin H(f)$</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Attention :</strong> Si vous obtenez une égalité fausse (comme 0=3), cela signifie que cette valeur de y n'appartient pas à l'image de la fonction — pas que vous vous êtes trompé dans le calcul.</p>
+        </div>
+        <p><strong>Avec un domaine restreint :</strong> Pour $f: y=x^2-2$, $x\in(-4;3)$, trouvez les points où $y=7$.</p>
+        <div class="step-box">
+            <p>$7=x^2-2 \Rightarrow x^2=9 \Rightarrow x=-3$ ou $x=3$</p>
+            <p>Vérification du domaine : $x=-3$ appartient à $(-4;3)$ ✓, mais $x=3$ n'appartient pas à l'intervalle ouvert ✗</p>
+            <p><strong>La fonction atteint la valeur 7 uniquement au point $x=-3$.</strong></p>
+        </div>
+
+        <h2>7. D(f) et H(f) à partir d'un tableau, validité d'un tableau</h2>
+        <p>Du tableau $x: 2,5,1,4,3$ / $y: 8,14,2,8,5$, on détermine $D(f)=\{1;2;3;4;5\}$ (valeurs de x classées par ordre croissant) et $H(f)=\{2;5;8;14\}$ (valeurs de y sans doublons, classées par ordre croissant).</p>
+        <p>Tous les tableaux ne définissent cependant pas valablement une fonction — il faut que chaque $x$ ait <strong>exactement une</strong> valeur $y$ :</p>
+        <div class="step-box">
+            <p><strong>Tableau non valide :</strong> $x: -3, 9/2, 4{,}5, 2, \sqrt5$ / $f(x): 2, 1{,}2, 7, 5, \sqrt3$. Puisque $9/2=4{,}5$, la valeur $x=4{,}5$ a deux valeurs différentes (1,2 et 7) → <strong>ce n'est pas une fonction</strong>.</p>
+            <p><strong>Tableau valide :</strong> $x: 0{,}25, 1/4, 3, 6/2, 5$ / $f(x): 7, 7, 1, 1, 9$. Ici $1/4=0{,}25$ et $6/2=3$, mais toujours avec la même valeur → <strong>c'est une fonction</strong> (elle ne représente que 3 points distincts).</p>
+        </div>
+
+        <h2>8. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Fonction :</strong> à chaque $x\in D$ correspond exactement un $y$.</li>
+            <li><strong>D(f), H(f) :</strong> domaine de définition (où la fonction est définie) et image (les valeurs atteintes).</li>
+            <li><strong>Égalité de fonctions :</strong> même D(f) + valeurs identiques partout dans D(f) — attention aux fonctions apparemment identiques avec des domaines différents !</li>
+            <li><strong>Quatre modes de définition :</strong> tableau, formule, graphique, description verbale.</li>
+            <li><strong>Détermination de D(f) :</strong> dénominateur ≠ 0, sous la racine ≥ 0 ; racine seule au dénominateur → directement > 0.</li>
+            <li><strong>Recherche de x pour un y donné :</strong> remplacer y, résoudre l'équation, vérifier les conditions/le domaine restreint.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang, preserveScroll) {
+                var oldContent = document.getElementById(lang === 'cs' ? 'content-fr' : 'content-cs');
+                var newLangIsCs = lang === 'cs';
+                var scrollFraction = null;
+
+                if (preserveScroll) {
+                    var oldScrollable = oldContent.scrollHeight;
+                    if (oldScrollable > 0) {
+                        scrollFraction = window.pageYOffset / oldScrollable;
+                    }
+                }
+
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (newLangIsCs) {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangFunkce', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                        if (scrollFraction !== null) {
+                            var newContent = document.getElementById(newLangIsCs ? 'content-cs' : 'content-fr');
+                            var newScrollable = newContent.scrollHeight;
+                            window.scrollTo(0, scrollFraction * newScrollable);
+                        }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangFunkce');
+            if (saved === 'fr') { setLanguage('fr', false); } else { setLanguage('cs', false); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs', true); });
+            btnFr.addEventListener('click', function() { setLanguage('fr', true); });
+        })();
+    </script>
+
+</body>
+</html>

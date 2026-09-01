@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graf funkce / Graphe d'une fonction</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 720px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: center; }
+        th { background: #f5f5f5; }
+        .law-box { border-left: 3px solid #1f1f1f; padding-left: 16px; margin: 1.25rem 0; }
+        .step-box { margin: 0.85rem 0 0.85rem 1rem; padding-left: 14px; border-left: 2px solid #ccc; font-size: 0.95rem; }
+        .trap-box { border-left: 3px solid #1f1f1f; padding-left: 16px; margin: 1.25rem 0; }
+
+        @media print {
+            .lang-switcher { display: none !important; }
+            body { padding-top: 0 !important; max-width: 100%; }
+            a { color: inherit; text-decoration: none; }
+            h2 { break-after: avoid; page-break-after: avoid; }
+            .law-box, .step-box, .trap-box { break-inside: avoid; page-break-inside: avoid; }
+        }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Graf funkce</h1>
+        <p><strong>Předmět:</strong> Matematika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Kartézská soustava souřadnic</h2>
+        <p>Poloha bodu v rovině je určena <strong>uspořádanou dvojicí</strong> čísel $[x;y]$. Dvě navzájem kolmé číselné osy — vodorovná osa $x$ a svislá osa $y$ — se protínají v <strong>počátku</strong> $O[0;0]$ a rozdělují rovinu na čtyři <strong>kvadranty</strong>. Na pořadí souřadnic záleží: bod $[2;-3]$ je jiný bod než $[-3;2]$.</p>
+
+        <h2>2. Graf funkce</h2>
+        <div class="law-box">
+            <p><strong>Definice:</strong> Graf funkce $f$ je množina všech bodů $[x_0; f(x_0)]$, kde $x_0$ postupně probíhá celý definiční obor $D(f)$.</p>
+        </div>
+        <p>Graf je vlastně obrázková podoba téhož, co dřív zapisovala tabulka — jen s nekonečně mnoha body místo pár řádků.</p>
+
+        <h2>3. Je obrázek grafem funkce?</h2>
+        <div class="law-box">
+            <p><strong>Test svislou přímkou:</strong> Množina bodů v rovině je grafem nějaké funkce, právě když každá přímka rovnoběžná s osou $y$ protíná tuto množinu nejvýše v jednom bodě.</p>
+        </div>
+        <p>Proč to platí? Podle definice funkce je každému číslu $x_0 \in D(f)$ přiřazena právě jedna hodnota $y$. Svislá přímka $x=x_0$ prochází všemi body roviny s první souřadnicí $x_0$. Kdyby protla graf ve dvou bodech, znamenalo by to, že $x_0$ odpovídají dvě různé hodnoty $y$ — což odporuje definici funkce.</p>
+        <div class="trap-box">
+            <p><strong>Pozor:</strong> Kružnice tento test nesplňuje skoro nikde (kromě krajních bodů) — proto kružnice není grafem žádné funkce $y=f(x)$.</p>
+        </div>
+
+        <h2>4. Definiční obor a obor hodnot z grafu</h2>
+        <p><strong>Definiční obor</strong> najdeme jako kolmý průmět grafu na osu $x$. <strong>Obor hodnot</strong> najdeme jako kolmý průmět grafu na osu $y$.</p>
+        <p>Pokud se graf k nějaké svislé nebo vodorovné přímce jen přibližuje, ale nikdy se jí nedotkne (tzv. <strong>asymptota</strong>), tato přímka se z $D(f)$, resp. $H(f)$, vyloučí. Např. pro graf s asymptotami $x=2$ a $y=1$: $D(f) = (-\infty;2)\cup(2;\infty)$, $H(f) = (-\infty;1)\cup(1;\infty)$.</p>
+
+        <h2>5. Patří bod grafu funkce?</h2>
+        <p>Dosadíme souřadnici $x$ bodu do předpisu funkce a porovnáme výsledek se souřadnicí $y$. Shodují-li se, bod na grafu leží.</p>
+        <div class="step-box">
+            <p>Pro $f: y = 3x^2-2$ ověřte body $A[1;1]$ a $B[-2;5]$:</p>
+            <p>$f(1) = 3\cdot1^2-2 = 1$, shoduje se s $y=1$ $\Rightarrow A \in f$</p>
+            <p>$f(-2) = 3\cdot(-2)^2-2 = 10 \neq 5$ $\Rightarrow B \notin f$</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Pozor:</strong> Nezaměňujte „bod leží na grafu" s „bod leží v definičním oboru". Definiční obor se týká jen souřadnice $x$, přináležitost ke grafu se týká dvojice $[x;y]$ zároveň.</p>
+        </div>
+
+        <h2>6. Průsečíky grafu funkce se souřadnicovými osami</h2>
+        <p>Každý bod ležící na ose $x$ má druhou souřadnici (souřadnici $y$) rovnu nule — proto při hledání průsečíku s osou $x$ položíme $y=0$. Podobně každý bod na ose $y$ má první souřadnici (souřadnici $x$) rovnu nule.</p>
+        <p><strong>Průsečík s osou $x$:</strong> položíme $y=0$ a řešíme rovnici $0=f(x)$ pro $x$.<br>
+        <strong>Průsečík s osou $y$:</strong> položíme $x=0$ a vypočítáme $y=f(0)$.</p>
+
+        <div class="step-box">
+            <p><strong>Příklad bez průsečíku s osou x:</strong> $g: y = \dfrac{1}{2x+6}$</p>
+            <p>Osa $x$: $0 = \dfrac{1}{2x+6}$ — tato rovnice nemá řešení (zlomek nemůže být roven nule) $\Rightarrow$ průsečík neexistuje.</p>
+            <p>Osa $y$: $y = \dfrac{1}{2\cdot0+6} = \dfrac{1}{6}$ $\Rightarrow P_y\left[0;\dfrac16\right]$</p>
+        </div>
+
+        <div class="step-box">
+            <p><strong>Příklad s kvadratickou funkcí:</strong> $f: y = x^2+2x-15$</p>
+            <p>Osa $x$: $0 = x^2+2x-15$. Rozklad na součin: $x^2+2x-15 = (x+5)(x-3)$</p>
+            <p>$(x+5)(x-3) = 0 \Rightarrow x_1=-5,\ x_2=3 \Rightarrow P_{x_1}[-5;0],\ P_{x_2}[3;0]$</p>
+            <p>Osa $y$: $y = 0^2+2\cdot0-15 = -15 \Rightarrow P_y[0;-15]$</p>
+        </div>
+
+        <p>Graf funkce má vždy nejvýše jeden průsečík s osou $y$ (protože $x=0$ dává nejvýše jednu hodnotu $y$), ale s osou $x$ jich může mít libovolně mnoho, žádný, nebo i nekonečně mnoho.</p>
+
+        <h2>7. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Graf funkce:</strong> množina bodů $[x_0;f(x_0)]$ pro $x_0 \in D(f)$.</li>
+            <li><strong>Test svislou přímkou:</strong> svislice protíná graf funkce nejvýše jednou.</li>
+            <li><strong>D(f), H(f) z grafu:</strong> kolmý průmět na osu $x$, resp. na osu $y$; asymptoty se z oboru vylučují.</li>
+            <li><strong>Bod na grafu:</strong> dosadit $x$, porovnat $f(x)$ s $y$.</li>
+            <li><strong>Průsečíky s osami:</strong> s osou $x$ řešíme $0=f(x)$; s osou $y$ počítáme $f(0)$.</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>Graphe d'une fonction</h1>
+        <p><strong>Matière :</strong> Mathématiques
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. Repère cartésien</h2>
+        <p>La position d'un point dans le plan est déterminée par un <strong>couple ordonné</strong> de nombres $[x;y]$. Deux axes numériques perpendiculaires — l'axe horizontal $x$ et l'axe vertical $y$ — se coupent à l'<strong>origine</strong> $O[0;0]$ et divisent le plan en quatre <strong>quadrants</strong>. L'ordre compte : le point $[2;-3]$ est différent du point $[-3;2]$.</p>
+
+        <h2>2. Graphe d'une fonction</h2>
+        <div class="law-box">
+            <p><strong>Définition :</strong> Le graphe d'une fonction $f$ est l'ensemble de tous les points $[x_0; f(x_0)]$, où $x_0$ parcourt tout le domaine de définition $D(f)$.</p>
+        </div>
+        <p>Le graphe est en fait la version visuelle de ce qu'exprimait déjà un tableau — simplement avec une infinité de points au lieu de quelques lignes.</p>
+
+        <h2>3. Une figure est-elle le graphe d'une fonction ?</h2>
+        <div class="law-box">
+            <p><strong>Test de la droite verticale :</strong> Un ensemble de points du plan est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe $y$ coupe cet ensemble en au plus un point.</p>
+        </div>
+        <p>Pourquoi cela est-il vrai ? Par définition d'une fonction, à chaque nombre $x_0 \in D(f)$ correspond exactement une valeur $y$. La droite verticale $x=x_0$ passe par tous les points du plan dont la première coordonnée vaut $x_0$. Si cette droite coupait le graphe en deux points, cela signifierait que deux valeurs différentes de $y$ correspondent au même $x_0$ — ce qui contredirait la définition d'une fonction.</p>
+        <div class="trap-box">
+            <p><strong>Attention :</strong> Un cercle ne satisfait ce test presque nulle part (sauf aux points extrêmes) — un cercle n'est donc le graphe d'aucune fonction $y=f(x)$.</p>
+        </div>
+
+        <h2>4. Domaine de définition et image à partir du graphe</h2>
+        <p>Le <strong>domaine de définition</strong> s'obtient par projection perpendiculaire du graphe sur l'axe $x$. L'<strong>image</strong> s'obtient par projection perpendiculaire du graphe sur l'axe $y$.</p>
+        <p>Si le graphe se rapproche d'une droite verticale ou horizontale sans jamais la toucher (une <strong>asymptote</strong>), cette droite est exclue de $D(f)$, respectivement $H(f)$. Par exemple, pour un graphe avec asymptotes $x=2$ et $y=1$ : $D(f) = (-\infty;2)\cup(2;\infty)$, $H(f) = (-\infty;1)\cup(1;\infty)$.</p>
+
+        <h2>5. Un point appartient-il au graphe de la fonction ?</h2>
+        <p>On remplace la coordonnée $x$ du point dans l'expression de la fonction et on compare le résultat avec la coordonnée $y$. S'ils coïncident, le point appartient au graphe.</p>
+        <div class="step-box">
+            <p>Pour $f: y = 3x^2-2$, vérifiez les points $A[1;1]$ et $B[-2;5]$ :</p>
+            <p>$f(1) = 3\cdot1^2-2 = 1$, coïncide avec $y=1$ $\Rightarrow A \in f$</p>
+            <p>$f(-2) = 3\cdot(-2)^2-2 = 10 \neq 5$ $\Rightarrow B \notin f$</p>
+        </div>
+        <div class="trap-box">
+            <p><strong>Attention :</strong> Ne confondez pas « le point appartient au graphe » avec « le point appartient au domaine de définition ». Le domaine ne concerne que la coordonnée $x$ ; l'appartenance au graphe concerne le couple $[x;y]$ tout entier.</p>
+        </div>
+
+        <h2>6. Intersections du graphe avec les axes</h2>
+        <p>Tout point situé sur l'axe $x$ a sa seconde coordonnée (la coordonnée $y$) égale à zéro — c'est pourquoi, pour trouver l'intersection avec l'axe $x$, on pose $y=0$. De même, tout point sur l'axe $y$ a sa première coordonnée (la coordonnée $x$) égale à zéro.</p>
+        <p><strong>Intersection avec l'axe $x$ :</strong> on pose $y=0$ et on résout l'équation $0=f(x)$ pour $x$.<br>
+        <strong>Intersection avec l'axe $y$ :</strong> on pose $x=0$ et on calcule $y=f(0)$.</p>
+
+        <div class="step-box">
+            <p><strong>Exemple sans intersection avec l'axe x :</strong> $g: y = \dfrac{1}{2x+6}$</p>
+            <p>Axe $x$ : $0 = \dfrac{1}{2x+6}$ — cette équation n'a pas de solution (une fraction ne peut jamais être nulle) $\Rightarrow$ l'intersection n'existe pas.</p>
+            <p>Axe $y$ : $y = \dfrac{1}{2\cdot0+6} = \dfrac{1}{6}$ $\Rightarrow P_y\left[0;\dfrac16\right]$</p>
+        </div>
+
+        <div class="step-box">
+            <p><strong>Exemple avec une fonction quadratique :</strong> $f: y = x^2+2x-15$</p>
+            <p>Axe $x$ : $0 = x^2+2x-15$. Factorisation : $x^2+2x-15 = (x+5)(x-3)$</p>
+            <p>$(x+5)(x-3) = 0 \Rightarrow x_1=-5,\ x_2=3 \Rightarrow P_{x_1}[-5;0],\ P_{x_2}[3;0]$</p>
+            <p>Axe $y$ : $y = 0^2+2\cdot0-15 = -15 \Rightarrow P_y[0;-15]$</p>
+        </div>
+
+        <p>Le graphe d'une fonction a toujours au plus une intersection avec l'axe $y$ (car $x=0$ donne au plus une valeur de $y$), mais peut avoir un nombre quelconque d'intersections avec l'axe $x$ — aucune, plusieurs, voire une infinité.</p>
+
+        <h2>7. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Graphe d'une fonction :</strong> ensemble des points $[x_0;f(x_0)]$ pour $x_0 \in D(f)$.</li>
+            <li><strong>Test de la droite verticale :</strong> une verticale coupe le graphe au plus une fois.</li>
+            <li><strong>D(f), H(f) à partir du graphe :</strong> projection perpendiculaire sur l'axe $x$, respectivement $y$ ; les asymptotes sont exclues.</li>
+            <li><strong>Point sur le graphe :</strong> remplacer $x$, comparer $f(x)$ à $y$.</li>
+            <li><strong>Intersections avec les axes :</strong> pour l'axe $x$ on résout $0=f(x)$ ; pour l'axe $y$ on calcule $f(0)$.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang, preserveScroll) {
+                var oldContent = document.getElementById(lang === 'cs' ? 'content-fr' : 'content-cs');
+                var newLangIsCs = lang === 'cs';
+                var scrollFraction = null;
+
+                if (preserveScroll) {
+                    var oldScrollable = oldContent.scrollHeight;
+                    if (oldScrollable > 0) {
+                        scrollFraction = window.pageYOffset / oldScrollable;
+                    }
+                }
+
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (newLangIsCs) {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangGraf', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                        if (scrollFraction !== null) {
+                            var newContent = document.getElementById(newLangIsCs ? 'content-cs' : 'content-fr');
+                            var newScrollable = newContent.scrollHeight;
+                            window.scrollTo(0, scrollFraction * newScrollable);
+                        }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangGraf');
+            if (saved === 'fr') { setLanguage('fr', false); } else { setLanguage('cs', false); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs', true); });
+            btnFr.addEventListener('click', function() { setLanguage('fr', true); });
+        })();
+    </script>
+
+</body>
+</html>

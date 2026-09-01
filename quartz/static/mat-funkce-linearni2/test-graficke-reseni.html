@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Grafické řešení rovnic a nerovnic (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-graficke-reseni.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Grafické řešení</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (rovnice, soustavy rovnic, nerovnice, soustavy nerovnic, praktické úlohy).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function signTerm(v) { if (v === 0) return ''; return v >= 0 ? '+ ' + v : '\u2212 ' + Math.abs(v); }
+function coefTerm(v, varname) {
+    varname = varname || 'x';
+    if (v === 1) return varname;
+    if (v === -1) return '-' + varname;
+    return v + varname;
+}
+function signTermVar(v, varname) {
+    if (v === 0) return '';
+    // (kept for clarity, duplicate guard)
+    const abs = Math.abs(v);
+    const term = coefTerm(abs, varname);
+    return v >= 0 ? '+ ' + term : '\u2212 ' + term;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        set.add(correct + delta);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildCategoryOptions(correct, allCategories) {
+    // allCategories: pole vsech moznych textovych kategorii (unikátní), correct musí být mezi nimi
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    { id: 't1', type: 'concept',
+        cs: { q: "Kolik řešení má rovnice $ax+b=0$, když $a=0$ a $b=0$?", a: "nekonečně mnoho", o: ["nekonečně mnoho", "žádné", "právě jedno", "dvě"], h: "Jak vypadá graf $y=0$?", e: "Když $a=0$ i $b=0$, graf $y=0$ splývá s osou $x$ v každém bodě, proto $K=\\mathbb{R}$ — nekonečně mnoho řešení." },
+        fr: { q: "Combien de solutions a l'équation $ax+b=0$ quand $a=0$ et $b=0$ ?", a: "une infinité", o: ["une infinité", "aucune", "une seule", "deux"], h: "À quoi ressemble le graphe $y=0$ ?", e: "Quand $a=0$ et $b=0$, le graphe $y=0$ coïncide avec l'axe $x$ en tout point, donc $K=\\mathbb{R}$ — une infinité de solutions." } },
+    { id: 't2', type: 'concept',
+        cs: { q: "Jakou čarou kreslíme hraniční přímku u ostré nerovnosti ($\\lt$ nebo $\\gt$)?", a: "přerušovanou", o: ["přerušovanou", "plnou", "tečkovanou", "žádnou"], h: "Patří hraniční přímka u ostré nerovnosti do řešení?", e: "U ostré nerovnosti hraniční přímka není součástí řešení, proto ji kreslíme přerušovanou (čárkovanou) čarou." },
+        fr: { q: "Quel trait utilise-t-on pour la droite frontière d'une inégalité stricte ($\\lt$ ou $\\gt$) ?", a: "pointillé", o: ["pointillé", "plein", "en pointillés espacés", "aucun trait"], h: "La droite frontière fait-elle partie de la solution pour une inégalité stricte ?", e: "Pour une inégalité stricte, la droite frontière ne fait pas partie de la solution, donc on la trace en pointillé." } },
+    { id: 't3', type: 'concept',
+        cs: { q: "Kdy nemá soustava dvou lineárních rovnic o dvou neznámých žádné řešení?", a: "když jsou přímky rovnoběžné různé", o: ["když jsou přímky rovnoběžné různé", "když jsou přímky různoběžné", "když jsou přímky totožné", "vždy má alespoň jedno řešení"], h: "Co znamená, že se dvě přímky nikdy nepotkají?", e: "Pokud jsou přímky rovnoběžné, ale ne totožné, nemají žádný společný bod, a soustava tedy nemá řešení." },
+        fr: { q: "Quand un système de deux équations linéaires à deux inconnues n'a-t-il aucune solution ?", a: "quand les droites sont parallèles distinctes", o: ["quand les droites sont parallèles distinctes", "quand les droites sont sécantes", "quand les droites sont confondues", "il y a toujours au moins une solution"], h: "Que signifie le fait que deux droites ne se rencontrent jamais ?", e: "Si les droites sont parallèles mais non confondues, elles n'ont aucun point commun, donc le système n'a pas de solution." } },
+    { id: 't4', type: 'concept',
+        cs: { q: "Kolik řešení má rovnice o dvou neznámých $ax+by+c=0$ (kde $a\\neq0$ nebo $b\\neq0$)?", a: "nekonečně mnoho", o: ["nekonečně mnoho", "žádné", "právě jedno", "právě dvě"], h: "Co je grafem této rovnice?", e: "Množinou řešení je celá přímka, a ta obsahuje nekonečně mnoho bodů — proto nekonečně mnoho řešení." },
+        fr: { q: "Combien de solutions a l'équation à deux inconnues $ax+by+c=0$ (où $a\\neq0$ ou $b\\neq0$) ?", a: "une infinité", o: ["une infinité", "aucune", "une seule", "exactement deux"], h: "Quel est le graphe de cette équation ?", e: "L'ensemble des solutions est une droite entière, qui contient une infinité de points — donc une infinité de solutions." } },
+    { id: 't5', type: 'concept',
+        cs: { q: "Co je řešením soustavy dvou lineárních nerovnic o dvou neznámých?", a: "průnik dvou polorovin", o: ["průnik dvou polorovin", "sjednocení dvou polorovin", "jediný bod", "celá rovina"], h: "Musí platit obě nerovnice zároveň.", e: "Řešením je společná část (průnik) obou polorovin, protože bod musí vyhovovat oběma nerovnicím zároveň." },
+        fr: { q: "Qu'est-ce que la solution d'un système de deux inéquations linéaires à deux inconnues ?", a: "l'intersection de deux demi-plans", o: ["l'intersection de deux demi-plans", "l'union de deux demi-plans", "un seul point", "le plan entier"], h: "Les deux inéquations doivent être vérifiées en même temps.", e: "La solution est la partie commune (intersection) des deux demi-plans, car un point doit vérifier les deux inéquations à la fois." } },
+    { id: 't6', type: 'concept',
+        cs: { q: "Jaký bod nejčastěji volíme jako zkušební bod při řešení nerovnice o dvou neznámých?", a: "$[0;0]$", o: ["$[0;0]$", "$[1;1]$", "bod na hraniční přímce", "libovolný záporný bod"], h: "Který bod se nejsnáze dosazuje do výrazu?", e: "Bod $[0;0]$ se nejsnáze dosazuje (vynulují se všechny násobky $x$ i $y$), pokud ovšem neleží na hraniční přímce." },
+        fr: { q: "Quel point choisit-on le plus souvent comme point d'essai pour résoudre une inéquation à deux inconnues ?", a: "$[0;0]$", o: ["$[0;0]$", "$[1;1]$", "un point sur la droite frontière", "un point négatif quelconque"], h: "Quel point est le plus facile à substituer dans l'expression ?", e: "Le point $[0;0]$ est le plus simple à substituer (tous les multiples de $x$ et $y$ s'annulent), à condition qu'il ne soit pas sur la droite frontière." } },
+    { id: 't7', type: 'concept',
+        cs: { q: "Co musí platit v průsečíku grafů $f(x)$ a $g(x)$ při řešení rovnice $ax+b=cx+d$ metodou srovnání funkcí?", a: "$f(x)=g(x)$", o: ["$f(x)=g(x)$", "$f(x)=0$", "$g(x)=0$", "$f(x)=-g(x)$"], h: "Co znamená, že se dva grafy protínají?", e: "V průsečíku mají obě funkce stejnou hodnotu $y$ pro stejné $x$, proto tam platí $f(x)=g(x)$ — což je přesně řešená rovnice." },
+        fr: { q: "Que doit vérifier le point d'intersection des graphes de $f(x)$ et $g(x)$ en résolvant $ax+b=cx+d$ par comparaison de fonctions ?", a: "$f(x)=g(x)$", o: ["$f(x)=g(x)$", "$f(x)=0$", "$g(x)=0$", "$f(x)=-g(x)$"], h: "Que signifie le fait que deux graphes se coupent ?", e: "Au point d'intersection, les deux fonctions ont la même valeur $y$ pour le même $x$, donc $f(x)=g(x)$ — ce qui est exactement l'équation résolue." } },
+    { id: 't8', type: 'concept',
+        cs: { q: "Jak se nazývá bod, ve kterém se protnou grafy dvou porovnávaných nabídek (např. tarifů)?", a: "bod zvratu", o: ["bod zvratu", "vrchol paraboly", "nulový bod", "průsečík s osou $y$"], h: "Od tohoto bodu se mění, která nabídka je výhodnější.", e: "Bod zvratu je průsečík grafů obou nabídek — od něj se mění, která z nich je výhodnější." },
+        fr: { q: "Comment appelle-t-on le point où se coupent les graphes de deux offres comparées (par exemple deux forfaits) ?", a: "le point d'équilibre", o: ["le point d'équilibre", "le sommet de la parabole", "le zéro de la fonction", "l'intersection avec l'axe $y$"], h: "À partir de ce point, l'offre la plus avantageuse change.", e: "Le point d'équilibre est l'intersection des graphes des deux offres — à partir de lui, l'offre la plus avantageuse change." } }
+];
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Rovnice v anulovaném tvaru je $y = {aTerm} {bTerm}$. Jaké je řešení $x_0$ (kde $y=0$)?", h: "Najdi, pro jaké $x$ je $y=0$.", e: "${aTerm} {bTerm} = 0 \\Rightarrow x = {res}$." },
+        fr: { q: "L'équation sous forme réduite est $y = {aTerm} {bTerm}$. Quelle est la solution $x_0$ (où $y=0$) ?", h: "Trouve pour quel $x$ on a $y=0$.", e: "${aTerm} {bTerm} = 0 \\Rightarrow x = {res}$." },
+        params: () => { const a = randChoice([1,2,3,-1,-2,-3]); const k = randInt(-6,6); const b = -a*k; return { a, k, b, aTerm: coefTerm(a,'x'), bTerm: signTerm(b) }; },
+        solve: (p) => { return { res: p.k, correct: fmt(p.k) }; },
+        wrongOptions: (p, sol) => buildOptions(p.k, [], 5) },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Soustava je dána rovnicemi $y = {a1Term} {b1Term}$ a $y = {a2Term} {b2Term}$. Kolik má tato soustava řešení?", h: "Porovnej sklony (koeficienty $a$) obou přímek — pokud jsou stejné, porovnej ještě $b$.", e: "{expl}" },
+        fr: { q: "Le système est donné par $y = {a1Term} {b1Term}$ et $y = {a2Term} {b2Term}$. Combien de solutions a ce système ?", h: "Compare les pentes (coefficients $a$) des deux droites — si elles sont égales, compare aussi $b$.", e: "{expl}" },
+        params: () => {
+            const kind = randChoice(['one','none','infinite']);
+            const slopes = [1,2,3,-1,-2,-3,4,-4];
+            const a1 = randChoice(slopes);
+            const b1 = randInt(-6,6);
+            let a2, b2;
+            if (kind === 'one') {
+                a2 = randChoice(slopes.filter(s => s !== a1));
+                b2 = randInt(-6,6);
+            } else if (kind === 'none') {
+                a2 = a1;
+                const delta = randChoice([-5,-4,-3,-2,-1,1,2,3,4,5]);
+                b2 = b1 + delta;
+            } else {
+                a2 = a1; b2 = b1;
+            }
+            return { a1, b1, a2, b2, kind, a1Term: coefTerm(a1,'x'), b1Term: signTerm(b1), a2Term: coefTerm(a2,'x'), b2Term: signTerm(b2) };
+        },
+        solve: (p) => {
+            const labelsCs = { one: 'právě jedno řešení', none: 'žádné řešení', infinite: 'nekonečně mnoho řešení' };
+            const labelsFr = { one: 'une seule solution', none: 'aucune solution', infinite: 'une infinité de solutions' };
+            const explCs = { one: `Přímky mají různé sklony ($a_1=${p.a1}\\neq${p.a2}=a_2$), jsou tedy různoběžné a mají právě jeden průsečík.`,
+                              none: `Přímky mají stejný sklon ($a_1=a_2=${p.a1}$), ale různé $b$ ($b_1=${p.b1}\\neq${p.b2}=b_2$) — jsou rovnoběžné různé, bez společného bodu.`,
+                              infinite: `Přímky mají stejný sklon i stejné $b$ ($a_1=a_2=${p.a1}$, $b_1=b_2=${p.b1}$) — jde o dvě totožné přímky.` };
+            const explFr = { one: `Les droites ont des pentes différentes ($a_1=${p.a1}\\neq${p.a2}=a_2$), elles sont donc sécantes et ont un seul point commun.`,
+                              none: `Les droites ont la même pente ($a_1=a_2=${p.a1}$) mais des $b$ différents ($b_1=${p.b1}\\neq${p.b2}=b_2$) — parallèles distinctes, sans point commun.`,
+                              infinite: `Les droites ont la même pente et le même $b$ ($a_1=a_2=${p.a1}$, $b_1=b_2=${p.b1}$) — ce sont deux droites confondues.` };
+            return { res: p.kind, correct: labelsCs[p.kind], correctFr: labelsFr[p.kind],
+                     explCs: explCs[p.kind], explFr: explFr[p.kind] };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below in prepareQuestion for m2 */ },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Přímky $y = {a1Term} {b1Term}$ a $y = {a2Term} {b2Term}$ jsou grafy soustavy dvou rovnic. Jaká je $x$-ová souřadnice jejich průsečíku?", h: "Polož obě pravé strany rovny sobě a vyřeš rovnici pro $x$.", e: "${a1Term} {b1Term} = {a2Term} {b2Term} \\Rightarrow x = {res}$." },
+        fr: { q: "Les droites $y = {a1Term} {b1Term}$ et $y = {a2Term} {b2Term}$ sont les graphes d'un système de deux équations. Quelle est l'abscisse de leur point d'intersection ?", h: "Égalise les deux membres de droite et résous l'équation en $x$.", e: "${a1Term} {b1Term} = {a2Term} {b2Term} \\Rightarrow x = {res}$." },
+        params: () => {
+            const a1 = randChoice([1,2,3,-1,-2,-3]);
+            let a2 = randChoice([1,2,3,-1,-2,-3]);
+            while (a2 === a1) a2 = randChoice([1,2,3,-1,-2,-3]);
+            const x0 = randInt(-5,5);
+            const b1 = randInt(-6,6);
+            const b2 = b1 + (a1-a2)*x0;
+            return { a1, b1, a2, b2, x0, a1Term: coefTerm(a1,'x'), b1Term: signTerm(b1), a2Term: coefTerm(a2,'x'), b2Term: signTerm(b2) };
+        },
+        solve: (p) => { return { res: p.x0, correct: fmt(p.x0) }; },
+        wrongOptions: (p, sol) => buildOptions(p.x0, [], 5) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Dosaď bod $P[{px};{py}]$ do výrazu ${aTerm} {bTerm} {cTerm}$. Jaká hodnota vyjde?", h: "Nahraď $x$ za souřadnici bodu a $y$ za druhou souřadnici.", e: "${aTerm} {bTerm} {cTerm}$ v bodě $P$: ${t1} {t2Signed} {t3Signed} = {res}$." },
+        fr: { q: "Substitue le point $P[{px};{py}]$ dans l'expression ${aTerm} {bTerm} {cTerm}$. Quelle valeur obtient-on ?", h: "Remplace $x$ par la première coordonnée et $y$ par la seconde.", e: "${aTerm} {bTerm} {cTerm}$ au point $P$ : ${t1} {t2Signed} {t3Signed} = {res}$." },
+        params: () => {
+            const a = randChoice([1,2,3,-1,-2,-3]);
+            const b = randChoice([1,2,3,-1,-2,-3]);
+            const c = randInt(-5,5);
+            const px = randInt(-4,4);
+            const py = randInt(-4,4);
+            const t1 = a*px, t2 = b*py, t3 = c;
+            return { a, b, c, px, py, aTerm: coefTerm(a,'x'), bTerm: signTermVar(b,'y'), cTerm: signTerm(c),
+                      t1, t2Signed: signTerm(t2), t3Signed: signTerm(t3) };
+        },
+        solve: (p) => { const res = p.a*p.px + p.b*p.py + p.c; return { res, correct: fmt(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 6) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Tarif A stojí ${a1Term} {b1Term}$ Kč, tarif B stojí ${a2Term} {b2Term}$ Kč (kde $t$ je počet jednotek). Od jaké hodnoty $t$ jsou oba tarify stejně drahé?", h: "Polož obě ceny rovny sobě a vyřeš rovnici pro $t$.", e: "${a1Term} {b1Term} = {a2Term} {b2Term} \\Rightarrow t = {res}$." },
+        fr: { q: "Le forfait A coûte ${a1Term} {b1Term}$ Kč, le forfait B coûte ${a2Term} {b2Term}$ Kč (où $t$ est le nombre d'unités). À partir de quelle valeur de $t$ les deux forfaits coûtent-ils le même prix ?", h: "Égalise les deux prix et résous l'équation en $t$.", e: "${a1Term} {b1Term} = {a2Term} {b2Term} \\Rightarrow t = {res}$." },
+        params: () => {
+            const a1 = randChoice([1,2,3,4]);
+            let a2 = randChoice([1,2,3,4]);
+            while (a2 === a1) a2 = randChoice([1,2,3,4]);
+            const t0 = randInt(2,40);
+            const b1 = randInt(10,100);
+            const b2 = b1 + (a1-a2)*t0;
+            return { a1, b1, a2, b2, t0, a1Term: coefTerm(a1,'t'), a2Term: coefTerm(a2,'t'), b1Term: signTerm(b1), b2Term: signTerm(b2) };
+        },
+        solve: (p) => { return { res: p.t0, correct: fmt(p.t0) }; },
+        wrongOptions: (p, sol) => buildOptions(p.t0, [], 8) },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "Je bod $P[{px};{py}]$ řešením nerovnice ${aTerm} {bTerm} {cTerm} {relSymbol} 0$?", h: "Dosaď souřadnice bodu do výrazu a porovnej výsledek s nulou.", e: "${t1} {t2Signed} {t3Signed} = {val}$, a protože ${val} {relSymbol} 0$ {isTrue}, odpověď je: {res}." },
+        fr: { q: "Le point $P[{px};{py}]$ est-il une solution de l'inéquation ${aTerm} {bTerm} {cTerm} {relSymbol} 0$ ?", h: "Substitue les coordonnées du point dans l'expression et compare le résultat à zéro.", e: "${t1} {t2Signed} {t3Signed} = {val}$, et comme ${val} {relSymbol} 0$ {isTrue}, la réponse est : {res}." },
+        params: () => {
+            const a = randChoice([1,2,3,-1,-2,-3]);
+            const b = randChoice([1,2,3,-1,-2,-3]);
+            const c = randInt(-5,5);
+            let px, py, val;
+            do {
+                px = randInt(-4,4); py = randInt(-4,4);
+                val = a*px + b*py + c;
+            } while (val === 0);
+            const rel = randChoice(['\\leq','\\lt','\\geq','\\gt']);
+            const t1 = a*px, t2 = b*py, t3 = c;
+            return { a, b, c, px, py, val, relSymbol: rel, aTerm: coefTerm(a,'x'), bTerm: signTermVar(b,'y'), cTerm: signTerm(c),
+                      t1, t2Signed: signTerm(t2), t3Signed: signTerm(t3) };
+        },
+        solve: (p) => {
+            let holds;
+            if (p.relSymbol === '\\leq') holds = p.val <= 0;
+            else if (p.relSymbol === '\\lt') holds = p.val < 0;
+            else if (p.relSymbol === '\\geq') holds = p.val >= 0;
+            else holds = p.val > 0;
+            return { res: holds ? 'ano' : 'ne', resFr: holds ? 'oui' : 'non', isTrueCs: holds ? 'platí' : 'neplatí', isTrueFr: holds ? 'est vrai' : 'est faux' };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below */ }
+];
+
+
+
+
+
+
+const CATEGORIES_CS = ['právě jedno řešení', 'žádné řešení', 'nekonečně mnoho řešení'];
+const CATEGORIES_FR = ['une seule solution', 'aucune solution', 'une infinité de solutions'];
+const DISTRACTOR_CS = 'dvě různá řešení';
+const DISTRACTOR_FR = 'deux solutions différentes';
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze rozhodnout', 'jen na hranici'];
+const YESNO_DISTRACTORS_FR = ['impossible à décider', 'seulement sur la frontière'];
+
+function inject(obj, p, sol) {
+    const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+    const dict = Object.assign({}, p, sol);
+    obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => disp(dict[k]));
+    obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => disp(dict[k]));
+}
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm2') {
+            // kategoricka odpoved zavisla na jazyku
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            q.q = q.q.replace(/\{(\w+)\}/g, (_, k) => (typeof dictCs[k] === 'number' ? fmt(dictCs[k]) : (lang === 'cs' ? dictCs[k] : dictFr[k])));
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.correct : sol.correctFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.correctFr : sol.correct;
+            const catsOther = lang === 'cs' ? CATEGORIES_FR : CATEGORIES_CS;
+            const distractorOther = lang === 'cs' ? DISTRACTOR_FR : DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { res: sol.res, isTrue: sol.isTrueCs });
+            const dictFr = Object.assign({}, p, { res: sol.resFr, isTrue: sol.isTrueFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+
+
+
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.innerHTML === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Grafické řešení rovnic i nerovnic ti jde skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat tři případy řešení rovnic a nerovnic o dvou neznámých."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na grafické odečítání řešení soustav rovnic a nerovnic."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako hraniční přímka, polorovina či bod zvratu.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si rozdíl mezi soustavou s jedním, žádným a nekonečně mnoha řešeními.");
+            if (mathPercent >= 70) strengths.push("Výpočty (řešení rovnic, průsečíky přímek, dosazování do nerovnic) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si hledání průsečíku dvou přímek a dosazování bodů do nerovnic.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování grafického řešení rovnic a nerovnic – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus navazující kapitoly, které stavějí na grafickém odečítání řešení.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení základních pojmů a postupů.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+    </script>
+
+</body>
+</html>

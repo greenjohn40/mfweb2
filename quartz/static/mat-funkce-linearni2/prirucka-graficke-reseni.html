@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grafické řešení rovnic a nerovnic — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-graficke-reseni.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 class="font-semibold text-sm sm:text-base">Grafické řešení rovnic a nerovnic · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Grafické řešení rovnic a nerovnic</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Rovnice o jedné neznámé</h2>
+<p class="mb-3">Rovnici v anulovaném tvaru $ax+b=0$ lze kromě výpočtu vyřešit i graficky: sestrojíme graf lineární funkce $y=ax+b$ a najdeme jeho průsečík s osou $x$. X-ová souřadnice tohoto průsečíku je řešením rovnice.</p>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Tři možné případy</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li>Přímka je s osou $x$ různoběžná ($a\neq0$) → <b>právě jedno řešení</b>.</li>
+        <li>Přímka je s osou $x$ rovnoběžná, ale neprochází jí ($a=0,\ b\neq0$) → <b>žádné řešení</b>.</li>
+        <li>Přímka splývá s osou $x$ ($a=0,\ b=0$) → <b>nekonečně mnoho řešení</b>.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklady:</b> $x+3=2x+1$ má řešení $K=\{2\}$. $2x+4=2x-1$ nemá řešení, $K=\emptyset$. $3(x+2)=3x+6$ platí pro každé $x$, $K=\mathbb{R}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Srovnání grafů dvou funkcí</h2>
+<p class="mb-3">Rovnici $ax+b=cx+d$ lze řešit i tak, že obě strany zapíšeme jako dvě funkce $f(x)=ax+b$, $g(x)=cx+d$, sestrojíme oba grafy a najdeme jejich průsečík. X-ová souřadnice průsečíku je řešení, protože v něm platí $f(x)=g(x)$.</p>
+<p class="mb-3"><b>Příklad:</b> $3x-1=x+5$. Grafy $f(x)=3x-1$ a $g(x)=x+5$ se protínají v bodě $[3;8]$, řešením je tedy $x=3$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Rovnice o dvou neznámých</h2>
+<p class="mb-3">Rovnice $ax+by+c=0$ (kde $a\neq0$ nebo $b\neq0$) má nekonečně mnoho řešení — uspořádaných dvojic $[x;y]$. Množinou řešení je celá přímka, kterou dostaneme vyjádřením ve tvaru $y=kx+q$ (je-li $b\neq0$).</p>
+<p class="mb-3"><b>Příklad:</b> $2x-y+1=0$, tedy $y=2x+1$. Body $[0;1]$, $[1;3]$, $[-1;-1]$ jsou jen tři z nekonečně mnoha řešení.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Soustava dvou rovnic o dvou neznámých</h2>
+<p class="mb-3">Ke každé rovnici sestrojíme graf příslušné lineární funkce. Podle vzájemné polohy přímek nastává jeden ze tří případů:</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Přímky <b>různoběžné</b> → <b>právě jedno řešení</b> (souřadnice průsečíku).</li>
+        <li>Přímky <b>rovnoběžné různé</b> → <b>žádné řešení</b>.</li>
+        <li>Přímky <b>totožné</b> → <b>nekonečně mnoho řešení</b>.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklady:</b> $x+y=5$, $x-y=1$: $K=\{[3;2]\}$. $x+y=5$, $2x+2y=4$: rovnoběžky, $K=\emptyset$. $x+y=4$, $2x+2y=8$: totožné přímky, $K=\{[x;-x+4];\ x\in\mathbb{R}\}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Nerovnice o dvou neznámých</h2>
+<p class="mb-3">Nerovnici $ax+by+c\leq0$ (obdobně $\lt,\geq,\gt$) řešíme tak, že nahradíme nerovnost rovností a sestrojíme <b>hraniční přímku</b>. Ta rozdělí rovinu na dvě poloroviny. Dosazením zkušebního bodu, který na přímce neleží (nejčastěji $[0;0]$), zjistíme, která polorovina je řešením.</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Neostrá nerovnost ($\leq,\geq$) → hraniční přímka je součástí řešení → <b>plná čára</b>.</li>
+    <li>Ostrá nerovnost ($\lt,\gt$) → přímka součástí řešení není → <b>přerušovaná čára</b>.</li>
+</ul>
+<p class="mb-3"><b>Příklad:</b> $2x-y-2\leq0$. Zkušební bod $[0;0]$: $-2\leq0$ ✓, vyšrafujeme polorovinu s počátkem, plná přímka.</p>
+<div class="warn-box mb-3">
+    <p>Zkušební bod musí ležet mimo hraniční přímku — jinak nerozhodneme, do které poloroviny patří. Pokud hraniční přímka prochází počátkem, je nutné zvolit jiný zkušební bod, například $[1;0]$.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Soustava dvou nerovnic o dvou neznámých</h2>
+<p class="mb-3">Ke každé nerovnici najdeme příslušnou polorovinu stejným postupem. Řešením soustavy je <b>průnik</b> obou polorovin.</p>
+<p class="mb-3"><b>Příklad:</b> $y\geq2x-2$ a zároveň $y\leq-x+3$ — vyšrafovaná oblast s vrcholem v bodě $\left[\tfrac{5}{3};\tfrac{4}{3}\right]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Praktická aplikace: porovnání dvou nabídek</h2>
+<p class="mb-3">Grafy dvou nabídek se stejnou strukturou (pevný poplatek + jednotková sazba) jsou přímky. Jejich průsečík je <b>bod zvratu</b>, od kterého je výhodnější jedna, a od kterého druhá varianta.</p>
+<p class="mb-3"><b>Příklad:</b> Tarif A: $200+2t$ Kč, tarif B: $350+0{,}5t$ Kč. Průsečík $[100;400]$ — do $100$ minut je levnější A, nad $100$ minut B.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Úloha</th>
+            <th class="text-left py-1 pr-2">Co sestrojíme</th>
+            <th class="text-left py-1">Řešení odečteme jako</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">rovnice o 1 neznámé</td><td class="py-1 pr-2">graf $y=ax+b$</td><td class="py-1">$x$-souřadnici průsečíku s osou $x$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">rovnice o 2 neznámých</td><td class="py-1 pr-2">jednu přímku</td><td class="py-1">všechny body přímky</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">soustava 2 rovnic</td><td class="py-1 pr-2">dvě přímky</td><td class="py-1">souřadnice průsečíku</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">nerovnice o 2 neznámých</td><td class="py-1 pr-2">hraniční přímku</td><td class="py-1">vyšrafovanou polorovinu</td></tr>
+        <tr><td class="py-1 pr-2">soustava 2 nerovnic</td><td class="py-1 pr-2">dvě hraniční přímky</td><td class="py-1">průnik dvou polorovin</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Résolution graphique d'équations et d'inéquations</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Équation à une inconnue</h2>
+<p class="mb-3">Une équation sous forme réduite $ax+b=0$ peut se résoudre par le calcul, mais tout aussi bien graphiquement : on construit le graphe de $y=ax+b$ et on cherche son intersection avec l'axe $x$. Son abscisse est la solution.</p>
+<div class="def-box mb-3">
+    <p class="font-semibold mb-1">Trois cas possibles</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li>La droite est sécante à l'axe $x$ ($a\neq0$) → <b>une seule solution</b>.</li>
+        <li>La droite est parallèle à l'axe $x$ sans le croiser ($a=0,\ b\neq0$) → <b>aucune solution</b>.</li>
+        <li>La droite coïncide avec l'axe $x$ ($a=0,\ b=0$) → <b>une infinité de solutions</b>.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemples :</b> $x+3=2x+1$ a pour solution $K=\{2\}$. $2x+4=2x-1$ n'a pas de solution, $K=\emptyset$. $3(x+2)=3x+6$ est vrai pour tout $x$, $K=\mathbb{R}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Comparer les graphes de deux fonctions</h2>
+<p class="mb-3">Une équation $ax+b=cx+d$ peut aussi se résoudre en écrivant chaque côté comme une fonction, $f(x)=ax+b$, $g(x)=cx+d$, en construisant les deux graphes et en cherchant leur intersection. L'abscisse de ce point est la solution, car $f(x)=g(x)$ y est vérifié.</p>
+<p class="mb-3"><b>Exemple :</b> $3x-1=x+5$. Les graphes de $f(x)=3x-1$ et $g(x)=x+5$ se coupent au point $[3;8]$, la solution est donc $x=3$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Équation à deux inconnues</h2>
+<p class="mb-3">L'équation $ax+by+c=0$ (où $a\neq0$ ou $b\neq0$) a une infinité de solutions — des couples $[x;y]$. L'ensemble des solutions forme une droite entière, obtenue en écrivant $y=kx+q$ (si $b\neq0$).</p>
+<p class="mb-3"><b>Exemple :</b> $2x-y+1=0$, soit $y=2x+1$. Les points $[0;1]$, $[1;3]$, $[-1;-1]$ ne sont que trois des solutions parmi une infinité.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Système de deux équations à deux inconnues</h2>
+<p class="mb-3">Pour chaque équation, on construit son graphe. Selon la position des droites, trois cas se présentent :</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Droites <b>sécantes</b> → <b>une seule solution</b> (coordonnées du point d'intersection).</li>
+        <li>Droites <b>parallèles distinctes</b> → <b>aucune solution</b>.</li>
+        <li>Droites <b>confondues</b> → <b>une infinité de solutions</b>.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemples :</b> $x+y=5$, $x-y=1$ : $K=\{[3;2]\}$. $x+y=5$, $2x+2y=4$ : parallèles, $K=\emptyset$. $x+y=4$, $2x+2y=8$ : droites confondues, $K=\{[x;-x+4];\ x\in\mathbb{R}\}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Inéquation à deux inconnues</h2>
+<p class="mb-3">Pour résoudre $ax+by+c\leq0$ (de même pour $\lt,\geq,\gt$), on remplace l'inégalité par une égalité et on construit la <b>droite frontière</b>. Elle partage le plan en deux demi-plans. En substituant un point d'essai hors de la droite (souvent $[0;0]$), on détermine quel demi-plan est solution.</p>
+<ul class="list-disc list-inside mb-3 space-y-1">
+    <li>Inégalité large ($\leq,\geq$) → la droite frontière fait partie de la solution → <b>trait plein</b>.</li>
+    <li>Inégalité stricte ($\lt,\gt$) → elle n'en fait pas partie → <b>trait pointillé</b>.</li>
+</ul>
+<p class="mb-3"><b>Exemple :</b> $2x-y-2\leq0$. Point d'essai $[0;0]$ : $-2\leq0$ ✓, on hachure le demi-plan contenant l'origine, droite pleine.</p>
+<div class="warn-box mb-3">
+    <p>Le point d'essai doit se trouver en dehors de la droite frontière — sinon on ne peut pas décider à quel demi-plan il appartient. Si la droite frontière passe par l'origine, il faut choisir un autre point d'essai, par exemple $[1;0]$.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Système de deux inéquations à deux inconnues</h2>
+<p class="mb-3">Pour chaque inéquation, on trouve le demi-plan correspondant de la même façon. La solution du système est l'<b>intersection</b> des deux demi-plans.</p>
+<p class="mb-3"><b>Exemple :</b> $y\geq2x-2$ et $y\leq-x+3$ — région hachurée avec un sommet au point $\left[\tfrac{5}{3};\tfrac{4}{3}\right]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Application pratique : comparaison de deux offres</h2>
+<p class="mb-3">Les graphes de deux offres de même structure (forfait fixe + tarif unitaire) sont des droites. Leur intersection est le <b>point d'équilibre</b>, à partir duquel l'une ou l'autre devient plus avantageuse.</p>
+<p class="mb-3"><b>Exemple :</b> Forfait A : $200+2t$ Kč, forfait B : $350+0{,}5t$ Kč. Intersection $[100;400]$ — en dessous de $100$ minutes, A est moins cher, au-delà, B.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Problème</th>
+            <th class="text-left py-1 pr-2">Ce qu'on construit</th>
+            <th class="text-left py-1">La solution se lit comme</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">équation à 1 inconnue</td><td class="py-1 pr-2">graphe $y=ax+b$</td><td class="py-1">l'abscisse du point d'intersection</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">équation à 2 inconnues</td><td class="py-1 pr-2">une droite</td><td class="py-1">tous les points de la droite</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">système de 2 équations</td><td class="py-1 pr-2">deux droites</td><td class="py-1">les coordonnées de l'intersection</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">inéquation à 2 inconnues</td><td class="py-1 pr-2">une droite frontière</td><td class="py-1">un demi-plan hachuré</td></tr>
+        <tr><td class="py-1 pr-2">système de 2 inéquations</td><td class="py-1 pr-2">deux droites frontières</td><td class="py-1">l'intersection de deux demi-plans</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>
