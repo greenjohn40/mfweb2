@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Mechanické kmitání (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] },
+            svg: { fontCache: 'local' },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container svg { display: inline !important; }
+        mjx-container { display: inline-block !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-blue-700">
+            <h1 class="text-3xl font-bold text-blue-800 mb-4">Fyzikální kvíz: Mechanické kmitání</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-blue-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (harmonický pohyb, pružinový oscilátor, kyvadlo, energie, rezonance).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-blue-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-blue-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-blue-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-blue-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+        const N_THEORY = 4;
+        const N_MATH = 6;
+
+        // ======== POMOCNÉ FUNKCE ========
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            if (Math.abs(x) < 1 && x !== 0) {
+                let s = x.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+                return s;
+            }
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ======== TEORETICKÉ OTÁZKY ========
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Jak zní vztah mezi periodou T a frekvencí f?", a: "\\(f = \\dfrac{1}{T}\\)", o: ["\\(f = \\dfrac{1}{T}\\)", "\\(f = T\\)", "\\(f = 2\\pi T\\)", "\\(f = \\dfrac{T}{2\\pi}\\)"], h: "Frekvence udává počet kmitů za jednotku času.", e: "Frekvence je převrácená hodnota periody: \\(f = \\dfrac{1}{T}\\)." }, fr: { q: "Quelle est la relation entre la période T et la fréquence f ?", a: "\\(f = \\dfrac{1}{T}\\)", o: ["\\(f = \\dfrac{1}{T}\\)", "\\(f = T\\)", "\\(f = 2\\pi T\\)", "\\(f = \\dfrac{T}{2\\pi}\\)"], h: "La fréquence indique le nombre d'oscillations par unité de temps.", e: "La fréquence est l'inverse de la période : \\(f = \\dfrac{1}{T}\\)." } },
+            { id: 't2', type: 'concept', cs: { q: "Jak zní vzorec pro úhlovou (kruhovou) frekvenci ω?", a: "\\(\\omega = \\dfrac{2\\pi}{T} = 2\\pi f\\)", o: ["\\(\\omega = \\dfrac{2\\pi}{T} = 2\\pi f\\)", "\\(\\omega = \\dfrac{\\pi}{T}\\)", "\\(\\omega = \\dfrac{T}{2\\pi}\\)", "\\(\\omega = 2\\pi T\\)"], h: "Souvisí s dobou jednoho úplného otočení fázoru.", e: "Úhlová frekvence je \\(\\omega = \\dfrac{2\\pi}{T} = 2\\pi f\\); jednotka rad·s⁻¹." }, fr: { q: "Quelle est la formule de la pulsation (fréquence angulaire) ω ?", a: "\\(\\omega = \\dfrac{2\\pi}{T} = 2\\pi f\\)", o: ["\\(\\omega = \\dfrac{2\\pi}{T} = 2\\pi f\\)", "\\(\\omega = \\dfrac{\\pi}{T}\\)", "\\(\\omega = \\dfrac{T}{2\\pi}\\)", "\\(\\omega = 2\\pi T\\)"], h: "Elle correspond à la durée d'un tour complet du vecteur de Fresnel.", e: "La pulsation est \\(\\omega = \\dfrac{2\\pi}{T} = 2\\pi f\\) ; unité rad·s⁻¹." } },
+            { id: 't3', type: 'concept', cs: { q: "Jak zní rovnice harmonického kmitavého pohybu?", a: "\\(y = y_m\\sin(\\omega t + \\varphi_0)\\)", o: ["\\(y = y_m\\sin(\\omega t + \\varphi_0)\\)", "\\(y = y_m\\cos(\\omega t) + \\varphi_0\\)", "\\(y = y_m\\,\\omega t\\)", "\\(y = \\dfrac{y_m}{t}\\)"], h: "Výchylka se mění s časem podle funkce sinus.", e: "Harmonický kmitavý pohyb je popsán rovnicí \\(y = y_m\\sin(\\omega t + \\varphi_0)\\), kde \\(\\varphi_0\\) je počáteční fáze." }, fr: { q: "Quelle est l'équation du mouvement harmonique simple ?", a: "\\(y = y_m\\sin(\\omega t + \\varphi_0)\\)", o: ["\\(y = y_m\\sin(\\omega t + \\varphi_0)\\)", "\\(y = y_m\\cos(\\omega t) + \\varphi_0\\)", "\\(y = y_m\\,\\omega t\\)", "\\(y = \\dfrac{y_m}{t}\\)"], h: "L'élongation varie dans le temps selon une fonction sinus.", e: "Le mouvement harmonique simple est décrit par \\(y = y_m\\sin(\\omega t + \\varphi_0)\\), où \\(\\varphi_0\\) est la phase initiale." } },
+            { id: 't4', type: 'concept', cs: { q: "Kdy je rychlost tělesa při harmonickém kmitání maximální?", a: "Při průchodu rovnovážnou polohou", o: ["Při průchodu rovnovážnou polohou", "V krajních polohách", "Na začátku pohybu vždy", "Rychlost je vždy stejná"], h: "Porovnej vzorce \\(v = \\omega y_m\\cos(\\omega t+\\varphi_0)\\) a \\(y = y_m\\sin(\\omega t+\\varphi_0)\\).", e: "Rychlost \\(v = \\omega y_m\\cos(\\omega t+\\varphi_0)\\) je maximální tam, kde je výchylka \\(y = 0\\), tedy při průchodu rovnovážnou polohou." }, fr: { q: "Quand la vitesse d'un corps en mouvement harmonique est-elle maximale ?", a: "Au passage par la position d'équilibre", o: ["Au passage par la position d'équilibre", "Aux positions extrêmes", "Toujours au début du mouvement", "La vitesse est toujours constante"], h: "Compare les formules \\(v = \\omega y_m\\cos(\\omega t+\\varphi_0)\\) et \\(y = y_m\\sin(\\omega t+\\varphi_0)\\).", e: "La vitesse \\(v = \\omega y_m\\cos(\\omega t+\\varphi_0)\\) est maximale là où l'élongation \\(y = 0\\), donc au passage par la position d'équilibre." } },
+            { id: 't5', type: 'concept', cs: { q: "Jaký je fázový vztah mezi zrychlením a a výchylkou y při harmonickém kmitání?", a: "Jsou v protifázi (\\(a = -\\omega^2 y\\))", o: ["Jsou v protifázi (\\(a = -\\omega^2 y\\))", "Mají stejnou fázi", "Jsou posunuty o čtvrtperiodu", "Na sobě vůbec nezávisí"], h: "Zrychlení vždy směřuje zpět do rovnovážné polohy.", e: "Platí \\(a = -\\omega^2 y\\) — zrychlení je vždy v protifázi k výchylce, tedy míří opačným směrem než výchylka." }, fr: { q: "Quelle est la relation de phase entre l'accélération a et l'élongation y en mouvement harmonique ?", a: "Elles sont en opposition de phase (\\(a = -\\omega^2 y\\))", o: ["Elles sont en opposition de phase (\\(a = -\\omega^2 y\\))", "Elles sont en phase", "Elles sont déphasées d'un quart de période", "Elles ne dépendent pas l'une de l'autre"], h: "L'accélération est toujours dirigée vers la position d'équilibre.", e: "On a \\(a = -\\omega^2 y\\) — l'accélération est toujours en opposition de phase avec l'élongation, orientée en sens contraire." } },
+            { id: 't6', type: 'concept', cs: { q: "Jak zní vzorec pro periodu pružinového oscilátoru?", a: "\\(T = 2\\pi\\sqrt{\\dfrac{m}{k}}\\)", o: ["\\(T = 2\\pi\\sqrt{\\dfrac{m}{k}}\\)", "\\(T = 2\\pi\\sqrt{\\dfrac{k}{m}}\\)", "\\(T = 2\\pi\\, mk\\)", "\\(T = \\dfrac{m}{2\\pi k}\\)"], h: "Perioda roste s hmotností a klesá s tuhostí pružiny.", e: "Perioda pružinového oscilátoru je \\(T = 2\\pi\\sqrt{\\dfrac{m}{k}}\\), kde k je tuhost pružiny a m hmotnost tělesa." }, fr: { q: "Quelle est la formule de la période d'un oscillateur à ressort ?", a: "\\(T = 2\\pi\\sqrt{\\dfrac{m}{k}}\\)", o: ["\\(T = 2\\pi\\sqrt{\\dfrac{m}{k}}\\)", "\\(T = 2\\pi\\sqrt{\\dfrac{k}{m}}\\)", "\\(T = 2\\pi\\, mk\\)", "\\(T = \\dfrac{m}{2\\pi k}\\)"], h: "La période augmente avec la masse et diminue avec la raideur du ressort.", e: "La période de l'oscillateur à ressort est \\(T = 2\\pi\\sqrt{\\dfrac{m}{k}}\\), où k est la raideur du ressort et m la masse du corps." } },
+            { id: 't7', type: 'concept', cs: { q: "Na čem nezávisí perioda matematického kyvadla (pro malé výchylky)?", a: "Na hmotnosti závaží a na amplitudě", o: ["Na hmotnosti závaží a na amplitudě", "Na délce vlákna l", "Na tíhovém zrychlení g", "Na ničem z uvedeného"], h: "Tato vlastnost se nazývá izochronismus kyvadla.", e: "Podle vzorce \\(T = 2\\pi\\sqrt{\\dfrac{l}{g}}\\) perioda závisí jen na délce l a na g — nezávisí na hmotnosti závaží ani (pro malé výchylky) na amplitudě." }, fr: { q: "De quoi la période d'un pendule simple ne dépend-elle pas (pour de petites élongations) ?", a: "De la masse suspendue et de l'amplitude", o: ["De la masse suspendue et de l'amplitude", "De la longueur du fil l", "De l'accélération de la pesanteur g", "D'aucun des éléments cités"], h: "Cette propriété s'appelle l'isochronisme du pendule.", e: "D'après \\(T = 2\\pi\\sqrt{\\dfrac{l}{g}}\\), la période ne dépend que de l et de g — pas de la masse suspendue, ni (pour de petites élongations) de l'amplitude." } },
+            { id: 't8', type: 'concept', cs: { q: "Jak zní vzorec pro celkovou mechanickou energii oscilátoru?", a: "\\(E = \\dfrac{1}{2}ky_m^2 = \\text{konst.}\\)", o: ["\\(E = \\dfrac{1}{2}ky_m^2 = \\text{konst.}\\)", "\\(E = ky_m = \\text{konst.}\\)", "\\(E = \\dfrac{1}{2}ky = \\text{konst.}\\)", "\\(E = 2ky_m^2 = \\text{konst.}\\)"], h: "Celková energie je součet kinetické a potenciální energie.", e: "Celková mechanická energie oscilátoru je \\(E = E_k + E_p = \\dfrac{1}{2}ky_m^2\\), a bez tlumení zůstává konstantní." }, fr: { q: "Quelle est la formule de l'énergie mécanique totale de l'oscillateur ?", a: "\\(E = \\dfrac{1}{2}ky_m^2 = \\text{const.}\\)", o: ["\\(E = \\dfrac{1}{2}ky_m^2 = \\text{const.}\\)", "\\(E = ky_m = \\text{const.}\\)", "\\(E = \\dfrac{1}{2}ky = \\text{const.}\\)", "\\(E = 2ky_m^2 = \\text{const.}\\)"], h: "L'énergie totale est la somme de l'énergie cinétique et de l'énergie potentielle.", e: "L'énergie mécanique totale de l'oscillateur est \\(E = E_k + E_p = \\dfrac{1}{2}ky_m^2\\), et reste constante sans amortissement." } },
+            { id: 't9', type: 'concept', cs: { q: "Kdy nastává rezonance?", a: "Když se budicí frekvence blíží vlastní frekvenci soustavy", o: ["Když se budicí frekvence blíží vlastní frekvenci soustavy", "Když je tlumení nekonečně velké", "Když se soustava vůbec nehýbe", "Při jakékoliv frekvenci budicí síly"], h: "Amplituda nuceného kmitání prudce roste, když \\(f \\to f_0\\).", e: "Rezonance nastává, když se frekvence budicí síly f blíží vlastní frekvenci soustavy \\(f_0\\) — amplituda nuceného kmitání pak prudce roste." }, fr: { q: "Quand la résonance se produit-elle ?", a: "Quand la fréquence excitatrice se rapproche de la fréquence propre du système", o: ["Quand la fréquence excitatrice se rapproche de la fréquence propre du système", "Quand l'amortissement est infiniment grand", "Quand le système est complètement immobile", "Pour n'importe quelle fréquence excitatrice"], h: "L'amplitude des oscillations forcées augmente fortement lorsque \\(f \\to f_0\\).", e: "La résonance se produit lorsque la fréquence excitatrice f se rapproche de la fréquence propre du système \\(f_0\\) — l'amplitude des oscillations forcées augmente alors fortement." } },
+            { id: 't10', type: 'concept', cs: { q: "Co se děje s amplitudou tlumeného kmitání?", a: "Postupně klesá s časem", o: ["Postupně klesá s časem", "Zůstává stále stejná", "Postupně roste s časem", "Mění se skokově na nulu"], h: "Na soustavu působí odporové síly (tření, odpor prostředí).", e: "Vlivem odporových sil amplituda tlumeného kmitání s časem postupně klesá, dokud kmitání neustane." }, fr: { q: "Que se passe-t-il avec l'amplitude d'une oscillation amortie ?", a: "Elle diminue progressivement dans le temps", o: ["Elle diminue progressivement dans le temps", "Elle reste toujours la même", "Elle augmente progressivement dans le temps", "Elle chute brusquement à zéro"], h: "Des forces résistantes (frottement, résistance du milieu) agissent sur le système.", e: "Sous l'effet des forces résistantes, l'amplitude de l'oscillation amortie diminue progressivement dans le temps, jusqu'à l'arrêt de l'oscillation." } }
+        ];
+
+        // ======== VÝPOČETNÍ ÚLOHY ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Na pružině o tuhosti k = {k} N/m kmitá závaží o hmotnosti m = {m} kg. Jaká je perioda T (v s)?", h: "\\(T = 2\\pi\\sqrt{\\dfrac{m}{k}}\\).", e: "\\(T = 2\\pi\\sqrt{\\dfrac{{m}}{{k}}}\\) Numericky: T = 2π√({m}/{k}) = {res} s." },
+                fr: { q: "Une masse m = {m} kg oscille au bout d'un ressort de raideur k = {k} N/m. Quelle est la période T (en s) ?", h: "\\(T = 2\\pi\\sqrt{\\dfrac{m}{k}}\\).", e: "\\(T = 2\\pi\\sqrt{\\dfrac{{m}}{{k}}}\\) Numériquement : T = 2π√({m}/{k}) = {res} s." },
+                params: () => { const k = randChoice([10,20,25,40,50,80]); const m = randChoice([0.10,0.20,0.25,0.40,0.50,1.0]); return { k, m }; },
+                solve: (p) => { const res = 2*Math.PI*Math.sqrt(p.m/p.k); return { res, unit: 's', correct: fmt(res) + ' s' }; } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Těleso o hmotnosti m = {m} kg kmitá na pružině s periodou T = {T} s. Jaká je tuhost pružiny k (v N/m)?", h: "\\(k = m\\left(\\dfrac{2\\pi}{T}\\right)^2\\).", e: "\\(k = {m}\\left(\\dfrac{2\\pi}{{T}}\\right)^2\\) Numericky: k = {m}·(2π/{T})² = {res} N/m." },
+                fr: { q: "Un corps de masse m = {m} kg oscille au bout d'un ressort avec une période T = {T} s. Quelle est la raideur du ressort k (en N/m) ?", h: "\\(k = m\\left(\\dfrac{2\\pi}{T}\\right)^2\\).", e: "\\(k = {m}\\left(\\dfrac{2\\pi}{{T}}\\right)^2\\) Numériquement : k = {m}·(2π/{T})² = {res} N/m." },
+                params: () => { const m = randChoice([0.10,0.20,0.30,0.50,1.0]); const T = randChoice([0.3,0.4,0.5,0.8,1.0]); return { m, T }; },
+                solve: (p) => { const res = p.m*Math.pow(2*Math.PI/p.T,2); return { res, unit: 'N/m', correct: fmt(res) + ' N/m' }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Jakou délku l (v m) musí mít matematické kyvadlo, aby jeho perioda byla T = {T} s? (g = 9,81 m/s²)", h: "\\(l = \\dfrac{gT^2}{4\\pi^2}\\).", e: "\\(l = \\dfrac{gT^2}{4\\pi^2}\\) Numericky: l = 9,81·{T}² / (4π²) = {res} m." },
+                fr: { q: "Quelle longueur l (en m) doit avoir un pendule simple pour que sa période soit T = {T} s ? (g = 9,81 m/s²)", h: "\\(l = \\dfrac{gT^2}{4\\pi^2}\\).", e: "\\(l = \\dfrac{gT^2}{4\\pi^2}\\) Numériquement : l = 9,81·{T}² / (4π²) = {res} m." },
+                params: () => { const T = randChoice([1.0,1.5,2.0,2.5,3.0]); return { T }; },
+                solve: (p) => { const res = 9.81*p.T*p.T/(4*Math.PI*Math.PI); return { res, unit: 'm', correct: fmt(res) + ' m' }; } },
+            { id: 'm4', type: 'math',
+                cs: { q: "Matematické kyvadlo má délku l = {l} m. Jaká je jeho perioda T (v s)? (g = 9,81 m/s²)", h: "\\(T = 2\\pi\\sqrt{\\dfrac lg}\\).", e: "\\(T = 2\\pi\\sqrt{\\dfrac lg}\\) Numericky: T = 2π√({l}/9,81) = {res} s." },
+                fr: { q: "Un pendule simple a une longueur l = {l} m. Quelle est sa période T (en s) ? (g = 9,81 m/s²)", h: "\\(T = 2\\pi\\sqrt{\\dfrac lg}\\).", e: "\\(T = 2\\pi\\sqrt{\\dfrac lg}\\) Numériquement : T = 2π√({l}/9,81) = {res} s." },
+                params: () => { const l = randChoice([0.25,0.5,1.0,1.5,2.0]); return { l }; },
+                solve: (p) => { const res = 2*Math.PI*Math.sqrt(p.l/9.81); return { res, unit: 's', correct: fmt(res) + ' s' }; } },
+            { id: 'm5', type: 'math',
+                cs: { q: "Oscilátor s tuhostí k = {k} N/m a hmotností m = {m} kg kmitá s amplitudou y<sub>m</sub> = {ym} cm. Jaká je jeho maximální rychlost v<sub>m</sub> (v m/s)?", h: "\\(v_m = y_m\\sqrt{\\dfrac{k}{m}}\\).", e: "\\(v_m = y_m\\sqrt{\\dfrac{{k}}{{m}}}\\) Numericky: v<sub>m</sub> = ({ym}/100)·√({k}/{m}) = {res} m/s." },
+                fr: { q: "Un oscillateur de raideur k = {k} N/m et de masse m = {m} kg oscille avec une amplitude y<sub>m</sub> = {ym} cm. Quelle est sa vitesse maximale v<sub>m</sub> (en m/s) ?", h: "\\(v_m = y_m\\sqrt{\\dfrac{k}{m}}\\).", e: "\\(v_m = y_m\\sqrt{\\dfrac{{k}}{{m}}}\\) Numériquement : v<sub>m</sub> = ({ym}/100)·√({k}/{m}) = {res} m/s." },
+                params: () => { const k = randChoice([20,40,50,60,80]); const m = randChoice([0.10,0.20,0.25,0.30,0.50]); const ym = randChoice([2,3,4,5,6]); return { k, m, ym }; },
+                solve: (p) => { const res = (p.ym/100)*Math.sqrt(p.k/p.m); return { res, unit: 'm/s', correct: fmt(res) + ' m/s' }; } },
+            { id: 'm6', type: 'math',
+                cs: { q: "Oscilátor s tuhostí k = {k} N/m a hmotností m = {m} kg kmitá s amplitudou y<sub>m</sub> = {ym} cm. Jaké je jeho maximální zrychlení a<sub>m</sub> (v m/s²)?", h: "\\(a_m = y_m\\cdot\\dfrac{k}{m}\\).", e: "\\(a_m = y_m\\cdot\\dfrac{{k}}{{m}}\\) Numericky: a<sub>m</sub> = ({ym}/100)·({k}/{m}) = {res} m/s²." },
+                fr: { q: "Un oscillateur de raideur k = {k} N/m et de masse m = {m} kg oscille avec une amplitude y<sub>m</sub> = {ym} cm. Quelle est son accélération maximale a<sub>m</sub> (en m/s²) ?", h: "\\(a_m = y_m\\cdot\\dfrac{k}{m}\\).", e: "\\(a_m = y_m\\cdot\\dfrac{{k}}{{m}}\\) Numériquement : a<sub>m</sub> = ({ym}/100)·({k}/{m}) = {res} m/s²." },
+                params: () => { const k = randChoice([20,40,50,60,80]); const m = randChoice([0.10,0.20,0.25,0.30,0.50]); const ym = randChoice([2,3,4,5,6]); return { k, m, ym }; },
+                solve: (p) => { const res = (p.ym/100)*(p.k/p.m); return { res, unit: 'm/s²', correct: fmt(res) + ' m/s²' }; } },
+            { id: 'm7', type: 'math',
+                cs: { q: "Oscilátor s tuhostí k = {k} N/m kmitá s amplitudou y<sub>m</sub> = {ym} cm. Jaká je jeho celková mechanická energie E (v mJ)?", h: "\\(E = \\dfrac12 ky_m^2\\).", e: "\\(E = \\dfrac12 ky_m^2\\) Numericky: E = 0,5·{k}·({ym}/100)² = {res} mJ." },
+                fr: { q: "Un oscillateur de raideur k = {k} N/m oscille avec une amplitude y<sub>m</sub> = {ym} cm. Quelle est son énergie mécanique totale E (en mJ) ?", h: "\\(E = \\dfrac12 ky_m^2\\).", e: "\\(E = \\dfrac12 ky_m^2\\) Numériquement : E = 0,5·{k}·({ym}/100)² = {res} mJ." },
+                params: () => { const k = randChoice([20,30,40,50,80,100]); const ym = randChoice([2,3,4,5,6,8]); return { k, ym }; },
+                solve: (p) => { const res = 0.5*p.k*Math.pow(p.ym/100,2)*1000; return { res, unit: 'mJ', correct: fmt(res) + ' mJ' }; } },
+            { id: 'm8', type: 'math',
+                cs: { q: "Oscilátor s tuhostí k = {k} N/m a hmotností m = {m} kg prochází rovnovážnou polohou rychlostí v<sub>m</sub> = {vm} m/s. Jaká je jeho amplituda y<sub>m</sub> (v cm)?", h: "\\(y_m = \\dfrac{v_m}{\\omega}\\text{, kde }\\omega = \\sqrt{\\dfrac{k}{m}}\\).", e: "\\(\\omega = \\sqrt{\\dfrac{{k}}{{m}}}\\) Numericky: ω = √({k}/{m}); y<sub>m</sub> = {vm}/ω = {res} cm." },
+                fr: { q: "Un oscillateur de raideur k = {k} N/m et de masse m = {m} kg passe par la position d'équilibre à une vitesse v<sub>m</sub> = {vm} m/s. Quelle est son amplitude y<sub>m</sub> (en cm) ?", h: "\\(y_m = \\dfrac{v_m}{\\omega}\\text{, où }\\omega = \\sqrt{\\dfrac{k}{m}}\\).", e: "\\(\\omega = \\sqrt{\\dfrac{{k}}{{m}}}\\) Numériquement : ω = √({k}/{m}); y<sub>m</sub> = {vm}/ω = {res} cm." },
+                params: () => { const k = randChoice([20,40,50,60,80]); const m = randChoice([0.10,0.20,0.25,0.30,0.50]); const vm = randChoice([0.3,0.5,0.8,1.0,1.2]); return { k, m, vm }; },
+                solve: (p) => { const omega = Math.sqrt(p.k/p.m); const res = (p.vm/omega)*100; return { res, unit: 'cm', correct: fmt(res) + ' cm' }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<N_THEORY; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<N_MATH; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(sol[k] !== undefined ? sol[k] : p[k]));
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    obj.o = [sol.correct, mk(val*2), mk(val/2), mk(val*10)];
+                };
+                inject(q); inject(tr);
+            }
+
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function typesetMath(el) {
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise(el ? [el] : undefined).catch(err => console.warn('MathJax typeset failed:', err));
+            }
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-blue-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-blue-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.value = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            typesetMath(document.getElementById('question-container'));
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            typesetMath(hb);
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.dataset.value === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+            typesetMath(fa);
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Mechanické kmitání i francouzština ti jdou skvěle.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat vzorce pro kmitavý pohyb a kyvadlo.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat – zaměř se na harmonický pohyb, pružinový oscilátor a jejich vzorce.";
+                overallIcon = "🔍";
+            }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako fázor, direkční síla či rezonance.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si veličiny kmitavého pohybu, fázor a vztah zrychlení k výchylce.");
+            if (mathPercent >= 70) strengths.push("Výpočty s periodou, energií a amplitudou ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si vzorce T=2π√(m/k), T=2π√(l/g), E=½ky<sub>m</sub>² a v<sub>m</sub>=ωy<sub>m</sub>.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní vztahy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování harmonického pohybu, pružinového oscilátoru a matematického kyvadla – projdi si příručku a vzorové příklady.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o mechanickém vlnění.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení vzorců pro kmitání.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek ve francouzštině)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

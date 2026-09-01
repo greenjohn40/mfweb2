@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oscillations mécaniques – Exercices</title>
+    <script>
+        window.MathJax = { tex: { inlineMath: [['\\(','\\)']] }, svg: { fontCache: 'local' }, options: { enableMenu: false } };
+    </script>
+    <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js">
+</script>
+<style>
+    :root {
+        --primary: #1d4ed8;
+        --secondary: #1e3a8a;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #eff6ff;
+        --translation: #64748b;
+    }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { text-align: center; color: var(--primary); font-size: 2.5rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 2.5rem; }
+    .exercise-card {
+        background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;
+    }
+    .exercise-body { margin-bottom: 18px; font-size: 1.05rem; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .btn { border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+    .btn-translation { background: transparent; color: var(--translation); border: 1px solid var(--translation); }
+    .btn-translation:hover { background: var(--translation); color: #fff; }
+    .btn-solution { background: var(--primary); color: #fff; }
+    .btn-solution:hover { background: var(--secondary); }
+    .content-box { display: none; margin-top: 14px; padding: 15px; border-radius: 6px; font-size: 0.95rem; animation: fadeIn 0.3s ease-in; }
+    .translation-box { background: #f1f5f9; color: #475569; border-left: 4px solid var(--translation); font-style: italic; }
+    .solution-box { background: var(--accent); border-left: 4px solid var(--primary); }
+    .active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    footer { text-align: center; margin-top: 40px; padding: 20px; color: #94a3b8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Oscillations mécaniques</h1>
+        <p class="subtitle">Série de 10 exercices avec solutions et traductions</p>
+
+        <!-- 1 -->
+        <div class="exercise-card">
+            <div class="exercise-header">1. Mouvement harmonique — élongation à un instant donné</div>
+            <div class="exercise-body">
+                Un corps oscille harmoniquement avec une amplitude \( y_m = 6{,}0\,\text{cm} \) et une période
+                \( T = 0{,}50\,\text{s} \) ; à \( t=0 \) il passe par la position d'équilibre.
+                Quelle est son élongation \( y \) à l'instant \( t = 0{,}125\,\text{s} \) ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr1',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol1',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr1" class="content-box translation-box">
+                Těleso kmitá harmonicky s amplitudou \( y_m = 6{,}0\,\text{cm} \) a periodou \( T = 0{,}50\,\text{s} \);
+                v čase \( t=0 \) prochází rovnovážnou polohou. Jaká je jeho výchylka \( y \) v čase \( t = 0{,}125\,\text{s} \)?
+            </div>
+            <div id="sol1" class="content-box solution-box">
+                \( \omega = \dfrac{2\pi}{T} \approx 12{,}57\,\text{rad}\cdot\text{s}^{-1} \)<br>
+                \( \omega t = 12{,}57\cdot0{,}125 \approx 1{,}571\,\text{rad} = \pi/2 \) (soit \( t=T/4 \))<br>
+                \( y = y_m\sin(\omega t) = 6{,}0\cdot\sin(\pi/2) = 6{,}0\,\text{cm} \) — le corps est en position extrême.
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="exercise-card">
+            <div class="exercise-header">2. Oscillateur à ressort — période et fréquence</div>
+            <div class="exercise-body">
+                Une masse \( m = 0{,}40\,\text{kg} \) est suspendue à un ressort de raideur \( k = 25\,\text{N}\cdot\text{m}^{-1} \).
+                Calculez la période \( T \) et la fréquence \( f \) de l'oscillation.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr2',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol2',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr2" class="content-box translation-box">
+                Na pružině o tuhosti \( k = 25\,\text{N}\cdot\text{m}^{-1} \) je zavěšeno těleso o hmotnosti
+                \( m = 0{,}40\,\text{kg} \). Vypočtěte periodu \( T \) a frekvenci \( f \) kmitání.
+            </div>
+            <div id="sol2" class="content-box solution-box">
+                \( T = 2\pi\sqrt{\dfrac{m}{k}} = 2\pi\sqrt{\dfrac{0{,}40}{25}} \approx 0{,}795\,\text{s} \approx 0{,}80\,\text{s} \)<br>
+                \( f = \dfrac{1}{T} \approx 1{,}26\,\text{Hz} \)
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="exercise-card">
+            <div class="exercise-header">3. Pendule simple — longueur pour une période donnée</div>
+            <div class="exercise-body">
+                Quelle longueur \( l \) doit avoir un pendule simple pour osciller avec une période
+                \( T = 1{,}5\,\text{s} \) ? ( \( g = 9{,}81\,\text{m}\cdot\text{s}^{-2} \) )
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr3',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol3',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr3" class="content-box translation-box">
+                Jakou délku \( l \) musí mít matematické kyvadlo, aby kmitalo s periodou \( T = 1{,}5\,\text{s} \)?
+                ( \( g = 9{,}81\,\text{m}\cdot\text{s}^{-2} \) )
+            </div>
+            <div id="sol3" class="content-box solution-box">
+                \( l = \dfrac{gT^2}{4\pi^2} = \dfrac{9{,}81\cdot1{,}5^2}{4\pi^2} \approx 0{,}559\,\text{m} \approx 56\,\text{cm} \)
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="exercise-card">
+            <div class="exercise-header">4. Énergie de l'oscillateur — vitesse maximale</div>
+            <div class="exercise-body">
+                Un oscillateur ( \( m = 0{,}30\,\text{kg} \), \( k = 60\,\text{N}\cdot\text{m}^{-1} \) ) a une amplitude
+                \( y_m = 5{,}0\,\text{cm} \). Quelle est sa vitesse maximale \( v_m \) ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr4',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol4',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr4" class="content-box translation-box">
+                Oscilátor ( \( m = 0{,}30\,\text{kg} \), \( k = 60\,\text{N}\cdot\text{m}^{-1} \) ) má amplitudu
+                \( y_m = 5{,}0\,\text{cm} \). Jaká je jeho maximální rychlost \( v_m \)?
+            </div>
+            <div id="sol4" class="content-box solution-box">
+                \( \omega = \sqrt{k/m} = \sqrt{60/0{,}30} = \sqrt{200} \approx 14{,}14\,\text{rad}\cdot\text{s}^{-1} \)<br>
+                \( v_m = \omega y_m = 14{,}14\cdot0{,}05 \approx 0{,}71\,\text{m}\cdot\text{s}^{-1} \)
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="exercise-card">
+            <div class="exercise-header">5. Oscillateur à ressort — détermination de la raideur</div>
+            <div class="exercise-body">
+                Une masse \( m = 0{,}50\,\text{kg} \) oscille avec une période \( T = 0{,}80\,\text{s} \).
+                Quelle est la raideur \( k \) du ressort ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr5',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol5',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr5" class="content-box translation-box">
+                Těleso o hmotnosti \( m = 0{,}50\,\text{kg} \) kmitá s periodou \( T = 0{,}80\,\text{s} \).
+                Jaká je tuhost \( k \) pružiny?
+            </div>
+            <div id="sol5" class="content-box solution-box">
+                \( T = 2\pi\sqrt{m/k} \Rightarrow k = m\left(\dfrac{2\pi}{T}\right)^2 = 0{,}50\cdot\left(\dfrac{2\pi}{0{,}80}\right)^2 \approx 30{,}8\,\text{N}\cdot\text{m}^{-1} \)
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="exercise-card">
+            <div class="exercise-header">6. Pendule simple — période sur la Lune</div>
+            <div class="exercise-body">
+                Un pendule simple de longueur \( l = 1{,}0\,\text{m} \) a une période \( T = 2{,}00\,\text{s} \) sur Terre.
+                Quelle serait sa période sur la Lune, où \( g_{Lune} \approx 1{,}62\,\text{m}\cdot\text{s}^{-2} \) ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr6',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol6',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr6" class="content-box translation-box">
+                Matematické kyvadlo o délce \( l = 1{,}0\,\text{m} \) má na Zemi periodu \( T = 2{,}00\,\text{s} \).
+                Jaká by byla jeho perioda na Měsíci, kde \( g_{Měsíc} \approx 1{,}62\,\text{m}\cdot\text{s}^{-2} \)?
+            </div>
+            <div id="sol6" class="content-box solution-box">
+                \( T_{Lune} = 2\pi\sqrt{\dfrac{l}{g_{Lune}}} = 2\pi\sqrt{\dfrac{1{,}0}{1{,}62}} \approx 4{,}94\,\text{s} \approx 4{,}9\,\text{s} \) — presque 2,5 fois plus lente que sur Terre.
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="exercise-card">
+            <div class="exercise-header">7. Énergie de l'oscillateur — détermination de l'amplitude</div>
+            <div class="exercise-body">
+                Un oscillateur ( \( m = 0{,}20\,\text{kg} \), \( k = 80\,\text{N}\cdot\text{m}^{-1} \) ) passe par la
+                position d'équilibre à une vitesse \( v_m = 1{,}2\,\text{m}\cdot\text{s}^{-1} \). Quelle est son amplitude \( y_m \) ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr7',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol7',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr7" class="content-box translation-box">
+                Oscilátor ( \( m = 0{,}20\,\text{kg} \), \( k = 80\,\text{N}\cdot\text{m}^{-1} \) ) prochází rovnovážnou
+                polohou rychlostí \( v_m = 1{,}2\,\text{m}\cdot\text{s}^{-1} \). Jaká je jeho amplituda \( y_m \)?
+            </div>
+            <div id="sol7" class="content-box solution-box">
+                \( \omega = \sqrt{k/m} = \sqrt{80/0{,}20} = \sqrt{400} = 20\,\text{rad}\cdot\text{s}^{-1} \)<br>
+                \( y_m = \dfrac{v_m}{\omega} = \dfrac{1{,}2}{20} = 0{,}060\,\text{m} = 6{,}0\,\text{cm} \)
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="exercise-card">
+            <div class="exercise-header">8. Résonance — fréquence propre et fréquence excitatrice</div>
+            <div class="exercise-body">
+                Une machine vibre à une fréquence \( f = 3{,}0\,\text{Hz} \). Elle repose sur un support flexible dont
+                la fréquence propre est \( f_0 = 2{,}9\,\text{Hz} \). Le système risque-t-il d'entrer en résonance ?
+                Expliquez et proposez une solution.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr8',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol8',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr8" class="content-box translation-box">
+                Stroj vibruje s frekvencí \( f = 3{,}0\,\text{Hz} \). Stojí na pružné podpěře, jejíž vlastní frekvence
+                je \( f_0 = 2{,}9\,\text{Hz} \). Hrozí soustavě rezonance? Vysvětlete a navrhněte řešení.
+            </div>
+            <div id="sol8" class="content-box solution-box">
+                Oui : \( f \) et \( f_0 \) sont très proches (\( \Delta f = 0{,}1\,\text{Hz} \)), donc l'amplitude des
+                oscillations forcées du support serait fortement amplifiée — risque de résonance dangereuse.<br>
+                Solution : modifier la fréquence propre du support (changer sa raideur ou sa masse) pour l'éloigner
+                nettement de \( 3{,}0\,\text{Hz} \), ou ajouter un amortissement supplémentaire.
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="exercise-card">
+            <div class="exercise-header">9. Oscillations amorties — décroissance de l'amplitude</div>
+            <div class="exercise-body">
+                Un pendule amorti a une amplitude initiale \( y_m = 10\,\text{cm} \) ; après 5 oscillations complètes,
+                son amplitude n'est plus que de \( 4\,\text{cm} \). Que peut-on dire qualitativement de l'amortissement,
+                et que deviendrait l'amplitude si l'amortissement était deux fois plus grand (après le même nombre d'oscillations) ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr9',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol9',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr9" class="content-box translation-box">
+                Tlumené kyvadlo má počáteční amplitudu \( y_m = 10\,\text{cm} \); po 5 úplných kmitech klesne jeho
+                amplituda na \( 4\,\text{cm} \). Co lze kvalitativně říci o tlumení a co by se stalo s amplitudou,
+                kdyby bylo tlumení dvakrát větší (po stejném počtu kmitů)?
+            </div>
+            <div id="sol9" class="content-box solution-box">
+                L'amplitude est tombée à 40 % de sa valeur initiale après 5 oscillations — l'amortissement fait décroître
+                l'enveloppe de l'amplitude de façon continue dans le temps. Avec un amortissement deux fois plus grand,
+                la décroissance serait plus rapide : après le même nombre d'oscillations, l'amplitude atteindrait une
+                valeur nettement inférieure à 4 cm (l'enveloppe exponentielle décroît plus vite).
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="exercise-card">
+            <div class="exercise-header">10. Question conceptuelle — horloge à pendule et température</div>
+            <div class="exercise-body">
+                Une horloge à pendule utilise un pendule simple métallique. En été, la température augmente et la tige
+                du pendule se dilate légèrement, donc sa longueur \( l \) augmente. L'horloge avance-t-elle ou
+                retarde-t-elle ? Expliquez à l'aide de la formule de la période.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr10',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol10',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr10" class="content-box translation-box">
+                Kyvadlové hodiny používají kovové matematické kyvadlo. V létě teplota stoupne a tyč kyvadla se mírně
+                roztáhne, takže jeho délka \( l \) se zvětší. Jdou hodiny napřed, nebo se opožďují? Vysvětlete pomocí
+                vzorce pro periodu.
+            </div>
+            <div id="sol10" class="content-box solution-box">
+                \( T = 2\pi\sqrt{l/g} \) : si \( l \) augmente, \( T \) augmente aussi — chaque oscillation dure plus
+                longtemps, donc l'horloge <strong>retarde</strong> en été.<br>
+                Pokud se \( l \) zvětší, zvětší se i perioda \( T \) — každý kmit trvá déle, hodiny se proto v létě
+                <strong>opožďují</strong>.
+            </div>
+        </div>
+
+        <footer>
+            © 2026 – Physique en Français – Exercices sur les Oscillations Mécaniques
+        </footer>
+    </div>
+
+    <script>
+        function toggle(id, btn, openLabel, closeLabel) {
+            const el = document.getElementById(id);
+            const active = el.classList.toggle('active');
+            btn.textContent = active ? closeLabel : openLabel;
+        }
+    </script>
+
+</body>
+</html>

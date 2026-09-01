@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Mechanické kmitání / Oscillations mécaniques</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col font-sans">
+
+    <header class="bg-blue-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Mechanické kmitání</h1>
+        <p class="text-blue-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-blue-700 text-blue-700 font-bold hover:bg-blue-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-blue-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je kmitavý pohyb?</p>
+                </div>
+                <div class="card-face card-back bg-blue-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Pohyb, který se v pravidelných časových intervalech opakuje kolem rovnovážné polohy.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 40</p>
+            <button id="shuffle" class="text-blue-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Fyzika / Physique
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const N_CARDS = 40;
+        const rawData = {
+            cs: [
+                { q: "Co je kmitavý (periodický) pohyb?", a: "Pohyb tělesa, který se v pravidelných časových intervalech opakuje kolem rovnovážné polohy." },
+                { q: "Uveďte příklad kmitavého pohybu.", a: "Kyvadlo hodin, závaží na pružině, struna kytary, píst motoru, membrána reproduktoru." },
+                { q: "Co je výchylka y?", a: "Okamžitá odchylka tělesa od rovnovážné polohy." },
+                { q: "Co je amplituda y<sub>m</sub>?", a: "Maximální (největší) výchylka." },
+                { q: "Co je perioda T?", a: "Doba jednoho úplného kmitu; jednotka sekunda (s)." },
+                { q: "Jak zní vztah mezi frekvencí f a periodou T?", a: "f = 1/T." },
+                { q: "Jaká je jednotka frekvence?", a: "Hertz (Hz)." },
+                { q: "Jak zní vzorec pro úhlovou (kruhovou) frekvenci ω?", a: "ω = 2π/T = 2πf." },
+                { q: "Jaká je jednotka úhlové frekvence ω?", a: "rad·s⁻¹." },
+                { q: "Co je volné kmitání?", a: "Kmitání soustavy bez vnějšího periodického působení, s vlastní frekvencí f₀ danou vlastnostmi soustavy." },
+                { q: "Co je nucené kmitání?", a: "Kmitání soustavy, na kterou působí vnější periodická síla." },
+                { q: "Jak zní rovnice harmonického kmitavého pohybu?", a: "y = y<sub>m</sub>sin(ωt + φ₀)." },
+                { q: "Co je počáteční fáze φ₀?", a: "Fáze kmitání v čase t = 0." },
+                { q: "Co je okamžitá fáze?", a: "Výraz (ωt + φ₀)." },
+                { q: "Co je fázor?", a: "Otáčející se úsečka (rychlostí ω), jejíž průmět na přímku koná harmonický kmitavý pohyb." },
+                { q: "Jak souvisí harmonický pohyb s pohybem po kružnici?", a: "Harmonický pohyb je průmět rovnoměrného pohybu po kružnici do jedné přímky." },
+                { q: "Jak zní vzorec pro rychlost při harmonickém kmitání?", a: "v = ωy<sub>m</sub>cos(ωt + φ₀)." },
+                { q: "Jak zní vzorec pro zrychlení při harmonickém kmitání?", a: "a = −ω²y<sub>m</sub>sin(ωt + φ₀) = −ω²y." },
+                { q: "Kdy je rychlost při harmonickém kmitání maximální?", a: "Při průchodu rovnovážnou polohou (y = 0)." },
+                { q: "Kdy je zrychlení při harmonickém kmitání maximální?", a: "V krajních polohách (y = ±y<sub>m</sub>), kde je rychlost nulová." },
+                { q: "Jaký je fázový rozdíl mezi rychlostí v a výchylkou y?", a: "Čtvrtperioda (fázový rozdíl π/2)." },
+                { q: "Jaký je fázový vztah mezi zrychlením a a výchylkou y?", a: "Protifáze (fázový rozdíl π) — proto a = −ω²y." },
+                { q: "Co je direkční (vratná) síla?", a: "Síla úměrná výchylce, mířící vždy zpět do rovnovážné polohy: F = −ky." },
+                { q: "Jak souvisí konstanta k s úhlovou frekvencí ω?", a: "k = mω²." },
+                { q: "Jak zní vzorec pro periodu pružinového oscilátoru?", a: "T = 2π√(m/k)." },
+                { q: "Jak závisí perioda pružinového oscilátoru na hmotnosti m?", a: "Čím větší hmotnost, tím pomalejší kmitání (perioda roste)." },
+                { q: "Jak závisí perioda pružinového oscilátoru na tuhosti k?", a: "Čím tužší pružina, tím rychlejší kmitání (perioda klesá)." },
+                { q: "Co je matematické kyvadlo?", a: "Hmotný bod zavěšený na tenkém nehmotném a nepružném vlákně délky l, kmitající v tíhovém poli." },
+                { q: "Jak zní vzorec pro periodu matematického kyvadla?", a: "T = 2π√(l/g)." },
+                { q: "Co je izochronismus kyvadla?", a: "Vlastnost, že perioda kyvadla nezávisí na amplitudě (pro malé výchylky) ani na hmotnosti závaží." },
+                { q: "Pro jaké výchylky kmitá matematické kyvadlo harmonicky?", a: "Pro malé výchylky, přibližně do 5–10°." },
+                { q: "Jak zní vzorec pro kinetickou energii oscilátoru E<sub>k</sub>?", a: "E<sub>k</sub> = ½mv²." },
+                { q: "Jak zní vzorec pro potenciální energii oscilátoru E<sub>p</sub>?", a: "E<sub>p</sub> = ½ky²." },
+                { q: "Jak zní vzorec pro celkovou energii oscilátoru E?", a: "E = E<sub>k</sub> + E<sub>p</sub> = ½ky<sub>m</sub>² = konst." },
+                { q: "Kdy je energie oscilátoru čistě kinetická?", a: "V rovnovážné poloze (y = 0), kde je rychlost maximální." },
+                { q: "Kdy je energie oscilátoru čistě potenciální?", a: "V krajních polohách (y = ±y<sub>m</sub>), kde je rychlost nulová." },
+                { q: "Co je tlumené kmitání?", a: "Kmitání, jehož amplituda se s časem postupně zmenšuje vlivem odporových sil." },
+                { q: "Jak amplituda tlumeného kmitání závisí na čase a velikosti tlumení?", a: "Amplituda s časem klesá; čím větší tlumení, tím rychleji klesá." },
+                { q: "Co je rezonance?", a: "Jev, kdy při frekvenci budicí síly blízké vlastní frekvenci soustavy amplituda nuceného kmitání prudce roste." },
+                { q: "Uveďte příklad užitečné a škodlivé rezonance.", a: "Užitečná: ladění rozhlasového přijímače. Škodlivá: zřícení mostu Tacoma Narrows (1940) účinkem větru." }
+            ],
+            fr: [
+                { q: "Qu'est-ce qu'un mouvement oscillatoire (périodique) ?", a: "Le mouvement d'un corps qui se répète à intervalles de temps réguliers autour d'une position d'équilibre." },
+                { q: "Donnez un exemple de mouvement oscillatoire.", a: "Le pendule d'une horloge, une masse sur un ressort, une corde de guitare, le piston d'un moteur, la membrane d'un haut-parleur." },
+                { q: "Qu'est-ce que l'élongation y ?", a: "L'écart instantané d'un corps par rapport à sa position d'équilibre." },
+                { q: "Qu'est-ce que l'amplitude y<sub>m</sub> ?", a: "L'élongation maximale." },
+                { q: "Qu'est-ce que la période T ?", a: "La durée d'une oscillation complète ; unité : seconde (s)." },
+                { q: "Quelle est la relation entre la fréquence f et la période T ?", a: "f = 1/T." },
+                { q: "Quelle est l'unité de la fréquence ?", a: "Le hertz (Hz)." },
+                { q: "Quelle est la formule de la pulsation (fréquence angulaire) ω ?", a: "ω = 2π/T = 2πf." },
+                { q: "Quelle est l'unité de la pulsation ω ?", a: "rad·s⁻¹." },
+                { q: "Qu'est-ce que des oscillations libres ?", a: "Les oscillations d'un système sans action périodique extérieure, à la fréquence propre f₀ déterminée par les propriétés du système." },
+                { q: "Qu'est-ce que des oscillations forcées ?", a: "Les oscillations d'un système soumis à une force périodique extérieure." },
+                { q: "Quelle est l'équation du mouvement harmonique simple ?", a: "y = y<sub>m</sub>sin(ωt + φ₀)." },
+                { q: "Qu'est-ce que la phase initiale φ₀ ?", a: "La phase de l'oscillation à l'instant t = 0." },
+                { q: "Qu'est-ce que la phase instantanée ?", a: "L'expression (ωt + φ₀)." },
+                { q: "Qu'est-ce qu'un vecteur de Fresnel (phaseur) ?", a: "Un segment tournant (à la vitesse ω) dont la projection sur une droite décrit un mouvement harmonique simple." },
+                { q: "Quel est le lien entre le mouvement harmonique et le mouvement circulaire ?", a: "Le mouvement harmonique est la projection d'un mouvement circulaire uniforme sur une droite." },
+                { q: "Quelle est la formule de la vitesse en mouvement harmonique ?", a: "v = ωy<sub>m</sub>cos(ωt + φ₀)." },
+                { q: "Quelle est la formule de l'accélération en mouvement harmonique ?", a: "a = −ω²y<sub>m</sub>sin(ωt + φ₀) = −ω²y." },
+                { q: "Quand la vitesse est-elle maximale en mouvement harmonique ?", a: "Au passage par la position d'équilibre (y = 0)." },
+                { q: "Quand l'accélération est-elle maximale en mouvement harmonique ?", a: "Aux positions extrêmes (y = ±y<sub>m</sub>), où la vitesse est nulle." },
+                { q: "Quel est le déphasage entre la vitesse v et l'élongation y ?", a: "Un quart de période (déphasage de π/2)." },
+                { q: "Quelle est la relation de phase entre l'accélération a et l'élongation y ?", a: "Opposition de phase (déphasage de π) — d'où a = −ω²y." },
+                { q: "Qu'est-ce que la force de rappel ?", a: "Une force proportionnelle à l'élongation, toujours dirigée vers la position d'équilibre : F = −ky." },
+                { q: "Quel est le lien entre la constante k et la pulsation ω ?", a: "k = mω²." },
+                { q: "Quelle est la formule de la période d'un oscillateur à ressort ?", a: "T = 2π√(m/k)." },
+                { q: "Comment la période de l'oscillateur à ressort dépend-elle de la masse m ?", a: "Plus la masse est grande, plus l'oscillation est lente (la période augmente)." },
+                { q: "Comment la période de l'oscillateur à ressort dépend-elle de la raideur k ?", a: "Plus le ressort est raide, plus l'oscillation est rapide (la période diminue)." },
+                { q: "Qu'est-ce qu'un pendule simple ?", a: "Un point matériel suspendu à un fil fin, inextensible et de masse négligeable, de longueur l, oscillant dans le champ de pesanteur." },
+                { q: "Quelle est la formule de la période du pendule simple ?", a: "T = 2π√(l/g)." },
+                { q: "Qu'est-ce que l'isochronisme du pendule ?", a: "La propriété selon laquelle la période du pendule ne dépend ni de l'amplitude (pour de petites élongations) ni de la masse suspendue." },
+                { q: "Pour quelles élongations un pendule simple oscille-t-il harmoniquement ?", a: "Pour de petites élongations, environ jusqu'à 5–10°." },
+                { q: "Quelle est la formule de l'énergie cinétique de l'oscillateur E<sub>k</sub> ?", a: "E<sub>k</sub> = ½mv²." },
+                { q: "Quelle est la formule de l'énergie potentielle de l'oscillateur E<sub>p</sub> ?", a: "E<sub>p</sub> = ½ky²." },
+                { q: "Quelle est la formule de l'énergie totale de l'oscillateur E ?", a: "E = E<sub>k</sub> + E<sub>p</sub> = ½ky<sub>m</sub>² = const." },
+                { q: "Quand l'énergie de l'oscillateur est-elle purement cinétique ?", a: "À la position d'équilibre (y = 0), où la vitesse est maximale." },
+                { q: "Quand l'énergie de l'oscillateur est-elle purement potentielle ?", a: "Aux positions extrêmes (y = ±y<sub>m</sub>), où la vitesse est nulle." },
+                { q: "Qu'est-ce qu'une oscillation amortie ?", a: "Une oscillation dont l'amplitude diminue progressivement dans le temps sous l'effet de forces résistantes." },
+                { q: "Comment l'amplitude d'une oscillation amortie dépend-elle du temps et de l'amortissement ?", a: "L'amplitude diminue avec le temps ; plus l'amortissement est fort, plus elle diminue vite." },
+                { q: "Qu'est-ce que la résonance ?", a: "Le phénomène où, pour une fréquence excitatrice proche de la fréquence propre du système, l'amplitude des oscillations forcées augmente fortement." },
+                { q: "Donnez un exemple de résonance utile et de résonance néfaste.", a: "Utile : l'accord d'un récepteur radio. Néfaste : l'effondrement du pont de Tacoma Narrows (1940) sous l'effet du vent." }
+            ]
+        };
+
+        // ========== KÓD FLASHCARD ==========
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: N_CARDS}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / ${N_CARDS}`;
+            prevBtn.disabled = currentIndex === 0;
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % N_CARDS;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-blue-700', 'text-blue-700');
+            btnFr.classList.remove('border-blue-700', 'text-blue-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-blue-700', 'text-blue-700');
+            btnCs.classList.remove('border-blue-700', 'text-blue-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

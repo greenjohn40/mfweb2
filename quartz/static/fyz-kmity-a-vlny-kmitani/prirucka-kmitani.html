@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanické kmitání / Oscillations mécaniques</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'local' },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 720px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        .MathJax_Display { margin: 1em 0; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: left; }
+        th { background: #f5f5f5; }
+        .law-box { background: #eff6ff; border-left: 4px solid #1d4ed8; padding: 12px 16px; margin: 1rem 0; border-radius: 6px; }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Mechanické kmitání</h1>
+        <p><strong>Předmět:</strong> Fyzika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Kmitavý pohyb a jeho veličiny</h2>
+        <p><strong>Kmitavý (periodický) pohyb</strong> je pohyb tělesa, který se v pravidelných časových intervalech opakuje kolem rovnovážné polohy. Příklady: kyvadlo hodin, závaží na pružině, struna kytary, píst motoru, membrána reproduktoru, kmitání mostu.</p>
+        <p>Základní veličiny: <strong>výchylka</strong> $y$ (okamžitá odchylka od rovnovážné polohy), <strong>amplituda</strong> $y_m$ (maximální výchylka), <strong>perioda</strong> $T$ (doba jednoho kmitu) a <strong>frekvence</strong> $f$ (počet kmitů za jednotku času):</p>
+        $$ f = \frac{1}{T} \qquad \omega = \frac{2\pi}{T} = 2\pi f $$
+        <p>kde $\omega$ je <strong>úhlová (kruhová) frekvence</strong> (jednotka $\text{rad}\cdot\text{s}^{-1}$). Kmitá-li soustava sama bez vnějšího působení, jde o <strong>volné kmitání</strong> s <strong>vlastní frekvencí</strong> $f_0$ danou vlastnostmi soustavy. Působí-li na soustavu vnější periodická síla, jde o <strong>nucené kmitání</strong>.</p>
+
+        <h2>2. Harmonický kmitavý pohyb</h2>
+        <p><strong>Harmonický kmitavý pohyb</strong> je nejjednodušší a nejdůležitější typ kmitání — výchylka se mění s časem podle funkce sinus:</p>
+        $$ y = y_m \sin(\omega t + \varphi_0) $$
+        <p>kde $\varphi_0$ je <strong>počáteční fáze</strong> (fáze v čase $t=0$) a $(\omega t + \varphi_0)$ je okamžitá fáze. Po uplynutí jedné periody $T$ se celý průběh opakuje.</p>
+        <div class="law-box">Harmonický pohyb si lze představit jako <strong>průmět rovnoměrného pohybu po kružnici</strong> o poloměru $y_m$ do jedné přímky. Otáčející se úsečku znázorňující tento pohyb (úhlovou rychlostí $\omega$) nazýváme <strong>fázor</strong>.</div>
+
+        <h2>3. Rychlost a zrychlení harmonického pohybu</h2>
+        <p>Derivováním výchylky podle času získáme rychlost a zrychlení:</p>
+        $$ v = \omega y_m \cos(\omega t + \varphi_0) \qquad a = -\omega^2 y_m \sin(\omega t + \varphi_0) = -\omega^2 y $$
+        <p>Maximální rychlost $v_m=\omega y_m$ nastává při průchodu rovnovážnou polohou; maximální zrychlení $a_m=\omega^2 y_m$ nastává v krajních polohách, kde je rychlost nulová. Rychlost je vůči výchylce posunuta o čtvrtperiodu, zrychlení je vždy v <strong>protifázi</strong> k výchylce.</p>
+
+        <h4>Vzorový příklad 1</h4>
+        <p><strong>Zadání:</strong> Těleso kmitá harmonicky s amplitudou $y_m=5{,}0\,\text{cm}$ a periodou $T=0{,}40\,\text{s}$; v čase $t=0$ prochází rovnovážnou polohou. Určete výchylku v čase $t=0{,}10\,\text{s}$.</p>
+        <p><strong>Řešení:</strong> $\omega=\dfrac{2\pi}{T}\approx15{,}7\,\text{rad}\cdot\text{s}^{-1}$; $y=y_m\sin(\omega t)=5{,}0\cdot\sin(1{,}57\,\text{rad})\approx5{,}0\,\text{cm}$ (těleso je právě v krajní poloze, protože $t=T/4$).</p>
+
+        <h2>4. Síla při harmonickém kmitání. Pružinový oscilátor</h2>
+        <p>Z 2. Newtonova zákona a vztahu $a=-\omega^2y$ plyne, že výslednou silou působící na těleso konající harmonický pohyb je vždy síla úměrná výchylce a mířící proti ní zpět do rovnovážné polohy — <strong>direkční (vratná) síla</strong>:</p>
+        $$ F = ma = -m\omega^2 y = -ky $$
+        <p>kde $k=m\omega^2$. Typickým příkladem harmonického oscilátoru je těleso zavěšené na pružině o tuhosti $k$ (Hookův zákon: $F=-ky$). Porovnáním $k=m\omega^2$ a $\omega=2\pi/T$ dostaneme periodu pružinového oscilátoru:</p>
+        $$ T = 2\pi\sqrt{\frac{m}{k}} $$
+        <p>Perioda nezávisí na amplitudě — čím větší hmotnost, tím pomalejší kmitání; čím tužší pružina, tím rychlejší kmitání.</p>
+
+        <h4>Vzorový příklad 2</h4>
+        <p><strong>Zadání:</strong> Na pružině o tuhosti $k=40\,\text{N}\cdot\text{m}^{-1}$ kmitá závaží o hmotnosti $m=0{,}25\,\text{kg}$. Určete periodu a frekvenci kmitání.</p>
+        <p><strong>Řešení:</strong> $T=2\pi\sqrt{m/k}=2\pi\sqrt{0{,}25/40}\approx0{,}50\,\text{s}$; $f=1/T\approx2{,}0\,\text{Hz}$.</p>
+
+        <h2>5. Matematické kyvadlo</h2>
+        <p><strong>Matematické kyvadlo</strong> je hmotný bod zavěšený na tenkém nehmotném a nepružném vlákně délky $l$, kmitající v tíhovém poli. Vratnou silou je zde složka tíhové síly kolmá na vlákno. Pro <strong>malé výchylky</strong> (do $5$–$10^\circ$) je tato síla úměrná výchylce a kyvadlo kmitá harmonicky s periodou:</p>
+        $$ T = 2\pi\sqrt{\frac{l}{g}} $$
+        <p>Perioda nezávisí na hmotnosti závaží ani na amplitudě (pro malé výchylky) — tato vlastnost se nazývá <strong>izochronismus kyvadla</strong> a využívá se u kyvadlových hodin.</p>
+
+        <h4>Vzorový příklad 3</h4>
+        <p><strong>Zadání:</strong> Jakou délku musí mít matematické kyvadlo, aby jeho perioda byla přesně $T=2{,}0\,\text{s}$ (tzv. „vteřinové" kyvadlo)? ($g=9{,}81\,\text{m}\cdot\text{s}^{-2}$)</p>
+        <p><strong>Řešení:</strong> $l=\dfrac{gT^2}{4\pi^2}=\dfrac{9{,}81\cdot2{,}0^2}{4\pi^2}\approx0{,}994\,\text{m}\approx1\,\text{m}$.</p>
+
+        <h2>6. Energie mechanického oscilátoru</h2>
+        <p>Kmitající těleso má v obecné poloze jak kinetickou, tak potenciální energii; jejich součet — celková mechanická energie oscilátoru — zůstává (bez tlumení) konstantní:</p>
+        $$ E_k=\frac12 mv^2 \qquad E_p=\frac12 ky^2 \qquad E=E_k+E_p=\frac12 ky_m^2=\text{konst.} $$
+        <p>V rovnovážné poloze ($y=0$) je celá energie kinetická (rychlost maximální), v krajních polohách je celá energie potenciální (rychlost nulová). Energie se mezi oběma formami periodicky přelévá s dvojnásobnou frekvencí kmitání.</p>
+
+        <h4>Vzorový příklad 4</h4>
+        <p><strong>Zadání:</strong> Oscilátor s tuhostí $k=50\,\text{N}\cdot\text{m}^{-1}$ a hmotností $m=0{,}20\,\text{kg}$ kmitá s amplitudou $y_m=4{,}0\,\text{cm}$. Jakou rychlostí prochází rovnovážnou polohou?</p>
+        <p><strong>Řešení:</strong> V rovnovážné poloze je $E_k=E$, tedy $v_m=y_m\sqrt{k/m}=0{,}04\sqrt{50/0{,}20}\approx0{,}63\,\text{m}\cdot\text{s}^{-1}$.</p>
+
+        <h2>7. Tlumené a nucené kmitání, rezonance</h2>
+        <p>Na kmitající soustavu vždy působí odporové síly (tření, odpor prostředí), které kmitání <strong>tlumí</strong> — amplituda se s časem postupně zmenšuje. Čím větší tlumení, tím rychleji amplituda klesá.</p>
+        <p>Působí-li na oscilátor vnější periodická (budicí) síla o frekvenci $f$, soustava se ustálí a kmitá s frekvencí budicí síly — jde o <strong>nucené kmitání</strong>. Blíží-li se budicí frekvence vlastní frekvenci soustavy $f_0$ ($f\to f_0$), amplituda nuceného kmitání prudce roste — nastává <strong>rezonance</strong>. Čím menší tlumení, tím vyšší a ostřejší je rezonanční maximum.</p>
+        <div class="law-box"><strong>Rezonance v praxi:</strong> užitečná (ladění rozhlasového přijímače, rezonanční skříň hudebních nástrojů, houpání na houpačce v rytmu vlastní frekvence) i škodlivá (poškození konstrukcí — mosty, budovy a stroje se navrhují tak, aby se jejich vlastní frekvence nekryla s frekvencemi očekávaných budicích sil; historickým příkladem je zřícení mostu Tacoma Narrows v roce 1940, rozkmitaného účinkem větru).</div>
+
+        <h4>Vzorový příklad 5</h4>
+        <p><strong>Zadání:</strong> Jakou délku by muselo mít matematické kyvadlo, aby jeho vlastní frekvence odpovídala frekvenci otřesů stroje $f=2{,}0\,\text{Hz}$ (a nastala tak rezonance)? ($g=9{,}81\,\text{m}\cdot\text{s}^{-2}$)</p>
+        <p><strong>Řešení:</strong> Z $T=2\pi\sqrt{l/g}=1/f$ plyne $l=\dfrac{g}{4\pi^2f^2}=\dfrac{9{,}81}{4\pi^2\cdot2{,}0^2}\approx0{,}062\,\text{m}\approx6{,}2\,\text{cm}$.</p>
+
+        <h2>8. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Základní veličiny:</strong> $f=1/T$, $\omega=2\pi/T=2\pi f$.</li>
+            <li><strong>Harmonický pohyb:</strong> $y=y_m\sin(\omega t+\varphi_0)$; fázor jako průmět rovnoměrného pohybu po kružnici.</li>
+            <li><strong>Rychlost a zrychlení:</strong> $v=\omega y_m\cos(\omega t+\varphi_0)$, $a=-\omega^2y$ (protifáze k výchylce).</li>
+            <li><strong>Direkční síla a pružinový oscilátor:</strong> $F=-ky$, $T=2\pi\sqrt{m/k}$.</li>
+            <li><strong>Matematické kyvadlo:</strong> $T=2\pi\sqrt{l/g}$ — nezávisí na hmotnosti ani (pro malé výchylky) na amplitudě.</li>
+            <li><strong>Energie oscilátoru:</strong> $E=E_k+E_p=\frac12ky_m^2=\text{konst.}$</li>
+            <li><strong>Tlumené a nucené kmitání, rezonance:</strong> amplituda tlumeného kmitání klesá; při $f\to f_0$ nastává rezonance.</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>Oscillations mécaniques</h1>
+        <p><strong>Matière :</strong> Physique
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. Mouvement oscillatoire et ses grandeurs</h2>
+        <p>Un <strong>mouvement oscillatoire (périodique)</strong> est un mouvement qui se répète à intervalles de temps réguliers autour d'une position d'équilibre. Exemples : pendule d'une horloge, masse sur un ressort, corde de guitare, piston d'un moteur, membrane d'un haut-parleur, oscillations d'un pont.</p>
+        <p>Grandeurs fondamentales : <strong>élongation</strong> $y$ (écart instantané par rapport à la position d'équilibre), <strong>amplitude</strong> $y_m$ (élongation maximale), <strong>période</strong> $T$ (durée d'une oscillation complète) et <strong>fréquence</strong> $f$ (nombre d'oscillations par unité de temps) :</p>
+        $$ f = \frac{1}{T} \qquad \omega = \frac{2\pi}{T} = 2\pi f $$
+        <p>où $\omega$ est la <strong>pulsation (fréquence angulaire)</strong> (unité $\text{rad}\cdot\text{s}^{-1}$). Si le système oscille seul, sans action extérieure, il s'agit d'<strong>oscillations libres</strong> à la <strong>fréquence propre</strong> $f_0$, déterminée par les propriétés du système. Si une force périodique extérieure agit sur le système, il s'agit d'<strong>oscillations forcées</strong>.</p>
+
+        <h2>2. Mouvement harmonique simple</h2>
+        <p>Le <strong>mouvement harmonique simple</strong> est le type d'oscillation le plus simple et le plus important — l'élongation varie dans le temps selon une fonction sinus :</p>
+        $$ y = y_m \sin(\omega t + \varphi_0) $$
+        <p>où $\varphi_0$ est la <strong>phase initiale</strong> (phase à $t=0$) et $(\omega t+\varphi_0)$ la phase instantanée. Après une période $T$, le mouvement se répète intégralement.</p>
+        <div class="law-box">Le mouvement harmonique peut être vu comme la <strong>projection d'un mouvement circulaire uniforme</strong> de rayon $y_m$ sur une droite. Le segment tournant (à la vitesse angulaire $\omega$) représentant ce mouvement est appelé <strong>vecteur de Fresnel (phaseur)</strong>.</p>
+
+        <h2>3. Vitesse et accélération du mouvement harmonique</h2>
+        <p>En dérivant l'élongation par rapport au temps, on obtient la vitesse et l'accélération :</p>
+        $$ v = \omega y_m \cos(\omega t + \varphi_0) \qquad a = -\omega^2 y_m \sin(\omega t + \varphi_0) = -\omega^2 y $$
+        <p>La vitesse maximale $v_m=\omega y_m$ est atteinte au passage par la position d'équilibre ; l'accélération maximale $a_m=\omega^2 y_m$ est atteinte aux positions extrêmes, où la vitesse est nulle. La vitesse est déphasée d'un quart de période par rapport à l'élongation, et l'accélération est toujours en <strong>opposition de phase</strong> avec l'élongation.</p>
+
+        <h4>Exemple type 1</h4>
+        <p><strong>Énoncé :</strong> Un corps oscille harmoniquement avec une amplitude $y_m=5{,}0\,\text{cm}$ et une période $T=0{,}40\,\text{s}$ ; à $t=0$ il passe par la position d'équilibre. Déterminez l'élongation à $t=0{,}10\,\text{s}$.</p>
+        <p><strong>Solution :</strong> $\omega=\dfrac{2\pi}{T}\approx15{,}7\,\text{rad}\cdot\text{s}^{-1}$ ; $y=y_m\sin(\omega t)=5{,}0\cdot\sin(1{,}57\,\text{rad})\approx5{,}0\,\text{cm}$ (le corps est justement en position extrême, car $t=T/4$).</p>
+
+        <h2>4. Force dans le mouvement harmonique. Oscillateur à ressort</h2>
+        <p>De la 2ᵉ loi de Newton et de la relation $a=-\omega^2y$, on déduit que la force résultante agissant sur un corps en mouvement harmonique est toujours proportionnelle à l'élongation et orientée en sens contraire, vers la position d'équilibre — la <strong>force de rappel</strong> :</p>
+        $$ F = ma = -m\omega^2 y = -ky $$
+        <p>où $k=m\omega^2$. Un exemple typique d'oscillateur harmonique est un corps suspendu à un ressort de raideur $k$ (loi de Hooke : $F=-ky$). En comparant $k=m\omega^2$ et $\omega=2\pi/T$, on obtient la période de l'oscillateur à ressort :</p>
+        $$ T = 2\pi\sqrt{\frac{m}{k}} $$
+        <p>La période ne dépend pas de l'amplitude — plus la masse est grande, plus l'oscillation est lente ; plus le ressort est raide, plus l'oscillation est rapide.</p>
+
+        <h4>Exemple type 2</h4>
+        <p><strong>Énoncé :</strong> Un corps de masse $m=0{,}25\,\text{kg}$ oscille au bout d'un ressort de raideur $k=40\,\text{N}\cdot\text{m}^{-1}$. Déterminez la période et la fréquence de l'oscillation.</p>
+        <p><strong>Solution :</strong> $T=2\pi\sqrt{m/k}=2\pi\sqrt{0{,}25/40}\approx0{,}50\,\text{s}$ ; $f=1/T\approx2{,}0\,\text{Hz}$.</p>
+
+        <h2>5. Pendule simple</h2>
+        <p>Le <strong>pendule simple</strong> est un point matériel suspendu à un fil fin, inextensible et de masse négligeable, de longueur $l$, oscillant dans le champ de pesanteur. La force de rappel est ici la composante du poids perpendiculaire au fil. Pour de <strong>petites élongations</strong> (jusqu'à $5$–$10^\circ$), cette force est proportionnelle à l'élongation et le pendule oscille harmoniquement, avec une période :</p>
+        $$ T = 2\pi\sqrt{\frac{l}{g}} $$
+        <p>La période ne dépend ni de la masse suspendue ni de l'amplitude (pour de petites élongations) — cette propriété s'appelle l'<strong>isochronisme du pendule</strong> et est exploitée dans les horloges à pendule.</p>
+
+        <h4>Exemple type 3</h4>
+        <p><strong>Énoncé :</strong> Quelle doit être la longueur d'un pendule simple pour que sa période soit exactement $T=2{,}0\,\text{s}$ (le « pendule à secondes ») ? ($g=9{,}81\,\text{m}\cdot\text{s}^{-2}$)</p>
+        <p><strong>Solution :</strong> $l=\dfrac{gT^2}{4\pi^2}=\dfrac{9{,}81\cdot2{,}0^2}{4\pi^2}\approx0{,}994\,\text{m}\approx1\,\text{m}$.</p>
+
+        <h2>6. Énergie de l'oscillateur mécanique</h2>
+        <p>Un corps oscillant possède, dans une position quelconque, à la fois une énergie cinétique et une énergie potentielle ; leur somme — l'énergie mécanique totale de l'oscillateur — reste (sans amortissement) constante :</p>
+        $$ E_k=\frac12 mv^2 \qquad E_p=\frac12 ky^2 \qquad E=E_k+E_p=\frac12 ky_m^2=\text{const.} $$
+        <p>À la position d'équilibre ($y=0$), toute l'énergie est cinétique (vitesse maximale) ; aux positions extrêmes, toute l'énergie est potentielle (vitesse nulle). L'énergie se transforme périodiquement entre les deux formes, avec une fréquence double de celle de l'oscillation.</p>
+
+        <h4>Exemple type 4</h4>
+        <p><strong>Énoncé :</strong> Un oscillateur de raideur $k=50\,\text{N}\cdot\text{m}^{-1}$ et de masse $m=0{,}20\,\text{kg}$ oscille avec une amplitude $y_m=4{,}0\,\text{cm}$. À quelle vitesse passe-t-il par la position d'équilibre ?</p>
+        <p><strong>Solution :</strong> À la position d'équilibre, $E_k=E$, donc $v_m=y_m\sqrt{k/m}=0{,}04\sqrt{50/0{,}20}\approx0{,}63\,\text{m}\cdot\text{s}^{-1}$.</p>
+
+        <h2>7. Oscillations amorties et forcées, résonance</h2>
+        <p>Des forces résistantes (frottement, résistance du milieu) agissent toujours sur un système oscillant et <strong>amortissent</strong> l'oscillation — l'amplitude diminue progressivement dans le temps. Plus l'amortissement est important, plus l'amplitude diminue rapidement.</p>
+        <p>Si une force périodique extérieure (excitatrice) de fréquence $f$ agit sur l'oscillateur, le système se stabilise et oscille à la fréquence de cette force — il s'agit d'<strong>oscillations forcées</strong>. Lorsque la fréquence excitatrice se rapproche de la fréquence propre du système $f_0$ ($f\to f_0$), l'amplitude des oscillations forcées augmente fortement — c'est la <strong>résonance</strong>. Plus l'amortissement est faible, plus le maximum de résonance est élevé et étroit.</p>
+        <div class="law-box"><strong>La résonance dans la pratique :</strong> utile (accord d'un récepteur radio, caisse de résonance des instruments de musique, balancement d'une balançoire au rythme de sa fréquence propre) mais aussi néfaste (endommagement de structures — ponts, bâtiments et machines sont conçus pour que leur fréquence propre ne coïncide pas avec les fréquences des forces excitatrices attendues ; exemple historique : l'effondrement du pont de Tacoma Narrows en 1940, mis en oscillation par le vent).</div>
+
+        <h4>Exemple type 5</h4>
+        <p><strong>Énoncé :</strong> Quelle devrait être la longueur d'un pendule simple pour que sa fréquence propre corresponde à la fréquence des vibrations d'une machine $f=2{,}0\,\text{Hz}$ (pour qu'il y ait résonance) ? ($g=9{,}81\,\text{m}\cdot\text{s}^{-2}$)</p>
+        <p><strong>Solution :</strong> De $T=2\pi\sqrt{l/g}=1/f$, on tire $l=\dfrac{g}{4\pi^2f^2}=\dfrac{9{,}81}{4\pi^2\cdot2{,}0^2}\approx0{,}062\,\text{m}\approx6{,}2\,\text{cm}$.</p>
+
+        <h2>8. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Grandeurs fondamentales :</strong> $f=1/T$, $\omega=2\pi/T=2\pi f$.</li>
+            <li><strong>Mouvement harmonique :</strong> $y=y_m\sin(\omega t+\varphi_0)$ ; vecteur de Fresnel comme projection d'un mouvement circulaire uniforme.</li>
+            <li><strong>Vitesse et accélération :</strong> $v=\omega y_m\cos(\omega t+\varphi_0)$, $a=-\omega^2y$ (opposition de phase avec l'élongation).</li>
+            <li><strong>Force de rappel et oscillateur à ressort :</strong> $F=-ky$, $T=2\pi\sqrt{m/k}$.</li>
+            <li><strong>Pendule simple :</strong> $T=2\pi\sqrt{l/g}$ — indépendant de la masse et (pour de petites élongations) de l'amplitude.</li>
+            <li><strong>Énergie de l'oscillateur :</strong> $E=E_k+E_p=\frac12ky_m^2=\text{const.}$</li>
+            <li><strong>Oscillations amorties et forcées, résonance :</strong> l'amplitude des oscillations amorties diminue ; la résonance survient lorsque $f\to f_0$.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang) {
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (lang === 'cs') {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else if (lang === 'fr') {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangKmitani', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangKmitani');
+            if (saved === 'fr') { setLanguage('fr'); } else { setLanguage('cs'); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs'); });
+            btnFr.addEventListener('click', function() { setLanguage('fr'); });
+        })();
+    </script>
+
+</body>
+</html>
