@@ -4,11 +4,12 @@
 <a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Úvod do funkcí 2 - grafy</a><br>
 <a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Úvod do funkcí 3 - vlastnosti</a><p>
 
-LINEÁRNÍ FUNKCE
-<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Lineární funkce</a>
-<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a>
-<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Absolutní hodnota</a>
+LINEÁRNÍ FUNKCE<br>
+<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Lineární funkce</a><br>
+<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a><br>
+<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Absolutní hodnota</a><p>
 
-KVADRATICKÁ FUNKCE
-<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Kvadratická funkce</a>
-<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a>
+KVADRATICKÁ FUNKCE<br>
+<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Kvadratická funkce</a><br>
+<a href="/static/mat-funkce-linearni1/rozcestnik-linearni.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a><p>
+
