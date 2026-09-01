@@ -1,3 +1,7 @@
+---
+title: MFWeb francouzské sekce GP
+---
+
 Studijní materiály, zadání a aktuality k matematice a fyzice.
 
 - [[aktuality/index|Aktuality]] – co je nového, změny v rozvrhu, termíny testů
