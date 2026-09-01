@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>L'énergie interne – Exercices</title>
+    <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<style>
+    :root {
+        --primary: #be123c;
+        --secondary: #9f1239;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #fff1f2;
+        --translation: #64748b;
+    }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { text-align: center; color: var(--primary); font-size: 2.5rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 2.5rem; }
+    .exercise-card {
+        background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;
+    }
+    .exercise-body { margin-bottom: 18px; font-size: 1.05rem; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .btn { border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+    .btn-translation { background: transparent; color: var(--translation); border: 1px solid var(--translation); }
+    .btn-translation:hover { background: var(--translation); color: #fff; }
+    .btn-solution { background: var(--primary); color: #fff; }
+    .btn-solution:hover { background: var(--secondary); }
+    .content-box { display: none; margin-top: 14px; padding: 15px; border-radius: 6px; font-size: 0.95rem; animation: fadeIn 0.3s ease-in; }
+    .translation-box { background: #f1f5f9; color: #475569; border-left: 4px solid var(--translation); font-style: italic; }
+    .solution-box { background: var(--accent); border-left: 4px solid var(--primary); }
+    .active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    footer { text-align: center; margin-top: 40px; padding: 20px; color: #94a3b8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>L'énergie interne</h1>
+        <p class="subtitle">Série de 10 exercices avec solutions et traductions</p>
+
+        <!-- 1 -->
+        <div class="exercise-card">
+            <div class="exercise-header">1. Chauffage de l'eau</div>
+            <div class="exercise-body">
+                Quelle quantité de chaleur \( Q \) faut-il pour chauffer \( m = 3\,\text{kg} \) d'eau
+                de \( t_1 = 15\,^\circ\text{C} \) à \( t_2 = 95\,^\circ\text{C} \) ?
+                (\( c_{\text{eau}} = 4180\,\text{J/(kg·K)} \))
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr1',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol1',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr1" class="content-box translation-box">
+                Kolik tepla \( Q \) je potřeba k ohřátí \( m = 3\,\text{kg} \) vody
+                z \( t_1 = 15\,^\circ\text{C} \) na \( t_2 = 95\,^\circ\text{C} \)?
+            </div>
+            <div id="sol1" class="content-box solution-box">
+                \( \Delta t = 95 - 15 = 80\,\text{K} \)<br>
+                \( Q = c \cdot m \cdot \Delta t = 4180 \cdot 3 \cdot 80 = 1\,003\,200\,\text{J} \approx 1003{,}2\,\text{kJ} \)
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="exercise-card">
+            <div class="exercise-header">2. Capacité thermique du fer</div>
+            <div class="exercise-body">
+                Un morceau de fer reçoit \( Q = 13\,500\,\text{J} \) et sa température passe de
+                \( t_1 = 20\,^\circ\text{C} \) à \( t_2 = 50\,^\circ\text{C} \). Sa masse est
+                \( m = 0{,}5\,\text{kg} \). Déterminez sa capacité thermique \( C \) et sa
+                chaleur spécifique \( c \).
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr2',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol2',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr2" class="content-box translation-box">
+                Kus železa přijme \( Q = 13\,500\,\text{J} \) a jeho teplota vzroste z
+                \( t_1 = 20\,^\circ\text{C} \) na \( t_2 = 50\,^\circ\text{C} \). Jeho hmotnost je
+                \( m = 0{,}5\,\text{kg} \). Určete jeho tepelnou kapacitu \( C \) a měrnou tepelnou kapacitu \( c \).
+            </div>
+            <div id="sol2" class="content-box solution-box">
+                \( \Delta t = 30\,\text{K} \)<br>
+                \( C = \dfrac{Q}{\Delta t} = \dfrac{13\,500}{30} = 450\,\text{J/K} \)<br>
+                \( c = \dfrac{C}{m} = \dfrac{450}{0{,}5} = 900\,\text{J/(kg·K)} \)
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="exercise-card">
+            <div class="exercise-header">3. Refroidissement d'un bloc d'aluminium</div>
+            <div class="exercise-body">
+                Un bloc d'aluminium de masse \( m = 2\,\text{kg} \) se refroidit de
+                \( t_1 = 180\,^\circ\text{C} \) à \( t_2 = 20\,^\circ\text{C} \).
+                Quelle quantité de chaleur \( Q \) a-t-il cédée ?
+                (\( c_{\text{Al}} = 900\,\text{J/(kg·K)} \))
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr3',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol3',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr3" class="content-box translation-box">
+                Hliníkový blok o hmotnosti \( m = 2\,\text{kg} \) se ochladí z
+                \( t_1 = 180\,^\circ\text{C} \) na \( t_2 = 20\,^\circ\text{C} \).
+                Kolik tepla \( Q \) přitom odevzdal?
+            </div>
+            <div id="sol3" class="content-box solution-box">
+                \( \Delta t = 180 - 20 = 160\,\text{K} \)<br>
+                \( Q = c \cdot m \cdot \Delta t = 900 \cdot 2 \cdot 160 = 288\,000\,\text{J} = 288\,\text{kJ} \)
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="exercise-card">
+            <div class="exercise-header">4. Mélange de deux masses d'eau</div>
+            <div class="exercise-body">
+                On mélange \( m_1 = 0{,}3\,\text{kg} \) d'eau à \( t_1 = 90\,^\circ\text{C} \) avec
+                \( m_2 = 0{,}7\,\text{kg} \) d'eau à \( t_2 = 15\,^\circ\text{C} \).
+                Quelle est la température finale du mélange ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr4',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol4',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr4" class="content-box translation-box">
+                Smícháme \( m_1 = 0{,}3\,\text{kg} \) vody o teplotě \( t_1 = 90\,^\circ\text{C} \) s
+                \( m_2 = 0{,}7\,\text{kg} \) vody o teplotě \( t_2 = 15\,^\circ\text{C} \).
+                Jaká bude výsledná teplota směsi?
+            </div>
+            <div id="sol4" class="content-box solution-box">
+                Stejná látka (voda), tepelné kapacity c se vyruší:<br>
+                \( t = \dfrac{m_1 t_1 + m_2 t_2}{m_1 + m_2} = \dfrac{0{,}3 \cdot 90 + 0{,}7 \cdot 15}{0{,}3+0{,}7} = 37{,}5\,^\circ\text{C} \)
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="exercise-card">
+            <div class="exercise-header">5. Fer chaud dans l'eau</div>
+            <div class="exercise-body">
+                Un morceau de fer de masse \( m_1 = 0{,}15\,\text{kg} \) à \( t_1 = 300\,^\circ\text{C} \)
+                est plongé dans \( m_2 = 0{,}4\,\text{kg} \) d'eau à \( t_2 = 18\,^\circ\text{C} \).
+                Quelle est la température finale d'équilibre ?
+                (\( c_{\text{Fe}} = 450\,\text{J/(kg·K)} \), \( c_{\text{eau}} = 4180\,\text{J/(kg·K)} \))
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr5',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol5',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr5" class="content-box translation-box">
+                Kus železa o hmotnosti \( m_1 = 0{,}15\,\text{kg} \) při teplotě \( t_1 = 300\,^\circ\text{C} \)
+                vhodíme do \( m_2 = 0{,}4\,\text{kg} \) vody o teplotě \( t_2 = 18\,^\circ\text{C} \).
+                Jaká je výsledná (ustálená) teplota?
+            </div>
+            <div id="sol5" class="content-box solution-box">
+                \( c_1 m_1 (t_1 - t) = c_2 m_2 (t - t_2) \)<br>
+                \( 450 \cdot 0{,}15 \cdot (300-t) = 4180 \cdot 0{,}4 \cdot (t-18) \)<br>
+                \( 67{,}5(300-t) = 1672(t-18) \)<br>
+                \( 20\,250 - 67{,}5t = 1672t - 30\,096 \)<br>
+                \( 50\,346 = 1739{,}5t \Rightarrow t \approx 28{,}9\,^\circ\text{C} \)
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="exercise-card">
+            <div class="exercise-header">6. Détermination d'une masse inconnue</div>
+            <div class="exercise-body">
+                Un morceau de cuivre chauffé à \( t_1 = 220\,^\circ\text{C} \) est plongé dans
+                \( m_2 = 1\,\text{kg} \) d'eau à \( t_2 = 20\,^\circ\text{C} \). La température
+                finale se stabilise à \( t = 32\,^\circ\text{C} \). Quelle était la masse \( m_1 \)
+                du cuivre ? (\( c_{\text{Cu}} = 385\,\text{J/(kg·K)} \), \( c_{\text{eau}} = 4180\,\text{J/(kg·K)} \))
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr6',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol6',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr6" class="content-box translation-box">
+                Kus mědi zahřátý na \( t_1 = 220\,^\circ\text{C} \) vhodíme do
+                \( m_2 = 1\,\text{kg} \) vody o teplotě \( t_2 = 20\,^\circ\text{C} \). Výsledná teplota
+                se ustálí na \( t = 32\,^\circ\text{C} \). Jaká byla hmotnost \( m_1 \) mědi?
+            </div>
+            <div id="sol6" class="content-box solution-box">
+                Teplo přijaté vodou: \( Q_2 = c_2 m_2 (t-t_2) = 4180 \cdot 1 \cdot 12 = 50\,160\,\text{J} \)<br>
+                Teplo odevzdané mědí: \( Q_1 = c_1 m_1 (t_1 - t) = 385 \cdot m_1 \cdot 188 \)<br>
+                Z rovnosti \( Q_1 = Q_2 \): \( m_1 = \dfrac{50\,160}{385 \cdot 188} \approx 0{,}693\,\text{kg} \)
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="exercise-card">
+            <div class="exercise-header">7. Première loi (compression)</div>
+            <div class="exercise-body">
+                Un système reçoit un travail \( W = 800\,\text{J} \) et cède simultanément une
+                chaleur \( Q = -300\,\text{J} \) au milieu extérieur. Quelle est la variation
+                de son énergie interne \( \Delta U \) ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr7',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol7',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr7" class="content-box translation-box">
+                Soustava přijme práci \( W = 800\,\text{J} \) a zároveň odevzdá teplo
+                \( Q = -300\,\text{J} \) do okolí. Jaká je změna její vnitřní energie \( \Delta U \)?
+            </div>
+            <div id="sol7" class="content-box solution-box">
+                \( \Delta U = W + Q = 800 + (-300) = 500\,\text{J} \)<br>
+                Vnitřní energie soustavy vzrostla o \( 500\,\text{J} \).
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="exercise-card">
+            <div class="exercise-header">8. Première loi (travail effectué par le système)</div>
+            <div class="exercise-body">
+                L'énergie interne d'un système augmente de \( \Delta U = 250\,\text{J} \), alors qu'il
+                cède une chaleur \( Q = -150\,\text{J} \) au milieu extérieur. Quel travail \( W \)
+                a été effectué sur le système ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr8',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol8',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr8" class="content-box translation-box">
+                Vnitřní energie soustavy vzroste o \( \Delta U = 250\,\text{J} \), přičemž soustava
+                odevzdá teplo \( Q = -150\,\text{J} \) do okolí. Jaká práce \( W \) byla na soustavě vykonána?
+            </div>
+            <div id="sol8" class="content-box solution-box">
+                \( \Delta U = W + Q \Rightarrow W = \Delta U - Q = 250 - (-150) = 400\,\text{J} \)
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="exercise-card">
+            <div class="exercise-header">9. Chauffage électrique</div>
+            <div class="exercise-body">
+                Un radiateur électrique de puissance \( P = 100\,\text{W} \) chauffe un bloc de cuivre
+                de masse \( m = 0{,}5\,\text{kg} \) pendant \( t = 5\,\text{min} \). En supposant
+                qu'il n'y a aucune perte de chaleur, de combien de degrés la température du cuivre
+                augmente-t-elle ? (\( c_{\text{Cu}} = 385\,\text{J/(kg·K)} \))
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr9',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol9',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr9" class="content-box translation-box">
+                Elektrický ohřívač o výkonu \( P = 100\,\text{W} \) ohřívá měděný blok o hmotnosti
+                \( m = 0{,}5\,\text{kg} \) po dobu \( t = 5\,\text{min} \). Za předpokladu, že
+                nedochází k žádným tepelným ztrátám, o kolik stupňů se měď ohřeje?
+            </div>
+            <div id="sol9" class="content-box solution-box">
+                \( t = 5\,\text{min} = 300\,\text{s} \)<br>
+                \( Q = P \cdot t = 100 \cdot 300 = 30\,000\,\text{J} \)<br>
+                \( \Delta t = \dfrac{Q}{c \cdot m} = \dfrac{30\,000}{385 \cdot 0{,}5} \approx 155{,}8\,\text{K} \)
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="exercise-card">
+            <div class="exercise-header">10. Conduction thermique – comparaison qualitative</div>
+            <div class="exercise-body">
+                Deux barreaux de même longueur et de même section, l'un en cuivre
+                (\( \lambda_{\text{Cu}} = 390\,\text{W/(m·K)} \)), l'autre en bois
+                (\( \lambda_{\text{bois}} = 0{,}16\,\text{W/(m·K)} \)), sont soumis au même
+                gradient de température. Lequel transmettra la chaleur le plus rapidement,
+                et de quel ordre de grandeur environ ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr10',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol10',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr10" class="content-box translation-box">
+                Dvě tyče stejné délky a stejného průřezu, jedna měděná
+                (\( \lambda_{\text{Cu}} = 390\,\text{W/(m·K)} \)), druhá dřevěná
+                (\( \lambda_{\text{dřevo}} = 0{,}16\,\text{W/(m·K)} \)), jsou vystaveny stejnému
+                teplotnímu spádu. Která z nich přenese teplo rychleji, a přibližně o kolik řádů?
+            </div>
+            <div id="sol10" class="content-box solution-box">
+                Množství přeneseného tepla je přímo úměrné tepelné vodivosti \( \lambda \) materiálu.<br>
+                Poměr: \( \dfrac{\lambda_{\text{Cu}}}{\lambda_{\text{bois}}} = \dfrac{390}{0{,}16} \approx 2\,438 \)<br>
+                Měděná tyč vede teplo přibližně o <strong>3 řády</strong> (tisíckrát) rychleji než dřevěná.
+            </div>
+        </div>
+
+        <footer>
+            © 2026 – Physique en Français – Exercices d'Énergie interne
+        </footer>
+    </div>
+
+    <script>
+        function toggle(id, btn, openLabel, closeLabel) {
+            const el = document.getElementById(id);
+            const active = el.classList.toggle('active');
+            btn.textContent = active ? closeLabel : openLabel;
+        }
+    </script>
+
+</body>
+</html>

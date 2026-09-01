@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Kinetická teorie látek (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-blue-600">
+            <h1 class="text-3xl font-bold text-blue-700 mb-4">Fyzikální kvíz: Kinetická teorie látek</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-blue-500">Test obsahuje 8 teoretických a 2 výpočetní (řádové) úlohy.</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-blue-600 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold py-2 px-3 rounded-lg border border-blue-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-600 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-blue-700 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-600">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-blue-600">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+
+        // ======== POMOCNÉ FUNKCE ========
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ======== TEORETICKÉ OTÁZKY ========
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Dvě stejně velké nádoby obsahují stejný plyn, jedna při vyšší teplotě než druhá. Ve které z nich je tlak plynu větší a proč?", a: "V teplejší nádobě, protože částice se pohybují rychleji a častěji i silněji narážejí na stěny.", o: ["V teplejší nádobě, protože částice se pohybují rychleji a častěji i silněji narážejí na stěny.", "V chladnější nádobě, protože částice jsou blíž u sebe.", "Tlak je v obou nádobách stejný, teplota na něj nemá vliv.", "V teplejší nádobě, protože se zvětšil počet částic."], h: "Vzpomeň si, čím je tlak plynu způsoben na mikroskopické úrovni.", e: "Vyšší teplota znamená vyšší kinetickou energii částic – pohybují se rychleji, čímž častěji a silněji narážejí na stěny nádoby, což se projeví jako vyšší tlak." }, fr: { q: "Deux récipients de même volume contiennent le même gaz, l'un à une température plus élevée que l'autre. Dans lequel la pression est-elle plus grande, et pourquoi ?", a: "Dans le récipient le plus chaud, car les particules se déplacent plus vite et frappent les parois plus souvent et plus fort.", o: ["Dans le récipient le plus chaud, car les particules se déplacent plus vite et frappent les parois plus souvent et plus fort.", "Dans le récipient le plus froid, car les particules sont plus proches les unes des autres.", "La pression est identique dans les deux récipients, la température n'a pas d'effet.", "Dans le récipient le plus chaud, car le nombre de particules a augmenté."], h: "Rappelle-toi de ce qui cause la pression d'un gaz au niveau microscopique.", e: "Une température plus élevée signifie une énergie cinétique plus grande des particules : elles se déplacent plus vite et frappent donc les parois plus souvent et plus fort, ce qui se traduit par une pression plus élevée." } },
+            { id: 't2', type: 'concept', cs: { q: "Jak souvisí teplota s rychlostí difúze?", a: "Se zvyšující se teplotou se difúze zrychluje", o: ["Se zvyšující se teplotou se difúze zrychluje", "Se zvyšující se teplotou se difúze zpomaluje", "Teplota rychlost difúze neovlivňuje", "Difúze probíhá jen při 0 °C"], h: "Teplota souvisí s kinetickou energií částic.", e: "Vyšší teplota znamená větší kinetickou energii (a tedy rychlejší pohyb) částic, difúze proto probíhá rychleji." }, fr: { q: "Quel est le lien entre la température et la vitesse de diffusion ?", a: "Plus la température augmente, plus la diffusion est rapide", o: ["Plus la température augmente, plus la diffusion est rapide", "Plus la température augmente, plus la diffusion est lente", "La température n'a aucune influence", "La diffusion n'a lieu qu'à 0 °C"], h: "La température est liée à l'énergie cinétique des particules.", e: "Une température plus élevée signifie une plus grande énergie cinétique des particules, donc une diffusion plus rapide." } },
+            { id: 't3', type: 'concept', cs: { q: "Co podle kinetické teorie způsobuje tlak plynu?", a: "Srážky molekul se stěnami nádoby", o: ["Srážky molekul se stěnami nádoby", "Přitažlivé síly mezi molekulami", "Celková hmotnost molekul", "Barva plynu"], h: "Mysli na neustálý neuspořádaný pohyb částic.", e: "Tlak plynu vzniká srážkami molekul v tepelném pohybu se stěnami nádoby." }, fr: { q: "Selon la théorie cinétique, qu'est-ce qui cause la pression d'un gaz ?", a: "Les chocs des molécules contre les parois du récipient", o: ["Les chocs des molécules contre les parois du récipient", "Les forces attractives entre les molécules", "La masse totale des molécules", "La couleur du gaz"], h: "Pense au mouvement perpétuel et désordonné des particules.", e: "La pression d'un gaz résulte des chocs des molécules en agitation thermique contre les parois du récipient." } },
+            { id: 't4', type: 'concept', cs: { q: "Jaká síla převažuje mezi částicemi při velmi malé vzájemné vzdálenosti?", a: "Odpudivá síla", o: ["Odpudivá síla", "Přitažlivá síla", "Síla je vždy nulová", "Gravitační síla"], h: "Podívej se na graf závislosti síly na vzdálenosti – co se děje blízko počátku?", e: "Při malých vzdálenostech převažuje odpudivá síla mezi elektronovými obaly atomů." }, fr: { q: "Quelle force domine entre les particules à très faible distance ?", a: "La force répulsive", o: ["La force répulsive", "La force attractive", "La force est toujours nulle", "La force gravitationnelle"], h: "Regarde le graphique de la force en fonction de la distance – que se passe-t-il près de l'origine ?", e: "À faible distance, la force répulsive entre les nuages électroniques des atomes domine." } },
+            { id: 't5', type: 'concept', cs: { q: "Jaký je vztah mezi potenciální (Ep) a kinetickou (Ek) energií částic v plynné látce?", a: "Ep ≪ Ek", o: ["Ep ≪ Ek", "Ep ≫ Ek", "Ep ≈ Ek", "Ep = 0 a Ek = 0"], h: "Jak daleko jsou od sebe částice plynu ve srovnání s pevnou látkou?", e: "V plynu jsou střední vzdálenosti částic mnohem větší než jejich rozměry, takže přitažlivé síly (a tedy Ep) jsou zanedbatelné, zatímco neuspořádaný pohyb (Ek) je intenzivní." }, fr: { q: "Quel est le rapport entre l'énergie potentielle (Ep) et l'énergie cinétique (Ek) des particules d'une substance gazeuse ?", a: "Ep ≪ Ek", o: ["Ep ≪ Ek", "Ep ≫ Ek", "Ep ≈ Ek", "Ep = 0 et Ek = 0"], h: "À quelle distance les particules d'un gaz se trouvent-elles les unes des autres, comparé à un solide ?", e: "Dans un gaz, les distances moyennes entre particules sont bien plus grandes que leurs dimensions : les forces attractives (donc Ep) sont négligeables, tandis que le mouvement désordonné (Ek) est intense." } },
+            { id: 't6', type: 'concept', cs: { q: "Jaké zařízení umožňuje pozorovat jednotlivé atomy na povrchu látky?", a: "Řádkovací tunelový mikroskop (STM)", o: ["Řádkovací tunelový mikroskop (STM)", "Běžný optický mikroskop", "Lupa", "Pouhé oko"], h: "Zařízení využívá kvantový tunelový jev, nikoli viditelné světlo.", e: "Atomy jsou natolik malé, že je nelze zobrazit opticky – k jejich pozorování slouží řádkovací tunelový mikroskop (STM) založený na tunelovém jevu." }, fr: { q: "Quel appareil permet d'observer des atomes individuels à la surface d'une substance ?", a: "Le microscope à effet tunnel (STM)", o: ["Le microscope à effet tunnel (STM)", "Un microscope optique ordinaire", "Une loupe", "L'œil nu"], h: "L'appareil exploite l'effet tunnel quantique, pas la lumière visible.", e: "Les atomes sont si petits qu'ils ne peuvent être visualisés optiquement – on utilise pour cela un microscope à effet tunnel (STM), fondé sur l'effet tunnel quantique." } },
+            { id: 't7', type: 'concept', cs: { q: "Jak se nazývá přitažlivá síla působící mezi částicemi jednoho a téhož tělesa?", a: "Koheze", o: ["Koheze", "Adheze", "Difúze", "Vazebná energie"], h: "Jde o sílu, díky které drží pohromadě např. kapka vody.", e: "Koheze je přitažlivá síla mezi částicemi jednoho tělesa; adheze je naproti tomu přitažlivá síla mezi dvěma různými tělesy v kontaktu." }, fr: { q: "Comment appelle-t-on la force attractive entre les particules d'un même corps ?", a: "La cohésion", o: ["La cohésion", "L'adhésion", "La diffusion", "L'énergie de liaison"], h: "C'est la force qui maintient par exemple une goutte d'eau unie.", e: "La cohésion est la force attractive entre les particules d'un même corps ; l'adhésion, elle, est la force attractive entre deux corps différents en contact." } },
+            { id: 't8', type: 'concept', cs: { q: "Co je rovnovážný stav termodynamické soustavy?", a: "Stav soustavy, který zůstává v čase neměnný", o: ["Stav soustavy, který zůstává v čase neměnný", "Stav, kdy se všechny částice zastaví", "Stav, kdy soustava nemá žádnou teplotu", "Stav, který nastává jen při 0 K"], h: "Mysli na to, co se stane se soustavou v neměnných vnějších podmínkách.", e: "Rovnovážný stav je stav soustavy, který zůstává v čase neměnný – každá soustava v neměnných vnějších podmínkách do něj samovolně přechází." }, fr: { q: "Qu'est-ce que l'état d'équilibre d'un système thermodynamique ?", a: "Un état du système qui demeure constant dans le temps", o: ["Un état du système qui demeure constant dans le temps", "Un état où toutes les particules s'arrêtent", "Un état où le système n'a aucune température", "Un état qui n'existe qu'à 0 K"], h: "Pense à ce qui arrive à un système placé dans des conditions extérieures invariables.", e: "L'état d'équilibre est un état du système qui demeure constant dans le temps ; tout système placé dans des conditions extérieures invariables y évolue spontanément." } }
+        ];
+
+        // ======== VÝPOČETNÍ (ŘÁDOVÉ) ÚLOHY ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Rozměr útvaru je {n} Å. Kolik femtometrů (fm) to přibližně je? (1 Å = 100 000 fm)", h: "Vynásob počet angströmů převodním faktorem 100 000.", e: "{n} Å × 100 000 = {res} fm." },
+                fr: { q: "Une structure mesure {n} Å. Combien de femtomètres (fm) cela représente-t-il environ ? (1 Å = 100 000 fm)", h: "Multiplie le nombre d'ångströms par le facteur de conversion 100 000.", e: "{n} Å × 100 000 = {res} fm." },
+                params: () => ({ n: randInt(1, 9) }),
+                solve: (p) => { const res = p.n * 100000; return { res, unit: 'fm', correct: fmt(res) + ' fm' }; } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Rozměr útvaru je {n2} fm. Kolik je to angströmů (Å)? (1 Å = 100 000 fm)", h: "Vyděl počet femtometrů faktorem 100 000.", e: "{n2} fm ÷ 100 000 = {res} Å." },
+                fr: { q: "Une structure mesure {n2} fm. Combien d'ångströms (Å) cela représente-t-il ? (1 Å = 100 000 fm)", h: "Divise le nombre de femtomètres par le facteur de conversion 100 000.", e: "{n2} fm ÷ 100 000 = {res} Å." },
+                params: () => { const n = randInt(1, 9); return { n2: n * 100000 }; },
+                solve: (p) => { const res = p.n2 / 100000; return { res, unit: 'Å', correct: fmt(res) + ' Å' }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Kolik atomů o průměru 2 Å se přibližně vejde vedle sebe do úsečky dlouhé {n} nm? (1 nm = 10 Å)", h: "Nejprve převeď nm na Å, pak vyděl průměrem jednoho atomu.", e: "{n} nm = {n}·10 Å; {n}·10 Å ÷ 2 Å = {res} atomů." },
+                fr: { q: "Combien d'atomes de diamètre 2 Å tiennent environ côte à côte sur une longueur de {n} nm ? (1 nm = 10 Å)", h: "Convertis d'abord les nm en Å, puis divise par le diamètre d'un atome.", e: "{n} nm = {n}·10 Å ; {n}·10 Å ÷ 2 Å = {res} atomes." },
+                params: () => ({ n: randInt(1, 10) * 2 }),
+                solve: (p) => { const res = (p.n * 10) / 2; return { res, unit: '', correct: fmt(res) }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<8; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<2; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(sol[k] !== undefined ? sol[k] : p[k]));
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    obj.o = [sol.correct, mk(val*10), mk(val/10), mk(val*2)];
+                };
+                inject(q); inject(tr);
+            }
+
+            // Zamícháme pořadí nabízených odpovědí (nové zamíchání při každém spuštění testu)
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').textContent = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-blue-600" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-blue-300 font-medium fade-in";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').textContent = data.h;
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.textContent = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').textContent = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            // Spočítáme statistiky podle typu otázky
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            // Vyhodnocení celkového skóre
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Kinetická teorie ti jde a francouzština ti nedělá potíže.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji se vrátit k učivu a procvičit si klíčové pojmy.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat. Zaměř se na pochopení tří základních poznatků a modelů skupenství.";
+                overallIcon = "🔍";
+            }
+
+            // Silné a slabé stránky
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš principům kinetické teorie látek.");
+            else weaknesses.push("Teorie ti dělá potíže – zkus si znovu projít tři poznatky a jejich důkazy (Brownův pohyb, difúzi, tlak plynu).");
+            if (mathPercent >= 70) strengths.push("Řádové převody ti jdou – umíš správně pracovat s mocninami deseti.");
+            else weaknesses.push("V řádových převodech (Å, fm) chybuješ – procvič si práci s mocninami deseti.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy a jednotky.");
+
+            // Doporučení
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování teorie a řádových vztahů mezi jednotkami délky.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitoly o teplotní roztažnosti.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a interaktivní přehled k zapamatování klíčových pojmů.");
+
+            // Francouzština
+            let frenchMsg, frenchIcon;
+            const frenchQuestions = sessionQuestions.filter(q => q.lang === 'fr').length; // mělo by být 5
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            // Sestavení karet
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z 5 francouzských otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            // Vložíme do DOM
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

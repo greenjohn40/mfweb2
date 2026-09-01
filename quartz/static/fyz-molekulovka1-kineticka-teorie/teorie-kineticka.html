@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinetická teorie látek / Théorie cinétique de la matière</title>
+<script src="https://cdn.tailwindcss.com/"></script>
+<style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #cbd5e1; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #2563eb; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #dc2626; }
+    @media (max-width: 640px) {
+        .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; }
+    }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .principle-card { transition: transform .2s, box-shadow .2s; }
+    .principle-card:hover { transform: translateY(-4px); box-shadow: 0 10px 25px -5px rgba(0,0,0,.15); }
+    .badge { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.05em; padding:2px 10px; border-radius:9999px; }
+    .video-btn {
+        display:inline-flex; align-items:center; gap:8px; background:#dc2626; color:white;
+        font-weight:600; font-size:.85rem; padding:8px 16px; border-radius:9999px;
+        text-decoration:none; transition:background .2s;
+    }
+    .video-btn:hover { background:#b91c1c; }
+    .photo-cap { font-size:.8rem; color:#64748b; margin-top:.4rem; text-align:center; }
+    figure.photo { margin:0; }
+    figure.photo img { border-radius:.75rem; border:1px solid #e2e8f0; width:100%; object-fit:cover; background:#0f172a; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-blue-200 text-sm font-semibold tracking-wider uppercase">
+            <span>⚛️ Molekulová fyzika a termika</span><span>•</span><span>Část 1.1</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Kinetická teorie látek</h1>
+        <p class="text-lg md:text-xl text-blue-50 max-w-3xl leading-relaxed">
+            Tři základní poznatky o částicové stavbě látek – a experimentální i pozorovací důkazy, které jejich platnost potvrzují.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('cz-principy')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">Tři principy</span>
+        <span onclick="scrollToId('cz-castice')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">1. Částice</span>
+        <span onclick="scrollToId('cz-pohyb')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">2. Pohyb částic</span>
+        <span onclick="scrollToId('cz-sily')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">3. Síly</span>
+        <span onclick="scrollToId('cz-modely')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">Modely skupenství</span>
+        <span onclick="scrollToId('cz-rovnovaha')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">Rovnovážný stav</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- TŘI PRINCIPY -->
+    <section id="cz-principy" class="scroll-mt-24">
+        <h2 class="text-2xl font-bold mb-2 text-blue-900">Kinetická teorie látek – tři základní poznatky</h2>
+        <p class="text-slate-500 mb-6">Celá teorie stojí na třech pilířích. Na nich je postavena veškerá další fyzika látek, kterou v tomto modulu probereme.</p>
+        <div class="grid md:grid-cols-3 gap-5">
+            <div class="principle-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="text-3xl mb-3">🔵</div>
+                <h3 class="font-bold text-lg mb-2">1. Částicová stavba</h3>
+                <p class="text-slate-600 text-sm">Látky v libovolném skupenství jsou složeny z částic.</p>
+            </div>
+            <div class="principle-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="text-3xl mb-3">🌀</div>
+                <h3 class="font-bold text-lg mb-2">2. Neuspořádaný pohyb</h3>
+                <p class="text-slate-600 text-sm">Částice látek jsou v neustálém neuspořádaném (chaotickém) pohybu, ve všech směrech.</p>
+            </div>
+            <div class="principle-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="text-3xl mb-3">🧲</div>
+                <h3 class="font-bold text-lg mb-2">3. Vzájemné síly</h3>
+                <p class="text-slate-600 text-sm">Částice na sebe navzájem působí silami, které jsou při malých vzdálenostech odpudivé a při větších vzdálenostech přitažlivé.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1. ČÁSTICE -->
+    <section id="cz-castice" class="scroll-mt-24">
+        <span class="badge bg-blue-100 text-blue-800">POZNATEK 1</span>
+        <h2 class="text-3xl font-bold mt-2 mb-8 text-slate-900">Látky jsou složeny z částic</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-6"><strong>Částice</strong> – atomy, molekuly, ionty, subatomární částice (protony, neutrony, elektrony).</p>
+            <div class="grid md:grid-cols-2 gap-6 items-start">
+                <figure class="photo">
+                    <img src="images/rutherford.png" alt="Rutherfordův model atomu">
+                    <figcaption class="photo-cap">Rutherfordův model atomu: elektrony (zeleně) a jádro (červeně)</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/molecule_crystal.png" alt="Modely molekuly a krystalu" class="!bg-white">
+                    <figcaption class="photo-cap">Model kompaktní a model rozložený: molekula a krystal</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-6"><strong>Struktura látek je nespojitá (diskrétní)</strong> – objem není vyplněn beze zbytku.</p>
+            <figure class="photo max-w-xl mx-auto">
+                <img src="images/hydrogen_ion.png" alt="Atom vodíku, kationt a aniont" class="!bg-white">
+                <figcaption class="photo-cap">Atom vodíku (uprostřed) je tvořen jedním protonem a jedním elektronem. Ztrátou elektronu vzniká kationt (vlevo), ziskem elektronu vzniká aniont (vpravo).</figcaption>
+            </figure>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-6">Částice <strong>nelze pozorovat pouhým okem</strong>, lupou ani optickým mikroskopem. Lze je zobrazit pouze pomocí <strong>řádkovacího tunelového mikroskopu (STM)</strong>.</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <figure class="photo">
+                    <img src="images/stm_silicon.png" alt="STM snímek atomů křemíku">
+                    <figcaption class="photo-cap">Atomy křemíku na povrchu krystalu karbidu křemíku (SiC). Snímek pořízený pomocí STM.</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/tunnel_effect.png" alt="Tunelový jev">
+                    <figcaption class="photo-cap"><strong>TUNELOVÝ JEV</strong> – Pozorujme kov tvořený atomy a kvantovými elektrony. Přiblížíme-li velmi tenký, elektricky nabitý hrot, může tunelovým jevem vytrhnout elektrony z kovu.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-lg text-slate-700 mb-6">Rozměry atomů jsou přibližně <strong>10⁻¹⁰ m</strong> v průměru.</p>
+            <figure class="photo max-w-md mx-auto">
+                <img src="images/atom_zoom.png" alt="Přiblížení atomu a jádra">
+                <figcaption class="photo-cap">Vlevo: atom (řádově 1 Å = 10⁻¹⁰ m), vpravo: přiblížení jádra (řádově 1 fm = 10⁻¹⁵ m).</figcaption>
+            </figure>
+            <p class="font-mono bg-slate-100 px-4 py-1 rounded mt-4 text-sm text-center w-fit mx-auto">1 Å = 100 000 fm</p>
+        </div>
+    </section>
+
+    <!-- 2. POHYB ČÁSTIC -->
+    <section id="cz-pohyb" class="scroll-mt-24">
+        <span class="badge bg-emerald-100 text-emerald-800">POZNATEK 2</span>
+        <h2 class="text-3xl font-bold mt-2 mb-8 text-slate-900">Částice jsou v neustálém neuspořádaném pohybu</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4 text-emerald-800">Brownův pohyb</h3>
+            <div class="grid md:grid-cols-[140px_1fr] gap-6 items-start mb-6">
+                <figure class="photo">
+                    <img src="images/robert_brown.png" alt="Robert Brown">
+                    <figcaption class="photo-cap">Robert Brown (1773–1858)</figcaption>
+                </figure>
+                <div>
+                    <p class="text-slate-700 mb-2">(nazvaný podle <strong>skotského botanika Roberta Browna</strong>, který jej objevil v roce <strong>1827</strong>)</p>
+                    <p class="text-slate-700">= mikroskopický pohyb nepatrných částic (pylová zrnka ve vodě, kapičky mléka rozptýlené ve vodě…), které opisují klikaté trajektorie, zatímco voda samotná se jeví jako nehybná.</p>
+                </div>
+            </div>
+            <p class="text-slate-700 mb-4">Brownův pohyb se vysvětluje <strong>srážkami mezi nepatrnou částicí a molekulami dané látky</strong> (např. vody).</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <figure class="photo">
+                    <img src="images/brownian_trajectory.png" alt="Trajektorie částice">
+                    <figcaption class="photo-cap">Trajektorie částice (zrnka)</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/brownian_microscope.png" alt="Brownův pohyb pod mikroskopem">
+                    <figcaption class="photo-cap">Brownův pohyb pozorovaný optickým mikroskopem</figcaption>
+                </figure>
+            </div>
+            <div class="text-center mt-5">
+                <a class="video-btn" href="https://www.youtube.com/watch?v=gPMVaAnij88" target="_blank" rel="noopener">▶ Sledovat video – Brownův pohyb pod mikroskopem</a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4 text-emerald-800">Difúze</h3>
+            <p class="text-slate-700 mb-6">= samovolné pronikání částic jedné látky mezi částice látky jiné, jsou-li tyto látky ve vzájemném kontaktu.</p>
+            <figure class="photo max-w-xl mx-auto mb-4">
+                <img src="images/diffusion_stages.png" alt="Fáze difúze">
+                <figcaption class="photo-cap">1) látky odděleny 2) probíhá difúze 3) látky promísené</figcaption>
+            </figure>
+            <div class="text-center mb-6">
+                <a class="video-btn" href="https://www.youtube.com/watch?v=BHZZyDMeu1M" target="_blank" rel="noopener">▶ Sledovat video – difúze manganistanu draselného ve vodě</a>
+            </div>
+            <p class="text-slate-700 mb-2">Difúze probíhá <strong>velmi rychle v plynech</strong>, pomaleji v kapalinách a <strong>velmi pomalu v pevných látkách</strong>.</p>
+            <p class="text-slate-700 mb-6">Při <strong>vyšší teplotě</strong> probíhá difúze <strong>rychleji</strong>.</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <figure class="photo">
+                    <img src="images/diffusion_beads.png" alt="Difúze v mřížce">
+                    <figcaption class="photo-cap">Difúze menších částic mezi částicemi mřížky</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/diffusion_gasbox.png" alt="Vyrovnávání koncentrace plynu">
+                    <figcaption class="photo-cap">Vyrovnávání koncentrace plynu difúzí</figcaption>
+                </figure>
+            </div>
+            <div class="text-center mt-5">
+                <a class="video-btn" href="https://www.youtube.com/watch?v=IgbR-K1ff-w" target="_blank" rel="noopener">▶ Sledovat video – vliv teploty na rychlost difúze</a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="text-xl font-bold mb-4 text-emerald-800">Tlak plynů</h3>
+            <p class="text-slate-700 mb-6">je důsledkem <strong>srážek molekul v tepelném pohybu se stěnami nádoby</strong>.</p>
+            <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                <figure class="photo">
+                    <img src="images/gas_pressure_dots.png" alt="Molekuly plynu v nádobě" class="!bg-white">
+                    <figcaption class="photo-cap">Molekuly plynu v neustálém pohybu</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/gas_pressure_arrows.png" alt="Síly působící na stěny nádoby">
+                    <figcaption class="photo-cap">Síly od nárazů molekul na stěny nádoby</figcaption>
+                </figure>
+            </div>
+            <div class="text-center mt-5">
+                <a class="video-btn" href="https://www.youtube.com/watch?v=Qsa4aAdpHfY" target="_blank" rel="noopener">▶ Sledovat video – kinetická teorie a tlak plynu</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. SÍLY -->
+    <section id="cz-sily" class="scroll-mt-24">
+        <div class="bg-slate-100 border border-slate-200 rounded-2xl p-5 mb-8 text-sm text-slate-600">
+            <strong>Připomenutí tří poznatků kinetické teorie:</strong> 1) látky jsou složeny z částic • 2) částice jsou v neustálém neuspořádaném pohybu • 3) částice na sebe navzájem působí silami (odpudivými nablízko, přitažlivými na dálku).
+        </div>
+        <span class="badge bg-purple-100 text-purple-800">POZNATEK 3</span>
+        <h2 class="text-3xl font-bold mt-2 mb-8 text-slate-900">Částice na sebe působí silami</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4 text-purple-800">Vzájemné působení částic</h3>
+            <p class="text-slate-700 mb-3">Interakce mezi dvěma atomy je výsledkem přitažlivých a odpudivých sil mezi jejich <strong>jádry</strong> (elektricky kladnými) a <strong>elektronovými obaly</strong> (elektricky zápornými).</p>
+            <p class="text-slate-700">Výsledná síla může být přitažlivá nebo odpudivá – <strong>v závislosti na vzdálenosti mezi částicemi</strong>.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold mb-3 text-purple-800">Přitažlivé síly mezi molekulami</h3>
+                <ul class="list-disc ml-5 space-y-2 text-slate-700 text-sm mb-4">
+                    <li><strong>koheze</strong> – mezi částicemi jednoho tělesa</li>
+                    <li><strong>adheze</strong> – mezi dvěma tělesy v kontaktu</li>
+                    <li><strong>(mechanická) pevnost</strong> látek</li>
+                </ul>
+                <div class="grid grid-cols-2 gap-3">
+                    <figure class="photo"><img src="images/cohesion_droplet.png" alt="Koheze - kapka vody"><figcaption class="photo-cap">koheze</figcaption></figure>
+                    <figure class="photo"><img src="images/adhesion_plates.png" alt="Adheze - skleněné destičky"><figcaption class="photo-cap">adheze</figcaption></figure>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold mb-3 text-purple-800">Odpudivé síly mezi molekulami</h3>
+                <ul class="list-disc ml-5 space-y-2 text-slate-700 text-sm mb-4">
+                    <li>velmi <strong>malá stlačitelnost</strong> kapalin a pevných látek</li>
+                    <li>změna směru pohybu <strong>při srážce</strong> dvou těles</li>
+                </ul>
+                <figure class="photo">
+                    <img src="images/reflection_diagram.png" alt="Odraz částice od povrchu" class="!bg-white">
+                    <figcaption class="photo-cap">odraz částice od povrchu – úhel dopadu α, úhel odrazu β, kolmice povrchu</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4 text-purple-800">Závislost síly mezi dvěma částicemi na jejich vzdálenosti</h3>
+            <figure class="photo max-w-2xl mx-auto">
+                <img src="images/force_graph_fr.png" alt="Graf závislosti síly na vzdálenosti" class="!bg-white">
+                <figcaption class="photo-cap">Originální graf z prezentace (popisky francouzsky) – překlad viz legenda níže</figcaption>
+            </figure>
+            <div class="grid sm:grid-cols-2 gap-3 mt-6 text-sm max-w-2xl mx-auto">
+                <div class="flex items-start gap-2"><span class="font-bold text-red-600">①</span> <span><em>"la force est répulsive"</em> → síla je odpudivá (malé r)</span></div>
+                <div class="flex items-start gap-2"><span class="font-bold text-slate-600">②</span> <span><em>"position d'équilibre"</em> → rovnovážná poloha (F = 0, r ≈ 300)</span></div>
+                <div class="flex items-start gap-2"><span class="font-bold text-blue-600">③</span> <span><em>"la force est attractive"</em> → síla je přitažlivá</span></div>
+                <div class="flex items-start gap-2"><span class="font-bold text-green-600">④</span> <span><em>"à cette distance, la force attractive est maximale"</em> → zde je přitažlivá síla maximální (r ≈ 600)</span></div>
+                <div class="flex items-start gap-2 sm:col-span-2"><span class="font-bold text-slate-400">⑤</span> <span><em>"pour les distances assez grandes, la force est pratiquement nulle"</em> → pro dostatečně velké vzdálenosti je síla prakticky nulová</span></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-3">Síly mezi atomy v molekulách se nazývají <strong>vazebné síly</strong> a určují strukturu molekul.</p>
+            <p class="text-slate-700 mb-3">Existence vzájemného působení mezi částicemi ukazuje, že soustava má <strong>potenciální energii</strong>.</p>
+            <p class="text-slate-700">Tato energie se nazývá <strong>vazebná energie</strong> a je rovna práci, kterou je třeba vykonat vnějšími silami k rozštěpení (přerušení) dané vazby.</p>
+        </div>
+    </section>
+
+    <!-- MODELY SKUPENSTVÍ -->
+    <section id="cz-modely" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-8 text-slate-900">Modely struktury látek</h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">Plynná látka</h3>
+                <ul class="list-disc ml-5 space-y-1 text-slate-700 text-sm mb-4">
+                    <li>střední vzdálenosti mezi částicemi jsou mnohem větší než jejich rozměry ⇒ přitažlivé síly jsou zanedbatelné (kromě velmi krátkých srážek) ⇒ potenciální energie je <strong>malá</strong></li>
+                    <li>neuspořádaný pohyb je velmi intenzivní ⇒ kinetická energie je <strong>velká</strong></li>
+                </ul>
+                <div class="grid grid-cols-2 gap-3">
+                    <figure class="photo"><img src="images/gas_balloon_flame.png" alt="Plamen v balonu"></figure>
+                    <figure class="photo"><img src="images/gas_particles_box.png" alt="Rozptýlené částice plynu"></figure>
+                </div>
+                <p class="text-center font-mono bg-orange-100 text-orange-800 rounded mt-3 py-1 font-bold">E<sub>P</sub> ≪ E<sub>K</sub></p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">Pevná látka</h3>
+                <ul class="list-disc ml-5 space-y-1 text-slate-700 text-sm mb-4">
+                    <li>vnitřní struktura je <strong>pravidelná</strong> (látky krystalické) nebo <strong>nepravidelná</strong> (látky amorfní)</li>
+                    <li>střední vzdálenosti částic jsou <strong>0,2–0,3 nm</strong></li>
+                    <li>částice jsou v látce vázány na pevná místa ⇒ síly mezi částicemi jsou velké ⇒ potenciální energie je <strong>velká</strong></li>
+                    <li>pohyb částic je malý (kmitání kolem rovnovážných poloh) ⇒ kinetická energie je <strong>malá</strong></li>
+                </ul>
+                <div class="grid grid-cols-2 gap-3">
+                    <figure class="photo"><img src="images/crystal_amorphous.png" alt="Krystalická a amorfní struktura" class="!bg-white"></figure>
+                    <figure class="photo"><img src="images/snowflake.png" alt="Sněhová vločka"></figure>
+                </div>
+                <p class="text-center font-mono bg-orange-100 text-orange-800 rounded mt-3 py-1 font-bold">E<sub>P</sub> ≫ E<sub>K</sub></p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">Kapalná látka</h3>
+                <ul class="list-disc ml-5 space-y-1 text-slate-700 text-sm mb-4">
+                    <li>střední vzdálenosti mezi částicemi jsou přibližně <strong>0,2 nm</strong></li>
+                    <li>síly mezi částicemi jsou slabé ⇒ rovnovážné polohy se s časem mění</li>
+                    <li>potenciální energie je srovnatelná s celkovou kinetickou energií soustavy částic</li>
+                </ul>
+                <div class="grid grid-cols-2 gap-3">
+                    <figure class="photo"><img src="images/liquid_pour.png" alt="Nalévání vody"></figure>
+                    <figure class="photo"><img src="images/liquid_particles.png" alt="Částice kapaliny" class="!bg-white"></figure>
+                </div>
+                <p class="text-center font-mono bg-orange-100 text-orange-800 rounded mt-3 py-1 font-bold">E<sub>P</sub> ≈ E<sub>K</sub></p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">Plazma</h3>
+                <ul class="list-disc ml-5 space-y-1 text-slate-700 text-sm mb-4">
+                    <li>„<strong>čtvrté skupenství látky</strong>“</li>
+                    <li>soustava elektricky nabitých částic (iontů, elektronů) a neutrálních částic</li>
+                    <li>např. plamen, blesk, elektrické výboje v plynech, plazma hvězd nebo mezihvězdného prostoru</li>
+                </ul>
+                <div class="grid grid-cols-5 gap-1">
+                    <figure class="photo"><img src="images/plasma_flame.png" alt="Plamen"></figure>
+                    <figure class="photo"><img src="images/plasma_lightning.png" alt="Blesk"></figure>
+                    <figure class="photo"><img src="images/plasma_tesla.png" alt="Elektrický výboj"></figure>
+                    <figure class="photo"><img src="images/plasma_sun.png" alt="Slunce"></figure>
+                    <figure class="photo"><img src="images/plasma_galaxy.png" alt="Galaxie"></figure>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ROVNOVÁŽNÝ STAV -->
+    <section id="cz-rovnovaha" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-8 text-slate-900">Rovnovážný stav soustavy</h2>
+        <div class="grid sm:grid-cols-2 gap-5">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-2">Termodynamická soustava</h3>
+                <p class="text-slate-700 text-sm">Soubor těles (objektů), jejichž stav zkoumáme.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-2">Stavové veličiny</h3>
+                <p class="text-slate-700 text-sm">Fyzikální veličiny popisující stav soustavy (teplota, objem, tlak, hustota, počet molekul…).</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:col-span-2">
+                <h3 class="font-bold text-blue-800 mb-2">Rovnovážný stav</h3>
+                <p class="text-slate-700 text-sm mb-3">Stav, který zůstává v čase neměnný.</p>
+                <p class="text-slate-700 text-sm">Každá soustava, která se nachází v neměnných vnějších podmínkách, samovolně přechází do rovnovážného stavu.</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Výukový modul Fyzika · Kinetická teorie látek · zpracováno podle podkladu „Physique moléculaire et thermique 1–1“</p>
+</footer>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-blue-900 to-indigo-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-blue-200 text-sm font-semibold tracking-wider uppercase">
+            <span>⚛️ Physique moléculaire et thermique</span><span>•</span><span>Partie 1.1</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Théorie cinétique de la matière</h1>
+        <p class="text-lg md:text-xl text-blue-50 max-w-3xl leading-relaxed">
+            Les trois postulats fondamentaux sur la structure particulaire de la matière — et les preuves expérimentales et observationnelles de leur validité.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('fr-principes')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">Trois postulats</span>
+        <span onclick="scrollToId('fr-particules')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">1. Particules</span>
+        <span onclick="scrollToId('fr-mouvement')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">2. Mouvement</span>
+        <span onclick="scrollToId('fr-forces')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">3. Forces</span>
+        <span onclick="scrollToId('fr-modeles')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">Modèles des états</span>
+        <span onclick="scrollToId('fr-equilibre')" class="nav-pill hover:text-blue-600 px-3 py-1 rounded-full hover:bg-blue-50">État d'équilibre</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- TROIS POSTULATS -->
+    <section id="fr-principes" class="scroll-mt-24">
+        <h2 class="text-2xl font-bold mb-2 text-blue-900">Théorie cinétique de la matière — trois postulats fondamentaux</h2>
+        <p class="text-slate-500 mb-6">Toute la théorie repose sur trois piliers. C'est sur eux que reposera toute la physique de la matière abordée dans ce module.</p>
+        <div class="grid md:grid-cols-3 gap-5">
+            <div class="principle-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="text-3xl mb-3">🔵</div>
+                <h3 class="font-bold text-lg mb-2">1. Structure particulaire</h3>
+                <p class="text-slate-600 text-sm">Les substances, quel que soit leur état, sont constituées de particules.</p>
+            </div>
+            <div class="principle-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="text-3xl mb-3">🌀</div>
+                <h3 class="font-bold text-lg mb-2">2. Mouvement désordonné</h3>
+                <p class="text-slate-600 text-sm">Les particules des substances sont animées d'un mouvement perpétuel désordonné (chaotique), dans toutes les directions.</p>
+            </div>
+            <div class="principle-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <div class="text-3xl mb-3">🧲</div>
+                <h3 class="font-bold text-lg mb-2">3. Forces mutuelles</h3>
+                <p class="text-slate-600 text-sm">Les particules exercent les unes sur les autres des forces, répulsives à faible distance et attractives à plus grande distance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1. PARTICULES -->
+    <section id="fr-particules" class="scroll-mt-24">
+        <span class="badge bg-blue-100 text-blue-800">POSTULAT 1</span>
+        <h2 class="text-3xl font-bold mt-2 mb-8 text-slate-900">Les substances sont constituées de particules</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-6"><strong>Les particules</strong> : les atomes, les molécules, les ions, les particules subatomiques (protons, neutrons, électrons).</p>
+            <div class="grid md:grid-cols-2 gap-6 items-start">
+                <figure class="photo">
+                    <img src="images/rutherford.png" alt="Modèle atomique de Rutherford">
+                    <figcaption class="photo-cap">Modèle atomique de Rutherford : électrons (en vert) et noyau (en rouge)</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/molecule_crystal.png" alt="Modèles de molécule et de cristal" class="!bg-white">
+                    <figcaption class="photo-cap">Modèle compact et modèle éclaté : molécule et cristal</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-6"><strong>La structure des substances est discontinue (discrète)</strong> : le volume n'est pas entièrement occupé par la matière.</p>
+            <figure class="photo max-w-xl mx-auto">
+                <img src="images/hydrogen_ion.png" alt="Atome d'hydrogène, cation et anion" class="!bg-white">
+                <figcaption class="photo-cap">L'atome d'hydrogène (au centre) est constitué d'un proton et d'un électron. La perte de son électron le transforme en cation (à gauche). Le gain d'un électron le transforme en anion (à droite).</figcaption>
+            </figure>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-6">Les particules <strong>ne peuvent être observées ni à l'œil nu</strong>, ni à la loupe, ni au microscope optique. Elles ne peuvent être visualisées qu'à l'aide d'un <strong>microscope à effet tunnel (STM)</strong>.</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <figure class="photo">
+                    <img src="images/stm_silicon.png" alt="Image STM d'atomes de silicium">
+                    <figcaption class="photo-cap">Atomes de silicium à la surface d'un cristal de carbure de silicium (SiC). Image obtenue à l'aide d'un STM.</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/tunnel_effect.png" alt="Effet tunnel">
+                    <figcaption class="photo-cap"><strong>EFFET TUNNEL</strong> — Considérons un métal constitué d'atomes et d'électrons quantiques. En approchant une pointe très fine portée à un potentiel électrique, celle-ci peut arracher des électrons du métal par effet tunnel.</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-lg text-slate-700 mb-6">Les dimensions des atomes sont de l'ordre de <strong>10⁻¹⁰ m</strong> de diamètre.</p>
+            <figure class="photo max-w-md mx-auto">
+                <img src="images/atom_zoom.png" alt="Agrandissement de l'atome et du noyau">
+                <figcaption class="photo-cap">À gauche : l'atome (de l'ordre de 1 Å = 10⁻¹⁰ m), à droite : agrandissement du noyau (de l'ordre de 1 fm = 10⁻¹⁵ m).</figcaption>
+            </figure>
+            <p class="font-mono bg-slate-100 px-4 py-1 rounded mt-4 text-sm text-center w-fit mx-auto">1 Å = 100 000 fm</p>
+        </div>
+    </section>
+
+    <!-- 2. MOUVEMENT -->
+    <section id="fr-mouvement" class="scroll-mt-24">
+        <span class="badge bg-emerald-100 text-emerald-800">POSTULAT 2</span>
+        <h2 class="text-3xl font-bold mt-2 mb-8 text-slate-900">Les particules sont animées d'un mouvement perpétuel désordonné</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4 text-emerald-800">Le mouvement brownien</h3>
+            <div class="grid md:grid-cols-[140px_1fr] gap-6 items-start mb-6">
+                <figure class="photo">
+                    <img src="images/robert_brown.png" alt="Robert Brown">
+                    <figcaption class="photo-cap">Robert Brown (1773–1858)</figcaption>
+                </figure>
+                <div>
+                    <p class="text-slate-700 mb-2">(nommé d'après le <strong>botaniste écossais Robert Brown</strong>, qui l'a découvert en <strong>1827</strong>)</p>
+                    <p class="text-slate-700">= le mouvement microscopique de minuscules objets (grains de pollen dans l'eau, gouttelettes de lait en suspension dans l'eau…) qui décrivent des trajectoires erratiques alors que l'eau paraît elle-même immobile.</p>
+                </div>
+            </div>
+            <p class="text-slate-700 mb-4">Le mouvement brownien s'explique par les <strong>chocs entre le petit objet et les molécules de la substance</strong> (par exemple de l'eau).</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <figure class="photo">
+                    <img src="images/brownian_trajectory.png" alt="Trajectoire d'un grain">
+                    <figcaption class="photo-cap">Trajectoire d'un grain</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/brownian_microscope.png" alt="Mouvement brownien au microscope">
+                    <figcaption class="photo-cap">Le mouvement brownien observé au microscope optique</figcaption>
+                </figure>
+            </div>
+            <div class="text-center mt-5">
+                <a class="video-btn" href="https://www.youtube.com/watch?v=gPMVaAnij88" target="_blank" rel="noopener">▶ Regarder la vidéo — mouvement brownien au microscope</a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4 text-emerald-800">La diffusion</h3>
+            <p class="text-slate-700 mb-6">= la pénétration spontanée des particules d'une substance entre les particules d'une autre substance, lorsque ces substances sont en contact.</p>
+            <figure class="photo max-w-xl mx-auto mb-4">
+                <img src="images/diffusion_stages.png" alt="Étapes de la diffusion">
+                <figcaption class="photo-cap">1) substances séparées 2) diffusion en cours 3) substances mélangées</figcaption>
+            </figure>
+            <div class="text-center mb-6">
+                <a class="video-btn" href="https://www.youtube.com/watch?v=BHZZyDMeu1M" target="_blank" rel="noopener">▶ Regarder la vidéo — diffusion du permanganate de potassium dans l'eau</a>
+            </div>
+            <p class="text-slate-700 mb-2">La diffusion est <strong>très rapide dans les gaz</strong>, plus lente dans les liquides, et <strong>très lente dans les solides</strong>.</p>
+            <p class="text-slate-700 mb-6">À <strong>température plus élevée</strong>, la diffusion est <strong>plus rapide</strong>.</p>
+            <div class="grid md:grid-cols-2 gap-6">
+                <figure class="photo">
+                    <img src="images/diffusion_beads.png" alt="Diffusion dans un réseau">
+                    <figcaption class="photo-cap">Diffusion de petites particules entre les particules d'un réseau</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/diffusion_gasbox.png" alt="Égalisation de la concentration d'un gaz">
+                    <figcaption class="photo-cap">Égalisation de la concentration d'un gaz par diffusion</figcaption>
+                </figure>
+            </div>
+            <div class="text-center mt-5">
+                <a class="video-btn" href="https://www.youtube.com/watch?v=IgbR-K1ff-w" target="_blank" rel="noopener">▶ Regarder la vidéo — effet de la température sur la diffusion</a>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="text-xl font-bold mb-4 text-emerald-800">La pression des gaz</h3>
+            <p class="text-slate-700 mb-6">résulte des <strong>chocs entre les molécules en agitation thermique et les parois du récipient</strong>.</p>
+            <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                <figure class="photo">
+                    <img src="images/gas_pressure_dots.png" alt="Molécules de gaz dans un récipient" class="!bg-white">
+                    <figcaption class="photo-cap">Molécules de gaz en mouvement perpétuel</figcaption>
+                </figure>
+                <figure class="photo">
+                    <img src="images/gas_pressure_arrows.png" alt="Forces sur les parois">
+                    <figcaption class="photo-cap">Forces dues aux chocs des molécules sur les parois</figcaption>
+                </figure>
+            </div>
+            <div class="text-center mt-5">
+                <a class="video-btn" href="https://www.youtube.com/watch?v=Qsa4aAdpHfY" target="_blank" rel="noopener">▶ Regarder la vidéo — théorie cinétique et pression des gaz</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. FORCES -->
+    <section id="fr-forces" class="scroll-mt-24">
+        <div class="bg-slate-100 border border-slate-200 rounded-2xl p-5 mb-8 text-sm text-slate-600">
+            <strong>Rappel des trois postulats de la théorie cinétique :</strong> 1) les substances sont constituées de particules • 2) les particules sont animées d'un mouvement perpétuel désordonné • 3) les particules exercent les unes sur les autres des forces (répulsives à faible distance, attractives à plus grande distance).
+        </div>
+        <span class="badge bg-purple-100 text-purple-800">POSTULAT 3</span>
+        <h2 class="text-3xl font-bold mt-2 mb-8 text-slate-900">Les particules exercent les unes sur les autres des forces</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4 text-purple-800">Les interactions entre particules</h3>
+            <p class="text-slate-700 mb-3">L'interaction entre deux atomes résulte des forces attractives et répulsives entre leurs <strong>noyaux</strong> (électriquement positifs) et leurs <strong>nuages électroniques</strong> (électriquement négatifs).</p>
+            <p class="text-slate-700">La force résultante peut être attractive ou répulsive, <strong>selon la distance séparant les particules</strong>.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold mb-3 text-purple-800">Forces attractives entre molécules</h3>
+                <ul class="list-disc ml-5 space-y-2 text-slate-700 text-sm mb-4">
+                    <li>la <strong>cohésion</strong> — entre les particules d'un même corps</li>
+                    <li>l'<strong>adhésion</strong> — entre deux corps en contact</li>
+                    <li>la <strong>résistance (mécanique)</strong> des substances</li>
+                </ul>
+                <div class="grid grid-cols-2 gap-3">
+                    <figure class="photo"><img src="images/cohesion_droplet.png" alt="Cohésion - goutte d'eau"><figcaption class="photo-cap">cohésion</figcaption></figure>
+                    <figure class="photo"><img src="images/adhesion_plates.png" alt="Adhésion - plaques de verre"><figcaption class="photo-cap">adhésion</figcaption></figure>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold mb-3 text-purple-800">Forces répulsives entre molécules</h3>
+                <ul class="list-disc ml-5 space-y-2 text-slate-700 text-sm mb-4">
+                    <li>la très <strong>faible compressibilité</strong> des liquides et des solides</li>
+                    <li>le changement de direction du mouvement <strong>lors d'un choc</strong> de deux objets</li>
+                </ul>
+                <figure class="photo">
+                    <img src="images/reflection_diagram.png" alt="Rebond d'une particule" class="!bg-white">
+                    <figcaption class="photo-cap">rebond d'une particule sur une surface — angle d'incidence α, angle de réflexion β, normale à la surface</figcaption>
+                </figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="text-xl font-bold mb-4 text-purple-800">Force entre deux particules en fonction de leur distance</h3>
+            <figure class="photo max-w-2xl mx-auto">
+                <img src="images/force_graph_fr.png" alt="Force entre deux particules en fonction de la distance" class="!bg-white">
+                <figcaption class="photo-cap">Graphique original de la présentation</figcaption>
+            </figure>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-3">Les forces entre les atomes d'une molécule sont appelées <strong>forces de liaison</strong> ; elles déterminent la structure des molécules.</p>
+            <p class="text-slate-700 mb-3">L'existence d'interactions entre les particules montre que le système possède une <strong>énergie potentielle</strong>.</p>
+            <p class="text-slate-700">Cette énergie est appelée <strong>énergie de liaison</strong> ; elle est égale au travail que des forces extérieures doivent fournir pour rompre cette liaison.</p>
+        </div>
+    </section>
+
+    <!-- MODÈLES DES ÉTATS -->
+    <section id="fr-modeles" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-8 text-slate-900">Modèles de la structure de la matière</h2>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">Substance gazeuse</h3>
+                <ul class="list-disc ml-5 space-y-1 text-slate-700 text-sm mb-4">
+                    <li>les distances moyennes entre les particules sont bien plus grandes que leurs dimensions ⇒ les forces attractives sont négligeables (sauf lors des chocs, très brefs) ⇒ l'énergie potentielle est <strong>faible</strong></li>
+                    <li>le mouvement désordonné est très intense ⇒ l'énergie cinétique est <strong>grande</strong></li>
+                </ul>
+                <div class="grid grid-cols-2 gap-3">
+                    <figure class="photo"><img src="images/gas_balloon_flame.png" alt="Flamme dans une montgolfière"></figure>
+                    <figure class="photo"><img src="images/gas_particles_box.png" alt="Particules de gaz dispersées"></figure>
+                </div>
+                <p class="text-center font-mono bg-orange-100 text-orange-800 rounded mt-3 py-1 font-bold">E<sub>P</sub> ≪ E<sub>K</sub></p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">Substance solide</h3>
+                <ul class="list-disc ml-5 space-y-1 text-slate-700 text-sm mb-4">
+                    <li>la structure interne est <strong>régulière</strong> (substances cristallines) ou <strong>irrégulière</strong> (substances amorphes)</li>
+                    <li>les distances moyennes entre particules sont de <strong>0,2 à 0,3 nm</strong></li>
+                    <li>les particules occupent des positions fixes ⇒ les forces entre particules sont grandes ⇒ l'énergie potentielle est <strong>grande</strong></li>
+                    <li>le mouvement des particules est faible (vibrations autour de leur position d'équilibre) ⇒ l'énergie cinétique est <strong>faible</strong></li>
+                </ul>
+                <div class="grid grid-cols-2 gap-3">
+                    <figure class="photo"><img src="images/crystal_amorphous.png" alt="Structure cristalline et amorphe" class="!bg-white"></figure>
+                    <figure class="photo"><img src="images/snowflake.png" alt="Flocon de neige"></figure>
+                </div>
+                <p class="text-center font-mono bg-orange-100 text-orange-800 rounded mt-3 py-1 font-bold">E<sub>P</sub> ≫ E<sub>K</sub></p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">Substance liquide</h3>
+                <ul class="list-disc ml-5 space-y-1 text-slate-700 text-sm mb-4">
+                    <li>les distances moyennes entre les particules sont d'environ <strong>0,2 nm</strong></li>
+                    <li>les forces entre particules sont faibles ⇒ les positions d'équilibre varient au cours du temps</li>
+                    <li>l'énergie potentielle est comparable à l'énergie cinétique totale du système de particules</li>
+                </ul>
+                <div class="grid grid-cols-2 gap-3">
+                    <figure class="photo"><img src="images/liquid_pour.png" alt="Eau versée"></figure>
+                    <figure class="photo"><img src="images/liquid_particles.png" alt="Particules du liquide" class="!bg-white"></figure>
+                </div>
+                <p class="text-center font-mono bg-orange-100 text-orange-800 rounded mt-3 py-1 font-bold">E<sub>P</sub> ≈ E<sub>K</sub></p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-blue-800 mb-3">Le plasma</h3>
+                <ul class="list-disc ml-5 space-y-1 text-slate-700 text-sm mb-4">
+                    <li>« <strong>quatrième état de la matière</strong> »</li>
+                    <li>système de particules électriquement chargées (ions, électrons) et de particules neutres</li>
+                    <li>par exemple : une flamme, un éclair, les décharges électriques dans les gaz, le plasma des étoiles ou de l'espace interstellaire</li>
+                </ul>
+                <div class="grid grid-cols-5 gap-1">
+                    <figure class="photo"><img src="images/plasma_flame.png" alt="Flamme"></figure>
+                    <figure class="photo"><img src="images/plasma_lightning.png" alt="Éclair"></figure>
+                    <figure class="photo"><img src="images/plasma_tesla.png" alt="Décharge électrique"></figure>
+                    <figure class="photo"><img src="images/plasma_sun.png" alt="Soleil"></figure>
+                    <figure class="photo"><img src="images/plasma_galaxy.png" alt="Galaxie"></figure>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ÉTAT D'ÉQUILIBRE -->
+    <section id="fr-equilibre" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-8 text-slate-900">L'état d'équilibre</h2>
+        <div class="grid sm:grid-cols-2 gap-5">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-2">Système thermodynamique</h3>
+                <p class="text-slate-700 text-sm">Ensemble des objets dont on étudie l'état.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-2">Grandeurs d'état</h3>
+                <p class="text-slate-700 text-sm">Grandeurs physiques qui décrivent l'état du système (température, volume, pression, densité, nombre de molécules…).</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:col-span-2">
+                <h3 class="font-bold text-blue-800 mb-2">État d'équilibre</h3>
+                <p class="text-slate-700 text-sm mb-3">État qui demeure constant dans le temps.</p>
+                <p class="text-slate-700 text-sm">Tout système placé dans des conditions extérieures invariables évolue spontanément vers l'état d'équilibre.</p>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Module éducatif de Physique · Théorie cinétique de la matière · d'après le support « Physique moléculaire et thermique 1–1 »</p>
+</footer>
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+        if (cz.classList.contains('hidden')) {
+            cz.classList.remove('hidden'); fr.classList.add('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        } else {
+            fr.classList.remove('hidden'); cz.classList.add('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

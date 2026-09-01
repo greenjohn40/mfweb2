@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vnitřní energie / L'énergie interne</title>
+<script src="https://cdn.tailwindcss.com/"></script>
+<style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #cbd5e1; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #2563eb; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #dc2626; }
+    @media (max-width: 640px) {
+        .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; }
+    }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .badge { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.05em; padding:2px 10px; border-radius:9999px; }
+    figure.photo { margin:0; }
+    figure.photo img { border-radius:.75rem; border:1px solid #e2e8f0; width:100%; object-fit:cover; background:#0f172a; }
+    .photo-cap { font-size:.8rem; color:#64748b; margin-top:.4rem; text-align:center; }
+    table.cond { width:100%; border-collapse: collapse; font-size:.85rem; }
+    table.cond th, table.cond td { border:1px solid #e2e8f0; padding:4px 8px; text-align:left; }
+    table.cond th { background:#f1f5f9; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-rose-800 to-red-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-rose-200 text-sm font-semibold tracking-wider uppercase">
+            <span>🔥 Molekulová fyzika a termika</span><span>•</span><span>Část 1.3</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Vnitřní energie</h1>
+        <p class="text-lg md:text-xl text-rose-50 max-w-3xl leading-relaxed">
+            Co je vnitřní energie, jak se mění, tepelná kapacita látek a tři způsoby šíření tepla.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('cz-uvod')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">Vnitřní energie</span>
+        <span onclick="scrollToId('cz-zmeny')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">Změny ΔU</span>
+        <span onclick="scrollToId('cz-kapacita')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">Tepelná kapacita</span>
+        <span onclick="scrollToId('cz-zakon')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">1. termodyn. zákon</span>
+        <span onclick="scrollToId('cz-sireni')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">Šíření tepla</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- VNITŘNÍ ENERGIE -->
+    <section id="cz-uvod" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Vnitřní energie</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-center font-mono text-xl bg-slate-100 rounded-lg py-3 mb-6">U = (E<sub>K</sub> + E<sub>P</sub>) celková soustavy částic</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <p class="text-slate-700">Vnitřní energie <strong>U</strong> termodynamické soustavy je součet <strong>kinetické energie</strong> všech částic (tepelný pohyb) a <strong>potenciální energie</strong> každé dvojice částic (vazby mezi nimi).</p>
+                <figure class="photo"><img src="images-energie/gas_particles.png" alt="Částice v neuspořádaném pohybu"><figcaption class="photo-cap">tepelný pohyb částic (E<sub>K</sub>)</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- ZMĚNY -->
+    <section id="cz-zmeny" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Změny vnitřní energie</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-6">Změna vnitřní energie ΔU může být způsobena:</p>
+            <div class="grid sm:grid-cols-2 gap-6">
+                <div class="text-center">
+                    <p class="font-bold text-rose-800 mb-2">1. prací</p>
+                    <p class="text-sm text-slate-500 mb-3">(vykonanou soustavou nebo na soustavě)</p>
+                    <figure class="photo"><img src="images-energie/fire_bowdrill.jpg" alt="Rozdělávání ohně třením"></figure>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-rose-800 mb-2">2. výměnou tepla</p>
+                    <p class="text-sm text-slate-500 mb-3">(mezi soustavou a okolím)</p>
+                    <figure class="photo"><img src="images-energie/fire_match.jpg" alt="Hořící zápalka"></figure>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="font-mono text-center text-lg bg-rose-50 rounded-lg py-2 mb-4">ΔU způsobená prací: &nbsp; ΔU = W</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 font-semibold text-blue-900">
+                    <strong>Obecný zákon zachování energie:</strong><br>
+                    V izolované soustavě zůstává součet kinetické, potenciální a vnitřní energie všech částí soustavy konstantní.
+                </div>
+                <figure class="photo"><img src="images-energie/piston_cylinder.png" alt="Píst se svíčkou" class="!bg-white"><figcaption class="photo-cap">práce vykonaná při stálém tlaku (ΔS = posun pístu)</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="font-mono text-center text-lg bg-rose-50 rounded-lg py-2 mb-4">ΔU způsobená výměnou tepla: &nbsp; ΔU = Q &nbsp; [Q] = 1 J</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 font-semibold text-blue-900">
+                    Při výměně tepla mezi objekty izolované soustavy zůstává celková vnitřní energie objektů soustavy konstantní.
+                </div>
+                <figure class="photo"><img src="images-energie/distillation_apparatus.png" alt="Destilační aparatura" class="!bg-white"></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEPELNÁ KAPACITA -->
+    <section id="cz-kapacita" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Tepelná kapacita a měrná tepelná kapacita</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-rose-800 mb-3">Tepelná kapacita C</h3>
+            <p class="text-slate-700 mb-3">tělesa se rovná množství tepla potřebnému ke zvýšení teploty tělesa o 1 K beze změny skupenství.</p>
+            <p class="font-mono text-center bg-slate-100 rounded-lg py-2">[C] = J/K = J/°C &nbsp;&nbsp; C = Q / Δt</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-rose-800 mb-3">Měrná tepelná kapacita c (měrné teplo)</h3>
+            <p class="text-slate-700 mb-3">látky se rovná tepelné kapacitě 1 kg dané látky.</p>
+            <p class="font-mono text-center bg-slate-100 rounded-lg py-2">[c] = J/(kg·K) = J/(kg·°C) &nbsp;&nbsp; c = C / m = Q / (m · Δt)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-rose-800 mb-4">Měrná tepelná kapacita (při 20 °C, 1 atm)</h3>
+            <table class="cond mb-4">
+                <tr><th>materiál</th><td>Pb</td><td>Au</td><td>Hg</td><td>Cu</td><td>Fe/ocel</td><td>Al</td><td>voda (l)</td><td>led (-10°C)</td></tr>
+                <tr><th>c [J/kg·K]</th><td>130</td><td>130</td><td>140</td><td>385</td><td>450</td><td>900</td><td>4180</td><td>2100</td></tr>
+            </table>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-energie/blacksmith.jpg" alt="Kovář"><figcaption class="photo-cap">malá c kovů ⇒ snadná kujnost</figcaption></figure>
+                <figure class="photo"><img src="images-energie/radiator.jpg" alt="Radiátor"><figcaption class="photo-cap">vysoká c vody ⇒ využití k přenosu tepla</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-rose-800 mb-3">Kalorimetrická rovnice</h3>
+            <p class="text-slate-700 mb-3">vyjadřuje zákon zachování energie přenesené během přenosu tepla mezi soustavou a okolím:</p>
+            <p class="font-mono text-center bg-slate-100 rounded-lg py-2 text-lg">Q<sub>1</sub> = Q<sub>2</sub> &nbsp;&nbsp;&nbsp; c<sub>1</sub>m<sub>1</sub>Δt<sub>1</sub> = c<sub>2</sub>m<sub>2</sub>Δt<sub>2</sub></p>
+        </div>
+    </section>
+
+    <!-- 1. TERMODYNAMICKÝ ZÁKON -->
+    <section id="cz-zakon" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">První termodynamický zákon</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-6">vyjadřuje zákon zachování energie přenesené během dějů, při nichž dochází k práci a výměně tepla mezi soustavou a okolím:</p>
+            <p class="font-mono text-center text-2xl bg-rose-50 rounded-xl py-4 mb-6 font-bold">ΔU = W + Q</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-energie/sparks.jpg" alt="Jiskry"><figcaption class="photo-cap">práce (tření, elektrická jiskra)</figcaption></figure>
+                <figure class="photo"><img src="images-energie/hot_air_balloon.jpg" alt="Horkovzdušný balón"><figcaption class="photo-cap">teplo (ohřátí vzduchu plamenem)</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- ŠÍŘENÍ TEPLA -->
+    <section id="cz-sireni" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">Šíření vnitřní energie</h2>
+        <p class="text-slate-600 mb-8">je přenos tepla, který se uskutečňuje třemi různými způsoby:</p>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <figure class="photo max-w-md mx-auto mb-4"><img src="images-energie/bonfire_labeled.png" alt="Oheň s popisky" class="!bg-white"></figure>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">🔥 Vedení (kondukce)</h3>
+                <p class="text-slate-700 mb-3">je jev, při kterém se teplota prostředí vyrovnává. Odpovídá přenosu tepelného pohybu (kmitů) mezi molekulami a probíhá v pevné látce, kapalině i plynu.</p>
+                <p class="text-slate-600 text-sm mb-4"><em>Příklad:</em> teplota tyče zahřáté na jednom konci se vedením tepla postupně vyrovnává.</p>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <figure class="photo"><img src="images-energie/mug_icon.png" alt="Hrnek s lžičkou" class="!bg-white"></figure>
+                    <figure class="photo"><img src="images-energie/rod_thermometers.png" alt="Tyč s teploměry" class="!bg-white"></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">Vodiče a izolanty tepla</h3>
+                <p class="text-slate-700 mb-4">Tepelné izolanty jsou materiály, které špatně vedou teplo. Dřevo, korek, vzduch (přítomný mezi dvěma tabulemi izolačního dvojskla) jsou dobré izolanty.</p>
+                <div class="grid sm:grid-cols-4 gap-3">
+                    <figure class="photo"><img src="images-energie/thermos.jpg" alt="Termoska"></figure>
+                    <figure class="photo"><img src="images-energie/motherboard.jpg" alt="Chladič na desce"></figure>
+                    <figure class="photo"><img src="images-energie/takeout_container.jpg" alt="Polystyrenová krabička"></figure>
+                    <figure class="photo"><img src="images-energie/astronaut.jpg" alt="Skafandr astronauta"></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">Tepelná vodivost λ</h3>
+                <p class="text-slate-700 mb-3">je fyzikální veličina charakterizující chování látek při přenosu tepla vedením. Vyjadřuje energii (množství tepla) přenesenou za jednotku plochy a času při teplotním spádu 1 stupeň na metr.</p>
+                <p class="text-slate-600 text-sm mb-4">Dobré vodiče tepla bývají obvykle i dobrými vodiči elektrického proudu.</p>
+                <figure class="photo max-w-xs mx-auto mb-4"><img src="images-energie/conductivity_apparatus.png" alt="Přístroj na měření tepelné vodivosti" class="!bg-white"></figure>
+                <table class="cond">
+                    <tr><th>materiál</th><th>λ [W·m⁻¹·K⁻¹]</th><th>materiál</th><th>λ [W·m⁻¹·K⁻¹]</th></tr>
+                    <tr><td>diamant</td><td>895 – 2300</td><td>mramor</td><td>2,08 – 2,94</td></tr>
+                    <tr><td>stříbro</td><td>418</td><td>žula</td><td>2,2</td></tr>
+                    <tr><td>měď</td><td>390</td><td>zemina (suchá)</td><td>0,75</td></tr>
+                    <tr><td>olovo</td><td>354</td><td>voda</td><td>0,6</td></tr>
+                    <tr><td>zlato</td><td>317</td><td>dřevo</td><td>0,16</td></tr>
+                    <tr><td>hliník</td><td>237</td><td>karton</td><td>0,07</td></tr>
+                    <tr><td>zinek</td><td>116</td><td>korek</td><td>0,04</td></tr>
+                    <tr><td>železo</td><td>80</td><td>polystyren</td><td>0,036</td></tr>
+                </table>
+                <p class="text-xs text-slate-400 mt-2 text-center">hodnoty pro teplotu 20 °C</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">🌊 Proudění (konvekce)</h3>
+                <p class="text-slate-700 mb-3">je přenos tepla vyvolaný pohybem částic tekutiny. Probíhá v pohybující se tekutině.</p>
+                <p class="text-slate-600 text-sm mb-4"><em>Příklad:</em> teplý (méně hustý) vzduch stoupá a přenáší teplo zdola nahoru.</p>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <figure class="photo"><img src="images-energie/convection_container.png" alt="Konvekce v nádobě" class="!bg-white"></figure>
+                    <figure class="photo"><img src="images-energie/building_convection.png" alt="Tepelné ztráty budovy konvekcí" class="!bg-white"></figure>
+                    <figure class="photo"><img src="images-energie/atmosphere_convection.png" alt="Konvekce v atmosféře"></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">☀️ Záření (radiace)</h3>
+                <p class="text-slate-700 mb-3">je přenos tepla šířením elektromagnetických vln. Může probíhat ve všech prostředích, včetně vakua.</p>
+                <p class="text-slate-600 text-sm mb-4"><em>Příklad:</em> Země je ohřívána zářením Slunce.</p>
+                <div class="grid sm:grid-cols-4 gap-3">
+                    <figure class="photo"><img src="images-energie/thermal_dog.png" alt="Termosnímek psa"></figure>
+                    <figure class="photo"><img src="images-energie/thermal_buildings.jpg" alt="Termosnímek budov"></figure>
+                    <figure class="photo"><img src="images-energie/forge_horseshoe.jpg" alt="Žhavá podkova"></figure>
+                    <figure class="photo"><img src="images-energie/electric_heater.png" alt="Elektrický zářič"></figure>
+                </div>
+                <figure class="photo mt-4"><img src="images-energie/spectrum_chart.png" alt="Elektromagnetické spektrum" class="!bg-white"><figcaption class="photo-cap">elektromagnetické spektrum a tepelné účinky záření</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Výukový modul Fyzika · Vnitřní energie · zpracováno podle podkladu „Physique moléculaire et thermique 1–3“</p>
+</footer>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-rose-800 to-red-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-rose-200 text-sm font-semibold tracking-wider uppercase">
+            <span>🔥 Physique moléculaire et thermique</span><span>•</span><span>Partie 1.3</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">L'énergie interne</h1>
+        <p class="text-lg md:text-xl text-rose-50 max-w-3xl leading-relaxed">
+            Ce qu'est l'énergie interne, comment elle varie, la capacité thermique des substances et les trois modes de propagation de la chaleur.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('fr-intro')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">Énergie interne</span>
+        <span onclick="scrollToId('fr-variations')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">Variations ΔU</span>
+        <span onclick="scrollToId('fr-capacite')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">Capacité thermique</span>
+        <span onclick="scrollToId('fr-loi')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">1ère loi</span>
+        <span onclick="scrollToId('fr-transmission')" class="nav-pill hover:text-rose-600 px-3 py-1 rounded-full hover:bg-rose-50">Transmission</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- ÉNERGIE INTERNE -->
+    <section id="fr-intro" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">L'énergie interne</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-center font-mono text-xl bg-slate-100 rounded-lg py-3 mb-6">U = (E<sub>K</sub> + E<sub>P</sub>) totale du système des particules</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <p class="text-slate-700">L'énergie interne <strong>U</strong> d'un système thermodynamique est la somme de l'<strong>énergie cinétique</strong> de toutes les particules (le mouvement thermique) et de l'<strong>énergie potentielle</strong> de chaque couple de particules (les liaisons).</p>
+                <figure class="photo"><img src="images-energie/gas_particles.png" alt="Particules en mouvement désordonné"><figcaption class="photo-cap">mouvement thermique des particules (E<sub>K</sub>)</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- VARIATIONS -->
+    <section id="fr-variations" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Les variations de l'énergie interne</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-6">La variation de l'énergie interne ΔU peut être causée par :</p>
+            <div class="grid sm:grid-cols-2 gap-6">
+                <div class="text-center">
+                    <p class="font-bold text-rose-800 mb-2">1. le travail</p>
+                    <p class="text-sm text-slate-500 mb-3">(effectué par le système ou sur le système)</p>
+                    <figure class="photo"><img src="images-energie/fire_bowdrill.jpg" alt="Allumage du feu par friction"></figure>
+                </div>
+                <div class="text-center">
+                    <p class="font-bold text-rose-800 mb-2">2. l'échange de chaleur</p>
+                    <p class="text-sm text-slate-500 mb-3">(entre le système et le milieu extérieur)</p>
+                    <figure class="photo"><img src="images-energie/fire_match.jpg" alt="Allumette enflammée"></figure>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="font-mono text-center text-lg bg-rose-50 rounded-lg py-2 mb-4">ΔU causée par le travail : &nbsp; ΔU = W</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 font-semibold text-blue-900">
+                    <strong>La loi générale de la conservation d'énergie :</strong><br>
+                    Dans un système isolé, la somme de l'énergie cinétique, potentielle et interne de toutes les parties du système reste constante.
+                </div>
+                <figure class="photo"><img src="images-energie/piston_cylinder.png" alt="Piston avec bougie" class="!bg-white"><figcaption class="photo-cap">travail effectué à pression constante (ΔS = déplacement du piston)</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="font-mono text-center text-lg bg-rose-50 rounded-lg py-2 mb-4">ΔU causée par l'échange de chaleur : &nbsp; ΔU = Q &nbsp; [Q] = 1 J</p>
+            <div class="grid md:grid-cols-2 gap-6 items-center">
+                <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 font-semibold text-blue-900">
+                    Pendant les processus d'échange de chaleur entre les objets d'un système isolé, l'énergie interne totale des objets du système reste constante.
+                </div>
+                <figure class="photo"><img src="images-energie/distillation_apparatus.png" alt="Appareil de distillation" class="!bg-white"></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- CAPACITÉ THERMIQUE -->
+    <section id="fr-capacite" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Capacité thermique et chaleur spécifique</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-rose-800 mb-3">La capacité thermique C</h3>
+            <p class="text-slate-700 mb-3">d'un corps est égale à la quantité de chaleur nécessaire pour augmenter la température du corps de 1 K sans changement d'état.</p>
+            <p class="font-mono text-center bg-slate-100 rounded-lg py-2">[C] = J/K = J/°C &nbsp;&nbsp; C = Q / Δt</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-rose-800 mb-3">La chaleur spécifique c (capacité thermique massique)</h3>
+            <p class="text-slate-700 mb-3">d'une substance est égale à la capacité thermique de 1 kg de la substance.</p>
+            <p class="font-mono text-center bg-slate-100 rounded-lg py-2">[c] = J/(kg·K) = J/(kg·°C) &nbsp;&nbsp; c = C / m = Q / (m · Δt)</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-rose-800 mb-4">La chaleur spécifique (à 20 °C, 1 atm)</h3>
+            <table class="cond mb-4">
+                <tr><th>matériau</th><td>Pb</td><td>Au</td><td>Hg</td><td>Cu</td><td>Fe/acier</td><td>Al</td><td>eau liquide</td><td>glace (-10°C)</td></tr>
+                <tr><th>c [J/kg·K]</th><td>130</td><td>130</td><td>140</td><td>385</td><td>450</td><td>900</td><td>4180</td><td>2100</td></tr>
+            </table>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-energie/blacksmith.jpg" alt="Forgeron"><figcaption class="photo-cap">c faible des métaux ⇒ malléabilité facile</figcaption></figure>
+                <figure class="photo"><img src="images-energie/radiator.jpg" alt="Radiateur"><figcaption class="photo-cap">c élevée de l'eau ⇒ usage pour transférer la chaleur</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-rose-800 mb-3">L'équation calorimétrique</h3>
+            <p class="text-slate-700 mb-3">exprime la loi de conservation d'énergie transférée pendant un transfert de chaleur entre le système et le milieu extérieur :</p>
+            <p class="font-mono text-center bg-slate-100 rounded-lg py-2 text-lg">Q<sub>1</sub> = Q<sub>2</sub> &nbsp;&nbsp;&nbsp; c<sub>1</sub>m<sub>1</sub>Δt<sub>1</sub> = c<sub>2</sub>m<sub>2</sub>Δt<sub>2</sub></p>
+        </div>
+    </section>
+
+    <!-- 1ère LOI -->
+    <section id="fr-loi" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">La première loi de thermodynamique</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-6">exprime la loi de conservation de l'énergie transférée pendant les processus où il y a l'effet de travail et le transfert de chaleur entre le système et le milieu extérieur :</p>
+            <p class="font-mono text-center text-2xl bg-rose-50 rounded-xl py-4 mb-6 font-bold">ΔU = W + Q</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <figure class="photo"><img src="images-energie/sparks.jpg" alt="Étincelles"><figcaption class="photo-cap">travail (friction, étincelle électrique)</figcaption></figure>
+                <figure class="photo"><img src="images-energie/hot_air_balloon.jpg" alt="Montgolfière"><figcaption class="photo-cap">chaleur (air chauffé par la flamme)</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRANSMISSION -->
+    <section id="fr-transmission" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">La transmission de l'énergie interne</h2>
+        <p class="text-slate-600 mb-8">est le transfert de chaleur qui se présente sous trois formes différentes :</p>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <figure class="photo max-w-md mx-auto mb-4"><img src="images-energie/bonfire_labeled.png" alt="Feu de camp annoté" class="!bg-white"></figure>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">🔥 La conduction</h3>
+                <p class="text-slate-700 mb-3">est le phénomène par lequel la température d'un milieu s'homogénéise. Il correspond à la transmission de l'agitation thermique entre les molécules et se produit dans un solide, un liquide ou un gaz.</p>
+                <p class="text-slate-600 text-sm mb-4"><em>Exemple :</em> la température d'un barreau chauffé à une extrémité a tendance à s'uniformiser par conduction thermique.</p>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <figure class="photo"><img src="images-energie/mug_icon.png" alt="Tasse avec cuillère" class="!bg-white"></figure>
+                    <figure class="photo"><img src="images-energie/rod_thermometers.png" alt="Barreau avec thermomètres" class="!bg-white"></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">Les conducteurs et les isolants thermiques</h3>
+                <p class="text-slate-700 mb-4">Les isolants thermiques sont des matériaux qui conduisent mal la chaleur. Le bois, le liège, l'air (présent entre les deux vitres d'un double vitrage) sont de bons isolants.</p>
+                <div class="grid sm:grid-cols-4 gap-3">
+                    <figure class="photo"><img src="images-energie/thermos.jpg" alt="Thermos"></figure>
+                    <figure class="photo"><img src="images-energie/motherboard.jpg" alt="Dissipateur sur carte mère"></figure>
+                    <figure class="photo"><img src="images-energie/takeout_container.jpg" alt="Boîte en polystyrène"></figure>
+                    <figure class="photo"><img src="images-energie/astronaut.jpg" alt="Combinaison spatiale"></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">La conductivité thermique λ</h3>
+                <p class="text-slate-700 mb-3">est une grandeur physique caractérisant le comportement des matériaux lors du transfert thermique par conduction. Elle représente l'énergie (quantité de chaleur) transférée par unité de surface et de temps sous un gradient de température de 1 degré par mètre.</p>
+                <p class="text-slate-600 text-sm mb-4">Les bons conducteurs de chaleur sont souvent de bons conducteurs électriques.</p>
+                <figure class="photo max-w-xs mx-auto mb-4"><img src="images-energie/conductivity_apparatus.png" alt="Appareil de mesure de conductivité" class="!bg-white"></figure>
+                <table class="cond">
+                    <tr><th>matériau</th><th>λ [W·m⁻¹·K⁻¹]</th><th>matériau</th><th>λ [W·m⁻¹·K⁻¹]</th></tr>
+                    <tr><td>diamant</td><td>895 – 2300</td><td>marbre</td><td>2,08 – 2,94</td></tr>
+                    <tr><td>argent</td><td>418</td><td>granite</td><td>2,2</td></tr>
+                    <tr><td>cuivre</td><td>390</td><td>terre (sèche)</td><td>0,75</td></tr>
+                    <tr><td>plomb</td><td>354</td><td>eau</td><td>0,6</td></tr>
+                    <tr><td>or</td><td>317</td><td>bois</td><td>0,16</td></tr>
+                    <tr><td>aluminium</td><td>237</td><td>carton</td><td>0,07</td></tr>
+                    <tr><td>zinc</td><td>116</td><td>liège</td><td>0,04</td></tr>
+                    <tr><td>fer</td><td>80</td><td>polystyrène</td><td>0,036</td></tr>
+                </table>
+                <p class="text-xs text-slate-400 mt-2 text-center">valeurs pour une température de 20 °C</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">🌊 La convection</h3>
+                <p class="text-slate-700 mb-3">est le transfert de chaleur provoqué par le mouvement des particules d'un fluide. Il se produit dans un fluide en mouvement.</p>
+                <p class="text-slate-600 text-sm mb-4"><em>Exemple :</em> l'air chaud, moins dense, monte, transportant la chaleur du bas vers le haut.</p>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <figure class="photo"><img src="images-energie/convection_container.png" alt="Convection dans un récipient" class="!bg-white"></figure>
+                    <figure class="photo"><img src="images-energie/building_convection.png" alt="Pertes de chaleur d'un bâtiment" class="!bg-white"></figure>
+                    <figure class="photo"><img src="images-energie/atmosphere_convection.png" alt="Convection atmosphérique"></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-rose-800 mb-3">☀️ Le rayonnement</h3>
+                <p class="text-slate-700 mb-3">est le transfert de chaleur par propagation d'ondes électromagnétiques. Il peut se produire dans tous les milieux, vide y compris.</p>
+                <p class="text-slate-600 text-sm mb-4"><em>Exemple :</em> la Terre est chauffée par le rayonnement du soleil.</p>
+                <div class="grid sm:grid-cols-4 gap-3">
+                    <figure class="photo"><img src="images-energie/thermal_dog.png" alt="Image thermique d'un chien"></figure>
+                    <figure class="photo"><img src="images-energie/thermal_buildings.jpg" alt="Image thermique de bâtiments"></figure>
+                    <figure class="photo"><img src="images-energie/forge_horseshoe.jpg" alt="Fer à cheval incandescent"></figure>
+                    <figure class="photo"><img src="images-energie/electric_heater.png" alt="Radiateur électrique"></figure>
+                </div>
+                <figure class="photo mt-4"><img src="images-energie/spectrum_chart.png" alt="Spectre électromagnétique" class="!bg-white"><figcaption class="photo-cap">spectre électromagnétique et effets thermiques du rayonnement</figcaption></figure>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Module éducatif de Physique · L'énergie interne · d'après le support « Physique moléculaire et thermique 1–3 »</p>
+</footer>
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+        if (cz.classList.contains('hidden')) {
+            cz.classList.remove('hidden'); fr.classList.add('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        } else {
+            fr.classList.remove('hidden'); cz.classList.add('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

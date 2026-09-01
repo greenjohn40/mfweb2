@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La température – Exercices</title>
+    <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<style>
+    :root {
+        --primary: #ea580c;
+        --secondary: #c2410c;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #fff7ed;
+        --translation: #64748b;
+    }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+    }
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    h1 {
+        text-align: center;
+        color: var(--primary);
+        font-size: 2.5rem;
+        margin-bottom: 0.2rem;
+    }
+    .subtitle {
+        text-align: center;
+        color: #64748b;
+        margin-bottom: 2.5rem;
+    }
+    .exercise-card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 12px;
+        font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9;
+        padding-bottom: 4px;
+    }
+    .exercise-body {
+        margin-bottom: 18px;
+        font-size: 1.05rem;
+    }
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+    }
+    .btn {
+        border: none;
+        padding: 8px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: 0.2s;
+    }
+    .btn-translation {
+        background: transparent;
+        color: var(--translation);
+        border: 1px solid var(--translation);
+    }
+    .btn-translation:hover {
+        background: var(--translation);
+        color: #fff;
+    }
+    .btn-solution {
+        background: var(--primary);
+        color: #fff;
+    }
+    .btn-solution:hover {
+        background: var(--secondary);
+    }
+    .content-box {
+        display: none;
+        margin-top: 14px;
+        padding: 15px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        animation: fadeIn 0.3s ease-in;
+    }
+    .translation-box {
+        background: #f1f5f9;
+        color: #475569;
+        border-left: 4px solid var(--translation);
+        font-style: italic;
+    }
+    .solution-box {
+        background: var(--accent);
+        border-left: 4px solid var(--primary);
+    }
+    .active {
+        display: block;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: #94a3b8;
+        font-size: 0.9rem;
+    }
+    .math-inline { display: inline-block; }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>La température</h1>
+        <p class="subtitle">Série de 10 exercices de conversion avec solutions et traductions</p>
+
+        <!-- 1 -->
+        <div class="exercise-card">
+            <div class="exercise-header">1. Point d'ébullition de l'eau</div>
+            <div class="exercise-body">
+                Le point d'ébullition de l'eau est de \( 100\,^\circ\text{C} \).
+                Exprimez cette température en degrés Fahrenheit.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr1',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol1',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr1" class="content-box translation-box">
+                Bod varu vody je \( 100\,^\circ\text{C} \). Vyjádřete tuto teplotu ve stupních Fahrenheita.
+            </div>
+            <div id="sol1" class="content-box solution-box">
+                \( t(^\circ\text{F}) = t(^\circ\text{C}) \cdot 1{,}8 + 32 = 100 \cdot 1{,}8 + 32 = 212\,^\circ\text{F} \)
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="exercise-card">
+            <div class="exercise-header">2. Four de cuisine</div>
+            <div class="exercise-body">
+                Un four est réglé à \( 350\,^\circ\text{F} \). Quelle est cette température en degrés Celsius ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr2',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol2',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr2" class="content-box translation-box">
+                Trouba je nastavena na \( 350\,^\circ\text{F} \). Jaká je to teplota ve stupních Celsia?
+            </div>
+            <div id="sol2" class="content-box solution-box">
+                \( t(^\circ\text{C}) = \dfrac{t(^\circ\text{F}) - 32}{1{,}8} = \dfrac{350 - 32}{1{,}8} \approx 176{,}7\,^\circ\text{C} \)
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="exercise-card">
+            <div class="exercise-header">3. Température corporelle</div>
+            <div class="exercise-body">
+                La température normale du corps humain est de \( 37\,^\circ\text{C} \).
+                Exprimez-la en kelvins.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr3',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol3',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr3" class="content-box translation-box">
+                Normální teplota lidského těla je \( 37\,^\circ\text{C} \). Vyjádřete ji v kelvinech.
+            </div>
+            <div id="sol3" class="content-box solution-box">
+                \( T = t_C + 273{,}15 = 37 + 273{,}15 = 310{,}15\,\text{K} \)
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="exercise-card">
+            <div class="exercise-header">4. Fond diffus cosmologique</div>
+            <div class="exercise-body">
+                Le rayonnement fossile de l'Univers a une température d'environ \( 2{,}7\,\text{K} \).
+                Quelle est cette température en degrés Celsius ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr4',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol4',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr4" class="content-box translation-box">
+                Reliktní záření vesmíru má teplotu přibližně \( 2{,}7\,\text{K} \). Jaká je to teplota ve stupních Celsia?
+            </div>
+            <div id="sol4" class="content-box solution-box">
+                \( t_C = T - 273{,}15 = 2{,}7 - 273{,}15 = -270{,}45\,^\circ\text{C} \)
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="exercise-card">
+            <div class="exercise-header">5. Eau chauffée (unités mixtes)</div>
+            <div class="exercise-body">
+                De l'eau est chauffée d'une température \( t_1 = 15\,^\circ\text{C} \) à une température
+                \( t_2 = 95\,^\circ\text{F} \). Quelle est la variation de température \( \Delta T \)
+                exprimée en kelvins ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr5',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol5',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr5" class="content-box translation-box">
+                Voda se ohřála z teploty \( t_1 = 15\,^\circ\text{C} \) na teplotu \( t_2 = 95\,^\circ\text{F} \).
+                Jaký je teplotní rozdíl \( \Delta T \) vyjádřený v kelvinech?
+            </div>
+            <div id="sol5" class="content-box solution-box">
+                Převedeme \( t_2 \) na °C: \( t_2(^\circ\text{C}) = \dfrac{95-32}{1{,}8} = 35\,^\circ\text{C} \)<br>
+                \( \Delta t = 35 - 15 = 20\,^\circ\text{C} \)<br>
+                Protože interval 1 K = interval 1 °C: \( \Delta T = 20\,\text{K} \)
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="exercise-card">
+            <div class="exercise-header">6. Réaction chimique exothermique</div>
+            <div class="exercise-body">
+                Une réaction chimique élève la température d'un échantillon de
+                \( \Delta t = 25\,^\circ\text{C} \). Exprimez cette variation en degrés Fahrenheit.
+                <br><em style="color:#94a3b8; font-size:0.9rem;">Attention : il s'agit d'une variation, pas d'une température absolue !</em>
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr6',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol6',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr6" class="content-box translation-box">
+                Chemická reakce zvýší teplotu vzorku o \( \Delta t = 25\,^\circ\text{C} \).
+                Vyjádřete tuto změnu ve stupních Fahrenheita.
+                <br><em>Pozor: jde o změnu teploty, ne o konkrétní teplotu!</em>
+            </div>
+            <div id="sol6" class="content-box solution-box">
+                Pro rozdíl teplot neplatí posun +32 (ten se při odečtení dvou teplot vyruší):<br>
+                \( \Delta t(^\circ\text{F}) = 1{,}8 \cdot \Delta t(^\circ\text{C}) = 1{,}8 \cdot 25 = 45\,^\circ\text{F} \)<br>
+                <strong>Pozor:</strong> správný výsledek je \( 45\,^\circ\text{F} \), NIKOLI \( 25 \cdot 1{,}8 + 32 = 77\,^\circ\text{F} \)!
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="exercise-card">
+            <div class="exercise-header">7. Cuisson au four</div>
+            <div class="exercise-body">
+                La température d'un four a augmenté de \( \Delta t = 90\,^\circ\text{F} \) pendant la cuisson.
+                Exprimez cette variation en kelvins.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr7',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol7',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr7" class="content-box translation-box">
+                Teplota trouby při pečení vzrostla o \( \Delta t = 90\,^\circ\text{F} \).
+                Vyjádřete tuto změnu v kelvinech.
+            </div>
+            <div id="sol7" class="content-box solution-box">
+                \( \Delta t(^\circ\text{C}) = \dfrac{\Delta t(^\circ\text{F})}{1{,}8} = \dfrac{90}{1{,}8} = 50\,^\circ\text{C} \)<br>
+                Protože interval 1 K = interval 1 °C: \( \Delta T = 50\,\text{K} \)
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="exercise-card">
+            <div class="exercise-header">8. Coïncidence des échelles</div>
+            <div class="exercise-body">
+                À quelle température (exprimée en degrés) les échelles Celsius et Fahrenheit
+                indiquent-elles la même valeur numérique ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr8',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol8',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr8" class="content-box translation-box">
+                Při jaké teplotě (ve stupních) ukazují Celsiova a Fahrenheitova stupnice stejnou číselnou hodnotu?
+            </div>
+            <div id="sol8" class="content-box solution-box">
+                Hledáme \( t \) takové, že \( t = 1{,}8t + 32 \).<br>
+                \( -0{,}8t = 32 \Rightarrow t = -40 \)<br>
+                Tedy \( -40\,^\circ\text{C} = -40\,^\circ\text{F} \).
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="exercise-card">
+            <div class="exercise-header">9. Refroidissement d'un gaz</div>
+            <div class="exercise-body">
+                Un gaz est refroidi d'une température \( T_1 = 350\,\text{K} \) à une température
+                \( t_2 = 50\,^\circ\text{C} \). Quelle est la variation de température \( \Delta T \)
+                exprimée en degrés Fahrenheit ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr9',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol9',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr9" class="content-box translation-box">
+                Plyn se ochladil z teploty \( T_1 = 350\,\text{K} \) na teplotu \( t_2 = 50\,^\circ\text{C} \).
+                Jaký je teplotní rozdíl \( \Delta T \) vyjádřený ve stupních Fahrenheita?
+            </div>
+            <div id="sol9" class="content-box solution-box">
+                Převedeme \( T_1 \) na °C: \( T_1(^\circ\text{C}) = 350 - 273{,}15 = 76{,}85\,^\circ\text{C} \)<br>
+                \( \Delta t = 50 - 76{,}85 = -26{,}85\,^\circ\text{C} \) (pokles)<br>
+                \( \Delta t(^\circ\text{F}) = 1{,}8 \cdot (-26{,}85) \approx -48{,}3\,^\circ\text{F} \)<br>
+                Plyn se ochladil přibližně o \( 48{,}3\,^\circ\text{F} \).
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="exercise-card">
+            <div class="exercise-header">10. Fièvre d'un patient</div>
+            <div class="exercise-body">
+                Un patient avait une fièvre de \( t_1 = 39{,}5\,^\circ\text{C} \). Après traitement, sa
+                température est redescendue à \( t_2 = 98{,}6\,^\circ\text{F} \) (température normale).
+                Quelle a été la baisse de température \( \Delta T \) en degrés Celsius ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr10',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol10',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr10" class="content-box translation-box">
+                Pacient měl horečku \( t_1 = 39{,}5\,^\circ\text{C} \). Po léčbě klesla jeho teplota na
+                \( t_2 = 98{,}6\,^\circ\text{F} \) (normální teplota). Jaký byl pokles teploty \( \Delta T \)
+                ve stupních Celsia?
+            </div>
+            <div id="sol10" class="content-box solution-box">
+                Převedeme \( t_2 \) na °C: \( t_2(^\circ\text{C}) = \dfrac{98{,}6-32}{1{,}8} = 37\,^\circ\text{C} \)<br>
+                \( \Delta T = 39{,}5 - 37 = 2{,}5\,^\circ\text{C} \)<br>
+                Teplota pacienta klesla o \( 2{,}5\,^\circ\text{C} \) (tj. o 2,5 K).
+            </div>
+        </div>
+
+        <footer>
+            © 2026 – Physique en Français – Exercices de Température
+        </footer>
+    </div>
+
+    <script>
+        function toggle(id, btn, openLabel, closeLabel) {
+            const el = document.getElementById(id);
+            const active = el.classList.toggle('active');
+            btn.textContent = active ? closeLabel : openLabel;
+        }
+    </script>
+
+</body>
+</html>

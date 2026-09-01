@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Vnitřní energie (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-rose-700">
+            <h1 class="text-3xl font-bold text-rose-800 mb-4">Fyzikální kvíz: Vnitřní energie</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-rose-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (tepelná kapacita, kalorimetrie).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-rose-700 hover:bg-rose-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-rose-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-rose-50 hover:bg-rose-100 text-rose-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-rose-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-rose-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-rose-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-rose-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-rose-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+        const N_THEORY = 4;
+        const N_MATH = 6;
+
+        // ======== POMOCNÉ FUNKCE ========
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+        const MATERIALS = [
+            { cs: 'vody', fr: "d'eau", c: 4180 },
+            { cs: 'hliníku', fr: "d'aluminium", c: 900 },
+            { cs: 'mědi', fr: "de cuivre", c: 385 },
+            { cs: 'železa', fr: "de fer", c: 450 },
+            { cs: 'olova', fr: "de plomb", c: 130 }
+        ];
+
+        // ======== TEORETICKÉ OTÁZKY ========
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Čemu se rovná vnitřní energie U termodynamické soustavy?", a: "Součtu kinetické energie částic a potenciální energie jejich vazeb", o: ["Součtu kinetické energie částic a potenciální energie jejich vazeb", "Pouze kinetické energii částic", "Pouze potenciální energii vazeb", "Teplotě soustavy vyjádřené v joulech"], h: "Vzpomeň si na vzorec U = Ek + Ep.", e: "Vnitřní energie U je součet kinetické energie všech částic (tepelný pohyb) a potenciální energie každé dvojice částic (vazby)." }, fr: { q: "À quoi est égale l'énergie interne U d'un système thermodynamique ?", a: "À la somme de l'énergie cinétique des particules et de l'énergie potentielle de leurs liaisons", o: ["À la somme de l'énergie cinétique des particules et de l'énergie potentielle de leurs liaisons", "Uniquement à l'énergie cinétique des particules", "Uniquement à l'énergie potentielle des liaisons", "À la température du système exprimée en joules"], h: "Rappelle-toi de la formule U = Ek + Ep.", e: "L'énergie interne U est la somme de l'énergie cinétique de toutes les particules (mouvement thermique) et de l'énergie potentielle de chaque couple de particules (liaisons)." } },
+            { id: 't2', type: 'concept', cs: { q: "Čím může být způsobena změna vnitřní energie ΔU?", a: "Prací nebo výměnou tepla", o: ["Prací nebo výměnou tepla", "Pouze změnou objemu", "Pouze změnou tlaku", "Pouze zářením"], h: "Vzpomeň si na dvě příčiny zmíněné v teorii.", e: "Změna vnitřní energie ΔU může být způsobena buď prací (vykonanou soustavou nebo na soustavě), nebo výměnou tepla mezi soustavou a okolím." }, fr: { q: "Qu'est-ce qui peut causer une variation de l'énergie interne ΔU ?", a: "Le travail ou l'échange de chaleur", o: ["Le travail ou l'échange de chaleur", "Seulement un changement de volume", "Seulement un changement de pression", "Seulement le rayonnement"], h: "Rappelle-toi des deux causes mentionnées dans la théorie.", e: "La variation de l'énergie interne ΔU peut être causée soit par le travail (effectué par ou sur le système), soit par l'échange de chaleur entre le système et le milieu extérieur." } },
+            { id: 't3', type: 'concept', cs: { q: "Jak zní první termodynamický zákon?", a: "ΔU = W + Q", o: ["ΔU = W + Q", "ΔU = W − Q", "ΔU = W × Q", "ΔU = Q / W"], h: "Jde o obecný zákon zachování energie zahrnující práci i teplo.", e: "První termodynamický zákon: ΔU = W + Q, vyjadřuje zákon zachování energie při dějích s prací i výměnou tepla." }, fr: { q: "Comment s'énonce la première loi de thermodynamique ?", a: "ΔU = W + Q", o: ["ΔU = W + Q", "ΔU = W − Q", "ΔU = W × Q", "ΔU = Q / W"], h: "C'est la loi générale de conservation d'énergie incluant travail et chaleur.", e: "La première loi de thermodynamique : ΔU = W + Q, exprime la loi de conservation de l'énergie pour les processus impliquant travail et échange de chaleur." } },
+            { id: 't4', type: 'concept', cs: { q: "Co vyjadřuje kalorimetrická rovnice?", a: "Že teplo odevzdané jedním tělesem se rovná teplu přijatému druhým tělesem", o: ["Že teplo odevzdané jedním tělesem se rovná teplu přijatému druhým tělesem", "Že všechna tělesa mají stejnou teplotu", "Že teplo se ztrácí do okolí", "Že tepelná kapacita je vždy stejná"], h: "Jde o zákon zachování energie při výměně tepla mezi dvěma tělesy.", e: "Kalorimetrická rovnice (Q₁ = Q₂, tedy c₁m₁Δt₁ = c₂m₂Δt₂) vyjadřuje, že teplo odevzdané teplejším tělesem se rovná teplu přijatému chladnějším tělesem." }, fr: { q: "Qu'exprime l'équation calorimétrique ?", a: "Que la chaleur cédée par un corps est égale à la chaleur reçue par l'autre", o: ["Que la chaleur cédée par un corps est égale à la chaleur reçue par l'autre", "Que tous les corps ont la même température", "Que la chaleur se perd dans l'environnement", "Que la capacité thermique est toujours identique"], h: "C'est la loi de conservation d'énergie lors d'un échange de chaleur entre deux corps.", e: "L'équation calorimétrique (Q₁ = Q₂, soit c₁m₁Δt₁ = c₂m₂Δt₂) exprime que la chaleur cédée par le corps le plus chaud est égale à la chaleur reçue par le corps le plus froid." } },
+            { id: 't5', type: 'concept', cs: { q: "Který ze tří způsobů šíření tepla může probíhat i ve vakuu?", a: "Záření (radiace)", o: ["Záření (radiace)", "Vedení (kondukce)", "Proudění (konvekce)", "Žádný z nich"], h: "Mysli na to, jak k nám dochází teplo ze Slunce přes vesmírné vakuum.", e: "Záření (radiace) je přenos tepla elektromagnetickými vlnami a jako jediné může probíhat i ve vakuu – např. sluneční záření ohřívá Zemi." }, fr: { q: "Lequel des trois modes de transfert de chaleur peut se produire même dans le vide ?", a: "Le rayonnement", o: ["Le rayonnement", "La conduction", "La convection", "Aucun d'entre eux"], h: "Pense à la façon dont la chaleur du Soleil nous parvient à travers le vide spatial.", e: "Le rayonnement est un transfert de chaleur par ondes électromagnétiques et est le seul à pouvoir se produire dans le vide – par exemple le rayonnement solaire réchauffe la Terre." } },
+            { id: 't6', type: 'concept', cs: { q: "Kde probíhá konvekce (proudění)?", a: "Pouze v pohybující se tekutině (kapalině nebo plynu)", o: ["Pouze v pohybující se tekutině (kapalině nebo plynu)", "Pouze v pevných látkách", "Kdekoli, včetně vakua", "Pouze při velmi nízkých teplotách"], h: "Konvekce vyžaduje pohyb částic látky jako celku.", e: "Konvekce je přenos tepla vyvolaný pohybem částic tekutiny, a proto probíhá pouze v pohybující se kapalině nebo plynu." }, fr: { q: "Où se produit la convection ?", a: "Uniquement dans un fluide en mouvement (liquide ou gaz)", o: ["Uniquement dans un fluide en mouvement (liquide ou gaz)", "Uniquement dans les solides", "Partout, y compris dans le vide", "Uniquement à très basse température"], h: "La convection nécessite le mouvement d'ensemble des particules de la substance.", e: "La convection est un transfert de chaleur provoqué par le mouvement des particules d'un fluide ; elle ne se produit donc que dans un liquide ou un gaz en mouvement." } },
+            { id: 't7', type: 'concept', cs: { q: "Co jsou tepelné izolanty?", a: "Materiály, které špatně vedou teplo", o: ["Materiály, které špatně vedou teplo", "Materiály, které teplo vedou velmi dobře", "Materiály, které teplo pohlcují a mění na světlo", "Materiály, které teplo vytvářejí"], h: "Jde o opak dobrých vodičů tepla.", e: "Tepelné izolanty (např. dřevo, korek, vzduch) jsou materiály, které špatně vedou teplo, a proto se používají k tepelné izolaci." }, fr: { q: "Que sont les isolants thermiques ?", a: "Des matériaux qui conduisent mal la chaleur", o: ["Des matériaux qui conduisent mal la chaleur", "Des matériaux qui conduisent très bien la chaleur", "Des matériaux qui absorbent la chaleur et la transforment en lumière", "Des matériaux qui produisent de la chaleur"], h: "C'est l'opposé des bons conducteurs de chaleur.", e: "Les isolants thermiques (par exemple le bois, le liège, l'air) sont des matériaux qui conduisent mal la chaleur, d'où leur usage pour l'isolation thermique." } },
+            { id: 't8', type: 'concept', cs: { q: "Jaká je jednotka měrné tepelné kapacity c?", a: "J/(kg·K)", o: ["J/(kg·K)", "J/K", "J·kg/K", "kg/(J·K)"], h: "Měrná tepelná kapacita se vztahuje k 1 kg látky a k rozdílu teploty 1 K.", e: "Měrná tepelná kapacita c má jednotku J/(kg·K), zatímco tepelná kapacita C (bez vztahu na hmotnost) má jednotku J/K." }, fr: { q: "Quelle est l'unité de la chaleur spécifique c ?", a: "J/(kg·K)", o: ["J/(kg·K)", "J/K", "J·kg/K", "kg/(J·K)"], h: "La chaleur spécifique se rapporte à 1 kg de substance et à une différence de température de 1 K.", e: "La chaleur spécifique c a pour unité J/(kg·K), tandis que la capacité thermique C (sans référence à la masse) a pour unité J/K." } }
+        ];
+
+        // ======== VÝPOČETNÍ ÚLOHY ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Kolik tepla Q přijme {m} kg {matCs} při ohřevu o Δt = {dt} K? (c = {c} J/(kg·K))", h: "Q = c · m · Δt.", e: "Q = {c} · {m} · {dt} = {res} J." },
+                fr: { q: "Quelle quantité de chaleur Q reçoivent {m} kg {matFr} chauffés de Δt = {dt} K ? (c = {c} J/(kg·K))", h: "Q = c · m · Δt.", e: "Q = {c} · {m} · {dt} = {res} J." },
+                params: () => { const mat = MATERIALS[randInt(0, MATERIALS.length-1)]; return { m: randInt(1,5), dt: randInt(10,80), c: mat.c, matCs: mat.cs, matFr: mat.fr }; },
+                solve: (p) => { const res = p.c * p.m * p.dt; return { res, unit: 'J', correct: fmt(res) + ' J' }; } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Těleso přijalo teplo Q = {Q} J a jeho teplota vzrostla o Δt = {dt} K. Jaká je jeho tepelná kapacita C?", h: "C = Q / Δt.", e: "C = {Q} ÷ {dt} = {res} J/K." },
+                fr: { q: "Un corps a reçu une chaleur Q = {Q} J et sa température a augmenté de Δt = {dt} K. Quelle est sa capacité thermique C ?", h: "C = Q / Δt.", e: "C = {Q} ÷ {dt} = {res} J/K." },
+                params: () => { const dt = randInt(2,50); const Ctarget = randInt(2,50)*10; return { dt, Q: Ctarget*dt }; },
+                solve: (p) => { const res = p.Q / p.dt; return { res, unit: 'J/K', correct: fmt(res) + ' J/K' }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Těleso o hmotnosti m = {m} kg má tepelnou kapacitu C = {C} J/K. Jaká je jeho měrná tepelná kapacita c?", h: "c = C / m.", e: "c = {C} ÷ {m} = {res} J/(kg·K)." },
+                fr: { q: "Un corps de masse m = {m} kg a une capacité thermique C = {C} J/K. Quelle est sa chaleur spécifique c ?", h: "c = C / m.", e: "c = {C} ÷ {m} = {res} J/(kg·K)." },
+                params: () => { const m = randInt(1,10); const ctarget = randInt(2,20)*50; return { m, C: ctarget*m }; },
+                solve: (p) => { const res = p.C / p.m; return { res, unit: 'J/(kg·K)', correct: fmt(res) + ' J/(kg·K)' }; } },
+            { id: 'm4', type: 'math',
+                cs: { q: "O kolik K se ohřeje {m} kg {matCs}, přijme-li teplo Q = {Q} J? (c = {c} J/(kg·K))", h: "Δt = Q / (c · m).", e: "Δt = {Q} ÷ ({c} · {m}) = {res} K." },
+                fr: { q: "De combien de K vont se réchauffer {m} kg {matFr} s'ils reçoivent une chaleur Q = {Q} J ? (c = {c} J/(kg·K))", h: "Δt = Q / (c · m).", e: "Δt = {Q} ÷ ({c} · {m}) = {res} K." },
+                params: () => { const mat = MATERIALS[randInt(0, MATERIALS.length-1)]; const m = randInt(1,5); const dtTarget = randInt(5,80); return { m, c: mat.c, matCs: mat.cs, matFr: mat.fr, Q: mat.c*m*dtTarget }; },
+                solve: (p) => { const res = p.Q / (p.c * p.m); return { res, unit: 'K', correct: fmt(res) + ' K' }; } },
+            { id: 'm5', type: 'math',
+                cs: { q: "Smícháme m₁ = {m1} kg vody o teplotě t₁ = {t1} °C s m₂ = {m2} kg vody o teplotě t₂ = {t2} °C. Jaká bude výsledná teplota směsi (zanedbáme tepelné ztráty)?", h: "Jde o stejnou látku – měrné teplo c se ve vzorci vyruší: t = (m₁t₁+m₂t₂)/(m₁+m₂).", e: "t = ({m1}·{t1} + {m2}·{t2}) ÷ ({m1}+{m2}) = {res} °C." },
+                fr: { q: "On mélange m₁ = {m1} kg d'eau à t₁ = {t1} °C avec m₂ = {m2} kg d'eau à t₂ = {t2} °C. Quelle sera la température finale du mélange (pertes négligées) ?", h: "Il s'agit de la même substance – la chaleur spécifique c s'annule dans la formule : t = (m₁t₁+m₂t₂)/(m₁+m₂).", e: "t = ({m1}·{t1} + {m2}·{t2}) ÷ ({m1}+{m2}) = {res} °C." },
+                params: () => { const m1 = randInt(1,5); const m2 = randInt(1,5); const t1 = randInt(60,95); const t2 = randInt(5,30); return { m1, m2, t1, t2 }; },
+                solve: (p) => { const res = (p.m1*p.t1 + p.m2*p.t2) / (p.m1+p.m2); return { res, unit: '°C', correct: fmt(res) + ' °C' }; } },
+            { id: 'm6', type: 'math',
+                cs: { q: "Na soustavu působí práce W = {W} J a soustava přijme teplo Q = {Q} J. Jaká je změna vnitřní energie ΔU?", h: "ΔU = W + Q (dosaď se znaménky).", e: "ΔU = {W} + ({Q}) = {res} J." },
+                fr: { q: "Un système reçoit un travail W = {W} J et une chaleur Q = {Q} J. Quelle est la variation de son énergie interne ΔU ?", h: "ΔU = W + Q (avec les signes appropriés).", e: "ΔU = {W} + ({Q}) = {res} J." },
+                params: () => ({ W: randInt(-800, 800), Q: randInt(-800, 800) }),
+                solve: (p) => { const res = p.W + p.Q; return { res, unit: 'J', correct: fmt(res) + ' J' }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<N_THEORY; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<N_MATH; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(sol[k] !== undefined ? sol[k] : p[k]));
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    obj.o = [sol.correct, mk(val*10), mk(val/2), mk(-val)];
+                };
+                inject(q); inject(tr);
+            }
+
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').textContent = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-rose-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-rose-300 font-medium fade-in";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').textContent = data.h;
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.textContent = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').textContent = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Tepelná kapacita, kalorimetrie i francouzština ti jdou skvěle.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat vzorce Q=cmΔt a kalorimetrickou rovnici.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat – zaměř se na vztahy mezi Q, C, c, m a Δt.";
+                overallIcon = "🔍";
+            }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako vnitřní energie, kalorimetrická rovnice či způsoby šíření tepla.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definice vnitřní energie, tepelné kapacity a tří způsobů šíření tepla.");
+            if (mathPercent >= 70) strengths.push("Výpočty s tepelnou kapacitou a kalorimetrií ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech Q=cmΔt a v kalorimetrických úlohách chybuješ – procvič si dosazování do vzorců a práci s teplotním rozdílem.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní vztahy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování vzorců Q=cmΔt, C=Q/Δt a kalorimetrické rovnice c₁m₁Δt₁=c₂m₂Δt₂.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o skupenských přeměnách.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení výpočtů tepelné kapacity.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek ve francouzštině)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

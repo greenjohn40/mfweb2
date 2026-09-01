@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teplota / La température</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto;
+            padding: 0 20px;
+            max-width: 700px;
+            background: #fff;
+            color: #1f1f1f;
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin: 1.75rem 0 0.5rem;
+            font-weight: 600;
+        }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        .MathJax_Display { margin: 1em 0; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.95rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 6px 10px; text-align: left; }
+        th { background: #f5f5f5; }
+        figure { margin: 1rem 0; text-align: center; }
+        figure img { max-width: 100%; border-radius: 8px; border: 1px solid #e0e0e0; }
+        figcaption { font-size: 0.85rem; color: #666; margin-top: 4px; }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Teplota</h1>
+        <p><strong>Předmět:</strong> Fyzika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Co je teplota</h2>
+        <p>Dáme-li do vzájemného kontaktu dva objekty s různou teplotou, dochází mezi nimi k výměně tepla, dokud nedosáhnou <strong>rovnovážného stavu</strong> – od té chvíle mají oba objekty stejnou teplotu.</p>
+        <p><strong>Tělesa, která jsou ve vzájemném kontaktu, mají stejnou teplotu, jsou-li v rovnovážném stavu.</strong> Tato skutečnost (tzv. nultý zákon termodynamiky) je základem pro definici teploty i pro funkci všech teploměrů.</p>
+
+        <h2>2. Teploměry</h2>
+        <p><strong>Teploměr</strong> je přístroj k měření teploty. Jeho činnost je založena na fyzikální vlastnosti látky, která se s teplotou mění předvídatelným způsobem:</p>
+        <ul>
+            <li><strong>roztažnost kapalin</strong> – rtuťové a lihové teploměry,</li>
+            <li><strong>roztažnost pevných látek</strong> – bimetalové teploměry (dva kovy s různým součinitelem teplotní roztažnosti spojené v jeden pásek, který se při zahřátí ohýbá),</li>
+            <li><strong>roztažnost plynů</strong> – plynové teploměry (se stálým objemem nebo se stálým tlakem),</li>
+            <li><strong>elektrické veličiny</strong> – elektronické teploměry,</li>
+            <li><strong>barevné změny zářícího tělesa</strong> – optické pyrometry (využívané např. pro měření velmi vysokých teplot v hutích).</li>
+        </ul>
+
+        <h2>3. Teplotní stupnice</h2>
+        <p>Libovolná teplotní stupnice potřebuje <strong>dva pevné body</strong> (dvě definované teploty), mezi nimiž je interval rozdělen na určitý počet stejných dílů – stupňů.</p>
+
+        <h3>Celsiova stupnice (1742)</h3>
+        <ul>
+            <li>$0\,^\circ\text{C}$ – bod tuhnutí vody</li>
+            <li>$100\,^\circ\text{C}$ – bod varu vody</li>
+        </ul>
+        <p>$1\,^\circ\text{C}$ je $1/100$ tohoto intervalu. Navrhl ji švédský astronom Anders Celsius (1701–1744).</p>
+
+        <h3>Fahrenheitova stupnice (1724)</h3>
+        <ul>
+            <li>$32\,^\circ\text{F}$ – bod tuhnutí vody</li>
+            <li>$212\,^\circ\text{F}$ – bod varu vody</li>
+        </ul>
+        <p>$1\,^\circ\text{F}$ je $1/180$ tohoto intervalu. Zavedl ji Gabriel Daniel Fahrenheit (1686–1736) a dodnes se běžně používá např. v USA.</p>
+        <p><strong>Převodní vztahy:</strong></p>
+        $$ t(^\circ\text{C}) = \dfrac{t(^\circ\text{F}) - 32}{1{,}8} \qquad\qquad t(^\circ\text{F}) = t(^\circ\text{C}) \cdot 1{,}8 + 32 $$
+        <p>Užitečná pomůcka: obě stupnice se protínají v bodě $-40$, tedy $-40\,^\circ\text{C} = -40\,^\circ\text{F}$. Odtud plyne jednoduchý postup:</p>
+        <ul>
+            <li>$t_C \rightarrow t_F$: přičti 40, vynásob 1,8, odečti 40</li>
+            <li>$t_F \rightarrow t_C$: přičti 40, vyděl 1,8, odečti 40</li>
+        </ul>
+
+        <h3>Termodynamická (Kelvinova) stupnice</h3>
+        <ul>
+            <li>$0\,\text{K}$ – teoreticky nejnižší možná teplota (<strong>absolutní nula</strong>)</li>
+            <li>$273{,}16\,\text{K}$ – trojný bod vody (teplota, při níž voda existuje v rovnováze současně jako kapalina, pevná látka i plyn)</li>
+        </ul>
+        <p>$1\,\text{K}$ je $1/273{,}16$ tohoto intervalu. Zavedl ji William Thomson, lord Kelvin (1824–1907).</p>
+        <p><strong>Převodní vztahy</strong> (protože $0\,^\circ\text{C} = 273{,}15\,\text{K}$):</p>
+        $$ T = t_C + 273{,}15 \qquad\qquad t_C = T - 273{,}15 $$
+        <p><strong>Důležité:</strong> interval $1\,\text{K}$ je roven intervalu $1\,^\circ\text{C}$ – teplotní <em>rozdíl</em> vyjádřený v kelvinech je tedy číselně stejný jako tentýž rozdíl vyjádřený ve stupních Celsia. To ale <strong>neplatí</strong> pro stupně Fahrenheita, kde je třeba rozdíl navíc násobit/dělit faktorem 1,8 (viz níže, bod 5).</p>
+
+        <h2>4. Absolutní nula a graf V–T</h2>
+        <p>Zkoumáme-li závislost objemu plynu na teplotě při různých (ale stálých) tlacích, dostaneme sadu přímek – tzv. izobar. Všechny tyto přímky, prodloužíme-li je zpět, protínají osu teploty ve stejném bodě: $t = -273{,}15\,^\circ\text{C}$. Tato teplota se nazývá <strong>absolutní nula</strong> – je to teoreticky nejnižší možná teplota, při níž by (podle tohoto zjednodušeného lineárního modelu) objem plynu klesl na nulu. Absolutní nula odpovídá $0\,\text{K}$ na termodynamické stupnici.</p>
+
+        <h2>5. Práce s teplotním rozdílem (ΔT) v různých jednotkách</h2>
+        <p>Je nutné rozlišovat mezi <strong>konkrétní teplotou</strong> (např. $t = 20\,^\circ\text{C}$) a <strong>změnou teploty</strong> neboli teplotním rozdílem $\Delta T = t_2 - t_1$.</p>
+        <ul>
+            <li>Pro převod <em>konkrétní teploty</em> mezi stupnicemi platí vzorce z bodu 3 (včetně posunu +32, resp. +273,15).</li>
+            <li>Pro převod <em>rozdílu teplot</em> žádný posun (+32 ani +273,15) nepoužíváme – posuny se totiž při odečítání dvou teplot navzájem odečtou!</li>
+        </ul>
+        <p>Platí tedy jednodušší vztahy pouze pro rozdíly:</p>
+        $$ \Delta T[\text{K}] = \Delta t[^\circ\text{C}] \qquad\qquad \Delta t[^\circ\text{F}] = 1{,}8 \cdot \Delta t[^\circ\text{C}] $$
+        <p><strong>Příklad časté chyby:</strong> pokud teplota vzroste o $\Delta t = 10\,^\circ\text{C}$, NENÍ to $10 \cdot 1{,}8 + 32 = 50\,^\circ\text{F}$, ale pouze $10 \cdot 1{,}8 = 18\,^\circ\text{F}$ (nárůst o 18 stupňů Fahrenheita, bez přičtení 32).</p>
+
+        <h2>6. Vzorový příklad</h2>
+        <p><strong>Zadání:</strong> Voda byla ohřáta z teploty $t_1 = 15\,^\circ\text{C}$ na teplotu $t_2 = 95\,^\circ\text{F}$. Určete teplotní rozdíl $\Delta T$ vyjádřený v kelvinech.</p>
+        <p><strong>Řešení:</strong></p>
+        <ol>
+            <li>Převedeme $t_2$ na stupně Celsia: $t_2(^\circ\text{C}) = \dfrac{95 - 32}{1{,}8} = 35\,^\circ\text{C}$</li>
+            <li>Vypočítáme rozdíl teplot v °C: $\Delta t = 35 - 15 = 20\,^\circ\text{C}$</li>
+            <li>Protože interval 1 K = interval 1 °C, platí: $\Delta T = 20\,\text{K}$</li>
+        </ol>
+        <p><strong>Odpověď:</strong> Teplota vody vzrostla o 20 K.</p>
+
+        <h2>7. Shrnutí</h2>
+        <ul>
+            <li><strong>Teplota</strong> je veličina, kterou mají společnou tělesa v rovnovážném stavu (nultý zákon termodynamiky).</li>
+            <li><strong>Teploměry:</strong> využívají roztažnost kapalin, pevných látek, plynů, elektrické veličiny nebo barvu záření.</li>
+            <li><strong>Tři hlavní stupnice:</strong> Celsiova (0–100 °C mezi bodem tuhnutí a varu vody), Fahrenheitova (32–212 °F), termodynamická/Kelvinova (0 K = absolutní nula, 273,16 K = trojný bod vody).</li>
+            <li><strong>Převody:</strong> $t(^\circ\text{F}) = 1{,}8\,t(^\circ\text{C}) + 32$; $T(\text{K}) = t(^\circ\text{C}) + 273{,}15$.</li>
+            <li><strong>Rozdíly teplot:</strong> $\Delta T[\text{K}] = \Delta t[^\circ\text{C}]$, ale $\Delta t[^\circ\text{F}] = 1{,}8 \cdot \Delta t[^\circ\text{C}]$ (bez posunu +32/+273,15!).</li>
+            <li><strong>Absolutní nula:</strong> $-273{,}15\,^\circ\text{C} = 0\,\text{K}$, určená extrapolací grafu V–T plynu.</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>La température</h1>
+        <p><strong>Matière :</strong> Physique
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. Qu'est-ce que la température</h2>
+        <p>Lorsqu'on met en contact deux objets à des températures différentes, un échange de chaleur se produit entre eux jusqu'à ce qu'ils atteignent un <strong>état d'équilibre</strong> – à partir de ce moment, les deux objets ont la même température.</p>
+        <p><strong>Les corps qui sont en contact ont la même température s'ils sont en état d'équilibre.</strong> Ce fait (appelé principe zéro de la thermodynamique) constitue la base de la définition de la température ainsi que du fonctionnement de tous les thermomètres.</p>
+
+        <h2>2. Les thermomètres</h2>
+        <p>Un <strong>thermomètre</strong> est un instrument permettant de mesurer la température. Son fonctionnement repose sur une propriété physique de la matière qui varie de façon prévisible avec la température :</p>
+        <ul>
+            <li><strong>dilatation des liquides</strong> – thermomètres à mercure et à alcool,</li>
+            <li><strong>dilatation des solides</strong> – thermomètres bimétaux (deux métaux ayant des coefficients de dilatation différents, assemblés en une lame qui se courbe lors du chauffage),</li>
+            <li><strong>dilatation des gaz</strong> – thermomètres à gaz (à volume constant ou à pression constante),</li>
+            <li><strong>grandeurs électriques</strong> – thermomètres électroniques,</li>
+            <li><strong>variations de couleur d'un corps rayonnant</strong> – pyromètres optiques (utilisés par exemple pour mesurer de très hautes températures en métallurgie).</li>
+        </ul>
+
+        <h2>3. Les échelles de température</h2>
+        <p>Toute échelle de température nécessite <strong>deux points fixes</strong> (deux températures définies), entre lesquels l'intervalle est divisé en un certain nombre de parties égales – les degrés.</p>
+
+        <h3>L'échelle Celsius (1742)</h3>
+        <ul>
+            <li>$0\,^\circ\text{C}$ – point de solidification de l'eau</li>
+            <li>$100\,^\circ\text{C}$ – point d'ébullition de l'eau</li>
+        </ul>
+        <p>$1\,^\circ\text{C}$ est $1/100$ de cet intervalle. Elle a été proposée par l'astronome suédois Anders Celsius (1701–1744).</p>
+
+        <h3>L'échelle Fahrenheit (1724)</h3>
+        <ul>
+            <li>$32\,^\circ\text{F}$ – point de solidification de l'eau</li>
+            <li>$212\,^\circ\text{F}$ – point d'ébullition de l'eau</li>
+        </ul>
+        <p>$1\,^\circ\text{F}$ est $1/180$ de cet intervalle. Elle a été introduite par Gabriel Daniel Fahrenheit (1686–1736) et reste couramment utilisée, par exemple aux États-Unis.</p>
+        <p><strong>Formules de conversion :</strong></p>
+        $$ t(^\circ\text{C}) = \dfrac{t(^\circ\text{F}) - 32}{1{,}8} \qquad\qquad t(^\circ\text{F}) = t(^\circ\text{C}) \cdot 1{,}8 + 32 $$
+        <p>Astuce utile : les deux échelles se croisent au point $-40$, c'est-à-dire $-40\,^\circ\text{C} = -40\,^\circ\text{F}$. On en déduit une méthode simple :</p>
+        <ul>
+            <li>$t_C \rightarrow t_F$ : ajouter 40, multiplier par 1,8, soustraire 40</li>
+            <li>$t_F \rightarrow t_C$ : ajouter 40, diviser par 1,8, soustraire 40</li>
+        </ul>
+
+        <h3>L'échelle thermodynamique (Kelvin)</h3>
+        <ul>
+            <li>$0\,\text{K}$ – température théoriquement la plus basse possible (<strong>zéro absolu</strong>)</li>
+            <li>$273{,}16\,\text{K}$ – point triple de l'eau (température à laquelle l'eau existe en équilibre simultanément à l'état liquide, solide et gazeux)</li>
+        </ul>
+        <p>$1\,\text{K}$ est $1/273{,}16$ de cet intervalle. Elle a été introduite par William Thomson, lord Kelvin (1824–1907).</p>
+        <p><strong>Formules de conversion</strong> (car $0\,^\circ\text{C} = 273{,}15\,\text{K}$) :</p>
+        $$ T = t_C + 273{,}15 \qquad\qquad t_C = T - 273{,}15 $$
+        <p><strong>Important :</strong> l'intervalle $1\,\text{K}$ est égal à l'intervalle $1\,^\circ\text{C}$ – une <em>différence</em> de température exprimée en kelvins est donc numériquement identique à la même différence exprimée en degrés Celsius. Ce n'est en revanche <strong>pas le cas</strong> pour les degrés Fahrenheit, où il faut multiplier/diviser la différence par le facteur 1,8 (voir ci-dessous, point 5).</p>
+
+        <h2>4. Le zéro absolu et le graphique V–T</h2>
+        <p>Si l'on étudie la dépendance du volume d'un gaz à la température pour différentes pressions (constantes), on obtient une famille de droites – les isobares. Toutes ces droites, si on les prolonge, coupent l'axe des températures au même point : $t = -273{,}15\,^\circ\text{C}$. Cette température est appelée <strong>zéro absolu</strong> – c'est la température théoriquement la plus basse possible, à laquelle le volume du gaz (selon ce modèle linéaire simplifié) s'annulerait. Le zéro absolu correspond à $0\,\text{K}$ sur l'échelle thermodynamique.</p>
+
+        <h2>5. Travailler avec une différence de température (ΔT) dans différentes unités</h2>
+        <p>Il faut distinguer une <strong>température donnée</strong> (par exemple $t = 20\,^\circ\text{C}$) d'une <strong>variation de température</strong>, c'est-à-dire une différence $\Delta T = t_2 - t_1$.</p>
+        <ul>
+            <li>Pour convertir une <em>température donnée</em> entre échelles, on utilise les formules du point 3 (y compris le décalage +32, resp. +273,15).</li>
+            <li>Pour convertir une <em>différence de température</em>, on n'utilise aucun décalage (ni +32 ni +273,15) – ces décalages s'annulent en effet lors de la soustraction de deux températures !</li>
+        </ul>
+        <p>Des relations plus simples s'appliquent donc uniquement aux différences :</p>
+        $$ \Delta T[\text{K}] = \Delta t[^\circ\text{C}] \qquad\qquad \Delta t[^\circ\text{F}] = 1{,}8 \cdot \Delta t[^\circ\text{C}] $$
+        <p><strong>Erreur fréquente à éviter :</strong> si la température augmente de $\Delta t = 10\,^\circ\text{C}$, cela ne fait PAS $10 \cdot 1{,}8 + 32 = 50\,^\circ\text{F}$, mais seulement $10 \cdot 1{,}8 = 18\,^\circ\text{F}$ (une augmentation de 18 degrés Fahrenheit, sans ajouter 32).</p>
+
+        <h2>6. Exemple type</h2>
+        <p><strong>Énoncé :</strong> De l'eau a été chauffée de $t_1 = 15\,^\circ\text{C}$ à $t_2 = 95\,^\circ\text{F}$. Déterminez la variation de température $\Delta T$ exprimée en kelvins.</p>
+        <p><strong>Solution :</strong></p>
+        <ol>
+            <li>Convertissons $t_2$ en degrés Celsius : $t_2(^\circ\text{C}) = \dfrac{95 - 32}{1{,}8} = 35\,^\circ\text{C}$</li>
+            <li>Calculons la différence de température en °C : $\Delta t = 35 - 15 = 20\,^\circ\text{C}$</li>
+            <li>Comme l'intervalle 1 K = l'intervalle 1 °C : $\Delta T = 20\,\text{K}$</li>
+        </ol>
+        <p><strong>Réponse :</strong> La température de l'eau a augmenté de 20 K.</p>
+
+        <h2>7. Résumé </h2>
+        <ul>
+            <li>La <strong>température</strong> est la grandeur commune à des corps en état d'équilibre (principe zéro de la thermodynamique).</li>
+            <li><strong>Thermomètres :</strong> exploitent la dilatation des liquides, des solides, des gaz, des grandeurs électriques ou la couleur du rayonnement.</li>
+            <li><strong>Trois échelles principales :</strong> Celsius (0–100 °C entre solidification et ébullition de l'eau), Fahrenheit (32–212 °F), thermodynamique/Kelvin (0 K = zéro absolu, 273,16 K = point triple de l'eau).</li>
+            <li><strong>Conversions :</strong> $t(^\circ\text{F}) = 1{,}8\,t(^\circ\text{C}) + 32$ ; $T(\text{K}) = t(^\circ\text{C}) + 273{,}15$.</li>
+            <li><strong>Différences de température :</strong> $\Delta T[\text{K}] = \Delta t[^\circ\text{C}]$, mais $\Delta t[^\circ\text{F}] = 1{,}8 \cdot \Delta t[^\circ\text{C}]$ (sans décalage +32/+273,15 !).</li>
+            <li><strong>Zéro absolu :</strong> $-273{,}15\,^\circ\text{C} = 0\,\text{K}$, déterminé par extrapolation du graphique V–T d'un gaz.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang) {
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (lang === 'cs') {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else if (lang === 'fr') {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangTeplota', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangTeplota');
+            if (saved === 'fr') { setLanguage('fr'); } else { setLanguage('cs'); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs'); });
+            btnFr.addEventListener('click', function() { setLanguage('fr'); });
+        })();
+    </script>
+
+</body>
+</html>

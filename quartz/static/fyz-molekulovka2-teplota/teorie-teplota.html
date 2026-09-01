@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teplota / La température</title>
+<script src="https://cdn.tailwindcss.com/"></script>
+<style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #cbd5e1; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #2563eb; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #dc2626; }
+    @media (max-width: 640px) {
+        .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; }
+    }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .badge { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.05em; padding:2px 10px; border-radius:9999px; }
+    figure.photo { margin:0; }
+    figure.photo img { border-radius:.75rem; border:1px solid #e2e8f0; width:100%; object-fit:cover; background:#0f172a; }
+    .photo-cap { font-size:.8rem; color:#64748b; margin-top:.4rem; text-align:center; }
+    .eq-box { transition: all .4s; }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-orange-700 to-red-800 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-orange-200 text-sm font-semibold tracking-wider uppercase">
+            <span>🌡️ Molekulová fyzika a termika</span><span>•</span><span>Část 1.2</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Teplota</h1>
+        <p class="text-lg md:text-xl text-orange-50 max-w-3xl leading-relaxed">
+            Co je teplota, jak ji měříme a jak mezi sebou převádět různé teplotní stupnice.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('cz-teplota')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Co je teplota</span>
+        <span onclick="scrollToId('cz-teplomery')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Teploměry</span>
+        <span onclick="scrollToId('cz-stupnice')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Teplotní stupnice</span>
+        <span onclick="scrollToId('cz-absolutni')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Absolutní nula</span>
+        <span onclick="scrollToId('cz-srovnani')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Srovnání stupnic</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- CO JE TEPLOTA -->
+    <section id="cz-teplota" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Co je teplota</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-6">Dva objekty jsou uvedeny do vzájemného kontaktu.</p>
+            <div class="grid sm:grid-cols-2 gap-6 mb-6">
+                <div class="text-center">
+                    <p class="font-semibold text-slate-600 mb-2">Zpočátku</p>
+                    <div class="flex rounded-lg overflow-hidden h-20 border border-slate-300">
+                        <div class="w-1/2 bg-teal-500"></div>
+                        <div class="w-1/2 bg-red-600"></div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-2">rozdílné teploty</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-semibold text-slate-600 mb-2">V rovnovážném stavu</p>
+                    <div class="flex rounded-lg overflow-hidden h-20 border border-slate-300">
+                        <div class="w-1/2 bg-orange-300"></div>
+                        <div class="w-1/2 bg-orange-300"></div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-2">stejné teploty</p>
+                </div>
+            </div>
+            <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 text-center font-semibold text-blue-900">
+                Tělesa, která jsou ve vzájemném kontaktu, mají stejnou teplotu, jsou-li v rovnovážném stavu.
+            </div>
+        </div>
+    </section>
+
+    <!-- TEPLOMĚRY -->
+    <section id="cz-teplomery" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">Teploměry</h2>
+        <p class="text-slate-600 mb-8"><strong>Teploměr</strong> – přístroj k měření teploty. Jeho fungování je založeno na fyzikální vlastnosti, která se mění s teplotou:</p>
+
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Roztažnost kapalin (rtuťové, lihové teploměry)</h3>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <figure class="photo"><img src="images-teplota/thermo_mercury.jpg" alt="Rtuťový teploměr"><figcaption class="photo-cap">lihový teploměr</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/thermo_medical.jpg" alt="Lékařský teploměr"><figcaption class="photo-cap">lékařský rtuťový teploměr</figcaption></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Roztažnost pevných látek (bimetalové teploměry)</h3>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <figure class="photo"><img src="images-teplota/bimetal_strip.png" alt="Ohyb bimetalového pásku" class="!bg-white"><figcaption class="photo-cap">▶ animace – ohyb pásku</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/bimetal_dial.jpg" alt="Bimetalový teploměr"><figcaption class="photo-cap">bimetalový teploměr</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/bimetal_coil.png" alt="Bimetalová spirála"><figcaption class="photo-cap">▶ video – spirála</figcaption></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Roztažnost plynů (plynové teploměry)</h3>
+                <figure class="photo max-w-lg mx-auto"><img src="images-teplota/gas_thermometer.png" alt="Plynový teploměr" class="!bg-white"><figcaption class="photo-cap">(a) teploměr se stálým tlakem, (b) teploměr se stálým objemem</figcaption></figure>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Elektrické veličiny (elektronické teploměry)</h3>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <figure class="photo"><img src="images-teplota/thermo_electronic.jpg" alt="Elektronický teploměr"><figcaption class="photo-cap">elektronický teploměr</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/thermo_digital_medical.jpg" alt="Digitální lékařský teploměr"><figcaption class="photo-cap">digitální lékařský teploměr</figcaption></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Barevné změny (optické pyrometry)</h3>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <figure class="photo"><img src="images-teplota/color_temperature_scale.png" alt="Barevná teplotní škála"><figcaption class="photo-cap">teplota barvy</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/pyrometer_device.jpg" alt="Optický pyrometr"><figcaption class="photo-cap">optický pyrometr</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/pyrometer_use.jpg" alt="Použití pyrometru"><figcaption class="photo-cap">měření pyrometrem</figcaption></figure>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TEPLOTNÍ STUPNICE -->
+    <section id="cz-stupnice" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">Teplotní stupnice</h2>
+        <p class="text-slate-600 mb-8">Libovolná stupnice – vždy dva teplotní body, mezi nimiž je interval rozdělen na určitý počet stejných dílů – stupňů.</p>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <div class="grid md:grid-cols-[1fr_140px] gap-6 items-center">
+                <div>
+                    <h3 class="text-xl font-bold text-orange-800 mb-3">Celsiova stupnice (1742)</h3>
+                    <ul class="space-y-1 text-slate-700">
+                        <li><strong>0 °C</strong> – bod tuhnutí vody</li>
+                        <li><strong>100 °C</strong> – bod varu vody</li>
+                    </ul>
+                    <p class="text-slate-600 mt-3">1 °C je 1/100 tohoto intervalu.</p>
+                </div>
+                <figure class="photo"><img src="images-teplota/celsius_portrait.jpg" alt="Anders Celsius"><figcaption class="photo-cap">Anders Celsius<br>1701–1744</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <div class="grid md:grid-cols-[1fr_140px] gap-6 items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-orange-800 mb-3">Fahrenheitova stupnice (1724)</h3>
+                    <ul class="space-y-1 text-slate-700">
+                        <li><strong>32 °F</strong> – bod tuhnutí vody</li>
+                        <li><strong>212 °F</strong> – bod varu vody</li>
+                    </ul>
+                    <p class="text-slate-600 mt-3">1 °F je 1/180 tohoto intervalu.</p>
+                </div>
+                <figure class="photo"><img src="images-teplota/fahrenheit_engraving.png" alt="Fahrenheit"><figcaption class="photo-cap">G. D. Fahrenheit<br>1686–1736</figcaption></figure>
+            </div>
+            <figure class="photo max-w-[180px] mx-auto mb-6"><img src="images-teplota/celsius_fahrenheit_scale.png" alt="Srovnání °C a °F"></figure>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-yellow-50 border border-yellow-300 rounded-xl p-4 font-mono text-sm text-center">
+                    t(°C) = (t(°F) − 32) / 1,8<br>
+                    t(°F) = t(°C) × 1,8 + 32
+                </div>
+                <div class="bg-orange-100 border border-orange-300 rounded-xl p-4 text-sm text-center">
+                    −40 °C = −40 °F, tedy:<br>
+                    t<sub>C</sub> → t<sub>F</sub>: +40, ×1,8, −40<br>
+                    t<sub>F</sub> → t<sub>C</sub>: +40, ÷1,8, −40
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div class="grid md:grid-cols-[1fr_140px] gap-6 items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-orange-800 mb-3">Termodynamická stupnice (Kelvin)</h3>
+                    <ul class="space-y-1 text-slate-700">
+                        <li><strong>0 K</strong> – teoreticky nejnižší možná teplota (absolutní nula)</li>
+                        <li><strong>273,16 K</strong> – trojný bod vody (teplota, při níž voda existuje v rovnováze jako kapalina, pevná látka i plyn)</li>
+                    </ul>
+                    <p class="text-slate-600 mt-3">1 K je 1/273,16 tohoto intervalu.</p>
+                </div>
+                <figure class="photo"><img src="images-teplota/kelvin_portrait.jpg" alt="Lord Kelvin"><figcaption class="photo-cap">W. Thomson,<br>lord Kelvin<br>1824–1907</figcaption></figure>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-orange-100 border border-orange-300 rounded-xl p-4 text-sm text-center font-mono">
+                    0 °C = 273,15 K, tedy:<br>
+                    T = t<sub>C</sub> + 273,15<br>
+                    t<sub>C</sub> = T − 273,15
+                </div>
+                <div class="bg-blue-100 border border-blue-300 rounded-xl p-4 text-sm text-center font-semibold text-blue-900 flex items-center justify-center">
+                    Interval 1 K je roven intervalu 1 °C
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABSOLUTNÍ NULA -->
+    <section id="cz-absolutni" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Absolutní nula</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Vztah objem – teplota plynu</h3>
+            <figure class="photo max-w-md mx-auto mb-4"><img src="images-teplota/isobars_graph.png" alt="Graf V-T izobar" class="!bg-white"></figure>
+            <p class="text-slate-700">Graf znázorňuje závislost objemu plynu na teplotě při různých (stálých) tlacích – izobarách P1, P2, P3. Všechny přímky, prodloužíme-li je, protínají osu teploty ve stejném bodě: <strong>−273,15 °C</strong>. To je teoretická <strong>absolutní nula</strong> teploty – teplota, při které by objem plynu (podle tohoto lineárního modelu) klesl na nulu.</p>
+        </div>
+    </section>
+
+    <!-- SROVNÁNÍ STUPNIC -->
+    <section id="cz-srovnani" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Srovnání teplotních stupnic</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-4">Kromě Celsiovy, Fahrenheitovy a Kelvinovy stupnice historicky vznikly i další teplotní stupnice (Rankinova, Rømerova, Newtonova, Delisleova, Réaumurova). Následující graf je vzájemně porovnává:</p>
+            <figure class="photo"><img src="images-teplota/scale_comparison.png" alt="Srovnání teplotních stupnic" class="!bg-white"></figure>
+            <p class="text-slate-600 text-sm mt-4 text-center font-mono">40 °C = 313,15 K = 104 °F = 563,67 °Ra = 28,5 °Rø = 13,2 °N = 90 °D = 32 °Ré</p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Výukový modul Fyzika · Teplota · zpracováno podle podkladu „Physique moléculaire et thermique 1–2“</p>
+</footer>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-orange-700 to-red-800 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-orange-200 text-sm font-semibold tracking-wider uppercase">
+            <span>🌡️ Physique moléculaire et thermique</span><span>•</span><span>Partie 1.2</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">La température</h1>
+        <p class="text-lg md:text-xl text-orange-50 max-w-3xl leading-relaxed">
+            Ce qu'est la température, comment la mesurer et comment convertir entre les différentes échelles.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('fr-temperature')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">La température</span>
+        <span onclick="scrollToId('fr-thermometres')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Thermomètres</span>
+        <span onclick="scrollToId('fr-echelles')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Échelles de température</span>
+        <span onclick="scrollToId('fr-absolu')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Zéro absolu</span>
+        <span onclick="scrollToId('fr-comparaison')" class="nav-pill hover:text-orange-600 px-3 py-1 rounded-full hover:bg-orange-50">Comparaison</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- LA TEMPÉRATURE -->
+    <section id="fr-temperature" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">La température</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-6">Deux objets sont mis en contact.</p>
+            <div class="grid sm:grid-cols-2 gap-6 mb-6">
+                <div class="text-center">
+                    <p class="font-semibold text-slate-600 mb-2">Initialement</p>
+                    <div class="flex rounded-lg overflow-hidden h-20 border border-slate-300">
+                        <div class="w-1/2 bg-teal-500"></div>
+                        <div class="w-1/2 bg-red-600"></div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-2">températures différentes</p>
+                </div>
+                <div class="text-center">
+                    <p class="font-semibold text-slate-600 mb-2">En état d'équilibre</p>
+                    <div class="flex rounded-lg overflow-hidden h-20 border border-slate-300">
+                        <div class="w-1/2 bg-orange-300"></div>
+                        <div class="w-1/2 bg-orange-300"></div>
+                    </div>
+                    <p class="text-sm text-slate-500 mt-2">températures égales</p>
+                </div>
+            </div>
+            <div class="bg-blue-100 border border-blue-300 rounded-xl p-5 text-center font-semibold text-blue-900">
+                Les corps qui sont en contact ont la même température s'ils sont en état d'équilibre.
+            </div>
+        </div>
+    </section>
+
+    <!-- THERMOMÈTRES -->
+    <section id="fr-thermometres" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">Les thermomètres</h2>
+        <p class="text-slate-600 mb-8"><strong>Thermomètre</strong> – instrument à mesurer la température. Le fonctionnement est fondé sur une propriété physique qui varie en fonction de la température :</p>
+
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Dilatation des liquides (thermomètres à mercure, à alcool)</h3>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <figure class="photo"><img src="images-teplota/thermo_mercury.jpg" alt="Thermomètre à mercure"><figcaption class="photo-cap">thermomètre à alcool</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/thermo_medical.jpg" alt="Thermomètre médical"><figcaption class="photo-cap">thermomètre médical à mercure</figcaption></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Dilatation des solides (thermomètres bimétaux)</h3>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <figure class="photo"><img src="images-teplota/bimetal_strip.png" alt="Flexion de la lame bimétallique" class="!bg-white"><figcaption class="photo-cap">▶ animation – flexion de la lame</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/bimetal_dial.jpg" alt="Thermomètre bimétallique"><figcaption class="photo-cap">thermomètre bimétallique</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/bimetal_coil.png" alt="Spirale bimétallique"><figcaption class="photo-cap">▶ vidéo – spirale</figcaption></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Dilatation des gaz (thermomètres à gaz)</h3>
+                <figure class="photo max-w-lg mx-auto"><img src="images-teplota/gas_thermometer.png" alt="Thermomètre à gaz" class="!bg-white"><figcaption class="photo-cap">(a) thermomètre à pression constante, (b) thermomètre à volume constant</figcaption></figure>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Variations électriques (thermomètres électroniques)</h3>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <figure class="photo"><img src="images-teplota/thermo_electronic.jpg" alt="Thermomètre électronique"><figcaption class="photo-cap">thermomètre électronique</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/thermo_digital_medical.jpg" alt="Thermomètre médical digital"><figcaption class="photo-cap">thermomètre médical digital</figcaption></figure>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-orange-800 mb-4">Variations de la couleur (pyromètres optiques)</h3>
+                <div class="grid sm:grid-cols-3 gap-4">
+                    <figure class="photo"><img src="images-teplota/color_temperature_scale.png" alt="Échelle de température de couleur"><figcaption class="photo-cap">température de couleur</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/pyrometer_device.jpg" alt="Pyromètre optique"><figcaption class="photo-cap">pyromètre optique</figcaption></figure>
+                    <figure class="photo"><img src="images-teplota/pyrometer_use.jpg" alt="Utilisation du pyromètre"><figcaption class="photo-cap">mesure au pyromètre</figcaption></figure>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ÉCHELLES DE TEMPÉRATURE -->
+    <section id="fr-echelles" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-2 text-slate-900">Les échelles de température</h2>
+        <p class="text-slate-600 mb-8">Une échelle quelconque possède toujours deux points de température, entre lesquels l'intervalle est divisé en un certain nombre de parties égales – les degrés.</p>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <div class="grid md:grid-cols-[1fr_140px] gap-6 items-center">
+                <div>
+                    <h3 class="text-xl font-bold text-orange-800 mb-3">L'échelle Celsius (1742)</h3>
+                    <ul class="space-y-1 text-slate-700">
+                        <li><strong>0 °C</strong> – point de solidification de l'eau</li>
+                        <li><strong>100 °C</strong> – point d'ébullition de l'eau</li>
+                    </ul>
+                    <p class="text-slate-600 mt-3">1 °C est 1/100 de cet intervalle.</p>
+                </div>
+                <figure class="photo"><img src="images-teplota/celsius_portrait.jpg" alt="Anders Celsius"><figcaption class="photo-cap">Anders Celsius<br>1701–1744</figcaption></figure>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <div class="grid md:grid-cols-[1fr_140px] gap-6 items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-orange-800 mb-3">L'échelle Fahrenheit (1724)</h3>
+                    <ul class="space-y-1 text-slate-700">
+                        <li><strong>32 °F</strong> – point de solidification de l'eau</li>
+                        <li><strong>212 °F</strong> – point d'ébullition de l'eau</li>
+                    </ul>
+                    <p class="text-slate-600 mt-3">1 °F est 1/180 de cet intervalle.</p>
+                </div>
+                <figure class="photo"><img src="images-teplota/fahrenheit_engraving.png" alt="Fahrenheit"><figcaption class="photo-cap">G. D. Fahrenheit<br>1686–1736</figcaption></figure>
+            </div>
+            <figure class="photo max-w-[180px] mx-auto mb-6"><img src="images-teplota/celsius_fahrenheit_scale.png" alt="Comparaison °C et °F"></figure>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-yellow-50 border border-yellow-300 rounded-xl p-4 font-mono text-sm text-center">
+                    t(°C) = (t(°F) − 32) / 1,8<br>
+                    t(°F) = t(°C) × 1,8 + 32
+                </div>
+                <div class="bg-orange-100 border border-orange-300 rounded-xl p-4 text-sm text-center">
+                    −40 °C = −40 °F, alors :<br>
+                    t<sub>C</sub> → t<sub>F</sub> : +40, ×1,8, −40<br>
+                    t<sub>F</sub> → t<sub>C</sub> : +40, ÷1,8, −40
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <div class="grid md:grid-cols-[1fr_140px] gap-6 items-center mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-orange-800 mb-3">L'échelle thermodynamique (Kelvin)</h3>
+                    <ul class="space-y-1 text-slate-700">
+                        <li><strong>0 K</strong> – température théorique la plus basse possible (zéro absolu)</li>
+                        <li><strong>273,16 K</strong> – point triple de l'eau (température à laquelle l'eau existe en équilibre à l'état liquide, solide et gazeux)</li>
+                    </ul>
+                    <p class="text-slate-600 mt-3">1 K est 1/273,16 de cet intervalle.</p>
+                </div>
+                <figure class="photo"><img src="images-teplota/kelvin_portrait.jpg" alt="Lord Kelvin"><figcaption class="photo-cap">W. Thomson,<br>lord Kelvin<br>1824–1907</figcaption></figure>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-orange-100 border border-orange-300 rounded-xl p-4 text-sm text-center font-mono">
+                    0 °C = 273,15 K, alors :<br>
+                    T = t<sub>C</sub> + 273,15<br>
+                    t<sub>C</sub> = T − 273,15
+                </div>
+                <div class="bg-blue-100 border border-blue-300 rounded-xl p-4 text-sm text-center font-semibold text-blue-900 flex items-center justify-center">
+                    L'intervalle 1 K est égal à l'intervalle 1 °C
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ZÉRO ABSOLU -->
+    <section id="fr-absolu" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Le zéro absolu</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Relation volume – température des gaz</h3>
+            <figure class="photo max-w-md mx-auto mb-4"><img src="images-teplota/isobars_graph.png" alt="Graphique V-T des isobares" class="!bg-white"></figure>
+            <p class="text-slate-700">Le graphique montre la dépendance du volume d'un gaz à la température, pour différentes (constantes) pressions – les isobares P1, P2, P3. Toutes les droites, si on les prolonge, coupent l'axe des températures au même point : <strong>−273,15 °C</strong>. C'est le <strong>zéro absolu</strong> théorique de température – la température à laquelle le volume du gaz (selon ce modèle linéaire) s'annulerait.</p>
+        </div>
+    </section>
+
+    <!-- COMPARAISON -->
+    <section id="fr-comparaison" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Comparaison des échelles de température</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <p class="text-slate-700 mb-4">Outre les échelles Celsius, Fahrenheit et Kelvin, d'autres échelles de température sont apparues au cours de l'histoire (Rankine, Rømer, Newton, Delisle, Réaumur). Le graphique suivant les compare entre elles :</p>
+            <figure class="photo"><img src="images-teplota/scale_comparison.png" alt="Comparaison des échelles de température" class="!bg-white"></figure>
+            <p class="text-slate-600 text-sm mt-4 text-center font-mono">40 °C = 313,15 K = 104 °F = 563,67 °Ra = 28,5 °Rø = 13,2 °N = 90 °D = 32 °Ré</p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Module éducatif de Physique · La température · d'après le support « Physique moléculaire et thermique 1–2 »</p>
+</footer>
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+        if (cz.classList.contains('hidden')) {
+            cz.classList.remove('hidden'); fr.classList.add('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        } else {
+            fr.classList.remove('hidden'); cz.classList.add('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

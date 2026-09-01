@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kinetická teorie látek / Théorie cinétique de la matière</title>
+
+    <!-- Inter font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <!-- MathJax konfigurace -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        /* Základní styl */
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto;
+            padding: 0 20px;
+            max-width: 700px;
+            background: #fff;
+            color: #1f1f1f;
+            line-height: 1.6;
+            font-weight: 400;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            margin: 1.75rem 0 0.5rem;
+            font-weight: 600;
+        }
+        p {
+            margin: 0 0 1rem;
+        }
+        ul, ol {
+            margin: 0.5rem 0;
+            padding-left: 1.75rem;
+        }
+        strong {
+            font-weight: 600;
+        }
+        .MathJax_Display {
+            margin: 1em 0;
+            text-align: center;
+        }
+
+        /* Přepínání jazyků */
+        #content-cs {
+            display: block;
+        }
+        #content-fr {
+            display: none;
+        }
+        body.lang-fr #content-cs {
+            display: none;
+        }
+        body.lang-fr #content-fr {
+            display: block;
+        }
+
+        /* Fixované tlačítko */
+        .lang-switcher {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: #fff;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 6px 16px;
+            border: 1px solid #ccc;
+            background: #f5f5f5;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover {
+            background: #e8e8e8;
+        }
+        .lang-switcher button:active {
+            background: #d0d0d0;
+        }
+        .lang-switcher button.active {
+            background: #1f1f1f;
+            color: #fff;
+            border-color: #1f1f1f;
+        }
+        .lang-switcher .lang-label {
+            margin-right: 12px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+        .lang-switcher .lang-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        @media (max-width: 480px) {
+            .lang-switcher {
+                padding: 8px 12px;
+            }
+            .lang-switcher .lang-label {
+                font-size: 0.75rem;
+                margin-right: 8px;
+            }
+            body {
+                padding-top: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Jazykový přepínač -->
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Kinetická teorie látek</h1>
+        <p><strong>Předmět:</strong> Fyzika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Úvod do problematiky</h2>
+        <p>Kinetická teorie látek je model, který vysvětluje vlastnosti a chování látek na základě jejich <strong>částicové stavby</strong> a <strong>pohybu částic</strong>. Celý model stojí na třech základních poznatcích (postulátech):</p>
+        <ol>
+            <li>Látky v libovolném skupenství jsou složeny z <strong>částic</strong>.</li>
+            <li>Částice látek jsou v neustálém <strong>neuspořádaném (chaotickém) pohybu</strong>, ve všech směrech.</li>
+            <li>Částice na sebe navzájem působí <strong>silami</strong>, které jsou při malých vzdálenostech odpudivé a při větších vzdálenostech přitažlivé.</li>
+        </ol>
+        <p>V dalších kapitolách si každý z těchto poznatků rozebereme podrobněji a uvedeme experimentální i pozorovací důkazy, které jejich platnost potvrzují.</p>
+
+        <h2>2. Poznatek 1: Látky jsou složeny z částic</h2>
+        <p><strong>Částicemi</strong> rozumíme atomy, molekuly, ionty a subatomární částice (protony, neutrony, elektrony). Struktura látek je <strong>nespojitá (diskrétní)</strong> – objem není vyplněn beze zbytku hmotou.</p>
+        <p>Například atom vodíku je tvořen jedním protonem a jedním elektronem. Ztrátou elektronu vzniká kladně nabitý iont – <strong>kationt</strong>; ziskem elektronu vzniká záporně nabitý iont – <strong>aniont</strong>.</p>
+
+        <h3>Jak si částice "prohlédnout"?</h3>
+        <p>Částice jsou natolik malé, že je nelze pozorovat pouhým okem, lupou ani optickým mikroskopem. Lze je zobrazit pouze pomocí <strong>řádkovacího tunelového mikroskopu (STM)</strong>, který využívá kvantový tunelový jev – velmi tenký, elektricky nabitý hrot dokáže tunelovým jevem "vytrhávat" elektrony ze zkoumaného povrchu, čímž vzniká obraz jednotlivých atomů.</p>
+
+        <h3>Rozměry atomu a jádra</h3>
+        <p>Rozměry atomů jsou řádově $10^{-10}\,\text{m}$ (1 angström), zatímco rozměry atomového jádra jsou řádově $10^{-15}\,\text{m}$ (1 femtometr):</p>
+        $$ 1\,\text{Å} = 100\,000\,\text{fm} $$
+        <p>Jádro je tedy asi <strong>stotisíckrát menší</strong> než celý atom.</p>
+
+        <h2>3. Poznatek 2: Částice jsou v neustálém neuspořádaném pohybu</h2>
+        <h3>Brownův pohyb</h3>
+        <p><strong>Brownův pohyb</strong> je mikroskopický neuspořádaný pohyb nepatrných částic (např. pylových zrnek ve vodě nebo kapiček mléka), které opisují klikaté trajektorie, ačkoli se okolní kapalina jeví jako nehybná. Objevil jej v roce 1827 <strong>skotský botanik Robert Brown</strong>. Vysvětluje se srážkami mezi pozorovanou částicí a molekulami kapaliny.</p>
+
+        <h3>Difúze</h3>
+        <p><strong>Difúze</strong> je samovolné pronikání částic jedné látky mezi částice látky jiné, jsou-li tyto látky ve vzájemném kontaktu. Probíhá:</p>
+        <ul>
+            <li><strong>velmi rychle v plynech</strong>,</li>
+            <li>pomaleji v kapalinách,</li>
+            <li><strong>velmi pomalu v pevných látkách</strong>.</li>
+        </ul>
+        <p>S rostoucí teplotou se difúze zrychluje.</p>
+
+        <h3>Tlak plynu</h3>
+        <p><strong>Tlak plynu</strong> je důsledkem srážek molekul plynu v tepelném pohybu se stěnami nádoby.</p>
+
+        <h2>4. Poznatek 3: Částice na sebe působí silami</h2>
+        <p>Interakce mezi dvěma atomy je výsledkem přitažlivých a odpudivých sil mezi jejich <strong>jádry</strong> (elektricky kladnými) a <strong>elektronovými obaly</strong> (elektricky zápornými). Výsledná síla závisí na vzdálenosti mezi částicemi:</p>
+        <ul>
+            <li>při <strong>malé vzdálenosti</strong> převažuje síla <strong>odpudivá</strong>,</li>
+            <li>při <strong>větší vzdálenosti</strong> převažuje síla <strong>přitažlivá</strong> (s maximem v určité vzdálenosti),</li>
+            <li>pro <strong>dostatečně velké vzdálenosti</strong> je síla <strong>prakticky nulová</strong>.</li>
+        </ul>
+        <p>Vzdálenost, ve které je výsledná síla nulová, se nazývá <strong>rovnovážná poloha</strong>.</p>
+
+        <h3>Projevy přitažlivých a odpudivých sil</h3>
+        <p>Přitažlivé síly se projevují jako:</p>
+        <ul>
+            <li><strong>koheze</strong> – mezi částicemi jednoho tělesa,</li>
+            <li><strong>adheze</strong> – mezi dvěma tělesy v kontaktu,</li>
+            <li><strong>(mechanická) pevnost</strong> látek.</li>
+        </ul>
+        <p>Odpudivé síly se projevují jako:</p>
+        <ul>
+            <li>velmi <strong>malá stlačitelnost</strong> kapalin a pevných látek,</li>
+            <li>změna směru pohybu <strong>při srážce</strong> dvou těles.</li>
+        </ul>
+
+        <h3>Vazebné síly a vazebná energie</h3>
+        <p>Síly mezi atomy v molekule se nazývají <strong>vazebné síly</strong> a určují strukturu molekuly. Existence vzájemného působení mezi částicemi ukazuje, že soustava má <strong>potenciální energii</strong>. Tato energie se nazývá <strong>vazebná energie</strong> a je rovna práci, kterou je třeba vykonat vnějšími silami k přerušení dané vazby.</p>
+
+        <h2>5. Modely struktury látek</h2>
+        <p>Podle poměru mezi potenciální energií $E_p$ (danou vzájemnými silami částic) a kinetickou energií $E_k$ (danou neuspořádaným pohybem částic) rozlišujeme čtyři modely skupenství:</p>
+        <ul>
+            <li><strong>Plyn:</strong> střední vzdálenosti částic jsou mnohem větší než jejich rozměry, přitažlivé síly jsou zanedbatelné ⇒ $E_p \ll E_k$</li>
+            <li><strong>Pevná látka</strong> (krystalická nebo amorfní): částice vázány na pevná místa, střední vzdálenosti $0{,}2\text{–}0{,}3\,\text{nm}$ ⇒ $E_p \gg E_k$</li>
+            <li><strong>Kapalina:</strong> střední vzdálenosti přibližně $0{,}2\,\text{nm}$, síly slabé, rovnovážné polohy se v čase mění ⇒ $E_p \approx E_k$</li>
+            <li><strong>Plazma:</strong> „čtvrté skupenství látky“ – soustava elektricky nabitých částic (iontů, elektronů) a neutrálních částic (např. plamen, blesk, hvězdy)</li>
+        </ul>
+
+        <h2>6. Rovnovážný stav soustavy</h2>
+        <ul>
+            <li><strong>Termodynamická soustava</strong> – soubor těles, jejichž stav zkoumáme.</li>
+            <li><strong>Stavové veličiny</strong> – fyzikální veličiny popisující stav soustavy (teplota, objem, tlak, hustota, počet molekul…).</li>
+            <li><strong>Rovnovážný stav</strong> – stav, který zůstává v čase neměnný.</li>
+        </ul>
+        <p>Každá soustava, která se nachází v neměnných vnějších podmínkách, samovolně přechází do rovnovážného stavu.</p>
+
+        <h2>7. Vzorový příklad</h2>
+        <p><strong>Zadání:</strong> O kolik řádů je atomové jádro menší než celý atom, víme-li, že rozměr atomu je řádově $10^{-10}\,\text{m}$ a rozměr jádra řádově $10^{-15}\,\text{m}$?</p>
+        <p><strong>Řešení:</strong></p>
+        <ol>
+            <li>Vypočítáme poměr rozměrů: $\dfrac{10^{-10}}{10^{-15}} = 10^{5}$</li>
+            <li>Jádro je tedy asi $10^5$-krát, tj. stotisíckrát menší než atom.</li>
+        </ol>
+        <p><strong>Odpověď:</strong> Atomové jádro je o 5 řádů (stotisíckrát) menší než celý atom.</p>
+
+        <h2>8. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Tři poznatky kinetické teorie:</strong> částicová stavba, neuspořádaný pohyb, vzájemné síly.</li>
+            <li><strong>Důkazy pohybu částic:</strong> Brownův pohyb, difúze, tlak plynu.</li>
+            <li><strong>Síly mezi částicemi:</strong> odpudivé nablízko, přitažlivé na dálku, nulové pro velmi velké vzdálenosti.</li>
+            <li><strong>Vazebná energie:</strong> práce potřebná k přerušení vazby vnějšími silami.</li>
+            <li><strong>Modely skupenství podle poměru $E_p/E_k$:</strong> plyn ($E_p \ll E_k$), pevná látka ($E_p \gg E_k$), kapalina ($E_p \approx E_k$), plazma (čtvrté skupenství).</li>
+            <li><strong>Rovnovážný stav:</strong> neměnný stav soustavy za neměnných vnějších podmínek.</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>Théorie cinétique de la matière</h1>
+        <p><strong>Matière :</strong> Physique
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. Introduction</h2>
+        <p>La théorie cinétique de la matière est un modèle qui explique les propriétés et le comportement des substances à partir de leur <strong>structure particulaire</strong> et du <strong>mouvement de leurs particules</strong>. Ce modèle repose sur trois postulats fondamentaux :</p>
+        <ol>
+            <li>Les substances, quel que soit leur état, sont constituées de <strong>particules</strong>.</li>
+            <li>Les particules des substances sont animées d'un <strong>mouvement perpétuel désordonné (chaotique)</strong>, dans toutes les directions.</li>
+            <li>Les particules exercent les unes sur les autres des <strong>forces</strong>, répulsives à faible distance et attractives à plus grande distance.</li>
+        </ol>
+        <p>Dans les chapitres suivants, nous détaillerons chacun de ces postulats et présenterons les preuves expérimentales et observationnelles qui confirment leur validité.</p>
+
+        <h2>2. Postulat 1 : les substances sont constituées de particules</h2>
+        <p>Par <strong>particules</strong>, on entend les atomes, les molécules, les ions et les particules subatomiques (protons, neutrons, électrons). La structure des substances est <strong>discontinue (discrète)</strong> : le volume n'est pas entièrement occupé par la matière.</p>
+        <p>Par exemple, l'atome d'hydrogène est constitué d'un proton et d'un électron. La perte de l'électron forme un ion positif – un <strong>cation</strong> ; le gain d'un électron forme un ion négatif – un <strong>anion</strong>.</p>
+
+        <h3>Comment « observer » les particules ?</h3>
+        <p>Les particules sont si petites qu'elles ne peuvent être observées ni à l'œil nu, ni à la loupe, ni au microscope optique. Elles ne peuvent être visualisées qu'à l'aide d'un <strong>microscope à effet tunnel (STM)</strong>, qui exploite l'effet tunnel quantique : une pointe très fine, portée à un potentiel électrique, peut arracher des électrons de la surface étudiée par effet tunnel, ce qui permet de former une image des atomes individuels.</p>
+
+        <h3>Dimensions de l'atome et du noyau</h3>
+        <p>Les dimensions des atomes sont de l'ordre de $10^{-10}\,\text{m}$ (1 ångström), tandis que le noyau atomique mesure de l'ordre de $10^{-15}\,\text{m}$ (1 femtomètre) :</p>
+        $$ 1\,\text{Å} = 100\,000\,\text{fm} $$
+        <p>Le noyau est donc environ <strong>cent mille fois plus petit</strong> que l'atome entier.</p>
+
+        <h2>3. Postulat 2 : les particules sont animées d'un mouvement perpétuel désordonné</h2>
+        <h3>Le mouvement brownien</h3>
+        <p>Le <strong>mouvement brownien</strong> est le mouvement microscopique désordonné de minuscules particules (par exemple des grains de pollen dans l'eau ou des gouttelettes de lait), qui décrivent des trajectoires erratiques alors que le liquide environnant paraît immobile. Il a été découvert en 1827 par le <strong>botaniste écossais Robert Brown</strong>. Il s'explique par les chocs entre la particule observée et les molécules du liquide.</p>
+
+        <h3>La diffusion</h3>
+        <p>La <strong>diffusion</strong> est la pénétration spontanée des particules d'une substance entre les particules d'une autre substance, lorsque ces substances sont en contact. Elle est :</p>
+        <ul>
+            <li><strong>très rapide dans les gaz</strong>,</li>
+            <li>plus lente dans les liquides,</li>
+            <li><strong>très lente dans les solides</strong>.</li>
+        </ul>
+        <p>Avec l'augmentation de la température, la diffusion s'accélère.</p>
+
+        <h3>La pression des gaz</h3>
+        <p>La <strong>pression des gaz</strong> résulte des chocs des molécules de gaz en agitation thermique contre les parois du récipient.</p>
+
+        <h2>4. Postulat 3 : les particules exercent des forces les unes sur les autres</h2>
+        <p>L'interaction entre deux atomes résulte des forces attractives et répulsives entre leurs <strong>noyaux</strong> (électriquement positifs) et leurs <strong>nuages électroniques</strong> (électriquement négatifs). La force résultante dépend de la distance entre les particules :</p>
+        <ul>
+            <li>à <strong>faible distance</strong> domine la force <strong>répulsive</strong>,</li>
+            <li>à <strong>plus grande distance</strong> domine la force <strong>attractive</strong> (avec un maximum à une certaine distance),</li>
+            <li>pour des <strong>distances suffisamment grandes</strong>, la force est <strong>pratiquement nulle</strong>.</li>
+        </ul>
+        <p>La distance à laquelle la force résultante est nulle est appelée <strong>position d'équilibre</strong>.</p>
+
+        <h3>Manifestations des forces attractives et répulsives</h3>
+        <p>Les forces attractives se manifestent par :</p>
+        <ul>
+            <li>la <strong>cohésion</strong> — entre les particules d'un même corps,</li>
+            <li>l'<strong>adhésion</strong> — entre deux corps en contact,</li>
+            <li>la <strong>résistance (mécanique)</strong> des substances.</li>
+        </ul>
+        <p>Les forces répulsives se manifestent par :</p>
+        <ul>
+            <li>la très <strong>faible compressibilité</strong> des liquides et des solides,</li>
+            <li>le changement de direction du mouvement <strong>lors d'un choc</strong> entre deux corps.</li>
+        </ul>
+
+        <h3>Forces de liaison et énergie de liaison</h3>
+        <p>Les forces entre les atomes d'une molécule sont appelées <strong>forces de liaison</strong> et déterminent la structure de la molécule. L'existence d'interactions entre les particules montre que le système possède une <strong>énergie potentielle</strong>. Cette énergie est appelée <strong>énergie de liaison</strong> ; elle est égale au travail que des forces extérieures doivent fournir pour rompre cette liaison.</p>
+
+        <h2>5. Modèles de la structure de la matière</h2>
+        <p>Selon le rapport entre l'énergie potentielle $E_p$ (due aux forces entre particules) et l'énergie cinétique $E_k$ (due au mouvement désordonné des particules), on distingue quatre modèles d'état :</p>
+        <ul>
+            <li><strong>Gaz :</strong> distances moyennes entre particules bien plus grandes que leurs dimensions, forces attractives négligeables ⇒ $E_p \ll E_k$</li>
+            <li><strong>Solide</strong> (cristallin ou amorphe) : particules à positions fixes, distances moyennes de $0{,}2$ à $0{,}3\,\text{nm}$ ⇒ $E_p \gg E_k$</li>
+            <li><strong>Liquide :</strong> distances moyennes d'environ $0{,}2\,\text{nm}$, forces faibles, positions d'équilibre variant dans le temps ⇒ $E_p \approx E_k$</li>
+            <li><strong>Plasma :</strong> « quatrième état de la matière » – système de particules électriquement chargées (ions, électrons) et de particules neutres (par exemple une flamme, un éclair, les étoiles)</li>
+        </ul>
+
+        <h2>6. L'état d'équilibre</h2>
+        <ul>
+            <li><strong>Système thermodynamique</strong> — ensemble des objets dont on étudie l'état.</li>
+            <li><strong>Grandeurs d'état</strong> — grandeurs physiques qui décrivent l'état du système (température, volume, pression, densité, nombre de molécules…).</li>
+            <li><strong>État d'équilibre</strong> — état qui demeure constant dans le temps.</li>
+        </ul>
+        <p>Tout système placé dans des conditions extérieures invariables évolue spontanément vers l'état d'équilibre.</p>
+
+        <h2>7. Exemple type</h2>
+        <p><strong>Énoncé :</strong> De combien d'ordres de grandeur le noyau atomique est-il plus petit que l'atome entier, sachant que la dimension de l'atome est de l'ordre de $10^{-10}\,\text{m}$ et celle du noyau de l'ordre de $10^{-15}\,\text{m}$ ?</p>
+        <p><strong>Solution :</strong></p>
+        <ol>
+            <li>Calculons le rapport des dimensions : $\dfrac{10^{-10}}{10^{-15}} = 10^{5}$</li>
+            <li>Le noyau est donc environ $10^5$ fois, soit cent mille fois plus petit que l'atome.</li>
+        </ol>
+        <p><strong>Réponse :</strong> Le noyau atomique est plus petit de 5 ordres de grandeur (cent mille fois) que l'atome entier.</p>
+
+        <h2>8. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Trois postulats de la théorie cinétique :</strong> structure particulaire, mouvement désordonné, forces mutuelles.</li>
+            <li><strong>Preuves du mouvement des particules :</strong> mouvement brownien, diffusion, pression des gaz.</li>
+            <li><strong>Forces entre particules :</strong> répulsives de près, attractives à distance, nulles pour des distances très grandes.</li>
+            <li><strong>Énergie de liaison :</strong> travail nécessaire pour rompre une liaison par des forces extérieures.</li>
+            <li><strong>Modèles d'état selon $E_p/E_k$ :</strong> gaz ($E_p \ll E_k$), solide ($E_p \gg E_k$), liquide ($E_p \approx E_k$), plasma (quatrième état).</li>
+            <li><strong>État d'équilibre :</strong> état invariable d'un système soumis à des conditions extérieures constantes.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang) {
+                // Přepneme třídy
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (lang === 'cs') {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else if (lang === 'fr') {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLang', lang);
+
+                // MathJax překreslíme po malém zpoždění, aby se DOM ustálil
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try {
+                            MathJax.typeset();
+                        } catch (e) {
+                            // Ticho selhání – stránka zůstane funkční
+                            console.warn('MathJax typeset failed:', e);
+                        }
+                    }, 50);
+                }
+            }
+
+            // Načtení uloženého jazyka
+            var saved = localStorage.getItem('preferredLang');
+            if (saved === 'fr') {
+                setLanguage('fr');
+            } else {
+                setLanguage('cs');
+            }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs'); });
+            btnFr.addEventListener('click', function() { setLanguage('fr'); });
+        })();
+    </script>
+
+</body>
+</html>

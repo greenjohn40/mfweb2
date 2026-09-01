@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Teplota (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-orange-600">
+            <h1 class="text-3xl font-bold text-orange-700 mb-4">Fyzikální kvíz: Teplota</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-orange-500">Test obsahuje 4 teoretické a 6 výpočetních úloh (převody teplot).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-orange-600 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-orange-50 hover:bg-orange-100 text-orange-600 text-[10px] font-bold py-2 px-3 rounded-lg border border-orange-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-orange-600 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-orange-700 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-orange-600">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-orange-600">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+        const N_THEORY = 4;
+        const N_MATH = 6;
+
+        // ======== POMOCNÉ FUNKCE ========
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ======== TEORETICKÉ OTÁZKY ========
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Za jaké podmínky mají dvě tělesa v kontaktu stejnou teplotu?", a: "Jsou-li v rovnovážném stavu", o: ["Jsou-li v rovnovážném stavu", "Mají-li stejnou hmotnost", "Jsou-li ze stejného materiálu", "Nikdy nemají stejnou teplotu"], h: "Vzpomeň si na definici teploty pomocí kontaktu dvou těles.", e: "Tělesa, která jsou ve vzájemném kontaktu, mají stejnou teplotu, právě když jsou v rovnovážném stavu (nultý zákon termodynamiky)." }, fr: { q: "À quelle condition deux corps en contact ont-ils la même température ?", a: "Lorsqu'ils sont en état d'équilibre", o: ["Lorsqu'ils sont en état d'équilibre", "S'ils ont la même masse", "S'ils sont faits du même matériau", "Ils n'ont jamais la même température"], h: "Rappelle-toi de la définition de la température par le contact de deux corps.", e: "Les corps en contact ont la même température précisément lorsqu'ils sont en état d'équilibre (principe zéro de la thermodynamique)." } },
+            { id: 't2', type: 'concept', cs: { q: "Kolik pevných bodů potřebuje libovolná teplotní stupnice ke své definici?", a: "Dva", o: ["Dva", "Jeden", "Tři", "Žádný"], h: "Mysli na Celsiovu stupnici – kolik bodů (tuhnutí, var) se v ní používá?", e: "Libovolná teplotní stupnice vyžaduje dva pevné body, mezi nimiž se interval dělí na stejné díly (stupně)." }, fr: { q: "Combien de points fixes faut-il pour définir une échelle de température ?", a: "Deux", o: ["Deux", "Un seul", "Trois", "Aucun"], h: "Pense à l'échelle Celsius – combien de points (solidification, ébullition) utilise-t-elle ?", e: "Toute échelle de température nécessite deux points fixes, entre lesquels l'intervalle est divisé en parties égales (degrés)." } },
+            { id: 't3', type: 'concept', cs: { q: "Jaké dva pevné body definují Celsiovu stupnici?", a: "0 °C (tuhnutí vody) a 100 °C (var vody)", o: ["0 °C (tuhnutí vody) a 100 °C (var vody)", "32 °C a 212 °C", "0 °C a 273 °C", "-40 °C a 40 °C"], h: "Jde o body tuhnutí a varu vody.", e: "Celsiova stupnice (1742) je definována body 0 °C (tuhnutí vody) a 100 °C (var vody), interval je rozdělen na 100 dílů." }, fr: { q: "Quels sont les deux points fixes définissant l'échelle Celsius ?", a: "0 °C (solidification de l'eau) et 100 °C (ébullition de l'eau)", o: ["0 °C (solidification de l'eau) et 100 °C (ébullition de l'eau)", "32 °C et 212 °C", "0 °C et 273 °C", "-40 °C et 40 °C"], h: "Il s'agit des points de solidification et d'ébullition de l'eau.", e: "L'échelle Celsius (1742) est définie par 0 °C (solidification de l'eau) et 100 °C (ébullition de l'eau), l'intervalle étant divisé en 100 parties." } },
+            { id: 't4', type: 'concept', cs: { q: "Co představuje 0 K na termodynamické stupnici?", a: "Teoreticky nejnižší možnou teplotu (absolutní nulu)", o: ["Teoreticky nejnižší možnou teplotu (absolutní nulu)", "Bod tuhnutí vody", "Bod varu vody", "Pokojovou teplotu"], h: "Jde o teplotu, kterou nelze překonat směrem dolů.", e: "0 K je teoreticky nejnižší možná teplota – tzv. absolutní nula, které odpovídá -273,15 °C." }, fr: { q: "Que représente 0 K sur l'échelle thermodynamique ?", a: "La température théoriquement la plus basse possible (le zéro absolu)", o: ["La température théoriquement la plus basse possible (le zéro absolu)", "Le point de solidification de l'eau", "Le point d'ébullition de l'eau", "La température ambiante"], h: "C'est une température qui ne peut théoriquement pas être dépassée vers le bas.", e: "0 K est la température théoriquement la plus basse possible – le zéro absolu, qui correspond à -273,15 °C." } },
+            { id: 't5', type: 'concept', cs: { q: "Při jaké teplotě se Celsiova a Fahrenheitova stupnice číselně shodují?", a: "Při -40 (-40 °C = -40 °F)", o: ["Při -40 (-40 °C = -40 °F)", "Při 0 (0 °C = 0 °F)", "Při 100 (100 °C = 100 °F)", "Nikdy se neshodují"], h: "Řeš rovnici t = 1,8t + 32.", e: "Řešením rovnice t = 1,8t + 32 dostaneme t = -40, tedy -40 °C = -40 °F." }, fr: { q: "À quelle température les échelles Celsius et Fahrenheit coïncident-elles numériquement ?", a: "À -40 (-40 °C = -40 °F)", o: ["À -40 (-40 °C = -40 °F)", "À 0 (0 °C = 0 °F)", "À 100 (100 °C = 100 °F)", "Elles ne coïncident jamais"], h: "Résous l'équation t = 1,8t + 32.", e: "En résolvant t = 1,8t + 32, on obtient t = -40, donc -40 °C = -40 °F." } },
+            { id: 't6', type: 'concept', cs: { q: "Je interval 1 K stejně velký jako interval 1 °F?", a: "Ne, 1 K (= 1 °C) odpovídá 1,8 °F", o: ["Ne, 1 K (= 1 °C) odpovídá 1,8 °F", "Ano, jsou stejně velké", "Ne, 1 K odpovídá 0,5 °F", "Ne, 1 K odpovídá 32 °F"], h: "Vzpomeň si na vztah mezi rozdílem ve °C a rozdílem ve °F.", e: "Interval 1 K je roven intervalu 1 °C, ale interval 1 °F je menší – 1 °C (resp. 1 K) odpovídá 1,8 °F." }, fr: { q: "L'intervalle 1 K est-il de la même taille que l'intervalle 1 °F ?", a: "Non, 1 K (= 1 °C) correspond à 1,8 °F", o: ["Non, 1 K (= 1 °C) correspond à 1,8 °F", "Oui, ils sont de même taille", "Non, 1 K correspond à 0,5 °F", "Non, 1 K correspond à 32 °F"], h: "Rappelle-toi de la relation entre une différence en °C et en °F.", e: "L'intervalle 1 K est égal à l'intervalle 1 °C, mais l'intervalle 1 °F est plus petit – 1 °C (ou 1 K) correspond à 1,8 °F." } },
+            { id: 't7', type: 'concept', cs: { q: "Proč při přepočtu ROZDÍLU (změny) teploty mezi °C a °F nepřičítáme ani neodečítáme 32?", a: "Protože konstantní posun +32 se při odečtení dvou teplot navzájem vyruší", o: ["Protože konstantní posun +32 se při odečtení dvou teplot navzájem vyruší", "Protože 32 platí jen pro teploty nad bodem varu", "Protože se jedná o chybu ve vzorci", "Protože rozdíly teplot se v °F nepoužívají"], h: "Napiš si t2(°F) - t1(°F) a všimni si, co se stane s členy +32.", e: "Δt(°F) = (1,8·t2+32) - (1,8·t1+32) = 1,8·(t2-t1). Členy +32 se odečtou, proto se pro rozdíl teplot posun nepoužívá." }, fr: { q: "Pourquoi n'ajoute-t-on ni ne soustrait-on 32 lors de la conversion d'une DIFFÉRENCE (variation) de température entre °C et °F ?", a: "Parce que le décalage constant +32 s'annule lors de la soustraction de deux températures", o: ["Parce que le décalage constant +32 s'annule lors de la soustraction de deux températures", "Parce que 32 ne s'applique qu'au-dessus du point d'ébullition", "Parce que c'est une erreur dans la formule", "Parce que les différences de température ne s'expriment pas en °F"], h: "Écris t2(°F) - t1(°F) et observe ce qui arrive aux termes +32.", e: "Δt(°F) = (1,8·t2+32) - (1,8·t1+32) = 1,8·(t2-t1). Les termes +32 s'annulent, c'est pourquoi le décalage n'est pas utilisé pour une différence de température." } },
+            { id: 't8', type: 'concept', cs: { q: "Jak se experimentálně určuje hodnota absolutní nuly?", a: "Extrapolací grafu závislosti objemu plynu na teplotě (izobar) k nulovému objemu", o: ["Extrapolací grafu závislosti objemu plynu na teplotě (izobar) k nulovému objemu", "Přímým měřením rtuťovým teploměrem", "Výpočtem z rychlosti zvuku", "Nelze ji nijak určit"], h: "Mysli na graf V-T pro plyn při stálém tlaku.", e: "Vynesou-li se přímky V-T pro různé (stálé) tlaky plynu a prodlouží se zpět, všechny protnou osu teploty ve stejném bodě: -273,15 °C – to je absolutní nula." }, fr: { q: "Comment détermine-t-on expérimentalement la valeur du zéro absolu ?", a: "Par extrapolation du graphique du volume d'un gaz en fonction de la température (isobares) jusqu'à un volume nul", o: ["Par extrapolation du graphique du volume d'un gaz en fonction de la température (isobares) jusqu'à un volume nul", "Par mesure directe avec un thermomètre à mercure", "Par un calcul à partir de la vitesse du son", "On ne peut pas la déterminer"], h: "Pense au graphique V-T d'un gaz à pression constante.", e: "En traçant les droites V-T pour différentes pressions (constantes) d'un gaz et en les prolongeant, toutes coupent l'axe des températures au même point : -273,15 °C – c'est le zéro absolu." } }
+        ];
+
+        // ======== VÝPOČETNÍ ÚLOHY (PŘEVODY TEPLOT) ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Teplota je {c} °C. Kolik je to ve stupních Fahrenheita?", h: "t(°F) = t(°C) × 1,8 + 32.", e: "{c} °C × 1,8 + 32 = {res} °F." },
+                fr: { q: "Une température est de {c} °C. Combien cela fait-il en degrés Fahrenheit ?", h: "t(°F) = t(°C) × 1,8 + 32.", e: "{c} °C × 1,8 + 32 = {res} °F." },
+                params: () => ({ c: randInt(-30, 100) }),
+                solve: (p) => { const res = p.c * 1.8 + 32; return { res, unit: '°F', correct: fmt(res) + ' °F' }; } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Teplota je {f} °F. Kolik je to ve stupních Celsia?", h: "t(°C) = (t(°F) − 32) ÷ 1,8.", e: "({f} °F − 32) ÷ 1,8 = {res} °C." },
+                fr: { q: "Une température est de {f} °F. Combien cela fait-il en degrés Celsius ?", h: "t(°C) = (t(°F) − 32) ÷ 1,8.", e: "({f} °F − 32) ÷ 1,8 = {res} °C." },
+                params: () => { const c = randInt(-30, 100); return { f: c * 1.8 + 32 }; },
+                solve: (p) => { const res = (p.f - 32) / 1.8; return { res, unit: '°C', correct: fmt(res) + ' °C' }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Teplota je {c} °C. Kolik je to v kelvinech?", h: "T = t(°C) + 273,15.", e: "{c} °C + 273,15 = {res} K." },
+                fr: { q: "Une température est de {c} °C. Combien cela fait-il en kelvins ?", h: "T = t(°C) + 273,15.", e: "{c} °C + 273,15 = {res} K." },
+                params: () => ({ c: randInt(-50, 100) }),
+                solve: (p) => { const res = p.c + 273.15; return { res, unit: 'K', correct: fmt(res) + ' K' }; } },
+            { id: 'm4', type: 'math',
+                cs: { q: "Teplota je {k} K. Kolik je to ve stupních Celsia?", h: "t(°C) = T − 273,15.", e: "{k} K − 273,15 = {res} °C." },
+                fr: { q: "Une température est de {k} K. Combien cela fait-il en degrés Celsius ?", h: "t(°C) = T − 273,15.", e: "{k} K − 273,15 = {res} °C." },
+                params: () => { const c = randInt(-50, 100); return { k: c + 273.15 }; },
+                solve: (p) => { const res = p.k - 273.15; return { res, unit: '°C', correct: fmt(res) + ' °C' }; } },
+            { id: 'm5', type: 'math',
+                cs: { q: "Těleso se ohřálo z teploty t₁ = {t1} °C na teplotu t₂ = {t2f} °F. Jaký je teplotní rozdíl ΔT vyjádřený v kelvinech?", h: "Nejprve převeď t₂ na °C, pak odečti t₁. Pamatuj: 1 K = 1 °C.", e: "t₂ v °C = ({t2f} − 32) ÷ 1,8 = {t2c} °C; ΔT = {t2c} − {t1} = {res} K." },
+                fr: { q: "Un corps a été chauffé de t₁ = {t1} °C à t₂ = {t2f} °F. Quelle est la variation de température ΔT exprimée en kelvins ?", h: "Convertis d'abord t₂ en °C, puis soustrais t₁. Rappel : 1 K = 1 °C.", e: "t₂ en °C = ({t2f} − 32) ÷ 1,8 = {t2c} °C ; ΔT = {t2c} − {t1} = {res} K." },
+                params: () => { const t1 = randInt(-10, 40); const t2c = t1 + randInt(5, 50); const t2f = t2c * 1.8 + 32; return { t1, t2c, t2f }; },
+                solve: (p) => { const res = p.t2c - p.t1; return { res, unit: 'K', correct: fmt(res) + ' K' }; } },
+            { id: 'm6', type: 'math',
+                cs: { q: "Teplota vzrostla o Δt = {dc} °C. O kolik stupňů Fahrenheita to odpovídá?", h: "Pro ROZDÍL teplot platí jednodušší vztah bez posunu +32: Δt(°F) = 1,8 × Δt(°C).", e: "Δt(°F) = 1,8 × {dc} = {res} °F (bez přičítání 32, protože jde o rozdíl teplot)." },
+                fr: { q: "La température a augmenté de Δt = {dc} °C. À combien de degrés Fahrenheit cela correspond-il ?", h: "Pour une DIFFÉRENCE de température, la relation est plus simple, sans le décalage +32 : Δt(°F) = 1,8 × Δt(°C).", e: "Δt(°F) = 1,8 × {dc} = {res} °F (sans ajouter 32, car il s'agit d'une différence de température)." },
+                params: () => ({ dc: randInt(1, 12) * 5 }),
+                solve: (p) => { const res = p.dc * 1.8; return { res, unit: '°F', correct: fmt(res) + ' °F' }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<N_THEORY; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<N_MATH; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(sol[k] !== undefined ? sol[k] : p[k]));
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    obj.o = [sol.correct, mk(val*10), mk(val/1.8), mk(val+32)];
+                };
+                inject(q); inject(tr);
+            }
+
+            // Zamícháme pořadí nabízených odpovědí (nové zamíchání při každém spuštění testu)
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').textContent = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-orange-600" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-orange-300 font-medium fade-in";
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').textContent = data.h;
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.textContent = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').textContent = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Převody teplot i francouzština ti jdou skvěle.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat převodní vzorce mezi °C, °F a K.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat – zaměř se na převody teplotních stupnic a rozdíl mezi konkrétní teplotou a změnou teploty.";
+                overallIcon = "🔍";
+            }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako rovnovážný stav, absolutní nula či pevné body stupnic.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definice tří teplotních stupnic a pojem absolutní nuly.");
+            if (mathPercent >= 70) strengths.push("Převody teplot ti jdou velmi dobře!");
+            else weaknesses.push("V převodech mezi °C, °F a K chybuješ – dej pozor zejména na rozdíl mezi převodem konkrétní teploty (s posunem +32/+273,15) a převodem ROZDÍLU teplot (bez posunu).");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní vztahy mezi teplotními stupnicemi.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování převodních vzorců a zejména na úlohy s teplotním rozdílem (ΔT) v různých jednotkách.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o teplotní roztažnosti.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení převodů teplot.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Zřejmě skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek ve francouzštině)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

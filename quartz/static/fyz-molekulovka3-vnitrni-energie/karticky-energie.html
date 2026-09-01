@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Vnitřní energie / L'énergie interne</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col font-sans">
+
+    <header class="bg-rose-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Vnitřní energie / L'énergie interne</h1>
+        <p class="text-rose-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-rose-700 text-rose-700 font-bold hover:bg-rose-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-rose-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je vnitřní energie soustavy?</p>
+                </div>
+                <div class="card-face card-back bg-rose-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Součet kinetické energie částic a potenciální energie jejich vzájemných vazeb.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-rose-700 text-white rounded-lg hover:bg-rose-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-rose-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Fyzika / Physique
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const rawData = {
+            cs: [
+                { q: "Co je vnitřní energie soustavy?", a: "Součet kinetické energie částic a potenciální energie jejich vzájemných vazeb." },
+                { q: "Jak zapíšeme vzorec pro vnitřní energii U?", a: "U = Ek + Ep." },
+                { q: "Čím může být způsobena změna vnitřní energie ΔU?", a: "Prací nebo výměnou tepla." },
+                { q: "Jaký vztah platí, je-li ΔU způsobena jen prací?", a: "ΔU = W." },
+                { q: "Jaký vztah platí, je-li ΔU způsobena jen výměnou tepla?", a: "ΔU = Q." },
+                { q: "Jaká je jednotka tepla Q?", a: "Joule (J)." },
+                { q: "Co říká obecný zákon zachování energie v izolované soustavě?", a: "Součet kinetické, potenciální a vnitřní energie všech částí zůstává konstantní." },
+                { q: "Co je tepelná kapacita C tělesa?", a: "Množství tepla potřebné ke zvýšení teploty tělesa o 1 K beze změny skupenství." },
+                { q: "Jaká je jednotka tepelné kapacity C?", a: "J/K (= J/°C)." },
+                { q: "Co je měrná tepelná kapacita c látky?", a: "Tepelná kapacita 1 kg dané látky." },
+                { q: "Jaká je jednotka měrné tepelné kapacity c?", a: "J/(kg·K)." },
+                { q: "Jaký je vzorec pro teplo Q přijaté nebo odevzdané tělesem?", a: "Q = c · m · Δt." },
+                { q: "Co vyjadřuje kalorimetrická rovnice?", a: "Zákon zachování energie při výměně tepla – teplo odevzdané se rovná teplu přijatému." },
+                { q: "Jak zní kalorimetrická rovnice pomocí c, m, Δt?", a: "c₁m₁Δt₁ = c₂m₂Δt₂." },
+                { q: "Jak zní první termodynamický zákon?", a: "ΔU = W + Q." },
+                { q: "Jaké jsou tři způsoby šíření tepla?", a: "Vedení, proudění (konvekce), záření (radiace)." },
+                { q: "Co je vedení (kondukce) tepla?", a: "Přenos tepelného pohybu mezi molekulami, vyrovnávání teploty prostředí." },
+                { q: "V jakých skupenstvích může probíhat vedení tepla?", a: "V pevných látkách, kapalinách i plynech." },
+                { q: "Co je proudění (konvekce)?", a: "Přenos tepla vyvolaný pohybem částic tekutiny." },
+                { q: "Kde probíhá konvekce?", a: "Pouze v pohybující se tekutině (kapalině nebo plynu)." },
+                { q: "Co je záření (radiace)?", a: "Přenos tepla šířením elektromagnetických vln." },
+                { q: "Kde (na rozdíl od vedení a proudění) může probíhat záření?", a: "I ve vakuu." },
+                { q: "Co jsou tepelné izolanty? Uveďte příklad.", a: "Materiály, které špatně vedou teplo, např. dřevo, korek nebo vzduch." },
+                { q: "Co je tepelná vodivost λ?", a: "Veličina charakterizující, jak dobře látka vede teplo." },
+                { q: "Jaký vztah obvykle platí mezi tepelnou a elektrickou vodivostí kovů?", a: "Dobré vodiče tepla bývají i dobré vodiče elektřiny." },
+                { q: "Výpočet: Kolik tepla přijme 2 kg vody při ohřevu o 10 K? (c = 4180 J/(kg·K))", a: "Q = 83 600 J = 83,6 kJ." },
+                { q: "Výpočet: Kolik tepla přijme 1 kg hliníku při ohřevu o 50 K? (c = 900 J/(kg·K))", a: "Q = 45 000 J = 45 kJ." },
+                { q: "Výpočet: Kolik tepla přijme 0,5 kg mědi při ohřevu o 20 K? (c = 385 J/(kg·K))", a: "Q = 3 850 J." },
+                { q: "Výpočet: Kolik tepla odevzdá 2 kg olova při ochlazení o 100 K? (c = 130 J/(kg·K))", a: "Q = 26 000 J = 26 kJ." },
+                { q: "Výpočet: Těleso přijalo 5000 J tepla a ohřálo se o 25 K. Jaká je jeho tepelná kapacita C?", a: "C = 200 J/K." },
+                { q: "Výpočet: Těleso přijalo 12 000 J tepla a ohřálo se o 40 K. Jaká je jeho tepelná kapacita C?", a: "C = 300 J/K." },
+                { q: "Výpočet: Těleso o hmotnosti 3 kg má tepelnou kapacitu 900 J/K. Jaká je jeho měrná tepelná kapacita c?", a: "c = 300 J/(kg·K)." },
+                { q: "Výpočet: Těleso o hmotnosti 2 kg má tepelnou kapacitu 1400 J/K. Jaká je jeho měrná tepelná kapacita c?", a: "c = 700 J/(kg·K)." },
+                { q: "Výpočet: 2 kg látky přijaly 8000 J tepla a ohřály se o 20 K. Jaká je měrná tepelná kapacita?", a: "c = 200 J/(kg·K)." },
+                { q: "Výpočet: 1 kg vody přijalo 41 800 J tepla. O kolik K se ohřálo? (c = 4180 J/(kg·K))", a: "Δt = 10 K." },
+                { q: "Výpočet: Těleso z hliníku přijalo 45 000 J a ohřálo se o 50 K. Jaká je jeho hmotnost? (c = 900 J/(kg·K))", a: "m = 1 kg." },
+                { q: "Kalorimetrie: Smícháme 1 kg vody o 80 °C s 1 kg vody o 20 °C. Jaká bude výsledná teplota?", a: "50 °C (průměr, protože jde o stejnou látku a stejnou hmotnost)." },
+                { q: "Kalorimetrie: 0,2 kg mědi o 150 °C vhodíme do 1 kg vody o 20 °C. Jaká bude přibližně výsledná teplota? (c(Cu) = 385, c(voda) = 4180)", a: "Přibližně 22,4 °C." },
+                { q: "1. termodynamický zákon: Na soustavu působí práce W = 500 J a přijme teplo Q = 300 J. Jaká je ΔU?", a: "ΔU = 800 J." },
+                { q: "1. termodynamický zákon: Soustava vykoná práci W = −200 J a přijme teplo Q = 500 J. Jaká je ΔU?", a: "ΔU = 300 J." },
+                { q: "1. termodynamický zákon: ΔU = 1000 J, W = 400 J. Jaké bylo teplo Q?", a: "Q = 600 J." },
+                { q: "1. termodynamický zákon: ΔU = 1000 J, soustava odevzdala teplo Q = −300 J. Jaká byla práce W?", a: "W = 1300 J." },
+                { q: "Který kov vede teplo lépe – měď, nebo dřevo?", a: "Měď (λ ≈ 390 W/m·K) vede teplo mnohem lépe než dřevo (λ ≈ 0,16 W/m·K)." },
+                { q: "Proč se vzduch mezi tabulemi izolačního dvojskla považuje za dobrý izolant?", a: "Protože vzduch má velmi nízkou tepelnou vodivost." },
+                { q: "Proč mají kovy obvykle nízkou měrnou tepelnou kapacitu využívanou v praxi?", a: "Umožňuje to jejich snadné a rychlé zahřátí i kování." },
+                { q: "Proč se voda používá jako teplonosné médium v ústředním topení?", a: "Protože má velmi vysokou měrnou tepelnou kapacitu (4180 J/(kg·K))." },
+                { q: "Uveďte příklad přenosu tepla zářením ve vakuu.", a: "Ohřívání Země zářením Slunce přes vesmírné vakuum." },
+                { q: "Uveďte příklad přenosu tepla konvekcí.", a: "Stoupání teplého (méně hustého) vzduchu, např. nad radiátorem." },
+                { q: "Jakou měrnou tepelnou kapacitu má rtuť?", a: "140 J/(kg·K)." },
+                { q: "Jakou měrnou tepelnou kapacitu má zlato?", a: "130 J/(kg·K), stejně jako olovo." }
+            ],
+            fr: [
+                { q: "Qu'est-ce que l'énergie interne d'un système ?", a: "La somme de l'énergie cinétique des particules et de l'énergie potentielle de leurs liaisons mutuelles." },
+                { q: "Comment écrit-on la formule de l'énergie interne U ?", a: "U = Ek + Ep." },
+                { q: "Qu'est-ce qui peut causer une variation de l'énergie interne ΔU ?", a: "Le travail ou l'échange de chaleur." },
+                { q: "Quelle relation s'applique si ΔU est causée uniquement par le travail ?", a: "ΔU = W." },
+                { q: "Quelle relation s'applique si ΔU est causée uniquement par l'échange de chaleur ?", a: "ΔU = Q." },
+                { q: "Quelle est l'unité de la chaleur Q ?", a: "Le joule (J)." },
+                { q: "Que dit la loi générale de conservation d'énergie dans un système isolé ?", a: "La somme de l'énergie cinétique, potentielle et interne de toutes les parties reste constante." },
+                { q: "Qu'est-ce que la capacité thermique C d'un corps ?", a: "La quantité de chaleur nécessaire pour augmenter sa température de 1 K sans changement d'état." },
+                { q: "Quelle est l'unité de la capacité thermique C ?", a: "J/K (= J/°C)." },
+                { q: "Qu'est-ce que la chaleur spécifique c d'une substance ?", a: "La capacité thermique de 1 kg de cette substance." },
+                { q: "Quelle est l'unité de la chaleur spécifique c ?", a: "J/(kg·K)." },
+                { q: "Quelle est la formule de la chaleur Q reçue ou cédée par un corps ?", a: "Q = c · m · Δt." },
+                { q: "Qu'exprime l'équation calorimétrique ?", a: "La loi de conservation d'énergie lors d'un échange de chaleur – la chaleur cédée égale la chaleur reçue." },
+                { q: "Comment s'écrit l'équation calorimétrique avec c, m, Δt ?", a: "c₁m₁Δt₁ = c₂m₂Δt₂." },
+                { q: "Comment s'énonce la première loi de thermodynamique ?", a: "ΔU = W + Q." },
+                { q: "Quels sont les trois modes de propagation de la chaleur ?", a: "Conduction, convection, rayonnement." },
+                { q: "Qu'est-ce que la conduction thermique ?", a: "La transmission de l'agitation thermique entre molécules, homogénéisation de la température." },
+                { q: "Dans quels états de la matière la conduction peut-elle se produire ?", a: "Dans un solide, un liquide ou un gaz." },
+                { q: "Qu'est-ce que la convection ?", a: "Le transfert de chaleur provoqué par le mouvement des particules d'un fluide." },
+                { q: "Où se produit la convection ?", a: "Uniquement dans un fluide (liquide ou gaz) en mouvement." },
+                { q: "Qu'est-ce que le rayonnement ?", a: "Le transfert de chaleur par propagation d'ondes électromagnétiques." },
+                { q: "Où (contrairement à la conduction et à la convection) le rayonnement peut-il se produire ?", a: "Même dans le vide." },
+                { q: "Que sont les isolants thermiques ? Donnez un exemple.", a: "Des matériaux qui conduisent mal la chaleur, par exemple le bois, le liège ou l'air." },
+                { q: "Qu'est-ce que la conductivité thermique λ ?", a: "Une grandeur caractérisant la capacité d'un matériau à conduire la chaleur." },
+                { q: "Quelle relation existe généralement entre conductivité thermique et électrique des métaux ?", a: "Les bons conducteurs de chaleur sont souvent aussi de bons conducteurs électriques." },
+                { q: "Calcul : Quelle quantité de chaleur reçoivent 2 kg d'eau chauffés de 10 K ? (c = 4180 J/(kg·K))", a: "Q = 83 600 J = 83,6 kJ." },
+                { q: "Calcul : Quelle quantité de chaleur reçoit 1 kg d'aluminium chauffé de 50 K ? (c = 900 J/(kg·K))", a: "Q = 45 000 J = 45 kJ." },
+                { q: "Calcul : Quelle quantité de chaleur reçoivent 0,5 kg de cuivre chauffés de 20 K ? (c = 385 J/(kg·K))", a: "Q = 3 850 J." },
+                { q: "Calcul : Quelle quantité de chaleur cèdent 2 kg de plomb refroidis de 100 K ? (c = 130 J/(kg·K))", a: "Q = 26 000 J = 26 kJ." },
+                { q: "Calcul : Un corps a reçu 5000 J et s'est réchauffé de 25 K. Quelle est sa capacité thermique C ?", a: "C = 200 J/K." },
+                { q: "Calcul : Un corps a reçu 12 000 J et s'est réchauffé de 40 K. Quelle est sa capacité thermique C ?", a: "C = 300 J/K." },
+                { q: "Calcul : Un corps de 3 kg a une capacité thermique de 900 J/K. Quelle est sa chaleur spécifique c ?", a: "c = 300 J/(kg·K)." },
+                { q: "Calcul : Un corps de 2 kg a une capacité thermique de 1400 J/K. Quelle est sa chaleur spécifique c ?", a: "c = 700 J/(kg·K)." },
+                { q: "Calcul : 2 kg d'une substance ont reçu 8000 J et se sont réchauffés de 20 K. Quelle est la chaleur spécifique ?", a: "c = 200 J/(kg·K)." },
+                { q: "Calcul : 1 kg d'eau a reçu 41 800 J. De combien de K s'est-il réchauffé ? (c = 4180 J/(kg·K))", a: "Δt = 10 K." },
+                { q: "Calcul : Un corps en aluminium a reçu 45 000 J et s'est réchauffé de 50 K. Quelle est sa masse ? (c = 900 J/(kg·K))", a: "m = 1 kg." },
+                { q: "Calorimétrie : On mélange 1 kg d'eau à 80 °C avec 1 kg d'eau à 20 °C. Quelle sera la température finale ?", a: "50 °C (moyenne, car même substance et même masse)." },
+                { q: "Calorimétrie : On plonge 0,2 kg de cuivre à 150 °C dans 1 kg d'eau à 20 °C. Quelle sera environ la température finale ? (c(Cu) = 385, c(eau) = 4180)", a: "Environ 22,4 °C." },
+                { q: "1ère loi : Un système reçoit un travail W = 500 J et une chaleur Q = 300 J. Quelle est ΔU ?", a: "ΔU = 800 J." },
+                { q: "1ère loi : Un système effectue un travail W = −200 J et reçoit une chaleur Q = 500 J. Quelle est ΔU ?", a: "ΔU = 300 J." },
+                { q: "1ère loi : ΔU = 1000 J, W = 400 J. Quelle était la chaleur Q ?", a: "Q = 600 J." },
+                { q: "1ère loi : ΔU = 1000 J, le système a cédé une chaleur Q = −300 J. Quel était le travail W ?", a: "W = 1300 J." },
+                { q: "Quel matériau conduit mieux la chaleur – le cuivre ou le bois ?", a: "Le cuivre (λ ≈ 390 W/m·K) conduit bien mieux la chaleur que le bois (λ ≈ 0,16 W/m·K)." },
+                { q: "Pourquoi l'air entre les vitres d'un double vitrage est-il considéré comme un bon isolant ?", a: "Parce que l'air a une conductivité thermique très faible." },
+                { q: "Pourquoi les métaux ont-ils généralement une faible chaleur spécifique, ce qui est utile en pratique ?", a: "Cela permet de les chauffer et de les forger facilement et rapidement." },
+                { q: "Pourquoi utilise-t-on l'eau comme fluide caloporteur dans le chauffage central ?", a: "Parce qu'elle a une chaleur spécifique très élevée (4180 J/(kg·K))." },
+                { q: "Donnez un exemple de transfert de chaleur par rayonnement dans le vide.", a: "Le réchauffement de la Terre par le rayonnement du Soleil à travers le vide spatial." },
+                { q: "Donnez un exemple de transfert de chaleur par convection.", a: "La montée de l'air chaud (moins dense), par exemple au-dessus d'un radiateur." },
+                { q: "Quelle est la chaleur spécifique du mercure ?", a: "140 J/(kg·K)." },
+                { q: "Quelle est la chaleur spécifique de l'or ?", a: "130 J/(kg·K), comme le plomb." }
+            ]
+        };
+
+        // ========== KÓD FLASHCARD ==========
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.textContent = data.q;
+            aText.textContent = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-rose-700', 'text-rose-700');
+            btnFr.classList.remove('border-rose-700', 'text-rose-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-rose-700', 'text-rose-700');
+            btnCs.classList.remove('border-rose-700', 'text-rose-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vnitřní energie / L'énergie interne</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 700px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        .MathJax_Display { margin: 1em 0; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: left; }
+        th { background: #f5f5f5; }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Vnitřní energie</h1>
+        <p><strong>Předmět:</strong> Fyzika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Vnitřní energie soustavy</h2>
+        <p>Vnitřní energie $U$ termodynamické soustavy je součtem <strong>kinetické energie</strong> všech částic soustavy (jejich tepelný pohyb) a <strong>potenciální energie</strong> každé dvojice částic (energie vazeb mezi nimi):</p>
+        $$ U = E_K + E_P $$
+        <p>Jde tedy o celkovou mikroskopickou energii soustavy – energii neuspořádaného pohybu částic a energii jejich vzájemného silového působení.</p>
+
+        <h2>2. Změny vnitřní energie</h2>
+        <p>Změna vnitřní energie $\Delta U$ může být způsobena dvěma způsoby:</p>
+        <ol>
+            <li><strong>prací</strong> $W$ (vykonanou soustavou, nebo naopak na soustavě),</li>
+            <li><strong>výměnou tepla</strong> $Q$ (mezi soustavou a okolím).</li>
+        </ol>
+        <p>Je-li změna vnitřní energie způsobena pouze prací: $\Delta U = W$. Zde platí <strong>obecný zákon zachování energie</strong>: v izolované soustavě zůstává součet kinetické, potenciální a vnitřní energie všech částí soustavy konstantní.</p>
+        <p>Je-li změna vnitřní energie způsobena pouze výměnou tepla: $\Delta U = Q$, kde $[Q] = 1\,\text{J}$. Při výměně tepla mezi objekty izolované soustavy zůstává celková vnitřní energie objektů soustavy konstantní.</p>
+
+        <h2>3. Tepelná kapacita a měrná tepelná kapacita</h2>
+        <p><strong>Tepelná kapacita</strong> $C$ tělesa se rovná množství tepla potřebnému ke zvýšení teploty tělesa o $1\,\text{K}$ beze změny skupenství:</p>
+        $$ C = \dfrac{Q}{\Delta t} \qquad [C] = \text{J/K} = \text{J/°C} $$
+        <p><strong>Měrná tepelná kapacita</strong> (měrné teplo) $c$ látky se rovná tepelné kapacitě $1\,\text{kg}$ dané látky:</p>
+        $$ c = \dfrac{C}{m} = \dfrac{Q}{m \cdot \Delta t} \qquad [c] = \text{J/(kg·K)} = \text{J/(kg·°C)} $$
+        <p>Odtud plyne důležitý vzorec pro teplo přijaté nebo odevzdané tělesem při změně teploty (beze změny skupenství):</p>
+        $$ Q = c \cdot m \cdot \Delta t $$
+
+        <h3>Tabulka měrných tepelných kapacit (při 20 °C, 1 atm)</h3>
+        <table>
+            <tr><th>materiál</th><td>Pb</td><td>Au</td><td>Hg</td><td>Cu</td><td>Fe/ocel</td><td>Al</td><td>voda (l)</td><td>led (−10 °C)</td></tr>
+            <tr><th>c [J/(kg·K)]</th><td>130</td><td>130</td><td>140</td><td>385</td><td>450</td><td>900</td><td>4180</td><td>2100</td></tr>
+        </table>
+        <p>Kovy mají obvykle malou měrnou tepelnou kapacitu (proto se snadno kovají a ohřívají), zatímco voda má měrnou tepelnou kapacitu velmi vysokou, což ji předurčuje k použití jako teplonosného média (např. v ústředním topení).</p>
+
+        <h2>4. Kalorimetrická rovnice</h2>
+        <p>Vyjadřuje zákon zachování energie přenesené během výměny tepla mezi soustavou a okolím. Teplo odevzdané teplejším tělesem se rovná teplu přijatému chladnějším tělesem:</p>
+        $$ Q_1 = Q_2 \qquad\qquad c_1 m_1 \Delta t_1 = c_2 m_2 \Delta t_2 $$
+        <p>Tato rovnice se používá zejména při výpočtech výsledné teploty směsi dvou látek o různých počátečních teplotách (např. při nalití horké vody do studené).</p>
+
+        <h2>5. První termodynamický zákon</h2>
+        <p>Vyjadřuje zákon zachování energie přenesené během dějů, při nichž dochází současně k práci i k výměně tepla mezi soustavou a okolím:</p>
+        $$ \Delta U = W + Q $$
+        <p>Tento zákon je jednou z nejdůležitějších formulací zákona zachování energie ve fyzice a je zobecněním obou dílčích vztahů z bodu 2.</p>
+
+        <h2>6. Šíření (transmise) vnitřní energie</h2>
+        <p>Přenos tepla se uskutečňuje třemi různými způsoby:</p>
+
+        <h3>Vedení (kondukce)</h3>
+        <p>Jev, při kterém se teplota prostředí vyrovnává. Odpovídá přenosu tepelného pohybu (kmitů) mezi sousedícími molekulami a probíhá v pevné látce, kapalině i plynu. <em>Příklad:</em> teplota tyče zahřáté na jednom konci se postupně vyrovnává vedením tepla.</p>
+        <p><strong>Tepelné izolanty</strong> jsou materiály, které špatně vedou teplo (dřevo, korek, vzduch – např. mezi tabulemi izolačního dvojskla). <strong>Tepelná vodivost</strong> $\lambda$ je fyzikální veličina charakterizující chování látek při vedení tepla; vyjadřuje množství tepla přenesené za jednotku plochy a času při teplotním spádu $1$ stupeň na metr. Dobré vodiče tepla bývají zpravidla i dobrými vodiči elektrického proudu (např. stříbro, měď).</p>
+
+        <h3>Proudění (konvekce)</h3>
+        <p>Přenos tepla vyvolaný pohybem částic tekutiny; probíhá pouze v pohybující se tekutině (kapalině nebo plynu). <em>Příklad:</em> teplý vzduch, který je méně hustý, stoupá vzhůru a přenáší teplo zdola nahoru.</p>
+
+        <h3>Záření (radiace)</h3>
+        <p>Přenos tepla šířením elektromagnetických vln. Na rozdíl od vedení a proudění může probíhat ve všech prostředích, včetně vakua. <em>Příklad:</em> Země je ohřívána zářením Slunce, které k ní dorazí přes vesmírné vakuum.</p>
+
+        <h2>7. Vzorový příklad</h2>
+        <p><strong>Zadání:</strong> Do kalorimetru s $m_2 = 0{,}5\,\text{kg}$ vody o teplotě $t_2 = 20\,^\circ\text{C}$ vhodíme $m_1 = 0{,}2\,\text{kg}$ mosazi (přibližně $c_1 = 380\,\text{J/(kg·K)}$) zahřáté na $t_1 = 100\,^\circ\text{C}$. Jaká bude výsledná (ustálená) teplota směsi? (Zanedbáváme tepelné ztráty a tepelnou kapacitu kalorimetru; $c_{\text{voda}} = 4180\,\text{J/(kg·K)}$.)</p>
+        <p><strong>Řešení:</strong> Teplo odevzdané mosazí se rovná teplu přijatému vodou:</p>
+        $$ c_1 m_1 (t_1 - t) = c_2 m_2 (t - t_2) $$
+        <ol>
+            <li>Dosadíme: $380 \cdot 0{,}2 \cdot (100 - t) = 4180 \cdot 0{,}5 \cdot (t - 20)$</li>
+            <li>$76 \cdot (100-t) = 2090 \cdot (t - 20)$</li>
+            <li>$7600 - 76t = 2090t - 41800$</li>
+            <li>$49400 = 2166t \Rightarrow t \approx 22{,}8\,^\circ\text{C}$</li>
+        </ol>
+        <p><strong>Odpověď:</strong> Výsledná teplota směsi bude přibližně $22{,}8\,^\circ\text{C}$ – teplota vody se zvýší jen málo, protože voda má mnohem větší tepelnou kapacitu než malé množství kovu.</p>
+
+        <h2>8. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Vnitřní energie:</strong> $U = E_K + E_P$ (kinetická energie částic + potenciální energie vazeb).</li>
+            <li><strong>Změna ΔU:</strong> způsobena prací ($\Delta U = W$) nebo teplem ($\Delta U = Q$).</li>
+            <li><strong>Tepelná kapacita:</strong> $C = Q/\Delta t$ [J/K]; <strong>měrná tepelná kapacita:</strong> $c = Q/(m\Delta t)$ [J/(kg·K)].</li>
+            <li><strong>Kalorimetrická rovnice:</strong> $c_1m_1\Delta t_1 = c_2m_2\Delta t_2$ (teplo odevzdané = teplo přijaté).</li>
+            <li><strong>První termodynamický zákon:</strong> $\Delta U = W + Q$.</li>
+            <li><strong>Tři způsoby šíření tepla:</strong> vedení (kondukce, v látce), proudění (konvekce, jen v tekutinách), záření (radiace, i ve vakuu).</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>L'énergie interne</h1>
+        <p><strong>Matière :</strong> Physique
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. L'énergie interne d'un système</h2>
+        <p>L'énergie interne $U$ d'un système thermodynamique est la somme de l'<strong>énergie cinétique</strong> de toutes les particules du système (leur mouvement thermique) et de l'<strong>énergie potentielle</strong> de chaque couple de particules (l'énergie des liaisons entre elles) :</p>
+        $$ U = E_K + E_P $$
+        <p>Il s'agit donc de l'énergie microscopique totale du système – l'énergie du mouvement désordonné des particules et l'énergie de leur interaction mutuelle.</p>
+
+        <h2>2. Les variations de l'énergie interne</h2>
+        <p>La variation de l'énergie interne $\Delta U$ peut être causée de deux façons :</p>
+        <ol>
+            <li>par le <strong>travail</strong> $W$ (effectué par le système, ou inversement sur le système),</li>
+            <li>par l'<strong>échange de chaleur</strong> $Q$ (entre le système et le milieu extérieur).</li>
+        </ol>
+        <p>Si la variation de l'énergie interne est causée uniquement par le travail : $\Delta U = W$. On applique ici la <strong>loi générale de la conservation d'énergie</strong> : dans un système isolé, la somme de l'énergie cinétique, potentielle et interne de toutes les parties du système reste constante.</p>
+        <p>Si la variation de l'énergie interne est causée uniquement par l'échange de chaleur : $\Delta U = Q$, où $[Q] = 1\,\text{J}$. Pendant les processus d'échange de chaleur entre les objets d'un système isolé, l'énergie interne totale des objets du système reste constante.</p>
+
+        <h2>3. Capacité thermique et chaleur spécifique</h2>
+        <p>La <strong>capacité thermique</strong> $C$ d'un corps est égale à la quantité de chaleur nécessaire pour augmenter la température du corps de $1\,\text{K}$ sans changement d'état :</p>
+        $$ C = \dfrac{Q}{\Delta t} \qquad [C] = \text{J/K} = \text{J/°C} $$
+        <p>La <strong>chaleur spécifique</strong> (capacité thermique massique) $c$ d'une substance est égale à la capacité thermique de $1\,\text{kg}$ de cette substance :</p>
+        $$ c = \dfrac{C}{m} = \dfrac{Q}{m \cdot \Delta t} \qquad [c] = \text{J/(kg·K)} = \text{J/(kg·°C)} $$
+        <p>On en déduit une formule importante pour la chaleur reçue ou cédée par un corps lors d'un changement de température (sans changement d'état) :</p>
+        $$ Q = c \cdot m \cdot \Delta t $$
+
+        <h3>Tableau des chaleurs spécifiques (à 20 °C, 1 atm)</h3>
+        <table>
+            <tr><th>matériau</th><td>Pb</td><td>Au</td><td>Hg</td><td>Cu</td><td>Fe/acier</td><td>Al</td><td>eau liquide</td><td>glace (−10 °C)</td></tr>
+            <tr><th>c [J/(kg·K)]</th><td>130</td><td>130</td><td>140</td><td>385</td><td>450</td><td>900</td><td>4180</td><td>2100</td></tr>
+        </table>
+        <p>Les métaux ont généralement une faible chaleur spécifique (ce qui facilite leur forgeage et leur chauffage), tandis que l'eau a une chaleur spécifique très élevée, ce qui la destine à être utilisée comme fluide caloporteur (par exemple dans le chauffage central).</p>
+
+        <h2>4. L'équation calorimétrique</h2>
+        <p>Elle exprime la loi de conservation de l'énergie transférée pendant un échange de chaleur entre le système et le milieu extérieur. La chaleur cédée par le corps le plus chaud est égale à la chaleur reçue par le corps le plus froid :</p>
+        $$ Q_1 = Q_2 \qquad\qquad c_1 m_1 \Delta t_1 = c_2 m_2 \Delta t_2 $$
+        <p>Cette équation est utilisée notamment pour calculer la température finale d'un mélange de deux substances à des températures initiales différentes (par exemple lorsqu'on verse de l'eau chaude dans de l'eau froide).</p>
+
+        <h2>5. La première loi de thermodynamique</h2>
+        <p>Elle exprime la loi de conservation de l'énergie transférée pendant les processus où il y a simultanément effet de travail et transfert de chaleur entre le système et le milieu extérieur :</p>
+        $$ \Delta U = W + Q $$
+        <p>Cette loi est l'une des formulations les plus importantes de la loi de conservation de l'énergie en physique, et généralise les deux relations partielles du point 2.</p>
+
+        <h2>6. La transmission de l'énergie interne</h2>
+        <p>Le transfert de chaleur se réalise sous trois formes différentes :</p>
+
+        <h3>La conduction</h3>
+        <p>Phénomène par lequel la température d'un milieu s'homogénéise. Elle correspond à la transmission de l'agitation thermique (des vibrations) entre molécules voisines et se produit dans un solide, un liquide ou un gaz. <em>Exemple :</em> la température d'un barreau chauffé à une extrémité s'uniformise progressivement par conduction thermique.</p>
+        <p>Les <strong>isolants thermiques</strong> sont des matériaux qui conduisent mal la chaleur (bois, liège, air – par exemple entre les vitres d'un double vitrage). La <strong>conductivité thermique</strong> $\lambda$ est une grandeur physique caractérisant le comportement des matériaux lors du transfert thermique par conduction ; elle représente la quantité de chaleur transférée par unité de surface et de temps sous un gradient de température de $1$ degré par mètre. Les bons conducteurs de chaleur sont généralement aussi de bons conducteurs électriques (par exemple l'argent, le cuivre).</p>
+
+        <h3>La convection</h3>
+        <p>Transfert de chaleur provoqué par le mouvement des particules d'un fluide ; elle ne se produit que dans un fluide (liquide ou gaz) en mouvement. <em>Exemple :</em> l'air chaud, moins dense, monte et transporte la chaleur du bas vers le haut.</p>
+
+        <h3>Le rayonnement</h3>
+        <p>Transfert de chaleur par propagation d'ondes électromagnétiques. Contrairement à la conduction et à la convection, il peut se produire dans tous les milieux, y compris le vide. <em>Exemple :</em> la Terre est chauffée par le rayonnement du Soleil, qui lui parvient à travers le vide spatial.</p>
+
+        <h2>7. Exemple type</h2>
+        <p><strong>Énoncé :</strong> Dans un calorimètre contenant $m_2 = 0{,}5\,\text{kg}$ d'eau à $t_2 = 20\,^\circ\text{C}$, on plonge $m_1 = 0{,}2\,\text{kg}$ de laiton (environ $c_1 = 380\,\text{J/(kg·K)}$) chauffé à $t_1 = 100\,^\circ\text{C}$. Quelle sera la température finale (d'équilibre) du mélange ? (On néglige les pertes thermiques et la capacité thermique du calorimètre ; $c_{\text{eau}} = 4180\,\text{J/(kg·K)}$.)</p>
+        <p><strong>Solution :</strong> La chaleur cédée par le laiton est égale à la chaleur reçue par l'eau :</p>
+        $$ c_1 m_1 (t_1 - t) = c_2 m_2 (t - t_2) $$
+        <ol>
+            <li>On substitue : $380 \cdot 0{,}2 \cdot (100 - t) = 4180 \cdot 0{,}5 \cdot (t - 20)$</li>
+            <li>$76 \cdot (100-t) = 2090 \cdot (t - 20)$</li>
+            <li>$7600 - 76t = 2090t - 41800$</li>
+            <li>$49400 = 2166t \Rightarrow t \approx 22{,}8\,^\circ\text{C}$</li>
+        </ol>
+        <p><strong>Réponse :</strong> La température finale du mélange sera d'environ $22{,}8\,^\circ\text{C}$ – la température de l'eau n'augmente que légèrement, car l'eau a une capacité thermique bien plus grande que la petite quantité de métal.</p>
+
+        <h2>8. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Énergie interne :</strong> $U = E_K + E_P$ (énergie cinétique des particules + énergie potentielle des liaisons).</li>
+            <li><strong>Variation ΔU :</strong> causée par le travail ($\Delta U = W$) ou par la chaleur ($\Delta U = Q$).</li>
+            <li><strong>Capacité thermique :</strong> $C = Q/\Delta t$ [J/K] ; <strong>chaleur spécifique :</strong> $c = Q/(m\Delta t)$ [J/(kg·K)].</li>
+            <li><strong>Équation calorimétrique :</strong> $c_1m_1\Delta t_1 = c_2m_2\Delta t_2$ (chaleur cédée = chaleur reçue).</li>
+            <li><strong>Première loi de thermodynamique :</strong> $\Delta U = W + Q$.</li>
+            <li><strong>Trois modes de transfert de chaleur :</strong> conduction (dans la matière), convection (uniquement dans les fluides), rayonnement (même dans le vide).</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang) {
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (lang === 'cs') {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else if (lang === 'fr') {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangEnergie', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangEnergie');
+            if (saved === 'fr') { setLanguage('fr'); } else { setLanguage('cs'); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs'); });
+            btnFr.addEventListener('click', function() { setLanguage('fr'); });
+        })();
+    </script>
+
+</body>
+</html>
