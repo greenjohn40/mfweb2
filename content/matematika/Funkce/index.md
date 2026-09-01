@@ -1,8 +1,8 @@
 
 <h4>ÚVOD DO FUNKCÍ</h4>
-<a href="/static/mat-funkce-uvod1/rozcestnik-funkce.html" data-router-ignore>Úvod do funkcí 1</a><br>
-<a href="/static/mat-funkce-uvod2/rozcestnik-grafy.html" data-router-ignore>Úvod do funkcí 2 - grafy</a><br>
-<a href="/static/mat-funkce-uvod3/rozcestnik-vlastnosti.html" data-router-ignore>Úvod do funkcí 3 - vlastnosti</a><p>
+<a href="/static/mat-funkce-uvod1/rozcestnik-funkce.html" data-router-ignore>Pojem funkce</a><br>
+<a href="/static/mat-funkce-uvod2/rozcestnik-grafy.html" data-router-ignore>Gafy funkcí</a><br>
+<a href="/static/mat-funkce-uvod3/rozcestnik-vlastnosti.html" data-router-ignore>Vlastnosti funkcí</a><p>
 <br>
 
 <h4>LINEÁRNÍ FUNKCE</h4>
