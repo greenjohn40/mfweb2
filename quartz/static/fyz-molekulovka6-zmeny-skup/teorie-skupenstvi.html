@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Změny skupenství látek / Changements d'état de la matière</title>
+<script src="https://cdn.tailwindcss.com/"></script>
+<style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #cbd5e1; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #ea580c; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #dc2626; }
+    @media (max-width: 640px) {
+        .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; }
+    }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .badge { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.05em; padding:2px 10px; border-radius:9999px; }
+    .formula-box { font-family: 'Cambria Math', Georgia, serif; }
+    .diagram-box svg { max-width: 100%; height: auto; }
+</style>
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator" id="langIndicator">CZ</span>
+    <span class="lang-label" id="langLabel">Čeština</span>
+</button>
+
+<!-- ============================================================ -->
+<!-- ČESKÝ OBSAH                                                    -->
+<!-- ============================================================ -->
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-orange-700 to-red-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-orange-200 text-sm font-semibold tracking-wider uppercase">
+            <span>🔥 Molekulová fyzika a termika</span><span>•</span><span>Skupenské přeměny</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Změny skupenství látek</h1>
+        <p class="text-lg md:text-xl text-orange-50 max-w-3xl leading-relaxed">
+            Tání, tuhnutí, vypařování, kondenzace, sublimace a desublimace. Skupenské teplo, grafy ohřevu, mikroskopický pohled, fázový diagram a fyzika v praxi.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('cz-skupenstvi')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Skupenství</span>
+        <span onclick="scrollToId('cz-procesy')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Procesy</span>
+        <span onclick="scrollToId('cz-teplo')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Skupenské teplo</span>
+        <span onclick="scrollToId('cz-graf')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Graf ohřevu</span>
+        <span onclick="scrollToId('cz-vypocet')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Výpočet tepla</span>
+        <span onclick="scrollToId('cz-mikro')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Mikrosvět</span>
+        <span onclick="scrollToId('cz-diagram')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Fázový diagram</span>
+        <span onclick="scrollToId('cz-praxe')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Fyzika v praxi</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- SKUPENSTVÍ -->
+    <section id="cz-skupenstvi" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Skupenství a jejich přeměny</h2>
+        <p class="text-lg text-slate-700 mb-6">Látky se vyskytují ve třech základních skupenstvích, která se liší uspořádáním a pohybem částic (atomů nebo molekul).</p>
+        <div class="grid sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="text-4xl mb-2">🧊</div>
+                <h3 class="font-bold text-orange-800 mb-2">Pevné</h3>
+                <p class="text-slate-600 text-sm">Částice vibrují kolem pevných pozic v mřížce. Stálý tvar i objem.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="text-4xl mb-2">💧</div>
+                <h3 class="font-bold text-orange-800 mb-2">Kapalné</h3>
+                <p class="text-slate-600 text-sm">Částice se pohybují volněji, drží se blízko u sebe. Stálý objem, proměnný tvar.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="text-4xl mb-2">💨</div>
+                <h3 class="font-bold text-orange-800 mb-2">Plynné</h3>
+                <p class="text-slate-600 text-sm">Částice se pohybují chaoticky, zaplňují celý dostupný prostor. Proměnný tvar i objem.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESY -->
+    <section id="cz-procesy" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Přehled procesů</h2>
+        <p class="text-slate-700 mb-6">Každá přeměna skupenství má svůj název a je spojena s příjmem nebo uvolněním energie.</p>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">🧊→💧</div>
+                <div class="font-bold text-slate-900">Tání</div>
+                <div class="text-xs text-slate-500 mb-1">pevné → kapalné</div>
+                <span class="badge bg-emerald-100 text-emerald-700">+Q (příjem)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">💧→🧊</div>
+                <div class="font-bold text-slate-900">Tuhnutí</div>
+                <div class="text-xs text-slate-500 mb-1">kapalné → pevné</div>
+                <span class="badge bg-rose-100 text-rose-700">−Q (uvolnění)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">💧→💨</div>
+                <div class="font-bold text-slate-900">Var / vypařování</div>
+                <div class="text-xs text-slate-500 mb-1">kapalné → plynné</div>
+                <span class="badge bg-emerald-100 text-emerald-700">+Q (příjem)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">💨→💧</div>
+                <div class="font-bold text-slate-900">Kondenzace</div>
+                <div class="text-xs text-slate-500 mb-1">plynné → kapalné</div>
+                <span class="badge bg-rose-100 text-rose-700">−Q (uvolnění)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">🧊→💨</div>
+                <div class="font-bold text-slate-900">Sublimace</div>
+                <div class="text-xs text-slate-500 mb-1">pevné → plynné</div>
+                <span class="badge bg-emerald-100 text-emerald-700">+Q (příjem)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">💨→🧊</div>
+                <div class="font-bold text-slate-900">Desublimace</div>
+                <div class="text-xs text-slate-500 mb-1">plynné → pevné</div>
+                <span class="badge bg-rose-100 text-rose-700">−Q (uvolnění)</span>
+            </div>
+        </div>
+        <div class="bg-orange-50 border-l-4 border-orange-600 rounded-xl p-5">
+            <h3 class="font-bold text-orange-900 mb-2">Klíčový princip</h3>
+            <p class="text-slate-700 text-sm"><strong>Zákon zachování energie:</strong> energie potřebná k přeměně skupenství se vždy musí někam vzít nebo někam jít. Při tání ledu v nápoji energie přechází z nápoje do ledu — nápoj se ochlazuje.</p>
+        </div>
+    </section>
+
+    <!-- SKUPENSKÉ TEPLO -->
+    <section id="cz-teplo" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Skupenské teplo</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Při přeměně skupenství se teplota látky <strong>nemění</strong>, i když dodáváme nebo odebíráme teplo. Energie se spotřebovává na změnu vazeb mezi částicemi, nikoli na zvýšení kinetické energie (= teploty).</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-orange-50 rounded-xl p-4 formula-box">
+                    <p class="font-bold text-orange-800 mb-1">Tání / tuhnutí</p>
+                    <p class="text-2xl">$L = m \cdot l_t$</p>
+                    <p class="text-xs text-slate-500 mt-2">L — teplo [J], m — hmotnost [kg], l<sub>t</sub> — měrné skupenské teplo tání [J/kg]</p>
+                </div>
+                <div class="bg-orange-50 rounded-xl p-4 formula-box">
+                    <p class="font-bold text-orange-800 mb-1">Var / kondenzace</p>
+                    <p class="text-2xl">$L = m \cdot l_v$</p>
+                    <p class="text-xs text-slate-500 mt-2">L — teplo [J], m — hmotnost [kg], l<sub>v</sub> — měrné skupenské teplo varu [J/kg]</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Přehled důležitých hodnot pro vodu</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Veličina</th><th class="py-2 pr-4">Symbol</th><th class="py-2">Hodnota</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Teplota tání/tuhnutí vody</td><td class="pr-4">t<sub>t</sub></td><td>0 °C (při norm. tlaku)</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Teplota varu vody</td><td class="pr-4">t<sub>v</sub></td><td>100 °C (při norm. tlaku)</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Měrné skupenské teplo tání ledu</td><td class="pr-4">l<sub>t</sub></td><td>334 kJ/kg</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Měrné skupenské teplo varu vody</td><td class="pr-4">l<sub>v</sub></td><td>2260 kJ/kg</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Měrná tepelná kapacita ledu</td><td class="pr-4">c<sub>led</sub></td><td>2 100 J/(kg·K)</td></tr>
+                    <tr><td class="py-1.5 pr-4">Měrná tepelná kapacita vody</td><td class="pr-4">c<sub>voda</sub></td><td>4 180 J/(kg·K)</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-6 md:p-8">
+            <h3 class="font-bold text-rose-800 mb-2">Pozor!</h3>
+            <p class="text-slate-700 text-sm">Skupenské teplo varu vody (2 260 kJ/kg) je přibližně <strong>6,8× vyšší</strong> než skupenské teplo tání (334 kJ/kg). Z toho vyplývá, proč je popálení parou tak nebezpečné — pára při kondenzaci uvolní obrovské množství tepla.</p>
+        </div>
+    </section>
+
+    <!-- GRAF OHŘEVU -->
+    <section id="cz-graf" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Graf ohřevu krystalické látky</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <p class="text-slate-700 mb-4">Typický graf závislosti teploty <em>t</em> na dodaném teple <em>Q</em> pro krystalickou látku má charakteristický tvar s vodorovnými úseky odpovídajícími přeměnám skupenství.</p>
+            <svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="320" fill="#fff7ed" rx="12"/>
+                <line x1="60" y1="280" x2="620" y2="280" stroke="#78350f" stroke-width="2"/>
+                <line x1="60" y1="280" x2="60" y2="20" stroke="#78350f" stroke-width="2"/>
+                <text x="300" y="310" font-size="13" fill="#78350f">Q [kJ] →</text>
+                <text x="10" y="30" font-size="13" fill="#78350f">t [°C]</text>
+                <polyline points="60,260 200,80" fill="none" stroke="#c2410c" stroke-width="4"/>
+                <polyline points="200,80 380,80" fill="none" stroke="#dc2626" stroke-width="4"/>
+                <polyline points="380,80 460,40" fill="none" stroke="#c2410c" stroke-width="4"/>
+                <text x="90" y="185" font-size="12" fill="#78350f">1: ohřev pevné látky</text>
+                <text x="215" y="70" font-size="12" fill="#dc2626" font-weight="bold">2: TÁNÍ (t = konst.)</text>
+                <text x="400" y="60" font-size="12" fill="#78350f">3: ohřev kapaliny</text>
+                <text x="55" y="295" font-size="11" fill="#78350f">0</text>
+                <text x="195" y="295" font-size="11" fill="#78350f">300</text>
+                <text x="370" y="295" font-size="11" fill="#78350f">1050</text>
+                <text x="450" y="295" font-size="11" fill="#78350f">1350</text>
+                <text x="30" y="264" font-size="11" fill="#78350f">-20</text>
+                <text x="30" y="84" font-size="11" fill="#78350f">80</text>
+                <text x="30" y="44" font-size="11" fill="#78350f">120</text>
+            </svg>
+            <p class="text-slate-500 text-sm mt-2 text-center">Graf z pracovního listu: m = 2,5 kg neznámé krystalické látky</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Jak číst graf</h3>
+            <ol class="space-y-3 text-slate-700 text-sm">
+                <li><strong>Úsek 1: Q = 0 → 300 kJ.</strong> Teplota stoupá z −20 °C na 80 °C. Látka je v <strong>pevném skupenství</strong> a ohřívá se. Energie zvyšuje kinetickou energii částic v krystalové mřížce. Sklon úseku udává tepelnou kapacitu pevné fáze.</li>
+                <li><strong>Úsek 2: Q = 300 → 1050 kJ — TÁNÍ.</strong> Teplota zůstává na <strong>80 °C</strong>, i když dodáváme teplo! Energie se spotřebovává na rozrušení krystalové mřížky. Délka úseku = skupenské teplo tání: $L_t = 1050 - 300 = 750\,\text{kJ}$.</li>
+                <li><strong>Úsek 3: Q = 1050 → 1350 kJ.</strong> Teplota stoupá z 80 °C na 120 °C. Látka je již v <strong>kapalném skupenství</strong> a ohřívá se. Jiný sklon úseku odráží odlišnou tepelnou kapacitu kapaliny.</li>
+            </ol>
+            <div class="bg-orange-50 rounded-xl p-4 mt-4 text-sm text-slate-700">
+                <p class="font-semibold text-orange-900 mb-1">Výpočet měrného skupenského tepla:</p>
+                <p>$L_t = 750\,\text{kJ} = 750\,000\,\text{J}$, $m = 2{,}5\,\text{kg}$ ⟹ $l_t = L_t/m = 750\,000/2{,}5 = 300\,\text{kJ/kg}$.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- VÝPOČET TEPLA -->
+    <section id="cz-vypocet" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Výpočet tepla při ohřevu — celkový postup</h2>
+        <p class="text-slate-700 mb-4">Při výpočtu tepla potřebného pro přeměnu skupenství je třeba rozlišit <strong>tři druhy tepla</strong>:</p>
+        <div class="grid sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <span class="badge bg-orange-100 text-orange-700 mb-2">A</span>
+                <p class="text-sm text-slate-700"><strong>Ohřev/chlazení v rámci jednoho skupenství:</strong> $Q = m \cdot c \cdot \Delta t$</p>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <span class="badge bg-orange-100 text-orange-700 mb-2">B</span>
+                <p class="text-sm text-slate-700"><strong>Přeměna skupenství (konstantní teplota):</strong> $Q = m \cdot l_t$ nebo $Q = m \cdot l_v$</p>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <span class="badge bg-orange-100 text-orange-700 mb-2">C</span>
+                <p class="text-sm text-slate-700"><strong>Celkové teplo</strong> = součet všech dílčích příspěvků (A + B pro každý krok)</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Příklad: Ohřev 5 kg ledu z 0 °C na 20 °C vody</h3>
+            <ol class="space-y-2 text-slate-700 text-sm">
+                <li>Led taje při 0 °C: $Q_1 = 5 \cdot 334\,000 = 1\,670\,000\,\text{J}$</li>
+                <li>Ohřev vody 0 → 20 °C: $Q_2 = 5 \cdot 4180 \cdot 20 = 418\,000\,\text{J}$</li>
+                <li>Celkem: $Q = Q_1 + Q_2 = 2\,088\,000\,\text{J} \approx 2{,}09\,\text{MJ}$</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- MIKROSVĚT -->
+    <section id="cz-mikro" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Co se děje s částicemi?</h2>
+        <p class="text-slate-700 mb-6">Kinetická teorie látek vysvětluje skupenské přeměny pohybem a interakcemi atomů/molekul.</p>
+        <div class="grid sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">Pevné skupenství</h3>
+                <p class="text-slate-600 text-sm">Částice jsou vázány silnými silami v <strong>krystalové mřížce</strong>. Jejich pohyb je omezen na vibrace kolem rovnovážných poloh. Potenciální energie je výrazně záporná.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">Kapalné skupenství</h3>
+                <p class="text-slate-600 text-sm">Částice si zachovávají blízkost, ale <strong>již nejsou vázány na pevné polohy</strong>. Existují krátkodobá lokální uspořádání, žádná dlouhodobá struktura.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">Plynné skupenství</h3>
+                <p class="text-slate-600 text-sm">Částice se pohybují <strong>chaoticky a nezávisle</strong> vysokou rychlostí (stovky m/s). Vzájemné interakce jsou zanedbatelné.</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Tání — mikroskopicky</h3>
+            <p class="text-slate-700 text-sm">Dodávaná energie <strong>nezvyšuje kinetickou energii</strong> (= teplotu), ale zvyšuje <strong>potenciální energii</strong> — překonává vazby v krystalové mřížce. Fázová přeměna probíhá při pevné teplotě (teplota tání T<sub>t</sub>), dokud se veškerá pevná látka nepřemění.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Vypařování z povrchu</h3>
+            <p class="text-slate-700 text-sm">V kapalině mají částice <strong>Maxwellovo rozdělení rychlostí</strong> — jen malá část má dostatečnou kinetickou energii k překonání povrchových přitažlivých sil. Průměrná kinetická energie zbylých molekul klesá ⟹ <strong>kapalina se ochlazuje</strong>. Vypařování probíhá za libovolné teploty.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Faktory ovlivňující rychlost vypařování</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Faktor</th><th class="py-2 pr-4">Vliv</th><th class="py-2">Proč</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Teplota</td><td class="pr-4">Vyšší → rychlejší výpar</td><td>Více molekul má Ek dostatečnou pro únik</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Velikost povrchu</td><td class="pr-4">Větší → rychlejší výpar</td><td>Více míst pro únik molekul</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Proudění vzduchu</td><td class="pr-4">Silnější vítr → rychlejší výpar</td><td>Odnáší páry, brání zpětné kondenzaci</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Vlhkost vzduchu</td><td class="pr-4">Sušší → rychlejší výpar</td><td>Větší difúzní gradient</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Druh kapaliny</td><td class="pr-4">Těkavé se vypaří rychleji</td><td>Slabší mezimolekulární síly</td></tr>
+                    <tr><td class="py-1.5 pr-4 font-semibold">Tlak</td><td class="pr-4">Nižší → rychlejší výpar</td><td>Snazší únik molekul</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Var — mikroskopicky</h3>
+            <p class="text-slate-700 text-sm">Při teplotě varu se <strong>tlak nasycených par</strong> uvnitř kapaliny rovná vnějšímu tlaku. Bubliny páry se tvoří v celém objemu kapaliny. Teplota bodu varu závisí na tlaku — na Mount Everestu vře voda kolem 71 °C.</p>
+        </div>
+    </section>
+
+    <!-- FÁZOVÝ DIAGRAM -->
+    <section id="cz-diagram" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Fázový diagram</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <p class="text-slate-700 mb-4">Fázový diagram (p-T diagram) znázorňuje, v jakém skupenství se látka nachází při daném tlaku a teplotě.</p>
+            <svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+                <rect width="500" height="320" fill="#fff7ed" rx="12"/>
+                <line x1="60" y1="280" x2="460" y2="280" stroke="#78350f" stroke-width="2"/>
+                <line x1="60" y1="280" x2="60" y2="20" stroke="#78350f" stroke-width="2"/>
+                <text x="420" y="300" font-size="13" fill="#78350f">T →</text>
+                <text x="15" y="30" font-size="13" fill="#78350f">p</text>
+                <path d="M60,280 Q100,150 140,110" fill="none" stroke="#78350f" stroke-width="2"/>
+                <path d="M140,110 L260,40" fill="none" stroke="#78350f" stroke-width="2"/>
+                <path d="M140,110 Q220,180 400,240" fill="none" stroke="#78350f" stroke-width="2"/>
+                <circle cx="140" cy="110" r="4" fill="#dc2626"/>
+                <text x="150" y="105" font-size="11" fill="#dc2626">trojný bod</text>
+                <circle cx="260" cy="40" r="4" fill="#dc2626"/>
+                <text x="235" y="30" font-size="11" fill="#dc2626">kritický bod</text>
+                <text x="90" y="90" font-size="13" fill="#78350f" font-weight="bold">pevná</text>
+                <text x="230" y="150" font-size="13" fill="#78350f" font-weight="bold">kapalná</text>
+                <text x="320" y="260" font-size="13" fill="#78350f" font-weight="bold">plynná</text>
+            </svg>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">Trojný bod</h3>
+                <p class="text-slate-600 text-sm">Jediný bod, kde všechna tři skupenství existují <strong>současně v rovnováze</strong>. Pro vodu: T₃ = 0,01 °C, p₃ = 611 Pa.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">Kritický bod</h3>
+                <p class="text-slate-600 text-sm">Nad kritickou teplotou a tlakem <strong>mizí rozdíl</strong> mezi kapalinou a plynem — vzniká superkritická tekutina. Pro vodu: T<sub>kr</sub> = 374 °C, p<sub>kr</sub> = 22,1 MPa.</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Lyofilizace (vymrazování)</h3>
+            <ol class="space-y-2 text-slate-700 text-sm list-decimal ml-5">
+                <li>Potravina se <strong>zmrazí</strong> (led stabilizuje strukturu)</li>
+                <li>Tlak se snižuje pod trojný bod vody (<strong>vakuum</strong>, p &lt; 611 Pa)</li>
+                <li>Led <strong>sublimuje přímo na páru</strong> — voda přeskočí kapalnou fázi</li>
+                <li>Výsledek: suchá potravina zachovávající barvu, chuť, vitamíny a strukturu</li>
+            </ol>
+            <p class="text-slate-500 text-xs mt-3">Příklady: instantní káva, lyofilizované ovoce v müsli, polní potraviny pro výpravy, léčiva.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Sublimace a desublimace v praxi</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Jev</th><th class="py-2 pr-4">Proces</th><th class="py-2">Vysvětlení</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Jinovatka na větvích</td><td class="pr-4 font-semibold">Desublimace</td><td>Vodní pára přechází přímo do pevného skupenství</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Mizení sněhu za sucha</td><td class="pr-4 font-semibold">Sublimace</td><td>Led přechází přímo na páru</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Vůně pevného osvěžovače</td><td class="pr-4 font-semibold">Sublimace</td><td>Aromatické látky přecházejí do vzduchu</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Jód ve zkumavce</td><td class="pr-4 font-semibold">Sublimace → desublimace</td><td>Jód sublimuje, pára desublimuje jinde</td></tr>
+                    <tr><td class="py-1.5 pr-4">Suchý led (CO₂)</td><td class="pr-4 font-semibold">Sublimace</td><td>Pevný CO₂ přechází přímo na plynný</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- FYZIKA V PRAXI -->
+    <section id="cz-praxe" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Fyzika skupenství v každodenním životě</h2>
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🏊 Po koupání nám je zima</h3>
+                <p class="text-slate-600 text-sm">Voda na kůži se <strong>vypařuje</strong>. Skupenské teplo výparné (2260 kJ/kg) odebírá energii z pokožky → ochlazení.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🧊 Led v nápoji</h3>
+                <p class="text-slate-600 text-sm">Led taje a přijímá skupenské teplo tání z nápoje → nápoj se ochlazuje. Led je účinnější chladicí prostředek než stejná masa studené vody.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">💪 Pocení při sportu</h3>
+                <p class="text-slate-600 text-sm">Skupenské teplo výparné odvádí nadbytečné teplo a zabraňuje přehřátí. Regulace tělesné teploty je termodynamický jev.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🔥 Popálení párou</h3>
+                <p class="text-slate-600 text-sm">Pára při kondenzaci uvolní ~2260 kJ/kg, zatímco voda uvolní jen ~263 kJ/kg — pára předá 8× více energie.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🌧️ Počasí a srážky</h3>
+                <p class="text-slate-600 text-sm">Vodní cyklus je řízen skupenskými přeměnami: výpar → kondenzace (mraky) → srážky. Kondenzace uvolňuje teplo, které pohání bouřky.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🍳 Vaření ve výšce</h3>
+                <p class="text-slate-600 text-sm">Ve výšce je nižší tlak → voda vře při nižší teplotě (v 5000 m n. m. při cca 83 °C). Jídlo se vaří déle.</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Chladicí cykly a tepelná čerpadla</h3>
+            <p class="text-slate-700 text-sm mb-3">Chladnička využívá skupenské přeměny chladiva (např. R-134a nebo R-600a):</p>
+            <ol class="space-y-2 text-slate-700 text-sm list-decimal ml-5">
+                <li>Kapalné chladivo <strong>se vypaří ve výparníku</strong> → odebírá teplo z potravin → potraviny se ochladí</li>
+                <li>Kompresor stlačí páru chladiva → zvýší se teplota</li>
+                <li>Pára <strong>zkondenzuje v kondenzátoru</strong> → uvolní teplo do místnosti → chladivo se stane opět kapalným</li>
+            </ol>
+            <p class="text-slate-500 text-xs mt-3">Tepelné čerpadlo funguje na stejném principu — "přečerpává" teplo z venkovního vzduchu do budovy. V létě může pracovat obráceně jako klimatizace.</p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Výukový modul Fyziky · Změny skupenství látek · Molekulová fyzika a termika</p>
+</footer>
+
+</div>
+
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH                                              -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-orange-700 to-red-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-orange-200 text-sm font-semibold tracking-wider uppercase">
+            <span>🔥 Physique moléculaire et thermique</span><span>•</span><span>Changements d'état</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Les changements d'état de la matière</h1>
+        <p class="text-lg md:text-xl text-orange-50 max-w-3xl leading-relaxed">
+            Fusion, solidification, vaporisation, condensation, sublimation et condensation solide. Chaleur latente, graphiques de chauffage, vision microscopique, diagramme de phases et physique du quotidien.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('fr-etats')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">États</span>
+        <span onclick="scrollToId('fr-processus')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Processus</span>
+        <span onclick="scrollToId('fr-chaleur')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Chaleur latente</span>
+        <span onclick="scrollToId('fr-graphique')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Graphique</span>
+        <span onclick="scrollToId('fr-calcul')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Calcul de la chaleur</span>
+        <span onclick="scrollToId('fr-micro')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Vision microscopique</span>
+        <span onclick="scrollToId('fr-diagramme')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Diagramme de phases</span>
+        <span onclick="scrollToId('fr-vie')" class="nav-pill hover:text-orange-700 px-3 py-1 rounded-full hover:bg-orange-50">Vie courante</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- ÉTATS -->
+    <section id="fr-etats" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Les états de la matière et leurs transformations</h2>
+        <p class="text-lg text-slate-700 mb-6">La matière existe sous trois états principaux, qui se distinguent par l'arrangement et le mouvement des particules (atomes ou molécules).</p>
+        <div class="grid sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="text-4xl mb-2">🧊</div>
+                <h3 class="font-bold text-orange-800 mb-2">Solide</h3>
+                <p class="text-slate-600 text-sm">Les particules vibrent autour de positions fixes dans un réseau cristallin. Forme et volume fixes.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="text-4xl mb-2">💧</div>
+                <h3 class="font-bold text-orange-800 mb-2">Liquide</h3>
+                <p class="text-slate-600 text-sm">Les particules se déplacent librement mais restent proches les unes des autres. Volume fixe, forme variable.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="text-4xl mb-2">💨</div>
+                <h3 class="font-bold text-orange-800 mb-2">Gazeux</h3>
+                <p class="text-slate-600 text-sm">Les particules se déplacent de façon chaotique et occupent tout l'espace disponible. Forme et volume variables.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESSUS -->
+    <section id="fr-processus" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Tableau des transformations</h2>
+        <p class="text-slate-700 mb-6">Chaque changement d'état porte un nom précis et s'accompagne d'un échange de chaleur avec le milieu extérieur.</p>
+        <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">🧊→💧</div>
+                <div class="font-bold text-slate-900">Fusion</div>
+                <div class="text-xs text-slate-500 mb-1">solide → liquide</div>
+                <span class="badge bg-emerald-100 text-emerald-700">+Q (absorption)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">💧→🧊</div>
+                <div class="font-bold text-slate-900">Solidification</div>
+                <div class="text-xs text-slate-500 mb-1">liquide → solide</div>
+                <span class="badge bg-rose-100 text-rose-700">−Q (dégagement)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">💧→💨</div>
+                <div class="font-bold text-slate-900">Vaporisation / ébullition</div>
+                <div class="text-xs text-slate-500 mb-1">liquide → gazeux</div>
+                <span class="badge bg-emerald-100 text-emerald-700">+Q (absorption)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">💨→💧</div>
+                <div class="font-bold text-slate-900">Condensation</div>
+                <div class="text-xs text-slate-500 mb-1">gazeux → liquide</div>
+                <span class="badge bg-rose-100 text-rose-700">−Q (dégagement)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">🧊→💨</div>
+                <div class="font-bold text-slate-900">Sublimation</div>
+                <div class="text-xs text-slate-500 mb-1">solide → gazeux</div>
+                <span class="badge bg-emerald-100 text-emerald-700">+Q (absorption)</span>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <div class="text-2xl mb-1">💨→🧊</div>
+                <div class="font-bold text-slate-900">Condensation solide</div>
+                <div class="text-xs text-slate-500 mb-1">gazeux → solide</div>
+                <span class="badge bg-rose-100 text-rose-700">−Q (dégagement)</span>
+            </div>
+        </div>
+        <div class="bg-orange-50 border-l-4 border-orange-600 rounded-xl p-5">
+            <h3 class="font-bold text-orange-900 mb-2">Principe fondamental</h3>
+            <p class="text-slate-700 text-sm"><strong>Conservation de l'énergie :</strong> l'énergie nécessaire à un changement d'état doit toujours provenir de quelque part. Lorsqu'on place des glaçons dans une boisson, l'énergie passe de la boisson vers la glace — la boisson se refroidit.</p>
+        </div>
+    </section>
+
+    <!-- CHALEUR LATENTE -->
+    <section id="fr-chaleur" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">La chaleur latente</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Lors d'un changement d'état, la température de la substance <strong>ne varie pas</strong>, même si on lui apporte ou retire de la chaleur. L'énergie est utilisée pour modifier les liaisons entre particules, et non pour augmenter leur énergie cinétique.</p>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div class="bg-orange-50 rounded-xl p-4 formula-box">
+                    <p class="font-bold text-orange-800 mb-1">Fusion / solidification</p>
+                    <p class="text-2xl">$L = m \cdot l_f$</p>
+                    <p class="text-xs text-slate-500 mt-2">L — chaleur échangée [J], m — masse [kg], l<sub>f</sub> — chaleur latente spécifique de fusion [J/kg]</p>
+                </div>
+                <div class="bg-orange-50 rounded-xl p-4 formula-box">
+                    <p class="font-bold text-orange-800 mb-1">Vaporisation / condensation</p>
+                    <p class="text-2xl">$L = m \cdot l_v$</p>
+                    <p class="text-xs text-slate-500 mt-2">L — chaleur échangée [J], m — masse [kg], l<sub>v</sub> — chaleur latente spécifique de vaporisation [J/kg]</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Valeurs importantes pour l'eau</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Grandeur</th><th class="py-2 pr-4">Symbole</th><th class="py-2">Valeur</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Température de fusion/solidification</td><td class="pr-4">t<sub>f</sub></td><td>0 °C (pression normale)</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Température d'ébullition</td><td class="pr-4">t<sub>éb</sub></td><td>100 °C (pression normale)</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Chaleur latente spécifique de fusion de la glace</td><td class="pr-4">l<sub>f</sub></td><td>334 kJ/kg</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Chaleur latente spécifique de vaporisation</td><td class="pr-4">l<sub>v</sub></td><td>2 260 kJ/kg</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Chaleur spécifique de la glace</td><td class="pr-4">c<sub>glace</sub></td><td>2 100 J/(kg·K)</td></tr>
+                    <tr><td class="py-1.5 pr-4">Chaleur spécifique de l'eau liquide</td><td class="pr-4">c<sub>eau</sub></td><td>4 180 J/(kg·K)</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-6 md:p-8">
+            <h3 class="font-bold text-rose-800 mb-2">Attention !</h3>
+            <p class="text-slate-700 text-sm">La chaleur latente de vaporisation de l'eau (2 260 kJ/kg) est environ <strong>6,8 fois plus grande</strong> que la chaleur latente de fusion (334 kJ/kg). C'est pourquoi une brûlure par la vapeur d'eau est si dangereuse.</p>
+        </div>
+    </section>
+
+    <!-- GRAPHIQUE -->
+    <section id="fr-graphique" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Graphique de chauffage d'un corps cristallin</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <p class="text-slate-700 mb-4">Le graphique température–chaleur fournie T = f(Q) d'un corps cristallin présente des <strong>paliers horizontaux</strong> qui correspondent aux changements d'état.</p>
+            <svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="320" fill="#fff7ed" rx="12"/>
+                <line x1="60" y1="280" x2="620" y2="280" stroke="#78350f" stroke-width="2"/>
+                <line x1="60" y1="280" x2="60" y2="20" stroke="#78350f" stroke-width="2"/>
+                <text x="300" y="310" font-size="13" fill="#78350f">Q [kJ] →</text>
+                <text x="10" y="30" font-size="13" fill="#78350f">t [°C]</text>
+                <polyline points="60,260 200,80" fill="none" stroke="#c2410c" stroke-width="4"/>
+                <polyline points="200,80 380,80" fill="none" stroke="#dc2626" stroke-width="4"/>
+                <polyline points="380,80 460,40" fill="none" stroke="#c2410c" stroke-width="4"/>
+                <text x="90" y="185" font-size="12" fill="#78350f">1 : solide</text>
+                <text x="215" y="70" font-size="12" fill="#dc2626" font-weight="bold">2 : FUSION (palier)</text>
+                <text x="400" y="60" font-size="12" fill="#78350f">3 : liquide</text>
+                <text x="55" y="295" font-size="11" fill="#78350f">0</text>
+                <text x="195" y="295" font-size="11" fill="#78350f">300</text>
+                <text x="370" y="295" font-size="11" fill="#78350f">1050</text>
+                <text x="450" y="295" font-size="11" fill="#78350f">1350</text>
+                <text x="30" y="264" font-size="11" fill="#78350f">-20</text>
+                <text x="30" y="84" font-size="11" fill="#78350f">80</text>
+                <text x="30" y="44" font-size="11" fill="#78350f">120</text>
+            </svg>
+            <p class="text-slate-500 text-sm mt-2 text-center">Graphique issu du questionnaire : m = 2,5 kg d'une substance cristalline inconnue</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Comment lire ce graphique ?</h3>
+            <ol class="space-y-3 text-slate-700 text-sm">
+                <li><strong>Segment 1 : Q = 0 → 300 kJ.</strong> La température s'élève de −20 °C à 80 °C. La substance est à l'<strong>état solide</strong> et se réchauffe. La pente est liée à la capacité thermique massique de la phase solide.</li>
+                <li><strong>Segment 2 : Q = 300 → 1050 kJ — FUSION.</strong> La température reste <strong>constante à 80 °C</strong> ! L'énergie sert à rompre les liaisons du réseau cristallin. Longueur du palier = chaleur latente de fusion : $L_f = 1050 - 300 = 750\,\text{kJ}$.</li>
+                <li><strong>Segment 3 : Q = 1050 → 1350 kJ.</strong> La température monte de 80 °C à 120 °C. La substance est à l'<strong>état liquide</strong>. La pente différente traduit la capacité thermique massique différente.</li>
+            </ol>
+            <div class="bg-orange-50 rounded-xl p-4 mt-4 text-sm text-slate-700">
+                <p class="font-semibold text-orange-900 mb-1">Calcul de la chaleur latente massique :</p>
+                <p>$L_f = 750\,\text{kJ} = 750\,000\,\text{J}$, $m = 2{,}5\,\text{kg}$ ⟹ $l_f = L_f/m = 750\,000/2{,}5 = 300\,\text{kJ/kg}$.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CALCUL -->
+    <section id="fr-calcul" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Méthode générale de calcul des échanges de chaleur</h2>
+        <p class="text-slate-700 mb-4">Pour tout problème mettant en jeu des changements d'état, on distingue <strong>trois types de contributions thermiques</strong> :</p>
+        <div class="grid sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <span class="badge bg-orange-100 text-orange-700 mb-2">A</span>
+                <p class="text-sm text-slate-700"><strong>Chaleur sensible :</strong> $Q = m \cdot c \cdot \Delta t$</p>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <span class="badge bg-orange-100 text-orange-700 mb-2">B</span>
+                <p class="text-sm text-slate-700"><strong>Chaleur latente :</strong> $Q = m \cdot l_f$ ou $Q = m \cdot l_v$</p>
+            </div>
+            <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+                <span class="badge bg-orange-100 text-orange-700 mb-2">C</span>
+                <p class="text-sm text-slate-700"><strong>Chaleur totale</strong> = somme algébrique de toutes les contributions</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Exemple : chauffage de 5 kg de glace de 0 °C à de l'eau à 20 °C</h3>
+            <ol class="space-y-2 text-slate-700 text-sm">
+                <li>Fusion de la glace à 0 °C : $Q_1 = 5 \cdot 334\,000 = 1\,670\,000\,\text{J}$</li>
+                <li>Chauffage de l'eau 0 → 20 °C : $Q_2 = 5 \cdot 4180 \cdot 20 = 418\,000\,\text{J}$</li>
+                <li>Total : $Q = Q_1 + Q_2 = 2\,088\,000\,\text{J} \approx 2{,}09\,\text{MJ}$</li>
+            </ol>
+        </div>
+    </section>
+
+    <!-- VISION MICROSCOPIQUE -->
+    <section id="fr-micro" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Que se passe-t-il au niveau des particules ?</h2>
+        <p class="text-slate-700 mb-6">La théorie cinétique de la matière explique les changements d'état à partir du mouvement et des interactions entre atomes ou molécules.</p>
+        <div class="grid sm:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">État solide</h3>
+                <p class="text-slate-600 text-sm">Les particules sont liées par des forces puissantes dans un <strong>réseau cristallin</strong>. Leur mouvement se réduit à des vibrations. L'énergie potentielle est fortement négative.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">État liquide</h3>
+                <p class="text-slate-600 text-sm">Les particules conservent leur proximité, mais <strong>ne sont plus liées à des positions fixes</strong>. Arrangements locaux à court terme seulement.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">État gazeux</h3>
+                <p class="text-slate-600 text-sm">Les particules se déplacent de façon <strong>aléatoire et indépendante</strong> à grande vitesse. Les interactions sont négligeables.</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Fusion — point de vue microscopique</h3>
+            <p class="text-slate-700 text-sm">L'énergie apportée <strong>n'augmente pas l'énergie cinétique</strong>, mais augmente l'<strong>énergie potentielle</strong> en rompant les liaisons du réseau cristallin. Le changement d'état se produit à température fixe (T<sub>f</sub>) jusqu'à ce que toute la substance soit transformée.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Évaporation en surface</h3>
+            <p class="text-slate-700 text-sm">Dans un liquide, les particules suivent une <strong>distribution de Maxwell</strong> des vitesses — seule une petite fraction peut s'échapper de la surface. L'énergie cinétique moyenne des molécules restantes diminue ⟹ <strong>le liquide se refroidit</strong>. L'évaporation se produit à n'importe quelle température.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">Facteurs influençant la vitesse d'évaporation</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Facteur</th><th class="py-2 pr-4">Effet</th><th class="py-2">Explication</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Température</td><td class="pr-4">Plus élevée → plus rapide</td><td>Plus de molécules peuvent s'échapper</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Surface libre</td><td class="pr-4">Plus grande → plus rapide</td><td>Plus de points d'échappement</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Vent</td><td class="pr-4">Plus fort → plus rapide</td><td>Éloigne les vapeurs saturantes</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Humidité</td><td class="pr-4">Air plus sec → plus rapide</td><td>Gradient de diffusion plus grand</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4 font-semibold">Nature du liquide</td><td class="pr-4">Volatils → plus rapide</td><td>Interactions plus faibles</td></tr>
+                    <tr><td class="py-1.5 pr-4 font-semibold">Pression</td><td class="pr-4">Plus faible → plus rapide</td><td>Fuite plus aisée</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Ébullition — point de vue microscopique</h3>
+            <p class="text-slate-700 text-sm">À la température d'ébullition, la <strong>pression de vapeur saturante</strong> à l'intérieur du liquide est égale à la pression extérieure. La température d'ébullition dépend de la pression : au sommet de l'Everest, elle est d'environ 71 °C.</p>
+        </div>
+    </section>
+
+    <!-- DIAGRAMME -->
+    <section id="fr-diagramme" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Le diagramme de phases</h2>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <p class="text-slate-700 mb-4">Le diagramme de phases (diagramme p-T) indique dans quel état se trouve une substance pour une pression et une température données.</p>
+            <svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg">
+                <rect width="500" height="320" fill="#fff7ed" rx="12"/>
+                <line x1="60" y1="280" x2="460" y2="280" stroke="#78350f" stroke-width="2"/>
+                <line x1="60" y1="280" x2="60" y2="20" stroke="#78350f" stroke-width="2"/>
+                <text x="420" y="300" font-size="13" fill="#78350f">T →</text>
+                <text x="15" y="30" font-size="13" fill="#78350f">p</text>
+                <path d="M60,280 Q100,150 140,110" fill="none" stroke="#78350f" stroke-width="2"/>
+                <path d="M140,110 L260,40" fill="none" stroke="#78350f" stroke-width="2"/>
+                <path d="M140,110 Q220,180 400,240" fill="none" stroke="#78350f" stroke-width="2"/>
+                <circle cx="140" cy="110" r="4" fill="#dc2626"/>
+                <text x="150" y="105" font-size="11" fill="#dc2626">point triple</text>
+                <circle cx="260" cy="40" r="4" fill="#dc2626"/>
+                <text x="235" y="30" font-size="11" fill="#dc2626">point critique</text>
+                <text x="90" y="90" font-size="13" fill="#78350f" font-weight="bold">solide</text>
+                <text x="230" y="150" font-size="13" fill="#78350f" font-weight="bold">liquide</text>
+                <text x="320" y="260" font-size="13" fill="#78350f" font-weight="bold">gaz</text>
+            </svg>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">Point triple</h3>
+                <p class="text-slate-600 text-sm">Point unique où les trois états coexistent <strong>simultanément en équilibre</strong>. Pour l'eau : T₃ = 0,01 °C, p₃ = 611 Pa.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-2">Point critique</h3>
+                <p class="text-slate-600 text-sm">Au-delà, la <strong>distinction entre liquide et gaz disparaît</strong> — fluide supercritique. Pour l'eau : T<sub>c</sub> = 374 °C, p<sub>c</sub> = 22,1 MPa.</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-orange-800 mb-3">La lyophilisation</h3>
+            <ol class="space-y-2 text-slate-700 text-sm list-decimal ml-5">
+                <li>L'aliment est d'abord <strong>congelé</strong></li>
+                <li>La pression est abaissée sous le point triple (<strong>vide</strong>, p &lt; 611 Pa)</li>
+                <li>La glace se <strong>sublime directement en vapeur</strong></li>
+                <li>Résultat : aliment sec, couleur/goût/vitamines/texture préservés</li>
+            </ol>
+            <p class="text-slate-500 text-xs mt-3">Exemples : café soluble, fruits lyophilisés, rations de randonnée, médicaments.</p>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Sublimation et condensation solide en pratique</h3>
+            <div class="overflow-x-auto">
+            <table class="w-full text-sm text-left border-collapse">
+                <thead><tr class="border-b-2 border-slate-300"><th class="py-2 pr-4">Phénomène</th><th class="py-2 pr-4">Processus</th><th class="py-2">Explication</th></tr></thead>
+                <tbody class="text-slate-700">
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Givre sur les branches</td><td class="pr-4 font-semibold">Condensation solide</td><td>La vapeur passe directement à l'état solide</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Neige qui disparaît sans fondre</td><td class="pr-4 font-semibold">Sublimation</td><td>La glace passe directement en vapeur</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Parfum d'un désodorisant solide</td><td class="pr-4 font-semibold">Sublimation</td><td>Les molécules passent à l'état gazeux</td></tr>
+                    <tr class="border-b border-slate-100"><td class="py-1.5 pr-4">Cristaux d'iode chauffés</td><td class="pr-4 font-semibold">Sublimation → condensation solide</td><td>L'iode se sublime puis se recristallise</td></tr>
+                    <tr><td class="py-1.5 pr-4">Glace carbonique (CO₂)</td><td class="pr-4 font-semibold">Sublimation</td><td>Le CO₂ solide passe directement en gaz</td></tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- VIE COURANTE -->
+    <section id="fr-vie" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Les changements d'état dans la vie de tous les jours</h2>
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🏊 Froid après la baignade</h3>
+                <p class="text-slate-600 text-sm">L'eau sur la peau <strong>s'évapore</strong>. La chaleur latente de vaporisation prélève de l'énergie sur la peau → refroidissement.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🧊 Glaçons dans une boisson</h3>
+                <p class="text-slate-600 text-sm">La glace fond en absorbant la chaleur latente de fusion de la boisson → celle-ci se refroidit efficacement.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">💪 Transpiration</h3>
+                <p class="text-slate-600 text-sm">La sueur s'évapore, emportant l'excès de chaleur et prévenant l'hyperthermie. Phénomène thermodynamique de régulation.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🔥 Brûlure par la vapeur</h3>
+                <p class="text-slate-600 text-sm">La vapeur libère ~2260 kJ/kg en se condensant, contre ~263 kJ/kg pour l'eau — environ 8× plus d'énergie.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🌧️ Cycle de l'eau</h3>
+                <p class="text-slate-600 text-sm">Évaporation des océans → condensation en altitude → précipitations. La condensation libère de la chaleur alimentant les orages.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+                <h3 class="font-bold text-orange-800 mb-1">🍳 Cuisson en altitude</h3>
+                <p class="text-slate-600 text-sm">Pression plus faible → l'eau bout en dessous de 100 °C (≈83 °C à 5000 m). Les aliments cuisent plus lentement.</p>
+            </div>
+        </div>
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-orange-800 mb-3">Réfrigérateurs et pompes à chaleur</h3>
+            <p class="text-slate-700 text-sm mb-3">Un réfrigérateur exploite les changements d'état d'un fluide frigorigène (par ex. R-134a ou R-600a) :</p>
+            <ol class="space-y-2 text-slate-700 text-sm list-decimal ml-5">
+                <li>Le fluide liquide <strong>s'évapore dans l'évaporateur</strong> → il absorbe la chaleur des aliments</li>
+                <li>Le compresseur comprime la vapeur → sa température augmente</li>
+                <li>La vapeur <strong>se condense dans le condenseur</strong> → elle libère de la chaleur dans la pièce</li>
+            </ol>
+            <p class="text-slate-500 text-xs mt-3">La pompe à chaleur fonctionne sur le même principe. En été, elle peut fonctionner en sens inverse en tant que climatiseur.</p>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Module éducatif de Physique · Les changements d'état de la matière · Physique moléculaire et thermique</p>
+</footer>
+
+</div>
+
+<script>
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+        if (cz.classList.contains('hidden')) {
+            cz.classList.remove('hidden'); fr.classList.add('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        } else {
+            fr.classList.remove('hidden'); cz.classList.add('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        }
+        if (window.MathJax) { setTimeout(() => MathJax.typesetPromise && MathJax.typesetPromise(), 50); }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>

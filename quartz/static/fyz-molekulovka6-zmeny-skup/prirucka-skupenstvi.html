@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Změny skupenství látek / Changements d'état de la matière</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 720px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        .MathJax_Display { margin: 1em 0; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: left; }
+        th { background: #f5f5f5; }
+        .law-box { background: #fff7ed; border-left: 4px solid #ea580c; padding: 12px 16px; margin: 1rem 0; border-radius: 6px; }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Změny skupenství látek</h1>
+        <p><strong>Předmět:</strong> Fyzika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Skupenství a jejich přeměny</h2>
+        <p>Látky se vyskytují ve třech základních skupenstvích — <strong>pevném</strong>, <strong>kapalném</strong> a <strong>plynném</strong> — která se liší uspořádáním a pohybem částic. V pevné látce vibrují částice kolem pevných poloh v mřížce (stálý tvar i objem), v kapalině se pohybují volněji, ale drží se blízko sebe (stálý objem, proměnný tvar), v plynu se pohybují chaoticky a zaplňují celý dostupný prostor (proměnný tvar i objem).</p>
+        <p>Přechody mezi skupenstvími se nazývají: <strong>tání</strong> (pevné→kapalné), <strong>tuhnutí</strong> (kapalné→pevné), <strong>var/vypařování</strong> (kapalné→plynné), <strong>kondenzace</strong> (plynné→kapalné), <strong>sublimace</strong> (pevné→plynné) a <strong>desublimace</strong> (plynné→pevné). Přeměny pevné↔kapalné a kapalné↔plynné přijímají energii (+Q), opačné směry ji uvolňují (−Q).</p>
+        <div class="law-box"><strong>Zákon zachování energie:</strong> energie potřebná k přeměně skupenství se vždy musí někam vzít nebo někam jít. Při tání ledu v nápoji energie přechází z nápoje do ledu — nápoj se ochlazuje.</div>
+
+        <h2>2. Skupenské teplo</h2>
+        <p>Při přeměně skupenství se teplota látky <strong>nemění</strong>, i když dodáváme nebo odebíráme teplo — energie se spotřebovává na změnu vazeb mezi částicemi, nikoli na zvýšení kinetické energie.</p>
+        $$ L = m \cdot l_t \quad \text{(tání/tuhnutí)} \qquad\qquad L = m \cdot l_v \quad \text{(var/kondenzace)} $$
+        <p>kde $L$ je skupenské teplo [J], $m$ hmotnost [kg], $l_t$ měrné skupenské teplo tání [J/kg] a $l_v$ měrné skupenské teplo varu [J/kg]. Pro vodu: $t_t = 0\,^\circ\text{C}$, $t_v = 100\,^\circ\text{C}$, $l_t = 334\,\text{kJ/kg}$, $l_v = 2260\,\text{kJ/kg}$, $c_{led} = 2100\,\text{J/(kg·K)}$, $c_{voda} = 4180\,\text{J/(kg·K)}$.</p>
+        <p><strong>Pozor:</strong> skupenské teplo varu vody je přibližně 6,8× vyšší než skupenské teplo tání — proto je popálení parou tak nebezpečné.</p>
+
+        <h2>3. Graf ohřevu krystalické látky</h2>
+        <p>Graf závislosti teploty $t$ na dodaném teple $Q$ pro krystalickou látku má vodorovné úseky odpovídající přeměnám skupenství (teplota je konstantní, dokud neproběhne celá přeměna). Sklon nakloněných úseků udává tepelnou kapacitu dané fáze, délka vodorovného úseku odpovídá skupenskému teplu.</p>
+        <p><strong>Příklad:</strong> pro $m = 2{,}5\,\text{kg}$ krystalické látky trvá tání od $Q=300\,\text{kJ}$ do $Q=1050\,\text{kJ}$, tedy $L_t = 750\,\text{kJ}$, odkud $l_t = L_t/m = 750\,000/2{,}5 = 300\,\text{kJ/kg}$.</p>
+
+        <h2>4. Výpočet tepla — celkový postup</h2>
+        <p>Při výpočtu tepla je třeba rozlišit tři druhy příspěvků:</p>
+        <ul>
+            <li><strong>A — ohřev/chlazení v rámci jednoho skupenství:</strong> $Q = m \cdot c \cdot \Delta t$</li>
+            <li><strong>B — přeměna skupenství (konstantní teplota):</strong> $Q = m \cdot l_t$ nebo $Q = m \cdot l_v$</li>
+            <li><strong>C — celkové teplo</strong> = součet všech dílčích příspěvků</li>
+        </ul>
+        <p><strong>Příklad:</strong> ohřev 5 kg ledu z 0 °C na 20 °C vody: $Q_1 = 5\cdot334\,000 = 1\,670\,000\,\text{J}$ (tání), $Q_2 = 5\cdot4180\cdot20 = 418\,000\,\text{J}$ (ohřev vody), $Q = Q_1+Q_2 \approx 2{,}09\,\text{MJ}$.</p>
+
+        <h2>5. Mikroskopický pohled</h2>
+        <p>V <strong>pevné látce</strong> jsou částice vázány silnými silami v krystalové mřížce, jejich pohyb je omezen na vibrace. V <strong>kapalině</strong> si částice zachovávají blízkost, ale nejsou vázány na pevné polohy. V <strong>plynu</strong> se částice pohybují chaoticky a nezávisle vysokou rychlostí (stovky m/s).</p>
+        <p>Při <strong>tání</strong> dodávaná energie nezvyšuje kinetickou energii (teplotu), ale potenciální energii — překonává vazby v mřížce; teplota je konstantní, dokud se veškerá látka nepřemění.</p>
+        <p>Při <strong>vypařování z povrchu</strong> unikají jen molekuly s dostatečnou kinetickou energií (Maxwellovo rozdělení rychlostí); zbylá kapalina se ochlazuje. Vypařování probíhá za libovolné teploty. Rychlost výparu zvyšuje vyšší teplota, větší povrch, proudění vzduchu, sušší vzduch, těkavost kapaliny a nižší tlak.</p>
+        <p>Při <strong>varu</strong> se tlak nasycených par uvnitř kapaliny rovná vnějšímu tlaku a bubliny páry vznikají v celém objemu. Teplota varu klesá s klesajícím tlakem (na Mount Everestu vře voda kolem 71 °C).</p>
+
+        <h2>6. Fázový diagram</h2>
+        <p>Fázový (p-T) diagram znázorňuje, v jakém skupenství se látka nachází při daném tlaku a teplotě. <strong>Trojný bod</strong> je jediný bod, kde koexistují všechna tři skupenství (pro vodu $T_3=0{,}01\,^\circ\text{C}$, $p_3=611\,\text{Pa}$). Nad <strong>kritickým bodem</strong> mizí rozdíl mezi kapalinou a plynem (pro vodu $T_{kr}=374\,^\circ\text{C}$, $p_{kr}=22{,}1\,\text{MPa}$).</p>
+        <p><strong>Lyofilizace</strong> využívá sublimaci k sušení potravin/léčiv: potravina se zmrazí, tlak se sníží pod trojný bod (vakuum), led sublimuje přímo na páru — vzniká suchý produkt se zachovanou barvou, chutí a vitamíny.</p>
+
+        <h2>7. Fyzika v každodenním životě</h2>
+        <ul>
+            <li><strong>Po koupání je nám zima</strong> — voda na kůži se vypařuje a odebírá skupenské teplo výparné z pokožky.</li>
+            <li><strong>Led v nápoji</strong> — led přijímá teplo tání z nápoje a účinně jej ochlazuje.</li>
+            <li><strong>Pocení</strong> — odpar potu odvádí teplo a brání přehřátí organismu.</li>
+            <li><strong>Popálení párou</strong> je nebezpečnější než vodou stejné teploty, protože pára navíc uvolňuje skupenské teplo kondenzace.</li>
+            <li><strong>Vaření ve výšce</strong> trvá déle, protože nižší atmosférický tlak snižuje teplotu varu vody.</li>
+            <li><strong>Chladnička</strong> využívá vypařování chladiva ve výparníku (odebírá teplo) a kondenzaci v kondenzátoru (uvolňuje teplo do místnosti).</li>
+        </ul>
+
+        <h2>8. Shrnutí pro opakování</h2>
+        <ul>
+            <li><strong>Skupenské teplo:</strong> $L=m l_t$ (tání), $L=m l_v$ (var); teplota se při přeměně nemění.</li>
+            <li><strong>Graf ohřevu:</strong> vodorovné úseky = přeměna skupenství; sklon = tepelná kapacita dané fáze.</li>
+            <li><strong>Celkové teplo:</strong> součet dílčích tepel $Q=mc\Delta t$ a $Q=ml$.</li>
+            <li><strong>Mikroskopicky:</strong> tání mění potenciální energii (ne teplotu); vypařování probíhá za každé teploty; var nastává, když tlak par = tlak okolní.</li>
+            <li><strong>Fázový diagram:</strong> trojný bod (koexistence 3 fází), kritický bod (mizí rozdíl kapalina–plyn).</li>
+            <li><strong>Praxe:</strong> chlazení odparem (pocení, po koupání), led v nápoji, nebezpečnost popálení párou, var ve výšce, chladicí cyklus.</li>
+        </ul>
+    </div>
+
+    <!-- ===== CONTENU FRANÇAIS ===== -->
+    <div id="content-fr">
+        <h1>Les changements d'état de la matière</h1>
+        <p><strong>Matière :</strong> Physique
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. Les états de la matière et leurs transformations</h2>
+        <p>La matière existe sous trois états principaux — <strong>solide</strong>, <strong>liquide</strong> et <strong>gazeux</strong> — qui se distinguent par l'arrangement et le mouvement des particules. Dans un solide, les particules vibrent autour de positions fixes (forme et volume fixes) ; dans un liquide, elles se déplacent plus librement mais restent proches (volume fixe, forme variable) ; dans un gaz, elles se déplacent de façon chaotique et occupent tout l'espace disponible.</p>
+        <p>Les transitions portent les noms suivants : <strong>fusion</strong> (solide→liquide), <strong>solidification</strong> (liquide→solide), <strong>vaporisation/ébullition</strong> (liquide→gazeux), <strong>condensation</strong> (gazeux→liquide), <strong>sublimation</strong> (solide→gazeux) et <strong>condensation solide</strong> (gazeux→solide). Les transitions solide↔liquide et liquide↔gazeux absorbent de l'énergie (+Q), les transitions inverses en libèrent (−Q).</p>
+        <div class="law-box"><strong>Conservation de l'énergie :</strong> l'énergie nécessaire à un changement d'état doit toujours provenir de quelque part. Lorsqu'on place des glaçons dans une boisson, l'énergie passe de la boisson vers la glace — la boisson se refroidit.</div>
+
+        <h2>2. La chaleur latente</h2>
+        <p>Lors d'un changement d'état, la température de la substance <strong>ne varie pas</strong>, même si on lui apporte ou retire de la chaleur — l'énergie sert à modifier les liaisons entre particules, pas à augmenter leur énergie cinétique.</p>
+        $$ L = m \cdot l_f \quad \text{(fusion/solidification)} \qquad\qquad L = m \cdot l_v \quad \text{(vaporisation/condensation)} $$
+        <p>où $L$ est la chaleur échangée [J], $m$ la masse [kg], $l_f$ la chaleur latente spécifique de fusion [J/kg] et $l_v$ celle de vaporisation [J/kg]. Pour l'eau : $t_f = 0\,^\circ\text{C}$, $t_{éb} = 100\,^\circ\text{C}$, $l_f = 334\,\text{kJ/kg}$, $l_v = 2260\,\text{kJ/kg}$, $c_{glace} = 2100\,\text{J/(kg·K)}$, $c_{eau} = 4180\,\text{J/(kg·K)}$.</p>
+        <p><strong>Attention :</strong> la chaleur latente de vaporisation de l'eau est environ 6,8 fois plus grande que celle de fusion — d'où le danger des brûlures par la vapeur.</p>
+
+        <h2>3. Graphique de chauffage d'un corps cristallin</h2>
+        <p>Le graphique température–chaleur $T=f(Q)$ d'un corps cristallin présente des paliers horizontaux correspondant aux changements d'état (la température reste constante tant que la transformation n'est pas achevée). La pente des segments obliques donne la capacité thermique de la phase, la longueur du palier donne la chaleur latente.</p>
+        <p><strong>Exemple :</strong> pour $m=2{,}5\,\text{kg}$, la fusion dure de $Q=300\,\text{kJ}$ à $Q=1050\,\text{kJ}$, soit $L_f=750\,\text{kJ}$, d'où $l_f=L_f/m=750\,000/2{,}5=300\,\text{kJ/kg}$.</p>
+
+        <h2>4. Méthode générale de calcul de la chaleur</h2>
+        <p>On distingue trois types de contributions thermiques :</p>
+        <ul>
+            <li><strong>A — chaleur sensible :</strong> $Q = m \cdot c \cdot \Delta t$</li>
+            <li><strong>B — chaleur latente (température constante) :</strong> $Q = m \cdot l_f$ ou $Q = m \cdot l_v$</li>
+            <li><strong>C — chaleur totale</strong> = somme algébrique de toutes les contributions</li>
+        </ul>
+        <p><strong>Exemple :</strong> chauffage de 5 kg de glace de 0 °C à de l'eau à 20 °C : $Q_1 = 5\cdot334\,000 = 1\,670\,000\,\text{J}$ (fusion), $Q_2 = 5\cdot4180\cdot20 = 418\,000\,\text{J}$ (chauffage), $Q = Q_1+Q_2 \approx 2{,}09\,\text{MJ}$.</p>
+
+        <h2>5. Vision microscopique</h2>
+        <p>Dans un <strong>solide</strong>, les particules sont liées par des forces puissantes dans un réseau cristallin ; leur mouvement se réduit à des vibrations. Dans un <strong>liquide</strong>, les particules conservent leur proximité mais ne sont plus liées à des positions fixes. Dans un <strong>gaz</strong>, les particules se déplacent de façon aléatoire et indépendante à grande vitesse (centaines de m/s).</p>
+        <p>Lors de la <strong>fusion</strong>, l'énergie apportée n'augmente pas l'énergie cinétique (la température), mais l'énergie potentielle en rompant les liaisons du réseau ; la température reste fixe tant que toute la substance n'est pas transformée.</p>
+        <p>Lors de l'<strong>évaporation en surface</strong>, seules les molécules les plus rapides (distribution de Maxwell) s'échappent ; le liquide restant se refroidit. L'évaporation se produit à n'importe quelle température. Elle s'accélère avec une température plus élevée, une surface plus grande, du vent, un air plus sec, un liquide plus volatil et une pression plus faible.</p>
+        <p>Lors de l'<strong>ébullition</strong>, la pression de vapeur saturante dans le liquide égale la pression extérieure et des bulles se forment dans tout le volume. La température d'ébullition baisse avec la pression (≈71 °C au sommet de l'Everest).</p>
+
+        <h2>6. Le diagramme de phases</h2>
+        <p>Le diagramme p-T indique dans quel état se trouve une substance selon la pression et la température. Le <strong>point triple</strong> est l'unique point où les trois états coexistent (pour l'eau $T_3=0{,}01\,^\circ\text{C}$, $p_3=611\,\text{Pa}$). Au-delà du <strong>point critique</strong>, la distinction liquide/gaz disparaît (pour l'eau $T_c=374\,^\circ\text{C}$, $p_c=22{,}1\,\text{MPa}$).</p>
+        <p>La <strong>lyophilisation</strong> exploite la sublimation pour sécher aliments et médicaments : l'aliment est congelé, la pression est abaissée sous le point triple (vide), la glace se sublime directement en vapeur — le produit sec conserve couleur, goût et vitamines.</p>
+
+        <h2>7. Physique du quotidien</h2>
+        <ul>
+            <li><strong>Froid après la baignade</strong> — l'eau sur la peau s'évapore, prélevant la chaleur latente de vaporisation.</li>
+            <li><strong>Glaçons dans une boisson</strong> — la glace absorbe la chaleur latente de fusion de la boisson et la refroidit efficacement.</li>
+            <li><strong>Transpiration</strong> — l'évaporation de la sueur évacue la chaleur et prévient l'hyperthermie.</li>
+            <li><strong>Brûlure par la vapeur</strong>, plus dangereuse que l'eau à même température, car la vapeur libère en plus sa chaleur latente de condensation.</li>
+            <li><strong>Cuisson en altitude</strong> plus longue, car la pression atmosphérique plus faible abaisse la température d'ébullition.</li>
+            <li><strong>Réfrigérateur</strong> : évaporation du fluide frigorigène (absorbe la chaleur) puis condensation (libère la chaleur dans la pièce).</li>
+        </ul>
+
+        <h2>8. Résumé pour révision</h2>
+        <ul>
+            <li><strong>Chaleur latente :</strong> $L=m l_f$ (fusion), $L=m l_v$ (vaporisation) ; la température ne change pas pendant la transformation.</li>
+            <li><strong>Graphique de chauffage :</strong> palier horizontal = changement d'état ; pente = capacité thermique de la phase.</li>
+            <li><strong>Chaleur totale :</strong> somme des contributions $Q=mc\Delta t$ et $Q=ml$.</li>
+            <li><strong>Microscopiquement :</strong> la fusion modifie l'énergie potentielle (pas la température) ; l'évaporation se produit à toute température ; l'ébullition survient quand la pression de vapeur égale la pression extérieure.</li>
+            <li><strong>Diagramme de phases :</strong> point triple (coexistence des 3 phases), point critique (disparition liquide/gaz).</li>
+            <li><strong>Applications :</strong> refroidissement par évaporation, glace dans les boissons, danger des brûlures par la vapeur, ébullition en altitude, cycle frigorifique.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+            var body = document.body;
+
+            function setLanguage(lang) {
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (lang === 'cs') {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else if (lang === 'fr') {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangSkupenstvi', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangSkupenstvi');
+            if (saved === 'fr') { setLanguage('fr'); } else { setLanguage('cs'); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs'); });
+            btnFr.addEventListener('click', function() { setLanguage('fr'); });
+        })();
+    </script>
+
+</body>
+</html>

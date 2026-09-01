@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Změny skupenství látek (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-orange-700">
+            <h1 class="text-3xl font-bold text-orange-800 mb-4">Fyzikální kvíz: Změny skupenství látek</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-orange-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (skupenské teplo, kalorimetrie).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-orange-700 hover:bg-orange-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-orange-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-orange-50 hover:bg-orange-100 text-orange-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-orange-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-orange-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-orange-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-orange-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-orange-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+        const N_THEORY = 4;
+        const N_MATH = 6;
+
+        // ======== POMOCNÉ FUNKCE ========
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            if (Math.abs(x) < 1 && x !== 0) {
+                let s = x.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+                return s;
+            }
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ======== TEORETICKÉ OTÁZKY ========
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Proč se teplota nemění při tání ledu, i když dodáváme teplo?", a: "Energie se spotřebovává na rozrušení vazeb v mřížce, nikoli na zahřátí.", o: ["Energie se spotřebovává na rozrušení vazeb v mřížce, nikoli na zahřátí.", "Teplo se ztrácí do okolí a nestačí zahřát led.", "Led má jinou měrnou tepelnou kapacitu než voda.", "Teploměr je špatně kalibrovaný."], h: "Energie během přeměny skupenství mění potenciální, ne kinetickou energii částic.", e: "Dodávaná energie se spotřebovává na rozrušení vazeb v krystalové mřížce (roste potenciální energie), nikoli na zahřátí (kinetickou energii)." }, fr: { q: "Pourquoi la température ne change-t-elle pas pendant la fusion de la glace, même si on lui apporte de la chaleur ?", a: "L'énergie sert à rompre les liaisons du réseau cristallin, pas à réchauffer.", o: ["L'énergie sert à rompre les liaisons du réseau cristallin, pas à réchauffer.", "La chaleur se dissipe dans l'environnement et ne suffit pas à chauffer la glace.", "La capacité thermique massique de la glace diffère de celle de l'eau.", "Le thermomètre est mal calibré."], h: "L'énergie pendant un changement d'état modifie l'énergie potentielle, pas l'énergie cinétique des particules.", e: "L'énergie apportée sert à rompre les liaisons du réseau cristallin (augmente l'énergie potentielle), pas à chauffer (énergie cinétique)." } },
+            { id: 't2', type: 'concept', cs: { q: "Proč je popálení párou o 100 °C nebezpečnější než od vody o stejné teplotě?", a: "Pára při kondenzaci uvolní navíc skupenské teplo varu (~2260 kJ/kg).", o: ["Pára při kondenzaci uvolní navíc skupenské teplo varu (~2260 kJ/kg).", "Pára je hmotnější a lépe přenáší teplo.", "Pára má ve skutečnosti vyšší teplotu než 100 °C.", "Voda se rychleji vypařuje z kůže."], h: "Porovnej citelné teplo vody a skupenské teplo varu páry.", e: "Pára navíc při kondenzaci na kůži uvolní skupenské teplo varu (~2260 kJ/kg), což je řádově desetkrát více energie než citelné teplo vody." }, fr: { q: "Pourquoi une brûlure par la vapeur à 100 °C est-elle plus grave qu'une brûlure par l'eau à la même température ?", a: "En se condensant, la vapeur libère en plus la chaleur latente de vaporisation (~2260 kJ/kg).", o: ["En se condensant, la vapeur libère en plus la chaleur latente de vaporisation (~2260 kJ/kg).", "La vapeur est plus lourde et transmet mieux la chaleur.", "La vapeur a en réalité une température supérieure à 100 °C.", "L'eau s'évapore plus vite de la peau."], h: "Compare la chaleur sensible de l'eau et la chaleur latente de vaporisation de la vapeur.", e: "La vapeur libère en plus, en se condensant sur la peau, sa chaleur latente de vaporisation (~2260 kJ/kg), soit environ dix fois plus d'énergie que la chaleur sensible de l'eau." } },
+            { id: 't3', type: 'concept', cs: { q: "Která přeměna skupenství probíhá při vzniku jinovatky na větvích?", a: "Desublimace (plynné → pevné)", o: ["Desublimace (plynné → pevné)", "Kondenzace (plynné → kapalné)", "Tuhnutí (kapalné → pevné)", "Sublimace (pevné → plynné)"], h: "Vodní pára ze vzduchu přechází přímo do pevného skupenství.", e: "Jinovatka vzniká desublimací — vodní pára ze vzduchu přechází přímo do pevného skupenství (ledové krystalky) bez mezistupně kapaliny." }, fr: { q: "Quel changement d'état se produit lors de la formation du givre sur les branches ?", a: "Condensation solide / déposition (gazeux → solide)", o: ["Condensation solide / déposition (gazeux → solide)", "Condensation (gazeux → liquide)", "Solidification (liquide → solide)", "Sublimation (solide → gazeux)"], h: "La vapeur d'eau de l'air passe directement à l'état solide.", e: "Le givre se forme par condensation solide — la vapeur d'eau de l'air passe directement à l'état solide (cristaux de glace) sans passer par l'état liquide." } },
+            { id: 't4', type: 'concept', cs: { q: "Co je lyofilizace a jaký princip využívá?", a: "Sušení potravin sublimací ledu ve vakuu (pod trojným bodem).", o: ["Sušení potravin sublimací ledu ve vakuu (pod trojným bodem).", "Rychlé zmrazení potravin při −40 °C.", "Sušení horkým vzduchem nebo párou.", "Konzervace potravin vysokým tlakem."], h: "Potravina se nejprve zmrazí, pak se sníží tlak pod trojný bod vody.", e: "Lyofilizace zmrazí potravinu a poté sníží tlak pod trojný bod vody (vakuum), takže led sublimuje přímo na páru, aniž by prošel kapalnou fází." }, fr: { q: "Qu'est-ce que la lyophilisation et sur quel principe repose-t-elle ?", a: "Le séchage d'aliments par sublimation de la glace sous vide (sous le point triple).", o: ["Le séchage d'aliments par sublimation de la glace sous vide (sous le point triple).", "La congélation rapide des aliments à −40 °C.", "Le séchage par air chaud ou par vapeur.", "La conservation des aliments par haute pression."], h: "L'aliment est d'abord congelé, puis la pression est abaissée sous le point triple de l'eau.", e: "La lyophilisation congèle l'aliment puis abaisse la pression sous le point triple de l'eau (vide), si bien que la glace se sublime directement en vapeur sans passer par l'état liquide." } },
+            { id: 't5', type: 'concept', cs: { q: "Jaká bude výsledná teplota, pokud voda v nádobě nemá dostatek tepla k roztání veškerého ledu?", a: "0 °C (teplota tání), zbyde nerozpuštěný led.", o: ["0 °C (teplota tání), zbyde nerozpuštěný led.", "Záporná teplota (pod 0 °C).", "Kladná teplota (nad 0 °C).", "Teplota se nedá určit."], h: "Dokud existuje směs ledu a vody, teplota zůstává na teplotě tání.", e: "Dokud v soustavě koexistují led a voda, teplota zůstává na teplotě tání (0 °C) — energie se spotřebovává na částečné tání, nikoli na další ohřev." }, fr: { q: "Quelle sera la température finale si l'eau du récipient n'a pas assez de chaleur pour faire fondre toute la glace ?", a: "0 °C (température de fusion), avec de la glace restante.", o: ["0 °C (température de fusion), avec de la glace restante.", "Une température négative (sous 0 °C).", "Une température positive (au-dessus de 0 °C).", "La température ne peut pas être déterminée."], h: "Tant qu'un mélange eau-glace coexiste, la température reste à la température de fusion.", e: "Tant que la glace et l'eau coexistent, la température reste à la température de fusion (0 °C) — l'énergie sert à faire fondre une partie de la glace, pas à réchauffer davantage." } },
+            { id: 't6', type: 'concept', cs: { q: "Co znázorňuje vodorovný úsek v grafu ohřevu t(Q) krystalické látky?", a: "Probíhající přeměnu skupenství (teplota je konstantní).", o: ["Probíhající přeměnu skupenství (teplota je konstantní).", "Chybu měření teploměru.", "Ohřev látky v jednom skupenství.", "Okamžik, kdy se látka vznítí."], h: "Během přeměny skupenství se energie nepoužívá na zvýšení teploty.", e: "Vodorovný úsek grafu odpovídá probíhající přeměně skupenství — teplota zůstává konstantní, dokud se všechna látka nepřemění, i když se stále dodává teplo." }, fr: { q: "Que représente le palier horizontal du graphique de chauffage T(Q) d'un corps cristallin ?", a: "Un changement d'état en cours (température constante).", o: ["Un changement d'état en cours (température constante).", "Une erreur de mesure du thermomètre.", "Le chauffage de la substance dans un seul état.", "Le moment où la substance s'enflamme."], h: "Pendant un changement d'état, l'énergie ne sert pas à augmenter la température.", e: "Le palier horizontal correspond à un changement d'état en cours — la température reste constante tant que toute la substance n'est pas transformée, même si l'on continue d'apporter de la chaleur." } },
+            { id: 't7', type: 'concept', cs: { q: "Co je trojný bod na fázovém (p-T) diagramu?", a: "Jediný bod, kde koexistují všechna tři skupenství v rovnováze.", o: ["Jediný bod, kde koexistují všechna tři skupenství v rovnováze.", "Bod, kde látka dosahuje nejvyšší možné teploty.", "Bod, kde mizí rozdíl mezi kapalinou a plynem.", "Bod nulového tlaku."], h: "Pro vodu leží tento bod při T₃ = 0,01 °C a p₃ = 611 Pa.", e: "Trojný bod je jediná kombinace tlaku a teploty, při které mohou pevná, kapalná i plynná fáze existovat současně v rovnováze." }, fr: { q: "Qu'est-ce que le point triple sur le diagramme de phases (p-T) ?", a: "L'unique point où les trois états coexistent en équilibre.", o: ["L'unique point où les trois états coexistent en équilibre.", "Le point où la substance atteint sa température maximale.", "Le point où la distinction liquide/gaz disparaît.", "Le point de pression nulle."], h: "Pour l'eau, ce point se situe à T₃ = 0,01 °C et p₃ = 611 Pa.", e: "Le point triple est l'unique combinaison de pression et de température où les phases solide, liquide et gazeuse peuvent coexister simultanément en équilibre." } },
+            { id: 't8', type: 'concept', cs: { q: "Co se stane s látkou nad jejím kritickým bodem?", a: "Mizí rozdíl mezi kapalinou a plynem, vzniká superkritická tekutina.", o: ["Mizí rozdíl mezi kapalinou a plynem, vzniká superkritická tekutina.", "Látka okamžitě sublimuje.", "Látka ztrácí veškerou hmotnost.", "Vzniká trojný bod."], h: "Pro vodu leží kritický bod při 374 °C a 22,1 MPa.", e: "Nad kritickou teplotou a tlakem mizí rozdíl mezi kapalnou a plynnou fází a vzniká tzv. superkritická tekutina." }, fr: { q: "Que se passe-t-il pour une substance au-delà de son point critique ?", a: "La distinction entre liquide et gaz disparaît ; un fluide supercritique apparaît.", o: ["La distinction entre liquide et gaz disparaît ; un fluide supercritique apparaît.", "La substance se sublime instantanément.", "La substance perd toute sa masse.", "Un point triple apparaît."], h: "Pour l'eau, le point critique se situe à 374 °C et 22,1 MPa.", e: "Au-delà de la température et de la pression critiques, la distinction entre phase liquide et gazeuse disparaît, formant un fluide supercritique." } },
+            { id: 't9', type: 'concept', cs: { q: "Proč se kapalina při vypařování z povrchu ochlazuje?", a: "Unikají nejrychlejší molekuly, klesá průměrná kinetická energie zbylých.", o: ["Unikají nejrychlejší molekuly, klesá průměrná kinetická energie zbylých.", "Vypařující se molekuly zvyšují tlak nad hladinou.", "Povrchové napětí kapaliny náhle klesne.", "Kapalina ztrácí elektrický náboj."], h: "V kapalině mají částice Maxwellovo rozdělení rychlostí.", e: "Unikají jen molekuly s dostatečnou kinetickou energií (nejrychlejší), takže průměrná kinetická energie — a tedy teplota — zbylé kapaliny klesá." }, fr: { q: "Pourquoi un liquide se refroidit-il en s'évaporant en surface ?", a: "Les molécules les plus rapides s'échappent, l'énergie cinétique moyenne restante diminue.", o: ["Les molécules les plus rapides s'échappent, l'énergie cinétique moyenne restante diminue.", "Les molécules qui s'évaporent augmentent la pression au-dessus de la surface.", "La tension superficielle du liquide chute soudainement.", "Le liquide perd sa charge électrique."], h: "Dans un liquide, les particules suivent une distribution de Maxwell des vitesses.", e: "Seules les molécules ayant assez d'énergie cinétique (les plus rapides) s'échappent, donc l'énergie cinétique moyenne — et donc la température — du liquide restant diminue." } },
+            { id: 't10', type: 'concept', cs: { q: "Jak se mění teplota varu vody s klesajícím atmosférickým tlakem (např. v horách)?", a: "Klesá — voda vře při nižší teplotě.", o: ["Klesá — voda vře při nižší teplotě.", "Roste — voda vře při vyšší teplotě.", "Nezávisí na tlaku.", "Voda přestane vřít úplně."], h: "Var nastává, když se tlak nasycených par vyrovná vnějšímu tlaku.", e: "Var nastává, jakmile se tlak nasycených par uvnitř kapaliny vyrovná vnějšímu tlaku; při nižším vnějším tlaku (v horách) k tomu dojde už při nižší teplotě." }, fr: { q: "Comment évolue la température d'ébullition de l'eau quand la pression atmosphérique diminue (par ex. en montagne) ?", a: "Elle diminue — l'eau bout à une température plus basse.", o: ["Elle diminue — l'eau bout à une température plus basse.", "Elle augmente — l'eau bout à une température plus haute.", "Elle ne dépend pas de la pression.", "L'eau cesse complètement de bouillir."], h: "L'ébullition se produit quand la pression de vapeur saturante égale la pression extérieure.", e: "L'ébullition se produit dès que la pression de vapeur saturante à l'intérieur du liquide égale la pression extérieure ; à pression extérieure plus faible (en montagne), cela arrive à une température plus basse." } }
+        ];
+
+        // ======== VÝPOČETNÍ ÚLOHY ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Kolik tepla Q (v kJ) je potřeba k ohřátí m = {m} kg vody o Δt = {dT} K? (c = 4180 J/(kg·K))", h: "Q = m·c·Δt.", e: "Q = {m} · 4180 · {dT} ÷ 1000 = {res} kJ." },
+                fr: { q: "Quelle quantité de chaleur Q (en kJ) faut-il pour chauffer m = {m} kg d'eau de Δt = {dT} K ? (c = 4180 J/(kg·K))", h: "Q = m·c·Δt.", e: "Q = {m} · 4180 · {dT} ÷ 1000 = {res} kJ." },
+                params: () => { const m = randChoice([1,2,3,5,10]); const dT = randChoice([10,20,30,50,80]); return { m, dT }; },
+                solve: (p) => { const res = (p.m*4180*p.dT)/1000; return { res, unit: 'kJ', correct: fmt(res) + ' kJ' }; } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Kolik tepla Q (v kJ) je potřeba k roztání m = {m} kg ledu o teplotě 0 °C? (l<sub>t</sub> = 334 kJ/kg)", h: "Q = m·l_t.", e: "Q = {m} · 334 = {res} kJ." },
+                fr: { q: "Quelle quantité de chaleur Q (en kJ) faut-il pour faire fondre m = {m} kg de glace à 0 °C ? (l<sub>f</sub> = 334 kJ/kg)", h: "Q = m·l_f.", e: "Q = {m} · 334 = {res} kJ." },
+                params: () => { const m = randChoice([0.5,1,2,3,5]); return { m }; },
+                solve: (p) => { const res = p.m*334; return { res, unit: 'kJ', correct: fmt(res) + ' kJ' }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Kolik tepla Q (v MJ) je potřeba k vypaření m = {m} kg vody o teplotě 100 °C? (l<sub>v</sub> = 2260 kJ/kg)", h: "Q = m·l_v (pozor na převod kJ na MJ).", e: "Q = {m} · 2260 ÷ 1000 = {res} MJ." },
+                fr: { q: "Quelle quantité de chaleur Q (en MJ) faut-il pour vaporiser m = {m} kg d'eau à 100 °C ? (l<sub>v</sub> = 2260 kJ/kg)", h: "Q = m·l_v (attention à convertir kJ en MJ).", e: "Q = {m} · 2260 ÷ 1000 = {res} MJ." },
+                params: () => { const m = randChoice([0.5,1,2,3]); return { m }; },
+                solve: (p) => { const res = (p.m*2260)/1000; return { res, unit: 'MJ', correct: fmt(res) + ' MJ' }; } },
+            { id: 'm4', type: 'math',
+                cs: { q: "Ohřejeme m = {m} kg ledu z teploty 0 °C na vodu o teplotě {t} °C. Kolik tepla Q (v kJ) je potřeba celkem? (l<sub>t</sub> = 334 kJ/kg, c<sub>voda</sub> = 4180 J/(kg·K))", h: "Q = m·l_t + m·c·Δt.", e: "Q = {m}·334 + {m}·4180·{t}÷1000 = {res} kJ." },
+                fr: { q: "On chauffe m = {m} kg de glace de 0 °C jusqu'à de l'eau à {t} °C. Quelle est la chaleur totale Q (en kJ) nécessaire ? (l<sub>f</sub> = 334 kJ/kg, c<sub>eau</sub> = 4180 J/(kg·K))", h: "Q = m·l_f + m·c·Δt.", e: "Q = {m}·334 + {m}·4180·{t}÷1000 = {res} kJ." },
+                params: () => { const m = randChoice([1,2,3,5]); const t = randChoice([10,20,30,40]); return { m, t }; },
+                solve: (p) => { const res = p.m*334 + (p.m*4180*p.t)/1000; return { res, unit: 'kJ', correct: fmt(res) + ' kJ' }; } },
+            { id: 'm5', type: 'math',
+                cs: { q: "Vařič o výkonu P = {P} W a účinnosti η = {eta} % dodá teplo Q = {Q} kJ. Za jak dlouho (v s)?", h: "Užitečný výkon P_u = η·P; τ = Q/P_u (pozor na jednotky).", e: "P_u = {eta}%·{P} W; τ = {Q}·1000 ÷ P_u = {res} s." },
+                fr: { q: "Un réchaud de puissance P = {P} W et de rendement η = {eta} % fournit une chaleur Q = {Q} kJ. En combien de temps (en s) ?", h: "Puissance utile P_u = η·P ; τ = Q/P_u (attention aux unités).", e: "P_u = {eta}%·{P} W ; τ = {Q}·1000 ÷ P_u = {res} s." },
+                params: () => { const P = randChoice([500,800,1000,1200,1500]); const eta = randChoice([50,60,65,70,80]); const Q = randChoice([500,1000,1500,2000]); return { P, eta, Q }; },
+                solve: (p) => { const Pu = p.P*p.eta/100; const res = (p.Q*1000)/Pu; return { res, unit: 's', correct: fmt(res) + ' s' }; } },
+            { id: 'm6', type: 'math',
+                cs: { q: "Do ledu o hmotnosti m = {m} kg (teplota 0 °C) dodáme teplo Q = {Q} kJ, které nestačí na roztání celého ledu. Jaká hmotnost ledu (v g) roztaje? (l<sub>t</sub> = 334 kJ/kg)", h: "m_roztaveno = Q / l_t.", e: "m_roztaveno = {Q} ÷ 334 = {res} g (po vynásobení 1000 kJ→g)." },
+                fr: { q: "On apporte à de la glace de masse m = {m} kg (à 0 °C) une chaleur Q = {Q} kJ, insuffisante pour la faire fondre entièrement. Quelle masse de glace (en g) fond ? (l<sub>f</sub> = 334 kJ/kg)", h: "m_fondue = Q / l_f.", e: "m_fondue = {Q} ÷ 334 = {res} g (après conversion kJ→g)." },
+                params: () => { const m = randChoice([1,2,3]); const frac = randChoice([0.3,0.4,0.5,0.6]); const Q = Math.round(frac*m*334); return { m, Q }; },
+                solve: (p) => { const res = (p.Q/334)*1000; return { res, unit: 'g', correct: fmt(res) + ' g' }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<N_THEORY; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<N_MATH; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(sol[k] !== undefined ? sol[k] : p[k]));
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    obj.o = [sol.correct, mk(val*2), mk(val/2), mk(val*1.5)];
+                };
+                inject(q); inject(tr);
+            }
+
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-orange-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-orange-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.innerHTML === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Skupenské přeměny i francouzština ti jdou skvěle.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat vzorce pro skupenské teplo a kalorimetrii.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat – zaměř se na skupenské teplo, graf ohřevu a jejich vzorce.";
+                overallIcon = "🔍";
+            }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako skupenské teplo, fázový diagram či mikroskopický pohled.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si přehled procesů, graf ohřevu a fázový diagram.");
+            if (mathPercent >= 70) strengths.push("Výpočty se skupenským teplem a kalorimetrií ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si vzorce Q=mcΔt, Q=ml a jejich kombinace v kalorimetrických úlohách.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní vztahy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování skupenského tepla a metody výpočtu celkového tepla – projdi si příručku a vzorové příklady.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o kapalinách nebo plynech.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení vzorců pro skupenské teplo.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek ve francouzštině)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

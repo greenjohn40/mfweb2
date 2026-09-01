@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les changements d'état de la matière – Exercices</title>
+    <script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<style>
+    :root {
+        --primary: #c2410c;
+        --secondary: #9a3412;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #fff7ed;
+        --translation: #64748b;
+    }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { text-align: center; color: var(--primary); font-size: 2.5rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 2.5rem; }
+    .exercise-card {
+        background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;
+    }
+    .exercise-body { margin-bottom: 18px; font-size: 1.05rem; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .btn { border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+    .btn-translation { background: transparent; color: var(--translation); border: 1px solid var(--translation); }
+    .btn-translation:hover { background: var(--translation); color: #fff; }
+    .btn-solution { background: var(--primary); color: #fff; }
+    .btn-solution:hover { background: var(--secondary); }
+    .content-box { display: none; margin-top: 14px; padding: 15px; border-radius: 6px; font-size: 0.95rem; animation: fadeIn 0.3s ease-in; }
+    .translation-box { background: #f1f5f9; color: #475569; border-left: 4px solid var(--translation); font-style: italic; }
+    .solution-box { background: var(--accent); border-left: 4px solid var(--primary); }
+    .active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    footer { text-align: center; margin-top: 40px; padding: 20px; color: #94a3b8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Les changements d'état de la matière</h1>
+        <p class="subtitle">Série de 10 exercices avec solutions et traductions</p>
+
+        <!-- 1 -->
+        <div class="exercise-card">
+            <div class="exercise-header">1. Fusion de la glace — chaleur latente</div>
+            <div class="exercise-body">
+                Calculez la quantité de chaleur nécessaire pour faire fondre \( m = 3{,}0\ \text{kg} \) de glace
+                à \( 0\,^\circ\text{C} \). ( \( l_f = 334\,\text{kJ/kg} \) )
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr1',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol1',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr1" class="content-box translation-box">
+                Vypočtěte množství tepla potřebné k roztání \( m = 3{,}0\ \text{kg} \) ledu o teplotě
+                \( 0\,^\circ\text{C} \). ( \( l_t = 334\,\text{kJ/kg} \) )
+            </div>
+            <div id="sol1" class="content-box solution-box">
+                \( Q = m\cdot l_f = 3{,}0 \cdot 334\,000 = 1{,}002\cdot10^{6}\,\text{J} \approx 1{,}0\,\text{MJ} \)
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="exercise-card">
+            <div class="exercise-header">2. Chauffage de la glace jusqu'à l'eau (exercice A)</div>
+            <div class="exercise-body">
+                Calculez la quantité de chaleur nécessaire pour transformer \( 5\ \text{kg} \) de glace à
+                \( 0\,^\circ\text{C} \) en eau à \( 20\,^\circ\text{C} \).
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr2',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol2',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr2" class="content-box translation-box">
+                Vypočtěte, kolik tepla je potřeba k přeměně 5 kg ledu o teplotě \( 0\,^\circ\text{C} \) na vodu o
+                teplotě \( 20\,^\circ\text{C} \).
+            </div>
+            <div id="sol2" class="content-box solution-box">
+                \( Q_1 = m l_f = 5\cdot334\,000 = 1\,670\,000\,\text{J} \) (fusion)<br>
+                \( Q_2 = m c_{eau}\Delta T = 5\cdot4180\cdot20 = 418\,000\,\text{J} \) (chauffage)<br>
+                \( Q = Q_1+Q_2 = 2\,088\,000\,\text{J} \approx 2{,}09\,\text{MJ} \)
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="exercise-card">
+            <div class="exercise-header">3. Fusion incomplète de la glace (exercice B1)</div>
+            <div class="exercise-body">
+                Dans un récipient de capacité thermique \( 150\,\text{J/K} \) avec \( 2\,\text{kg} \) d'eau à
+                \( 20\,^\circ\text{C} \), on jette \( 0{,}5\,\text{kg} \) de glace à \( -10\,^\circ\text{C} \).
+                Toute la glace va-t-elle fondre ? Décrivez le système à l'équilibre.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr3',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol3',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr3" class="content-box translation-box">
+                Do nádoby o tepelné kapacitě \( 150\,\text{J/K} \) s \( 2\,\text{kg} \) vody o teplotě
+                \( 20\,^\circ\text{C} \) vhodíme \( 0{,}5\,\text{kg} \) ledu o teplotě \( -10\,^\circ\text{C} \).
+                Roztaje všechen led? Popište soustavu v rovnováze.
+            </div>
+            <div id="sol3" class="content-box solution-box">
+                \( Q_{disp} = (2\cdot4180+150)\cdot20 = 170\,200\,\text{J} \)<br>
+                \( Q_{chauff} = 0{,}5\cdot2100\cdot10 = 10\,500\,\text{J} \); \( Q_{fus} = 0{,}5\cdot334\,000 = 167\,000\,\text{J} \)<br>
+                Besoin total \( = 177\,500\,\text{J} > 170\,200\,\text{J} \) → toute la glace ne fond pas.<br>
+                Masse fondue \( \approx (170\,200-10\,500)/334\,000 \approx 0{,}478\,\text{kg} \) → il reste \( \approx 22\,\text{g} \) de glace à \( 0\,^\circ\text{C} \).
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="exercise-card">
+            <div class="exercise-header">4. Fusion complète et réchauffement (exercice B2)</div>
+            <div class="exercise-body">
+                Dans un récipient de capacité thermique \( 150\,\text{J/K} \) avec \( 2\,\text{kg} \) d'eau à
+                \( 40\,^\circ\text{C} \), on jette \( 0{,}2\,\text{kg} \) de glace à \( -5\,^\circ\text{C} \).
+                Quelle sera la température finale ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr4',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol4',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr4" class="content-box translation-box">
+                Do nádoby o tepelné kapacitě \( 150\,\text{J/K} \) s \( 2\,\text{kg} \) vody o teplotě
+                \( 40\,^\circ\text{C} \) vhodíme \( 0{,}2\,\text{kg} \) ledu o teplotě \( -5\,^\circ\text{C} \).
+                Jaká bude výsledná teplota?
+            </div>
+            <div id="sol4" class="content-box solution-box">
+                \( Q_{disp} = (2\cdot4180+150)\cdot40 = 340\,400\,\text{J} \)<br>
+                \( Q_{glace} = (0{,}2\cdot2100\cdot5)+(0{,}2\cdot334\,000) = 68\,900\,\text{J} \)<br>
+                Excédent \( = 271\,500\,\text{J} \) répartis sur \( 2{,}2\,\text{kg} \) d'eau + récipient:<br>
+                \( t = 271\,500/(2{,}2\cdot4180+150) \approx 29{,}0\,^\circ\text{C} \)
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="exercise-card">
+            <div class="exercise-header">5. État limite de fusion (exercice B3)</div>
+            <div class="exercise-body">
+                Dans un récipient de capacité thermique \( 150\,\text{J/K} \) avec \( 1{,}5\,\text{kg} \) d'eau à
+                \( 20\,^\circ\text{C} \), on jette environ \( 0{,}38\,\text{kg} \) de glace à \( 0\,^\circ\text{C} \).
+                Que se passe-t-il ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr5',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol5',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr5" class="content-box translation-box">
+                Do nádoby o tepelné kapacitě \( 150\,\text{J/K} \) s \( 1{,}5\,\text{kg} \) vody o teplotě
+                \( 20\,^\circ\text{C} \) vhodíme cca \( 0{,}38\,\text{kg} \) ledu o teplotě \( 0\,^\circ\text{C} \).
+                Co se stane?
+            </div>
+            <div id="sol5" class="content-box solution-box">
+                \( Q_{disp} = (1{,}5\cdot4180+150)\cdot20 = 128\,400\,\text{J} \)<br>
+                \( Q_{fus} = 0{,}3844\cdot334\,000 \approx 128\,400\,\text{J} \)<br>
+                \( Q_{disp}=Q_{fus} \) → toute la glace fond mais il ne reste pas d'énergie pour réchauffer davantage :
+                température finale \( = 0\,^\circ\text{C} \).
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="exercise-card">
+            <div class="exercise-header">6. Congélation partielle de l'eau (exercice B4)</div>
+            <div class="exercise-body">
+                Dans un récipient de capacité thermique \( 150\,\text{J/K} \) avec \( 1\,\text{kg} \) d'eau à
+                \( 2\,^\circ\text{C} \), on place \( 0{,}6\,\text{kg} \) de glace à \( -25\,^\circ\text{C} \).
+                Décrivez l'état du système à l'équilibre.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr6',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol6',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr6" class="content-box translation-box">
+                Do nádoby o tepelné kapacitě \( 150\,\text{J/K} \) s \( 1\,\text{kg} \) vody o teplotě
+                \( 2\,^\circ\text{C} \) vložíme \( 0{,}6\,\text{kg} \) ledu o teplotě \( -25\,^\circ\text{C} \).
+                Popište stav soustavy po dosažení rovnováhy.
+            </div>
+            <div id="sol6" class="content-box solution-box">
+                \( Q_{refr} = (1\cdot4180+150)\cdot2 = 8\,660\,\text{J} \)<br>
+                \( Q_{glace} = 0{,}6\cdot2100\cdot25 = 31\,500\,\text{J} \) — insuffisant, il manque \( 22\,840\,\text{J} \)<br>
+                Masse d'eau gelée: \( m = 22\,840/334\,000 \approx 0{,}068\,\text{kg} = 68\,\text{g} \).
+                Le système reste à \( 0\,^\circ\text{C} \) avec un mélange eau/glace.
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="exercise-card">
+            <div class="exercise-header">7. Congélation totale du système (exercice B5)</div>
+            <div class="exercise-body">
+                Dans un récipient de capacité thermique \( 150\,\text{J/K} \) avec \( 0{,}2\,\text{kg} \) d'eau à
+                \( 5\,^\circ\text{C} \), on place \( 2\,\text{kg} \) de glace à \( -40\,^\circ\text{C} \).
+                Quelle sera la température finale ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr7',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol7',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr7" class="content-box translation-box">
+                Do nádoby o tepelné kapacitě \( 150\,\text{J/K} \) s \( 0{,}2\,\text{kg} \) vody o teplotě
+                \( 5\,^\circ\text{C} \) vložíme \( 2\,\text{kg} \) ledu o teplotě \( -40\,^\circ\text{C} \).
+                Jaká bude výsledná teplota soustavy?
+            </div>
+            <div id="sol7" class="content-box solution-box">
+                Chaleur cédée jusqu'à congélation totale de l'eau: \( Q_1+Q_3 = 4\,930+66\,800 = 71\,730\,\text{J} \)<br>
+                Chaleur nécessaire pour la glace: \( Q_2 = 168\,000\,\text{J} \)<br>
+                Déficit \( -96\,270\,\text{J} \) réparti sur \( 2{,}2\,\text{kg} \) de glace + récipient:<br>
+                \( t = -96\,270/(2{,}2\cdot2100+150) \approx -20{,}2\,^\circ\text{C} \)
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="exercise-card">
+            <div class="exercise-header">8. Calorimètre avec glace et aluminium (exercice C)</div>
+            <div class="exercise-body">
+                Calorimètre en cuivre ( \( m_{Cu}=0{,}2\,\text{kg} \) ) + eau ( \( m_e=1\,\text{kg} \), \( 80\,^\circ\text{C} \) )
+                + aluminium ( \( m_{Al}=0{,}5\,\text{kg} \), \( 20\,^\circ\text{C} \) ) + glace ( \( m_g=0{,}1\,\text{kg} \), \( 0\,^\circ\text{C} \) ).
+                Déterminez la température finale.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr8',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol8',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr8" class="content-box translation-box">
+                Měděný kalorimetr ( \( m_{Cu}=0{,}2\,\text{kg} \) ) + voda ( \( m_v=1\,\text{kg} \), \( 80\,^\circ\text{C} \) )
+                + hliník ( \( m_{Al}=0{,}5\,\text{kg} \), \( 20\,^\circ\text{C} \) ) + led ( \( m_l=0{,}1\,\text{kg} \), \( 0\,^\circ\text{C} \) ).
+                Určete výslednou teplotu.
+            </div>
+            <div id="sol8" class="content-box solution-box">
+                Vérification: chaleur dispo à \( 0\,^\circ\text{C} \approx 340\,528\,\text{J} \gg \) chaleur de fusion \( 33\,400\,\text{J} \) → la glace fond entièrement.<br>
+                Équation calorimétrique: \( (m_ec_e+m_{Cu}c_{Cu})(80-t) = m_{Al}c_{Al}(t-20)+m_gl_f+m_gc_e t \)<br>
+                \( 340\,528-4256{,}6t = 866t+24\,440 \Rightarrow t \approx 61{,}7\,^\circ\text{C} \)
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="exercise-card">
+            <div class="exercise-header">9. Réchaud et rendement (exercice D)</div>
+            <div class="exercise-body">
+                Un réchaud de puissance \( P=1200\,\text{W} \) et de rendement \( \eta=65\,\% \) chauffe
+                \( 1{,}5\,\text{kg} \) de glace de \( -15\,^\circ\text{C} \) jusqu'à la vapeur à \( 100\,^\circ\text{C} \).
+                En combien de temps ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr9',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol9',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr9" class="content-box translation-box">
+                Vařič o výkonu \( P=1200\,\text{W} \) a účinnosti \( \eta=65\,\% \) ohřívá \( 1{,}5\,\text{kg} \) ledu
+                z \( -15\,^\circ\text{C} \) na páru o teplotě \( 100\,^\circ\text{C} \). Za jak dlouho?
+            </div>
+            <div id="sol9" class="content-box solution-box">
+                \( Q_1=47\,250\,\text{J} \) (ohřev ledu) \( + Q_2=501\,000\,\text{J} \) (tání) \( + Q_3=627\,000\,\text{J} \) (ohřev vody)
+                \( + Q_4=3\,390\,000\,\text{J} \) (var) \( = 4\,565\,250\,\text{J} \)<br>
+                \( P_u = 0{,}65\cdot1200 = 780\,\text{W} \)<br>
+                \( \tau = Q/P_u \approx 5853\,\text{s} \approx 97{,}6\,\text{min} \)
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="exercise-card">
+            <div class="exercise-header">10. Question conceptuelle — pourquoi la vapeur brûle-t-elle davantage ?</div>
+            <div class="exercise-body">
+                Une brûlure par la vapeur d'eau à \( 100\,^\circ\text{C} \) est bien plus grave qu'une brûlure par
+                de l'eau liquide à la même température. Expliquez ce phénomène à l'aide de la chaleur latente
+                de vaporisation, et estimez le rapport d'énergie cédée à la peau.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr10',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol10',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr10" class="content-box translation-box">
+                Popálení párou o teplotě \( 100\,^\circ\text{C} \) je mnohem nebezpečnější než popálení vodou o
+                stejné teplotě. Vysvětlete tento jev pomocí skupenského tepla varu a odhadněte poměr energie
+                předané kůži.
+            </div>
+            <div id="sol10" class="content-box solution-box">
+                Voda chladnoucí z \( 100\,^\circ\text{C} \) na \( 37\,^\circ\text{C} \) uvolní pouze citelné teplo:<br>
+                \( Q_{eau} = c_{eau}\Delta t = 4180\cdot63 \approx 263\,000\,\text{J/kg} \)<br>
+                Pára navíc při kondenzaci uvolní skupenské teplo varu \( l_v = 2\,260\,000\,\text{J/kg} \), tedy celkem
+                přibližně \( 2\,260\,000+263\,000 \approx 2\,523\,000\,\text{J/kg} \).<br>
+                Poměr: \( 2\,523\,000/263\,000 \approx 9{,}6\times \) — pára tedy předá kůži řádově desetkrát více
+                energie než stejně teplá voda.
+            </div>
+        </div>
+
+        <footer>
+            © 2026 – Physique en Français – Exercices sur les changements d'état
+        </footer>
+    </div>
+
+    <script>
+        function toggle(id, btn, openLabel, closeLabel) {
+            const el = document.getElementById(id);
+            const active = el.classList.toggle('active');
+            btn.textContent = active ? closeLabel : openLabel;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Změny skupenství látek / Changements d'état de la matière</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col font-sans">
+
+    <header class="bg-orange-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Změny skupenství látek</h1>
+        <p class="text-orange-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-orange-700 text-orange-700 font-bold hover:bg-orange-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-orange-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je skupenské teplo tání?</p>
+                </div>
+                <div class="card-face card-back bg-orange-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Teplo potřebné k přeměně látky z pevného na kapalné skupenství při konstantní teplotě.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-orange-700 text-white rounded-lg hover:bg-orange-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 40</p>
+            <button id="shuffle" class="text-orange-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Fyzika / Physique
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const rawData = {
+            cs: [
+                { q: "Kolik základních skupenství látek rozlišujeme?", a: "Tři – pevné, kapalné a plynné." },
+                { q: "Jak se pohybují částice v pevné látce?", a: "Vibrují kolem pevných rovnovážných poloh v mřížce." },
+                { q: "Jak se pohybují částice v kapalině?", a: "Volněji než v pevné látce, ale drží se blízko u sebe – nejsou vázány na pevné polohy." },
+                { q: "Jak se pohybují částice v plynu?", a: "Chaoticky a nezávisle, vysokou rychlostí (stovky m/s), zaplňují celý dostupný prostor." },
+                { q: "Jak se nazývá přeměna pevné → kapalné?", a: "Tání." },
+                { q: "Jak se nazývá přeměna kapalné → pevné?", a: "Tuhnutí." },
+                { q: "Jak se nazývá přeměna kapalné → plynné?", a: "Var (vypařování)." },
+                { q: "Jak se nazývá přeměna plynné → kapalné?", a: "Kondenzace." },
+                { q: "Jak se nazývá přeměna pevné → plynné?", a: "Sublimace." },
+                { q: "Jak se nazývá přeměna plynné → pevné?", a: "Desublimace." },
+                { q: "Které přeměny skupenství teplo přijímají (+Q)?", a: "Tání, var/vypařování a sublimace." },
+                { q: "Které přeměny skupenství teplo uvolňují (−Q)?", a: "Tuhnutí, kondenzace a desublimace." },
+                { q: "Co říká zákon zachování energie o skupenských přeměnách?", a: "Energie potřebná k přeměně se musí vždy odněkud vzít nebo někam jít." },
+                { q: "Co se děje s teplotou látky během skupenské přeměny?", a: "Teplota se nemění (zůstává konstantní), i když dodáváme nebo odebíráme teplo." },
+                { q: "Na co se spotřebovává energie během tání, když se teplota nemění?", a: "Na změnu vazeb mezi částicemi (potenciální energii), nikoli na zvýšení kinetické energie." },
+                { q: "Jaký je vzorec pro skupenské teplo tání?", a: "L = m · l<sub>t</sub>, kde l<sub>t</sub> je měrné skupenské teplo tání." },
+                { q: "Jaký je vzorec pro skupenské teplo varu?", a: "L = m · l<sub>v</sub>, kde l<sub>v</sub> je měrné skupenské teplo varu." },
+                { q: "Jaká je teplota tání/tuhnutí vody při normálním tlaku?", a: "0 °C." },
+                { q: "Jaká je teplota varu vody při normálním tlaku?", a: "100 °C." },
+                { q: "Jaké je měrné skupenské teplo tání ledu?", a: "334 kJ/kg." },
+                { q: "Jaké je měrné skupenské teplo varu vody?", a: "2260 kJ/kg." },
+                { q: "Kolikrát je skupenské teplo varu vody vyšší než teplo tání?", a: "Přibližně 6,8×." },
+                { q: "Proč je popálení párou tak nebezpečné?", a: "Pára při kondenzaci uvolní obrovské množství tepla (skupenské teplo varu)." },
+                { q: "Co znázorňuje vodorovný úsek v grafu ohřevu t(Q) krystalické látky?", a: "Přeměnu skupenství – teplota je konstantní, i když se dodává teplo." },
+                { q: "Co udává sklon nakloněného úseku grafu ohřevu?", a: "Tepelnou kapacitu dané fáze (pevné nebo kapalné)." },
+                { q: "Co udává délka vodorovného úseku grafu ohřevu?", a: "Velikost skupenského tepla dané přeměny." },
+                { q: "Jaké jsou tři druhy tepla při výpočtu ohřevu s přeměnou skupenství?", a: "A – ohřev/chlazení (Q=mcΔt), B – přeměna skupenství (Q=ml), C – celkové teplo (součet)." },
+                { q: "Jaký je vzorec pro teplo při ohřevu/chlazení bez změny skupenství?", a: "Q = m · c · Δt." },
+                { q: "Co se děje s energií při tání z mikroskopického hlediska?", a: "Zvyšuje potenciální energii částic (rozrušuje krystalovou mřížku), nikoli kinetickou energii." },
+                { q: "Co popisuje Maxwellovo rozdělení rychlostí u vypařování?", a: "Jen malá část molekul má dostatečnou kinetickou energii k úniku z povrchu kapaliny." },
+                { q: "Proč se kapalina při vypařování ochlazuje?", a: "Unikají nejrychlejší molekuly, takže průměrná kinetická energie zbylých molekul klesá." },
+                { q: "Za jaké teploty probíhá vypařování z povrchu kapaliny?", a: "Za libovolné teploty." },
+                { q: "Uveďte tři faktory, které zrychlují vypařování.", a: "Vyšší teplota, větší povrch, proudění vzduchu (vítr) – také sušší vzduch, těkavost kapaliny a nižší tlak." },
+                { q: "Co platí pro tlak par uvnitř kapaliny při teplotě varu?", a: "Tlak nasycených par se rovná vnějšímu (atmosférickému) tlaku." },
+                { q: "Jak se mění teplota varu s klesajícím tlakem?", a: "Klesá – ve vyšší nadmořské výšce vře voda při nižší teplotě." },
+                { q: "Jaká je přibližná teplota varu vody na Mount Everestu?", a: "Přibližně 71 °C." },
+                { q: "Co znázorňuje fázový (p-T) diagram?", a: "V jakém skupenství se látka nachází při daném tlaku a teplotě." },
+                { q: "Co je trojný bod?", a: "Jediný bod p-T diagramu, kde všechna tři skupenství koexistují v rovnováze." },
+                { q: "Jaké jsou souřadnice trojného bodu vody?", a: "T₃ = 0,01 °C, p₃ = 611 Pa." },
+                { q: "Co se stane nad kritickým bodem?", a: "Mizí rozdíl mezi kapalinou a plynem, vzniká superkritická tekutina." },
+                { q: "Jaké jsou souřadnice kritického bodu vody?", a: "T<sub>kr</sub> = 374 °C, p<sub>kr</sub> = 22,1 MPa." },
+                { q: "Co je lyofilizace?", a: "Sušení potravin/léčiv sublimací zmrzlé vody ve vakuu (pod trojným bodem)." },
+                { q: "Uveďte příklad desublimace z běžného života.", a: "Vznik jinovatky na větvích v mrazivém ránu." },
+                { q: "Uveďte příklad sublimace z běžného života.", a: "Mizení sněhu bez tání za suchého mrazivého počasí, nebo sublimace suchého ledu (CO₂)." },
+                { q: "Proč je nám zima po koupání?", a: "Voda na kůži se vypařuje a odebírá tělu skupenské teplo výparné." },
+                { q: "Proč je led v nápoji účinnější než stejná hmotnost studené vody?", a: "Led navíc přijímá skupenské teplo tání, což ochladí nápoj mnohem víc." },
+                { q: "Jak funguje chlazení pocením?", a: "Odpařující se pot odvádí skupenské teplo výparné z povrchu kůže a brání přehřátí těla." },
+                { q: "Jak funguje chladicí cyklus chladničky?", a: "Chladivo se vypaří ve výparníku (odebírá teplo z potravin) a zkondenzuje v kondenzátoru (uvolní teplo do místnosti)." }
+            ],
+            fr: [
+                { q: "Combien d'états fondamentaux de la matière distingue-t-on ?", a: "Trois – solide, liquide et gazeux." },
+                { q: "Comment se déplacent les particules dans un solide ?", a: "Elles vibrent autour de positions d'équilibre fixes dans un réseau." },
+                { q: "Comment se déplacent les particules dans un liquide ?", a: "Plus librement que dans un solide, mais restent proches – elles ne sont plus liées à des positions fixes." },
+                { q: "Comment se déplacent les particules dans un gaz ?", a: "De façon chaotique et indépendante, à grande vitesse (centaines de m/s), occupant tout l'espace disponible." },
+                { q: "Comment appelle-t-on la transformation solide → liquide ?", a: "La fusion." },
+                { q: "Comment appelle-t-on la transformation liquide → solide ?", a: "La solidification." },
+                { q: "Comment appelle-t-on la transformation liquide → gazeux ?", a: "La vaporisation (ébullition)." },
+                { q: "Comment appelle-t-on la transformation gazeux → liquide ?", a: "La condensation." },
+                { q: "Comment appelle-t-on la transformation solide → gazeux ?", a: "La sublimation." },
+                { q: "Comment appelle-t-on la transformation gazeux → solide ?", a: "La condensation solide (déposition)." },
+                { q: "Quelles transformations d'état absorbent de la chaleur (+Q) ?", a: "La fusion, la vaporisation/ébullition et la sublimation." },
+                { q: "Quelles transformations d'état libèrent de la chaleur (−Q) ?", a: "La solidification, la condensation et la condensation solide." },
+                { q: "Que dit la conservation de l'énergie à propos des changements d'état ?", a: "L'énergie nécessaire au changement d'état doit toujours provenir de quelque part." },
+                { q: "Que devient la température d'une substance pendant un changement d'état ?", a: "Elle reste constante, même si l'on apporte ou retire de la chaleur." },
+                { q: "À quoi sert l'énergie apportée pendant la fusion si la température ne change pas ?", a: "À modifier les liaisons entre particules (énergie potentielle), pas à augmenter l'énergie cinétique." },
+                { q: "Quelle est la formule de la chaleur latente de fusion ?", a: "L = m · l<sub>f</sub>, où l<sub>f</sub> est la chaleur latente spécifique de fusion." },
+                { q: "Quelle est la formule de la chaleur latente de vaporisation ?", a: "L = m · l<sub>v</sub>, où l<sub>v</sub> est la chaleur latente spécifique de vaporisation." },
+                { q: "Quelle est la température de fusion/solidification de l'eau à pression normale ?", a: "0 °C." },
+                { q: "Quelle est la température d'ébullition de l'eau à pression normale ?", a: "100 °C." },
+                { q: "Quelle est la chaleur latente spécifique de fusion de la glace ?", a: "334 kJ/kg." },
+                { q: "Quelle est la chaleur latente spécifique de vaporisation de l'eau ?", a: "2260 kJ/kg." },
+                { q: "Combien de fois la chaleur latente de vaporisation est-elle supérieure à celle de fusion ?", a: "Environ 6,8 fois." },
+                { q: "Pourquoi une brûlure par la vapeur est-elle si dangereuse ?", a: "En se condensant, la vapeur libère une quantité de chaleur considérable (chaleur latente de vaporisation)." },
+                { q: "Que représente le palier horizontal dans le graphique de chauffage T(Q) d'un corps cristallin ?", a: "Un changement d'état – la température reste constante malgré l'apport de chaleur." },
+                { q: "Que donne la pente d'un segment oblique du graphique de chauffage ?", a: "La capacité thermique de la phase concernée (solide ou liquide)." },
+                { q: "Que donne la longueur du palier horizontal du graphique de chauffage ?", a: "La valeur de la chaleur latente de la transformation." },
+                { q: "Quels sont les trois types de chaleur dans un calcul avec changement d'état ?", a: "A – chauffage/refroidissement (Q=mcΔt), B – changement d'état (Q=ml), C – chaleur totale (somme)." },
+                { q: "Quelle est la formule de la chaleur sensible (sans changement d'état) ?", a: "Q = m · c · Δt." },
+                { q: "Que devient l'énergie lors de la fusion, au niveau microscopique ?", a: "Elle augmente l'énergie potentielle des particules (rupture du réseau cristallin), pas l'énergie cinétique." },
+                { q: "Que décrit la distribution de Maxwell dans l'évaporation ?", a: "Seule une petite fraction des molécules a l'énergie cinétique suffisante pour s'échapper de la surface." },
+                { q: "Pourquoi un liquide se refroidit-il en s'évaporant ?", a: "Les molécules les plus rapides s'échappent, donc l'énergie cinétique moyenne des molécules restantes diminue." },
+                { q: "À quelle température se produit l'évaporation en surface d'un liquide ?", a: "À n'importe quelle température." },
+                { q: "Citez trois facteurs qui accélèrent l'évaporation.", a: "Température plus élevée, plus grande surface, vent – aussi air plus sec, liquide volatil et pression plus faible." },
+                { q: "Que vaut la pression de vapeur à l'intérieur du liquide à la température d'ébullition ?", a: "Elle est égale à la pression extérieure (atmosphérique)." },
+                { q: "Comment évolue la température d'ébullition quand la pression diminue ?", a: "Elle diminue – en altitude, l'eau bout à une température plus basse." },
+                { q: "Quelle est la température d'ébullition approximative de l'eau au sommet de l'Everest ?", a: "Environ 71 °C." },
+                { q: "Que représente le diagramme de phases (p-T) ?", a: "Dans quel état se trouve une substance pour une pression et une température données." },
+                { q: "Qu'est-ce que le point triple ?", a: "L'unique point du diagramme p-T où les trois états coexistent en équilibre." },
+                { q: "Quelles sont les coordonnées du point triple de l'eau ?", a: "T₃ = 0,01 °C, p₃ = 611 Pa." },
+                { q: "Que se passe-t-il au-delà du point critique ?", a: "La distinction entre liquide et gaz disparaît, on obtient un fluide supercritique." },
+                { q: "Quelles sont les coordonnées du point critique de l'eau ?", a: "T<sub>c</sub> = 374 °C, p<sub>c</sub> = 22,1 MPa." },
+                { q: "Qu'est-ce que la lyophilisation ?", a: "Le séchage d'aliments/médicaments par sublimation de l'eau congelée sous vide (sous le point triple)." },
+                { q: "Donnez un exemple de condensation solide de la vie courante.", a: "La formation du givre sur les branches par une matinée glaciale." },
+                { q: "Donnez un exemple de sublimation de la vie courante.", a: "La disparition de la neige sans fonte par temps sec, ou la sublimation de la glace carbonique (CO₂)." },
+                { q: "Pourquoi a-t-on froid après la baignade ?", a: "L'eau sur la peau s'évapore et prélève la chaleur latente de vaporisation du corps." },
+                { q: "Pourquoi la glace dans une boisson est-elle plus efficace que la même masse d'eau froide ?", a: "La glace absorbe en plus la chaleur latente de fusion, ce qui refroidit bien plus la boisson." },
+                { q: "Comment fonctionne le refroidissement par la transpiration ?", a: "La sueur qui s'évapore emporte la chaleur latente de vaporisation de la peau et prévient la surchauffe du corps." },
+                { q: "Comment fonctionne le cycle frigorifique d'un réfrigérateur ?", a: "Le fluide s'évapore dans l'évaporateur (absorbe la chaleur des aliments) et se condense dans le condenseur (libère la chaleur dans la pièce)." }
+            ]
+        };
+
+        // ========== KÓD FLASHCARD ==========
+        const TOTAL = rawData.cs.length;
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: TOTAL}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / ${TOTAL}`;
+            prevBtn.disabled = currentIndex === 0;
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % TOTAL;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-orange-700', 'text-orange-700');
+            btnFr.classList.remove('border-orange-700', 'text-orange-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-orange-700', 'text-orange-700');
+            btnCs.classList.remove('border-orange-700', 'text-orange-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>
