@@ -2,7 +2,8 @@
 title: HODNOCENÍ
 ---
 
-##Požadavky a principy klasifikace
+Požadavky a principy klasifikace
+--------------------------------
 
 1) Aktivní účast v hodinách (přítomnost alesp. 80%)
 2) Absolvování krátkých testů, velkých testů a vypracování domácích úkolů
