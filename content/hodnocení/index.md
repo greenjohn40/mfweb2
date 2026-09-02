@@ -1,5 +1,5 @@
 ---
-title: Hodnocení
+title: Známkování
 ---
 
 Požadavky a principy klasifikace
