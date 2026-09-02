@@ -148,7 +148,7 @@ function buildOptions(correct, extras, spread) {
     return shuffleArray([...set].slice(0, 4).map(fmt));
 }
 function pctOptions(correct, spread) {
-    return buildOptions(correct, [], spread).map(x => x + '\\%');
+    return buildOptions(correct, [], spread).map(x => '$' + x + '\\%$');
 }
 function buildCategoryOptions(correct, allCategories) {
     const others = allCategories.filter(c => c !== correct);
@@ -248,7 +248,7 @@ const mathPool = [
         solve: (p) => {
             const dabs = Math.abs(p.x - p.mean);
             const res = Math.round(dabs/p.mean*100);
-            return { res, correct: fmt(res) + '\\%', dabs };
+            return { res, correct: '$' + fmt(res) + '\\%$', dabs };
         },
         wrongOptions: (p, sol) => pctOptions(sol.res, 15) },
 
@@ -283,7 +283,7 @@ const mathPool = [
             const p = randChoice(pairs);
             return { mean: p.mean, sd: p.sd };
         },
-        solve: (p) => { const res = Math.round(p.sd/p.mean*100); return { res, correct: fmt(res) + '\\%' }; },
+        solve: (p) => { const res = Math.round(p.sd/p.mean*100); return { res, correct: '$' + fmt(res) + '\\%$' }; },
         wrongOptions: (p, sol) => pctOptions(sol.res, 10) },
 
     { id: 'm6', type: 'math',
@@ -456,6 +456,7 @@ function generateBalancedQuiz() {
                 const btn = document.createElement('button');
                 btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
                 btn.innerHTML = opt;
+                btn.dataset.optText = opt;
                 btn.onclick = () => checkAnswer(btn, opt, data.a);
                 grid.appendChild(btn);
             });
@@ -498,7 +499,7 @@ function generateBalancedQuiz() {
             if (isCorrect) { btn.classList.add('correct'); score++; }
             else {
                 btn.classList.add('wrong');
-                allBtns.forEach(b => { if (b.innerHTML === correct) b.classList.add('correct'); });
+                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
             }
 
             document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
