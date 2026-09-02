@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Statistika 3 — Charakteristiky variability (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-statistika3.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Statistika 3</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (variabilita, rozptyl, směrodatná odchylka, variační koeficient, korelace).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function pctOptions(correct, spread) {
+    return buildOptions(correct, [], spread).map(x => x + '\\%');
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    { id: 't1', type: 'concept',
+        cs: { q: "Jaký je vzorec pro variační rozpětí $R$?", a: "$R=x_{max}-x_{min}$", o: ["$R=x_{max}-x_{min}$", "$R=x_{max}+x_{min}$", "$R=\\frac{x_{max}}{x_{min}}$", "$R=\\bar x_{max}-\\bar x_{min}$"], h: "Rozpětí je rozdíl dvou krajních hodnot.", e: "Variační rozpětí je rozdíl mezi největší a nejmenší hodnotou souboru: $R=x_{max}-x_{min}$." },
+        fr: { q: "Quelle est la formule de l'étendue $R$ ?", a: "$R=x_{max}-x_{min}$", o: ["$R=x_{max}-x_{min}$", "$R=x_{max}+x_{min}$", "$R=\\frac{x_{max}}{x_{min}}$", "$R=\\bar x_{max}-\\bar x_{min}$"], h: "L'étendue est la différence entre deux valeurs extrêmes.", e: "L'étendue est la différence entre la plus grande et la plus petite valeur de la population : $R=x_{max}-x_{min}$." } },
+    { id: 't2', type: 'concept',
+        cs: { q: "Co vyjadřuje absolutní odchylka $d_j$?", a: "vzdálenost hodnoty $x_j$ od aritmetického průměru", o: ["vzdálenost hodnoty $x_j$ od aritmetického průměru", "rozdíl mezi dvěma sousedními hodnotami souboru", "podíl hodnoty $x_j$ a průměru", "nejčetnější hodnotu souboru"], h: "Odchylka souvisí s pojmem vzdálenost na číselné ose.", e: "Absolutní odchylka $d_j=|x_j-\\bar x|$ je vzdálenost hodnoty $x_j$ od aritmetického průměru $\\bar x$." },
+        fr: { q: "Que exprime l'écart absolu $d_j$ ?", a: "la distance de la valeur $x_j$ à la moyenne arithmétique", o: ["la distance de la valeur $x_j$ à la moyenne arithmétique", "la différence entre deux valeurs voisines de la population", "le quotient de $x_j$ par la moyenne", "la valeur la plus fréquente de la population"], h: "L'écart est lié à la notion de distance sur l'axe des nombres.", e: "L'écart absolu $d_j=|x_j-\\bar x|$ est la distance de la valeur $x_j$ à la moyenne arithmétique $\\bar x$." } },
+    { id: 't3', type: 'concept',
+        cs: { q: "Proč se u rozptylu odchylky umocňují na druhou, a nepoužívá se rovnou absolutní hodnota?", a: "aby se kladné a záporné odchylky navzájem nevyrušily, a navíc má umocnění výhodné matematické vlastnosti", o: ["aby se kladné a záporné odchylky navzájem nevyrušily, a navíc má umocnění výhodné matematické vlastnosti", "protože druhá mocnina je vždy menší než absolutní hodnota", "aby výsledek vyšel v procentech", "protože jinak by rozptyl vyšel záporný"], h: "Bez umocnění (nebo absolutní hodnoty) by se kladné a záporné odchylky prostě sečetly na nulu.", e: "Umocnění na druhou zabrání vzájemnému vyrušení kladných a záporných odchylek, a navíc má výhodné matematické vlastnosti využívané při odvozování dalších vzorců." },
+        fr: { q: "Pourquoi élève-t-on les écarts au carré dans la variance, plutôt que d'utiliser directement la valeur absolue ?", a: "pour que les écarts positifs et négatifs ne s'annulent pas, et le carré a en plus des propriétés mathématiques avantageuses", o: ["pour que les écarts positifs et négatifs ne s'annulent pas, et le carré a en plus des propriétés mathématiques avantageuses", "parce que le carré est toujours inférieur à la valeur absolue", "pour que le résultat soit exprimé en pourcentage", "sinon la variance serait négative"], h: "Sans mise au carré (ni valeur absolue), les écarts positifs et négatifs s'annuleraient simplement.", e: "La mise au carré évite que les écarts positifs et négatifs ne s'annulent, et présente en outre des propriétés mathématiques avantageuses pour démontrer d'autres formules." } },
+    { id: 't4', type: 'concept',
+        cs: { q: "K čemu slouží variační koeficient $v_x$?", a: "ke srovnání variability souborů s různými jednotkami nebo řády hodnot", o: ["ke srovnání variability souborů s různými jednotkami nebo řády hodnot", "k nalezení nejčetnější hodnoty souboru", "k výpočtu prostřední hodnoty seřazeného souboru", "k vyjádření síly lineární závislosti dvou znaků"], h: "Souvisí s tím, že směrodatná odchylka má stejné jednotky jako zkoumaný znak.", e: "Variační koeficient $v_x=\\frac{s_x}{|\\bar x|}\\cdot100\\%$ umožňuje srovnat variabilitu souborů s různými jednotkami, protože jde o bezrozměrné (procentuální) číslo." },
+        fr: { q: "À quoi sert le coefficient de variation $v_x$ ?", a: "à comparer la variabilité de populations aux unités ou ordres de grandeur différents", o: ["à comparer la variabilité de populations aux unités ou ordres de grandeur différents", "à trouver la valeur la plus fréquente d'une population", "à calculer la valeur du milieu d'une population triée", "à exprimer la force d'une dépendance linéaire entre deux caractères"], h: "Cela est lié au fait que l'écart-type a les mêmes unités que le caractère étudié.", e: "Le coefficient de variation $v_x=\\frac{s_x}{|\\bar x|}\\cdot100\\%$ permet de comparer la variabilité de populations aux unités différentes, car c'est un nombre sans dimension (en pourcentage)." } },
+    { id: 't5', type: 'concept',
+        cs: { q: "Co vyjadřuje korelační koeficient $r$?", a: "sílu a směr lineární závislosti mezi dvěma znaky", o: ["sílu a směr lineární závislosti mezi dvěma znaky", "variabilitu jediného znaku v souboru", "nejčetnější dvojici hodnot souboru", "rozdíl mezi maximem a minimem druhého znaku"], h: "Korelace se týká vztahu mezi dvěma znaky, ne variability jednoho znaku.", e: "Korelační koeficient $r$ číselně vyjadřuje sílu a směr lineární závislosti mezi dvěma znaky." },
+        fr: { q: "Que exprime le coefficient de corrélation $r$ ?", a: "la force et le sens de la dépendance linéaire entre deux caractères", o: ["la force et le sens de la dépendance linéaire entre deux caractères", "la variabilité d'un seul caractère dans la population", "le couple de valeurs le plus fréquent de la population", "la différence entre le maximum et le minimum du second caractère"], h: "La corrélation concerne la relation entre deux caractères, pas la variabilité d'un seul.", e: "Le coefficient de corrélation $r$ exprime numériquement la force et le sens de la dépendance linéaire entre deux caractères." } },
+    { id: 't6', type: 'concept',
+        cs: { q: "V jakém rozsahu se vždy nachází hodnota korelačního koeficientu $r$?", a: "$-1\\leq r\\leq1$", o: ["$-1\\leq r\\leq1$", "$0\\leq r\\leq1$", "$-100\\leq r\\leq100$", "$-\\infty\\lt r\\lt\\infty$"], h: "Krajní hodnoty odpovídají dokonalé pozitivní a negativní lineární závislosti.", e: "Korelační koeficient vždy splňuje $-1\\leq r\\leq1$; krajní hodnoty $1$ a $-1$ odpovídají dokonalé lineární závislosti." },
+        fr: { q: "Dans quel intervalle se situe toujours la valeur du coefficient de corrélation $r$ ?", a: "$-1\\leq r\\leq1$", o: ["$-1\\leq r\\leq1$", "$0\\leq r\\leq1$", "$-100\\leq r\\leq100$", "$-\\infty\\lt r\\lt\\infty$"], h: "Les valeurs extrêmes correspondent à une dépendance linéaire parfaite, positive ou négative.", e: "Le coefficient de corrélation vérifie toujours $-1\\leq r\\leq1$ ; les valeurs extrêmes $1$ et $-1$ correspondent à une dépendance linéaire parfaite." } },
+    { id: 't7', type: 'concept',
+        cs: { q: "Znamená vysoký korelační koeficient mezi dvěma znaky, že jeden znak způsobuje druhý?", a: "ne, korelace neznamená příčinnou souvislost", o: ["ne, korelace neznamená příčinnou souvislost", "ano, korelace vždy dokazuje příčinnou souvislost", "ano, ale jen pokud je $r$ záporné", "ne, protože korelaci lze počítat jen u kvalitativních znaků"], h: "Oba znaky mohou být ovlivněny nějakým třetím, nezaznamenaným faktorem.", e: "Korelace neznamená příčinnou souvislost — vysoký korelační koeficient mezi dvěma znaky neznamená, že jeden způsobuje druhý; oba mohou být ovlivněny třetím faktorem." },
+        fr: { q: "Un coefficient de corrélation élevé entre deux caractères signifie-t-il que l'un cause l'autre ?", a: "non, corrélation ne veut pas dire causalité", o: ["non, corrélation ne veut pas dire causalité", "oui, la corrélation prouve toujours la causalité", "oui, mais seulement si $r$ est négatif", "non, car la corrélation ne se calcule que pour des caractères qualitatifs"], h: "Les deux caractères peuvent être influencés par un troisième facteur, non enregistré.", e: "Corrélation ne veut pas dire causalité — un coefficient de corrélation élevé ne signifie pas que l'un cause l'autre ; les deux peuvent être influencés par un troisième facteur." } },
+    { id: 't8', type: 'concept',
+        cs: { q: "Proč je nebezpečné používat regresní přímku k předpovědi mimo rozsah naměřených hodnot?", a: "protože jde o extrapolaci a vztah mimo pozorovaný interval nemusí zůstat lineární", o: ["protože jde o extrapolaci a vztah mimo pozorovaný interval nemusí zůstat lineární", "protože regresní přímka platí jen pro záporné hodnoty $x$", "protože mimo rozsah dat se mění korelační koeficient na $0$", "regresní přímku lze naopak použít kdekoli bez omezení"], h: "Termín pro předpověď mimo pozorovaný rozsah dat je extrapolace.", e: "Predikce mimo rozsah naměřených hodnot (extrapolace) může být zcela nespolehlivá, protože vztah mimo pozorovaný interval nemusí zůstat lineární." },
+        fr: { q: "Pourquoi est-il risqué d'utiliser une droite de régression pour prédire en dehors des valeurs mesurées ?", a: "il s'agit d'une extrapolation, et la relation en dehors de l'intervalle observé peut ne plus être linéaire", o: ["il s'agit d'une extrapolation, et la relation en dehors de l'intervalle observé peut ne plus être linéaire", "la droite de régression n'est valable que pour des $x$ négatifs", "en dehors de la plage des données, le coefficient de corrélation devient $0$", "on peut au contraire l'utiliser n'importe où sans restriction"], h: "Le terme pour une prédiction en dehors de la plage observée est extrapolation.", e: "Une prédiction en dehors des valeurs mesurées (extrapolation) peut être totalement peu fiable, car la relation en dehors de l'intervalle observé peut ne plus être linéaire." } }
+];
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Statistický soubor obsahuje hodnoty: ${v0}, {v1}, {v2}, {v3}, {v4}$. Jaké je variační rozpětí $R$?", h: "Najdi nejvyšší a nejnižší hodnotu a odečti je: $R=x_{max}-x_{min}$.", e: "$x_{max}={vmax}$, $x_{min}={vmin}$, tedy $R={vmax}-{vmin}={res}$." },
+        fr: { q: "Une population statistique contient les valeurs : ${v0}, {v1}, {v2}, {v3}, {v4}$. Quelle est l'étendue $R$ ?", h: "Trouve la plus grande et la plus petite valeur, puis soustrais-les : $R=x_{max}-x_{min}$.", e: "$x_{max}={vmax}$, $x_{min}={vmin}$, donc $R={vmax}-{vmin}={res}$." },
+        params: () => {
+            const set = new Set();
+            while (set.size < 5) set.add(randInt(10,60));
+            const arr = shuffleArray([...set]);
+            return { v0: arr[0], v1: arr[1], v2: arr[2], v3: arr[3], v4: arr[4] };
+        },
+        solve: (p) => {
+            const vals = [p.v0,p.v1,p.v2,p.v3,p.v4];
+            const vmax = Math.max(...vals), vmin = Math.min(...vals);
+            const res = vmax - vmin;
+            return { res, correct: fmt(res), vmax, vmin };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 8) },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Kterou charakteristiku je nejvhodnější použít v této situaci: {popisCs}?", h: "Rozliš, zda jde o variabilitu jednoho znaku, srovnání různých jednotek, nebo vztah mezi dvěma znaky.", e: "{expl}" },
+        fr: { q: "Quelle caractéristique convient le mieux à cette situation : {popisFr} ?", h: "Distingue s'il s'agit de la variabilité d'un seul caractère, d'une comparaison d'unités différentes, ou d'un lien entre deux caractères.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { popisCs: "chceme srovnat variabilitu hmotnosti (kg) a ceny (Kč) balíčků", popisFr: "comparer la variabilité du poids (kg) et du prix (Kč) de colis", answer: "variační koeficient", answerFr: "coefficient de variation" },
+                { popisCs: "chceme zjistit, zda spolu souvisí výška a hmotnost žáků", popisFr: "déterminer si la taille et le poids des élèves sont liés", answer: "korelační koeficient", answerFr: "coefficient de corrélation" },
+                { popisCs: "chceme jedním číslem vyjádřit, jak moc se hodnoty souboru liší od průměru", popisFr: "exprimer par un seul nombre à quel point les valeurs d'une population diffèrent de la moyenne", answer: "směrodatná odchylka", answerFr: "écart-type" }
+            ];
+            const idx = randInt(0,2);
+            return Object.assign({ idx }, scenarios[idx]);
+        },
+        solve: (p) => {
+            const explCsMap = [
+                "Jde o srovnání variability veličin s různými jednotkami, proto je vhodný variační koeficient.",
+                "Jde o vztah mezi dvěma znaky u téže jednotky, proto je vhodný korelační koeficient.",
+                "Jde o variabilitu jediného znaku vyjádřenou jedním číslem ve stejných jednotkách, proto je vhodná směrodatná odchylka."
+            ];
+            const explFrMap = [
+                "Il s'agit de comparer la variabilité de grandeurs aux unités différentes, le coefficient de variation est donc approprié.",
+                "Il s'agit du lien entre deux caractères chez la même unité, le coefficient de corrélation est donc approprié.",
+                "Il s'agit de la variabilité d'un seul caractère exprimée par un nombre dans les mêmes unités, l'écart-type est donc approprié."
+            ];
+            return { res: p.answer, resFr: p.answerFr, explCs: explCsMap[p.idx], explFr: explFrMap[p.idx] };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m2 */ },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Statistický soubor má průměr $\\bar x={mean}$. Hodnota $x_j={x}$. Jaká je relativní odchylka $r$ (v procentech)?", h: "Nejdřív spočítej absolutní odchylku $d_j=|x_j-\\bar x|$, pak $r=\\frac{d_j}{|\\bar x|}\\cdot100\\%$.", e: "$d_j=|{x}-{mean}|={dabs}$, $r=\\frac{ {dabs} }{ {mean} }\\cdot100\\%={res}\\%$." },
+        fr: { q: "Une population statistique a une moyenne $\\bar x={mean}$. La valeur $x_j={x}$. Quel est l'écart relatif $r$ (en pourcentage) ?", h: "Calcule d'abord l'écart absolu $d_j=|x_j-\\bar x|$, puis $r=\\frac{d_j}{|\\bar x|}\\cdot100\\%$.", e: "$d_j=|{x}-{mean}|={dabs}$, $r=\\frac{ {dabs} }{ {mean} }\\cdot100\\%={res}\\%$." },
+        params: () => {
+            const configs = [
+                { mean: 20, dOptions: [2,4,6,8] },
+                { mean: 25, dOptions: [5,10,15,20] },
+                { mean: 50, dOptions: [5,10,15,20,25] }
+            ];
+            const cfg = randChoice(configs);
+            const d = randChoice(cfg.dOptions);
+            const sign = randChoice([1,-1]);
+            const x = cfg.mean + sign*d;
+            return { mean: cfg.mean, x };
+        },
+        solve: (p) => {
+            const dabs = Math.abs(p.x - p.mean);
+            const res = Math.round(dabs/p.mean*100);
+            return { res, correct: fmt(res) + '\\%', dabs };
+        },
+        wrongOptions: (p, sol) => pctOptions(sol.res, 15) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Soubor osmi hodnot má průměr $\\bar x={mean}$: ${vals}$. Jaký je rozptyl $s^2$ tohoto souboru?", h: "Rozptyl je průměr druhých mocnin odchylek od průměru: $s^2=\\frac{1}{n}\\sum(x_j-\\bar x)^2$.", e: "Součet druhých mocnin odchylek je ${sumsq}$, tedy $s^2=\\frac{ {sumsq} }{8}={res}$." },
+        fr: { q: "Une population de huit valeurs a une moyenne $\\bar x={mean}$ : ${vals}$. Quelle est la variance $s^2$ de cette population ?", h: "La variance est la moyenne des carrés des écarts à la moyenne : $s^2=\\frac{1}{n}\\sum(x_j-\\bar x)^2$.", e: "La somme des carrés des écarts est ${sumsq}$, donc $s^2=\\frac{ {sumsq} }{8}={res}$." },
+        params: () => {
+            const datasets = [
+                { data: [2,4,4,4,5,5,7,9], mean: 5 },
+                { data: [1,3,3,3,4,4,6,8], mean: 4 },
+                { data: [5,7,7,7,8,8,10,12], mean: 8 },
+                { data: [4,6,6,6,7,7,9,11], mean: 7 }
+            ];
+            const ds = randChoice(datasets);
+            return { mean: ds.mean, vals: ds.data.join(', '), data: ds.data };
+        },
+        solve: (p) => {
+            const sumsq = p.data.reduce((acc,x) => acc + (x-p.mean)*(x-p.mean), 0);
+            const res = sumsq / 8;
+            return { res, correct: fmt(res), sumsq };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 3) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Soubor má průměr $\\bar x={mean}$ a směrodatnou odchylku $s_x={sd}$. Jaký je variační koeficient $v_x$ (v procentech, zaokrouhli na celé číslo)?", h: "Použij vzorec $v_x=\\frac{s_x}{|\\bar x|}\\cdot100\\%$.", e: "$v_x=\\frac{ {sd} }{ {mean} }\\cdot100\\%\\approx{res}\\%$." },
+        fr: { q: "Une population a une moyenne $\\bar x={mean}$ et un écart-type $s_x={sd}$. Quel est le coefficient de variation $v_x$ (en pourcentage, arrondi à l'entier) ?", h: "Utilise la formule $v_x=\\frac{s_x}{|\\bar x|}\\cdot100\\%$.", e: "$v_x=\\frac{ {sd} }{ {mean} }\\cdot100\\%\\approx{res}\\%$." },
+        params: () => {
+            const pairs = [
+                {mean:100, sd:5}, {mean:50, sd:4}, {mean:200, sd:12}, {mean:80, sd:8},
+                {mean:40, sd:6}, {mean:150, sd:9}, {mean:60, sd:3}, {mean:120, sd:18}
+            ];
+            const p = randChoice(pairs);
+            return { mean: p.mean, sd: p.sd };
+        },
+        solve: (p) => { const res = Math.round(p.sd/p.mean*100); return { res, correct: fmt(res) + '\\%' }; },
+        wrongOptions: (p, sol) => pctOptions(sol.res, 10) },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "Mezi dvěma znaky vyšel korelační koeficient $r={rval}$. Existuje mezi znaky silná lineární závislost?", h: "Silná závislost odpovídá hodnotě $|r|$ blízké $1$.", e: "{expl}" },
+        fr: { q: "Le coefficient de corrélation entre deux caractères est $r={rval}$. Existe-t-il une forte dépendance linéaire entre ces caractères ?", h: "Une dépendance forte correspond à une valeur $|r|$ proche de $1$.", e: "{expl}" },
+        params: () => {
+            const kind = randChoice(['strong','weak']);
+            const rval = kind === 'strong' ? randChoice([0.91, 0.94, 0.97, -0.92, -0.96]) : randChoice([0.05, -0.08, 0.12, -0.15, 0.03]);
+            return { kind, rval: fmt(rval) };
+        },
+        solve: (p) => {
+            const isYes = p.kind === 'strong';
+            const explCs = isYes
+                ? `Hodnota $|r|=${Math.abs(parseFloat(p.rval.replace(',','.')))}$ je blízká $1$, jde tedy o silnou lineární závislost.`
+                : `Hodnota $|r|=${Math.abs(parseFloat(p.rval.replace(',','.')))}$ je blízká $0$, mezi znaky tedy neexistuje silná lineární závislost.`;
+            const explFr = isYes
+                ? `La valeur $|r|=${Math.abs(parseFloat(p.rval.replace(',','.')))}$ est proche de $1$, il s'agit donc d'une forte dépendance linéaire.`
+                : `La valeur $|r|=${Math.abs(parseFloat(p.rval.replace(',','.')))}$ est proche de $0$, il n'existe donc pas de forte dépendance linéaire entre ces caractères.`;
+            return { res: isYes ? 'ano' : 'ne', resFr: isYes ? 'oui' : 'non', explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m6 */ }
+];
+
+const CATEGORIES_CS = ['variační koeficient', 'korelační koeficient', 'směrodatná odchylka'];
+const CATEGORIES_FR = ['coefficient de variation', 'coefficient de corrélation', 'écart-type'];
+const DISTRACTOR_CS = 'medián';
+const DISTRACTOR_FR = 'médiane';
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit', 'záleží na jednotkách'];
+const YESNO_DISTRACTORS_FR = ['impossible à déterminer', 'cela dépend des unités'];
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm2') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const catsOther = lang === 'cs' ? CATEGORIES_FR : CATEGORIES_CS;
+            const distractorOther = lang === 'cs' ? DISTRACTOR_FR : DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.innerHTML === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Charakteristiky variability ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat rozdíl mezi rozptylem, směrodatnou odchylkou a variačním koeficientem."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na výpočet rozptylu, směrodatné odchylky a na interpretaci korelačního koeficientu."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako korelace, variační koeficient či extrapolace.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definice jednotlivých charakteristik variability a korelace.");
+            if (mathPercent >= 70) strengths.push("Výpočty (rozptyl, směrodatná odchylka, variační koeficient) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si zejména výpočet rozptylu a směrodatné odchylky ze zadaných dat.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Skvělá práce! Tímto jsi zvládl/a celou sérii Statistika 1–3 – můžeš si otestovat své znalosti napříč všemi kapitolami.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení vzorců pro jednotlivé charakteristiky variability.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>

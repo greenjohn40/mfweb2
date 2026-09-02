@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistika 3 — Charakteristiky variability — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f5f5f4; border-left: 4px solid #78716c; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Statistika 3 — Charakteristiky variability</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-statistika3.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kdy jsou dva soubory se stejným průměrem úplně jiné?</h2>
+    <p>Představ si dvě třídy, které psaly stejný test a v obou vyšel průměr $75$ bodů. V první třídě měli všichni žáci mezi $70$ a $80$ body. Ve druhé třídě měla polovina žáků $95$ bodů a druhá polovina $55$ bodů. Charakteristiky polohy (průměr) jsou <b>stejné</b>, ale soubory jsou zjevně velmi <b>odlišné</b> — v jednom případě jsou si žáci podobní, v druhém ne.</p>
+    <p>K popisu téhle „různorodosti" souboru potřebujeme nový typ charakteristik — <b>charakteristiky variability</b>. Na konci kapitoly se navíc podíváme, jak porovnávat dvě různé veličiny naráz (např. výšku a hmotnost) pomocí <b>korelace</b> a <b>lineární regrese</b>.</p>
+</section>
+
+<section id="sec-variacni-rozpeti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Variační rozpětí</h2>
+    <p><b>Variační rozpětí</b> $R$ je nejjednodušší charakteristika variability — rozdíl mezi největší a nejmenší hodnotou souboru:</p>
+    <div class="card text-center">
+        $$R=x_{max}-x_{min}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Počet vyřízených hovorů zákaznické linky zaznamenaný v 8 po sobě jdoucích minutách:</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="201.0" x2="50.0" y2="201.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="205.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="201.0" x2="360.0" y2="201.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="157.0" x2="50.0" y2="157.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="161.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="157.0" x2="360.0" y2="157.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="113.0" x2="50.0" y2="113.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="117.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="113.0" x2="360.0" y2="113.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="69.0" x2="50.0" y2="69.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="73.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="69.0" x2="360.0" y2="69.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">10</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="55.4" y="201.0" width="27.9" height="44.0" fill="#7c3aed" opacity="0.85"/><text x="69.4" y="195.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="69.4" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">1</text><rect x="94.2" y="157.0" width="27.9" height="88.0" fill="#7c3aed" opacity="0.85"/><text x="108.1" y="151.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="108.1" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">2</text><rect x="132.9" y="157.0" width="27.9" height="88.0" fill="#7c3aed" opacity="0.85"/><text x="146.9" y="151.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="146.9" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">3</text><rect x="171.7" y="157.0" width="27.9" height="88.0" fill="#7c3aed" opacity="0.85"/><text x="185.6" y="151.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="185.6" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">4</text><rect x="210.4" y="135.0" width="27.9" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="224.4" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">5</text><text x="224.4" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">5</text><rect x="249.2" y="135.0" width="27.9" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="263.1" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">5</text><text x="263.1" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">6</text><rect x="287.9" y="91.0" width="27.9" height="154.0" fill="#7c3aed" opacity="0.85"/><text x="301.9" y="85.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">7</text><text x="301.9" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">7</text><rect x="326.7" y="47.0" width="27.9" height="198.0" fill="#7c3aed" opacity="0.85"/><text x="340.6" y="41.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">9</text><text x="340.6" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">8</text><line x1="50" y1="135.0" x2="360" y2="135.0" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5,4"/><text x="355" y="129.0" font-size="11" fill="#b91c1c" text-anchor="end" font-weight="600">průměr = 5</text></svg>
+        <p class="text-sm mt-2">$x_{max}=9$, $x_{min}=2$, tedy $R=9-2=7$.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Variační rozpětí závisí jen na dvou krajních hodnotách — jediná odlehlá hodnota ho může výrazně zkreslit, i když zbytek souboru je velmi „stabilní".
+    </div>
+</section>
+
+<section id="sec-absolutni-odchylka" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Absolutní odchylka</h2>
+    <p><b>Absolutní odchylka</b> $d_j$ hodnoty $x_j$ od aritmetického průměru $\bar x$ je vzdálenost této hodnoty od průměru:</p>
+    <div class="card text-center">
+        $$d_j=|x_j-\bar x|$$
+    </div>
+    <p class="text-sm">Geometricky jde o vzdálenost bodu $x_j$ od bodu $\bar x$ na číselné ose.</p>
+    <div class="card">
+        <p class="mb-2"><b>Pokračování příkladu</b> (data: $2,4,4,4,5,5,7,9$, průměr $\bar x=5$):</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">$x_j$</th><th class="p-1">2</th><th class="p-1">4</th><th class="p-1">4</th><th class="p-1">4</th><th class="p-1">5</th><th class="p-1">5</th><th class="p-1">7</th><th class="p-1">9</th></tr></thead>
+            <tbody><tr><td class="p-1">$d_j$</td><td class="p-1">3</td><td class="p-1">1</td><td class="p-1">1</td><td class="p-1">1</td><td class="p-1">0</td><td class="p-1">0</td><td class="p-1">2</td><td class="p-1">4</td></tr></tbody>
+        </table>
+    </div>
+</section>
+
+<section id="sec-relativni-odchylka" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Relativní odchylka</h2>
+    <p><b>Relativní odchylka</b> $r$ vyjadřuje absolutní odchylku jako procento z průměru — umožňuje posoudit, jak „velká" je odchylka vzhledem k typické velikosti hodnot:</p>
+    <div class="card text-center">
+        $$r=\frac{d_j}{|\bar x|}\cdot100\%$$
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: data $2,4,4,4,5,5,7,9$ (průměr $\bar x=5$)</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-index" min="0" max="7" value="7" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-20 text-right">$x_j=$<span id="index-xval">9</span></span>
+        </div>
+        <p class="text-sm">Absolutní odchylka: <span id="index-d">$d_j=4$</span></p>
+        <p class="text-sm">Relativní odchylka: <span id="index-r">$r=80\%$</span></p>
+    </div>
+    <p class="text-sm">Pro hodnotu $x_j=9$: $d_j=|9-5|=4$, relativní odchylka $r=\frac{4}{5}\cdot100\%=80\%$ — hodnota se od průměru liší o $80\%$ jeho velikosti.</p>
+</section>
+
+<section id="sec-prumerna-odchylka" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Průměrná absolutní odchylka</h2>
+    <p><b>Průměrná absolutní odchylka</b> $\bar d$ shrnuje variabilitu celého souboru jedním číslem — je to aritmetický průměr všech absolutních odchylek:</p>
+    <div class="card text-center">
+        $$\bar d=\frac{1}{n}\sum_{j=1}^n|x_j-\bar x|$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Pokračování příkladu:</b> odchylky $3,1,1,1,0,0,2,4$.</p>
+        <p>$$\bar d=\frac{3+1+1+1+0+0+2+4}{8}=\frac{12}{8}=1{,}5$$</p>
+    </div>
+</section>
+
+<section id="sec-rozptyl-smerodatna" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Rozptyl a směrodatná odchylka</h2>
+    <p><b>Rozptyl</b> $s^2$ je aritmetický průměr <b>druhých mocnin</b> odchylek od průměru (umocnění zabrání tomu, aby se kladné a záporné odchylky navzájem vyrušily):</p>
+    <div class="card text-center">
+        $$s^2=\frac{1}{n}\sum_{j=1}^n(x_j-\bar x)^2$$
+    </div>
+    <p><b>Směrodatná odchylka</b> $s_x=\sqrt{s^2}$ vrací hodnotu zpět do původních jednotek (rozptyl má jednotky umocněné na druhou), a je proto nejpoužívanější mírou variability.</p>
+    <div class="card">
+        <p class="mb-2"><b>Pokračování příkladu:</b> odchylky na druhou: $9,1,1,1,0,0,4,16$.</p>
+        <p>$$s^2=\frac{9+1+1+1+0+0+4+16}{8}=\frac{32}{8}=4 \qquad s_x=\sqrt{4}=2$$</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Proč umocňovat na druhou, a ne třeba používat absolutní hodnotu (jako u $\bar d$)? Umocnění má výhodné matematické vlastnosti (např. lehčeji se s ním pracuje při odvozování dalších vzorců a vět ve statistice), a proto se v praxi směrodatná odchylka používá častěji než průměrná absolutní odchylka.
+    </div>
+</section>
+
+<section id="sec-variacni-koeficient" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Variační koeficient</h2>
+    <p>Směrodatná odchylka má stejné jednotky jako zkoumaný znak — proto nelze přímo srovnat variabilitu dvou souborů s <b>různými jednotkami</b> (např. kilogramy a koruny) nebo velmi odlišnou <b>velikostí hodnot</b>. K tomu slouží <b>variační koeficient</b>:</p>
+    <div class="card text-center">
+        $$v_x=\frac{s_x}{|\bar x|}\cdot100\%$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Srovnání variability hmotnosti a ceny balíčků v obchodě.</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Veličina</th><th class="p-1">$\bar x$</th><th class="p-1">$s_x$</th><th class="p-1">$v_x$</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">hmotnost (g)</td><td class="p-1">$100$</td><td class="p-1">$3{,}41$</td><td class="p-1">$3{,}4\%$</td></tr>
+                <tr><td class="p-1 text-left">cena (Kč)</td><td class="p-1">$48{,}6$</td><td class="p-1">$7{,}31$</td><td class="p-1">$15{,}0\%$</td></tr>
+            </tbody>
+        </table>
+        <p class="text-sm mt-2">Přestože jde o úplně jiné veličiny (gramy vs. koruny), variační koeficient ukazuje, že <b>cena je relativně variabilnější</b> než hmotnost — mezi balíčky kolísá procentuálně mnohem víc.</p>
+    </div>
+</section>
+
+<section id="sec-dvourozmerna-data" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Dvourozměrná data a bodový graf</h2>
+    <p>Někdy nás zajímá souvislost mezi <b>dvěma</b> znaky u téže jednotky — např. mezi teplotou vzduchu a prodejem zmrzliny. Každá jednotka souboru má pak dvojici hodnot $(x_i;y_i)$. Takový soubor znázorňujeme <b>bodovým grafem</b> (scatter plotem): na osu $x$ vyneseme první znak, na osu $y$ druhý, a každou dvojici zakreslíme jako bod.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Vlastní příklad:</b> Teplota vzduchu (°C) a prodej zmrzliny (ks) naměřené v 10 dnech.</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="255.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="255.0" x2="50.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="273.0" font-size="10.5" fill="#57534e" text-anchor="middle">15</text><line x1="50.0" y1="255.0" x2="50.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="141.2" y1="255.0" x2="141.2" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="141.2" y="273.0" font-size="10.5" fill="#57534e" text-anchor="middle">20</text><line x1="141.2" y1="255.0" x2="141.2" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="232.4" y1="255.0" x2="232.4" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="232.4" y="273.0" font-size="10.5" fill="#57534e" text-anchor="middle">25</text><line x1="232.4" y1="255.0" x2="232.4" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="323.5" y1="255.0" x2="323.5" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="323.5" y="273.0" font-size="10.5" fill="#57534e" text-anchor="middle">30</text><line x1="323.5" y1="255.0" x2="323.5" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="222.1" x2="50.0" y2="222.1" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="226.1" font-size="11" fill="#57534e" text-anchor="end">40</text><line x1="50.0" y1="222.1" x2="360.0" y2="222.1" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="156.4" x2="50.0" y2="156.4" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="160.4" font-size="11" fill="#57534e" text-anchor="end">60</text><line x1="50.0" y1="156.4" x2="360.0" y2="156.4" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="90.7" x2="50.0" y2="90.7" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="94.7" font-size="11" fill="#57534e" text-anchor="end">80</text><line x1="50.0" y1="90.7" x2="360.0" y2="90.7" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">100</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="50.0" y1="266.9" x2="360.0" y2="10.4" stroke="#0d9488" stroke-width="2.5"/><circle cx="104.7" cy="222.1" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="159.4" cy="172.9" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="214.1" cy="130.1" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="268.8" cy="84.1" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="323.5" cy="41.4" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="177.6" cy="163.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="232.4" cy="120.3" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="122.9" cy="205.7" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="287.1" cy="64.4" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="250.6" cy="107.1" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/></svg>
+        <p class="text-sm mt-2">Body zřetelně stoupají zleva doprava — s rostoucí teplotou roste i prodej. Zelená čára je tzv. regresní přímka (viz níže).</p>
+    </div>
+</section>
+
+<section id="sec-korelace" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Korelační koeficient</h2>
+    <p><b>Korelační koeficient</b> $r$ číselně vyjadřuje sílu a směr <b>lineární</b> závislosti mezi dvěma znaky:</p>
+    <div class="card text-center">
+        $$r=\frac{\sum_{i=1}^n(x_i-\bar x)(y_i-\bar y)}{\sqrt{\sum_{i=1}^n(x_i-\bar x)^2\cdot\sum_{i=1}^n(y_i-\bar y)^2}}$$
+    </div>
+    <p class="text-sm">Vždy platí $-1\leq r\leq1$. Znaménko určuje směr závislosti, absolutní hodnota sílu:</p>
+    <div class="grid sm:grid-cols-3 gap-3">
+        <div class="card text-center">
+            <p class="text-xs font-semibold text-emerald-700 mb-1">$r\approx1$ (silná pozitivní)</p>
+            <svg viewBox="0 0 200 160" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">0</text><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="93.3" y1="115.0" x2="93.3" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="93.3" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">2</text><line x1="93.3" y1="115.0" x2="93.3" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="136.7" y1="115.0" x2="136.7" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="136.7" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">4</text><line x1="136.7" y1="115.0" x2="136.7" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="180.0" y1="115.0" x2="180.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="180.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">6</text><line x1="180.0" y1="115.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="115.0" x2="50.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="119.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="85.0" x2="50.0" y2="85.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="89.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="85.0" x2="180.0" y2="85.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="55.0" x2="50.0" y2="55.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="59.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="55.0" x2="180.0" y2="55.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">12</text><line x1="50.0" y1="25.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="50.0" y1="115.0" x2="180.0" y2="25.0" stroke="#0d9488" stroke-width="2.5"/><circle cx="71.7" cy="100.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="93.3" cy="85.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="115.0" cy="70.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="136.7" cy="55.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="158.3" cy="40.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/></svg>
+        </div>
+        <div class="card text-center">
+            <p class="text-xs font-semibold text-red-700 mb-1">$r\approx-1$ (silná negativní)</p>
+            <svg viewBox="0 0 200 160" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">0</text><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="93.3" y1="115.0" x2="93.3" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="93.3" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">2</text><line x1="93.3" y1="115.0" x2="93.3" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="136.7" y1="115.0" x2="136.7" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="136.7" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">4</text><line x1="136.7" y1="115.0" x2="136.7" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="180.0" y1="115.0" x2="180.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="180.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">6</text><line x1="180.0" y1="115.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="115.0" x2="50.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="119.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="85.0" x2="50.0" y2="85.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="89.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="85.0" x2="180.0" y2="85.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="55.0" x2="50.0" y2="55.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="59.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="55.0" x2="180.0" y2="55.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">12</text><line x1="50.0" y1="25.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="50.0" y1="25.0" x2="180.0" y2="115.0" stroke="#0d9488" stroke-width="2.5"/><circle cx="71.7" cy="40.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="93.3" cy="55.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="115.0" cy="70.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="136.7" cy="85.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="158.3" cy="100.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/></svg>
+        </div>
+        <div class="card text-center">
+            <p class="text-xs font-semibold text-stone-600 mb-1">$r\approx0$ (žádná lineární závislost)</p>
+            <svg viewBox="0 0 200 160" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">0</text><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="93.3" y1="115.0" x2="93.3" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="93.3" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">2</text><line x1="93.3" y1="115.0" x2="93.3" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="136.7" y1="115.0" x2="136.7" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="136.7" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">4</text><line x1="136.7" y1="115.0" x2="136.7" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="180.0" y1="115.0" x2="180.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="180.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">6</text><line x1="180.0" y1="115.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="115.0" x2="50.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="119.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="97.0" x2="50.0" y2="97.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="101.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="97.0" x2="180.0" y2="97.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="79.0" x2="50.0" y2="79.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="83.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="79.0" x2="180.0" y2="79.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="61.0" x2="50.0" y2="61.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="65.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="61.0" x2="180.0" y2="61.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="43.0" x2="50.0" y2="43.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="47.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="43.0" x2="180.0" y2="43.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">10</text><line x1="50.0" y1="25.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><circle cx="71.7" cy="70.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="93.3" cy="97.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="115.0" cy="43.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="136.7" cy="88.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="158.3" cy="61.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="71.7" cy="43.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="115.0" cy="97.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="158.3" cy="70.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="93.3" cy="52.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="136.7" cy="88.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/></svg>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Pokračování příkladu (teplota a prodej zmrzliny):</b></p>
+        <p class="text-sm">$\bar x=24$, $\bar y=67{,}7$. Výpočtem vyjde $r\approx0{,}998$ — jde o velmi silnou pozitivní lineární závislost.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Korelace neznamená příčinnou souvislost! Vysoký korelační koeficient mezi dvěma znaky neznamená, že jeden způsobuje druhý — oba mohou být ovlivněny nějakým třetím, nezaznamenaným faktorem.
+    </div>
+</section>
+
+<section id="sec-regrese" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Lineární regrese</h2>
+    <p>Pokud mezi dvěma znaky existuje silná lineární závislost, můžeme touto dvojicí bodů proložit přímku, která nejlépe vystihuje trend dat — <b>regresní přímku</b>:</p>
+    <div class="card text-center">
+        $$y=\frac{s_{xy}}{s_x^2}(x-\bar x)+\bar y$$
+    </div>
+    <p class="text-sm">kde $s_{xy}=\frac{1}{n}\sum(x_i-\bar x)(y_i-\bar y)$ je tzv. kovariance a $s_x^2$ je rozptyl znaku $x$.</p>
+    <div class="card">
+        <p class="mb-2"><b>Pokračování příkladu:</b> pro teplotu a prodej zmrzliny vyjde regresní přímka přibližně $y\approx4{,}59x-42{,}53$.</p>
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: předpověz prodej podle teploty</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-teplota" min="15" max="32" value="25" class="flex-grow">
+            <span class="font-mono text-sm w-24 text-right"><span id="teplota-val">25</span> °C</span>
+        </div>
+        <p class="text-sm">Předpovězený prodej: <b><span id="prodej-pred">72</span> ks</b></p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Regresní přímku má smysl používat jen v rozsahu naměřených hodnot (zde přibližně $18$–$30$ °C). Predikce mimo tento rozsah (tzv. extrapolace) může být zcela nespolehlivá — vztah mimo pozorovaný interval nemusí zůstat lineární.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Charakteristika</th><th class="p-1 text-left">Co vyjadřuje</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">variační rozpětí $R$</td><td class="p-1 text-left">rozdíl max a min hodnoty</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">absolutní odchylka $d_j$</td><td class="p-1 text-left">vzdálenost hodnoty od průměru</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">relativní odchylka $r$</td><td class="p-1 text-left">odchylka vyjádřená v % z průměru</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">rozptyl $s^2$, směrodatná odchylka $s_x$</td><td class="p-1 text-left">nejpoužívanější míry variability celého souboru</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">variační koeficient $v_x$</td><td class="p-1 text-left">srovnání variability souborů s různými jednotkami</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">korelační koeficient $r$</td><td class="p-1 text-left">síla a směr lineární závislosti dvou znaků</td></tr>
+                <tr><td class="p-1 text-left">lineární regrese</td><td class="p-1 text-left">přímka vystihující trend dvourozměrných dat</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Tato kapitola uzavírá sérii Statistika 1–3. Charakteristiky polohy (průměry, modus, medián) říkají, „kde" se soubor nachází; charakteristiky variability říkají, „jak moc" se jednotlivé hodnoty od sebe liší — a dohromady dávají mnohem úplnější obraz o datech, než by dal každý typ charakteristik sám o sobě.
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="hidden mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Quand deux populations de même moyenne sont-elles totalement différentes ?</h2>
+    <p>Imagine deux classes qui ont passé le même contrôle, avec dans les deux cas une moyenne de $75$ points. Dans la première classe, tous les élèves ont obtenu entre $70$ et $80$ points. Dans la seconde, la moitié des élèves a obtenu $95$ points et l'autre moitié $55$ points. Les caractéristiques de position (la moyenne) sont <b>identiques</b>, mais les populations sont manifestement très <b>différentes</b> — dans un cas les élèves se ressemblent, dans l'autre non.</p>
+    <p>Pour décrire cette « diversité » d'une population, nous avons besoin d'un nouveau type de caractéristiques — les <b>caractéristiques de variabilité</b>. À la fin du chapitre, nous verrons aussi comment comparer deux grandeurs à la fois (par ex. la taille et le poids) à l'aide de la <b>corrélation</b> et de la <b>régression linéaire</b>.</p>
+</section>
+
+<section id="sec-variacni-rozpeti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Étendue</h2>
+    <p>L'<b>étendue</b> $R$ est la caractéristique de variabilité la plus simple — la différence entre la plus grande et la plus petite valeur de la population :</p>
+    <div class="card text-center">
+        $$R=x_{max}-x_{min}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Nombre d'appels traités par le service client, enregistré sur 8 minutes consécutives :</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="201.0" x2="50.0" y2="201.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="205.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="201.0" x2="360.0" y2="201.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="157.0" x2="50.0" y2="157.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="161.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="157.0" x2="360.0" y2="157.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="113.0" x2="50.0" y2="113.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="117.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="113.0" x2="360.0" y2="113.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="69.0" x2="50.0" y2="69.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="73.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="69.0" x2="360.0" y2="69.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">10</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="55.4" y="201.0" width="27.9" height="44.0" fill="#7c3aed" opacity="0.85"/><text x="69.4" y="195.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="69.4" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">1</text><rect x="94.2" y="157.0" width="27.9" height="88.0" fill="#7c3aed" opacity="0.85"/><text x="108.1" y="151.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="108.1" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">2</text><rect x="132.9" y="157.0" width="27.9" height="88.0" fill="#7c3aed" opacity="0.85"/><text x="146.9" y="151.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="146.9" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">3</text><rect x="171.7" y="157.0" width="27.9" height="88.0" fill="#7c3aed" opacity="0.85"/><text x="185.6" y="151.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="185.6" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">4</text><rect x="210.4" y="135.0" width="27.9" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="224.4" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">5</text><text x="224.4" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">5</text><rect x="249.2" y="135.0" width="27.9" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="263.1" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">5</text><text x="263.1" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">6</text><rect x="287.9" y="91.0" width="27.9" height="154.0" fill="#7c3aed" opacity="0.85"/><text x="301.9" y="85.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">7</text><text x="301.9" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">7</text><rect x="326.7" y="47.0" width="27.9" height="198.0" fill="#7c3aed" opacity="0.85"/><text x="340.6" y="41.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">9</text><text x="340.6" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">8</text><line x1="50" y1="135.0" x2="360" y2="135.0" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5,4"/><text x="355" y="129.0" font-size="11" fill="#b91c1c" text-anchor="end" font-weight="600">průměr = 5</text></svg>
+        <p class="text-sm mt-2">$x_{max}=9$, $x_{min}=2$, donc $R=9-2=7$.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention :</b> L'étendue ne dépend que des deux valeurs extrêmes — une seule valeur aberrante peut la déformer fortement, même si le reste de la population est très « stable ».
+    </div>
+</section>
+
+<section id="sec-absolutni-odchylka" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Écart absolu</h2>
+    <p>L'<b>écart absolu</b> $d_j$ de la valeur $x_j$ par rapport à la moyenne arithmétique $\bar x$ est la distance de cette valeur à la moyenne :</p>
+    <div class="card text-center">
+        $$d_j=|x_j-\bar x|$$
+    </div>
+    <p class="text-sm">Géométriquement, il s'agit de la distance entre le point $x_j$ et le point $\bar x$ sur l'axe des nombres.</p>
+    <div class="card">
+        <p class="mb-2"><b>Suite de l'exemple</b> (données : $2,4,4,4,5,5,7,9$, moyenne $\bar x=5$) :</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">$x_j$</th><th class="p-1">2</th><th class="p-1">4</th><th class="p-1">4</th><th class="p-1">4</th><th class="p-1">5</th><th class="p-1">5</th><th class="p-1">7</th><th class="p-1">9</th></tr></thead>
+            <tbody><tr><td class="p-1">$d_j$</td><td class="p-1">3</td><td class="p-1">1</td><td class="p-1">1</td><td class="p-1">1</td><td class="p-1">0</td><td class="p-1">0</td><td class="p-1">2</td><td class="p-1">4</td></tr></tbody>
+        </table>
+    </div>
+</section>
+
+<section id="sec-relativni-odchylka" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Écart relatif</h2>
+    <p>L'<b>écart relatif</b> $r$ exprime l'écart absolu en pourcentage de la moyenne — il permet d'évaluer si un écart est « grand » par rapport à la taille typique des valeurs :</p>
+    <div class="card text-center">
+        $$r=\frac{d_j}{|\bar x|}\cdot100\%$$
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 À toi d'essayer : données $2,4,4,4,5,5,7,9$ (moyenne $\bar x=5$)</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-index-fr" min="0" max="7" value="7" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-20 text-right">$x_j=$<span id="index-xval-fr">9</span></span>
+        </div>
+        <p class="text-sm">Écart absolu : <span id="index-d-fr">$d_j=4$</span></p>
+        <p class="text-sm">Écart relatif : <span id="index-r-fr">$r=80\%$</span></p>
+    </div>
+    <p class="text-sm">Pour la valeur $x_j=9$ : $d_j=|9-5|=4$, écart relatif $r=\frac{4}{5}\cdot100\%=80\%$ — la valeur diffère de la moyenne de $80\%$ de sa taille.</p>
+</section>
+
+<section id="sec-prumerna-odchylka" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Écart absolu moyen</h2>
+    <p>L'<b>écart absolu moyen</b> $\bar d$ résume la variabilité de toute la population par un seul nombre — c'est la moyenne arithmétique de tous les écarts absolus :</p>
+    <div class="card text-center">
+        $$\bar d=\frac{1}{n}\sum_{j=1}^n|x_j-\bar x|$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Suite de l'exemple :</b> écarts $3,1,1,1,0,0,2,4$.</p>
+        <p>$$\bar d=\frac{3+1+1+1+0+0+2+4}{8}=\frac{12}{8}=1{,}5$$</p>
+    </div>
+</section>
+
+<section id="sec-rozptyl-smerodatna" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Variance et écart-type</h2>
+    <p>La <b>variance</b> $s^2$ est la moyenne arithmétique des <b>carrés</b> des écarts à la moyenne (le carré évite que les écarts positifs et négatifs ne s'annulent) :</p>
+    <div class="card text-center">
+        $$s^2=\frac{1}{n}\sum_{j=1}^n(x_j-\bar x)^2$$
+    </div>
+    <p>L'<b>écart-type</b> $s_x=\sqrt{s^2}$ ramène la valeur aux unités d'origine (la variance a des unités au carré), c'est pourquoi il s'agit de la mesure de variabilité la plus utilisée.</p>
+    <div class="card">
+        <p class="mb-2"><b>Suite de l'exemple :</b> écarts au carré : $9,1,1,1,0,0,4,16$.</p>
+        <p>$$s^2=\frac{9+1+1+1+0+0+4+16}{8}=\frac{32}{8}=4 \qquad s_x=\sqrt{4}=2$$</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Pourquoi élever au carré plutôt que d'utiliser la valeur absolue (comme pour $\bar d$) ? Le carré a des propriétés mathématiques avantageuses (par ex. il est plus facile à manipuler dans la démonstration d'autres formules et théorèmes en statistique), c'est pourquoi l'écart-type est utilisé en pratique plus souvent que l'écart absolu moyen.
+    </div>
+</section>
+
+<section id="sec-variacni-koeficient" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Coefficient de variation</h2>
+    <p>L'écart-type a les mêmes unités que le caractère étudié — on ne peut donc pas comparer directement la variabilité de deux populations aux <b>unités différentes</b> (par ex. kilogrammes et couronnes) ou à l'<b>ordre de grandeur</b> très différent. C'est à cela que sert le <b>coefficient de variation</b> :</p>
+    <div class="card text-center">
+        $$v_x=\frac{s_x}{|\bar x|}\cdot100\%$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Comparaison de la variabilité du poids et du prix de colis dans un magasin.</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Grandeur</th><th class="p-1">$\bar x$</th><th class="p-1">$s_x$</th><th class="p-1">$v_x$</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">poids (g)</td><td class="p-1">$100$</td><td class="p-1">$3{,}41$</td><td class="p-1">$3{,}4\%$</td></tr>
+                <tr><td class="p-1 text-left">prix (Kč)</td><td class="p-1">$48{,}6$</td><td class="p-1">$7{,}31$</td><td class="p-1">$15{,}0\%$</td></tr>
+            </tbody>
+        </table>
+        <p class="text-sm mt-2">Bien qu'il s'agisse de grandeurs totalement différentes (grammes contre couronnes), le coefficient de variation montre que le <b>prix est relativement plus variable</b> que le poids — il fluctue proportionnellement bien plus entre les colis.</p>
+    </div>
+</section>
+
+<section id="sec-dvourozmerna-data" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Données bivariées et nuage de points</h2>
+    <p>Parfois, on s'intéresse au lien entre <b>deux</b> caractères chez la même unité — par ex. entre la température de l'air et les ventes de glaces. Chaque unité de la population a alors un couple de valeurs $(x_i;y_i)$. On représente une telle population par un <b>nuage de points</b> : on porte le premier caractère sur l'axe $x$, le second sur l'axe $y$, et chaque couple est représenté par un point.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Température de l'air (°C) et ventes de glaces (unités) mesurées sur 10 jours.</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="255.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="255.0" x2="50.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="273.0" font-size="10.5" fill="#57534e" text-anchor="middle">15</text><line x1="50.0" y1="255.0" x2="50.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="141.2" y1="255.0" x2="141.2" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="141.2" y="273.0" font-size="10.5" fill="#57534e" text-anchor="middle">20</text><line x1="141.2" y1="255.0" x2="141.2" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="232.4" y1="255.0" x2="232.4" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="232.4" y="273.0" font-size="10.5" fill="#57534e" text-anchor="middle">25</text><line x1="232.4" y1="255.0" x2="232.4" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="323.5" y1="255.0" x2="323.5" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="323.5" y="273.0" font-size="10.5" fill="#57534e" text-anchor="middle">30</text><line x1="323.5" y1="255.0" x2="323.5" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="222.1" x2="50.0" y2="222.1" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="226.1" font-size="11" fill="#57534e" text-anchor="end">40</text><line x1="50.0" y1="222.1" x2="360.0" y2="222.1" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="156.4" x2="50.0" y2="156.4" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="160.4" font-size="11" fill="#57534e" text-anchor="end">60</text><line x1="50.0" y1="156.4" x2="360.0" y2="156.4" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="90.7" x2="50.0" y2="90.7" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="94.7" font-size="11" fill="#57534e" text-anchor="end">80</text><line x1="50.0" y1="90.7" x2="360.0" y2="90.7" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">100</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="50.0" y1="266.9" x2="360.0" y2="10.4" stroke="#0d9488" stroke-width="2.5"/><circle cx="104.7" cy="222.1" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="159.4" cy="172.9" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="214.1" cy="130.1" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="268.8" cy="84.1" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="323.5" cy="41.4" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="177.6" cy="163.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="232.4" cy="120.3" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="122.9" cy="205.7" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="287.1" cy="64.4" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="250.6" cy="107.1" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/></svg>
+        <p class="text-sm mt-2">Les points montent clairement de gauche à droite — quand la température augmente, les ventes augmentent aussi. La ligne verte est la droite de régression (voir ci-dessous).</p>
+    </div>
+</section>
+
+<section id="sec-korelace" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Coefficient de corrélation</h2>
+    <p>Le <b>coefficient de corrélation</b> $r$ exprime numériquement la force et le sens de la dépendance <b>linéaire</b> entre deux caractères :</p>
+    <div class="card text-center">
+        $$r=\frac{\sum_{i=1}^n(x_i-\bar x)(y_i-\bar y)}{\sqrt{\sum_{i=1}^n(x_i-\bar x)^2\cdot\sum_{i=1}^n(y_i-\bar y)^2}}$$
+    </div>
+    <p class="text-sm">On a toujours $-1\leq r\leq1$. Le signe indique le sens de la dépendance, la valeur absolue sa force :</p>
+    <div class="grid sm:grid-cols-3 gap-3">
+        <div class="card text-center">
+            <p class="text-xs font-semibold text-emerald-700 mb-1">$r\approx1$ (forte, positive)</p>
+            <svg viewBox="0 0 200 160" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">0</text><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="93.3" y1="115.0" x2="93.3" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="93.3" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">2</text><line x1="93.3" y1="115.0" x2="93.3" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="136.7" y1="115.0" x2="136.7" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="136.7" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">4</text><line x1="136.7" y1="115.0" x2="136.7" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="180.0" y1="115.0" x2="180.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="180.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">6</text><line x1="180.0" y1="115.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="115.0" x2="50.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="119.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="85.0" x2="50.0" y2="85.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="89.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="85.0" x2="180.0" y2="85.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="55.0" x2="50.0" y2="55.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="59.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="55.0" x2="180.0" y2="55.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">12</text><line x1="50.0" y1="25.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="50.0" y1="115.0" x2="180.0" y2="25.0" stroke="#0d9488" stroke-width="2.5"/><circle cx="71.7" cy="100.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="93.3" cy="85.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="115.0" cy="70.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="136.7" cy="55.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="158.3" cy="40.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/></svg>
+        </div>
+        <div class="card text-center">
+            <p class="text-xs font-semibold text-red-700 mb-1">$r\approx-1$ (forte, négative)</p>
+            <svg viewBox="0 0 200 160" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">0</text><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="93.3" y1="115.0" x2="93.3" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="93.3" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">2</text><line x1="93.3" y1="115.0" x2="93.3" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="136.7" y1="115.0" x2="136.7" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="136.7" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">4</text><line x1="136.7" y1="115.0" x2="136.7" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="180.0" y1="115.0" x2="180.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="180.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">6</text><line x1="180.0" y1="115.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="115.0" x2="50.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="119.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="85.0" x2="50.0" y2="85.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="89.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="85.0" x2="180.0" y2="85.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="55.0" x2="50.0" y2="55.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="59.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="55.0" x2="180.0" y2="55.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">12</text><line x1="50.0" y1="25.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="50.0" y1="25.0" x2="180.0" y2="115.0" stroke="#0d9488" stroke-width="2.5"/><circle cx="71.7" cy="40.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="93.3" cy="55.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="115.0" cy="70.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="136.7" cy="85.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="158.3" cy="100.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/></svg>
+        </div>
+        <div class="card text-center">
+            <p class="text-xs font-semibold text-stone-600 mb-1">$r\approx0$ (aucune dépendance linéaire)</p>
+            <svg viewBox="0 0 200 160" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="115.0" x2="50.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">0</text><line x1="50.0" y1="115.0" x2="50.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="93.3" y1="115.0" x2="93.3" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="93.3" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">2</text><line x1="93.3" y1="115.0" x2="93.3" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="136.7" y1="115.0" x2="136.7" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="136.7" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">4</text><line x1="136.7" y1="115.0" x2="136.7" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="180.0" y1="115.0" x2="180.0" y2="120.0" stroke="#57534e" stroke-width="1.5"/><text x="180.0" y="133.0" font-size="10.5" fill="#57534e" text-anchor="middle">6</text><line x1="180.0" y1="115.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="115.0" x2="50.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="119.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="115.0" x2="180.0" y2="115.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="97.0" x2="50.0" y2="97.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="101.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="97.0" x2="180.0" y2="97.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="79.0" x2="50.0" y2="79.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="83.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="79.0" x2="180.0" y2="79.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="61.0" x2="50.0" y2="61.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="65.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="61.0" x2="180.0" y2="61.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="43.0" x2="50.0" y2="43.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="47.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="43.0" x2="180.0" y2="43.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">10</text><line x1="50.0" y1="25.0" x2="180.0" y2="25.0" stroke="rgba(87,83,78,0.08)" stroke-width="1"/><circle cx="71.7" cy="70.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="93.3" cy="97.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="115.0" cy="43.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="136.7" cy="88.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="158.3" cy="61.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="71.7" cy="43.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="115.0" cy="97.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="158.3" cy="70.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="93.3" cy="52.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/><circle cx="136.7" cy="88.0" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1"/></svg>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Suite de l'exemple (température et ventes de glaces) :</b></p>
+        <p class="text-sm">$\bar x=24$, $\bar y=67{,}7$. Le calcul donne $r\approx0{,}998$ — il s'agit d'une dépendance linéaire positive très forte.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention :</b> Corrélation ne veut pas dire causalité ! Un coefficient de corrélation élevé entre deux caractères ne signifie pas que l'un cause l'autre — les deux peuvent être influencés par un troisième facteur, non enregistré.
+    </div>
+</section>
+
+<section id="sec-regrese" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Régression linéaire</h2>
+    <p>Si une forte dépendance linéaire existe entre deux caractères, on peut ajuster à ce nuage de points une droite qui représente au mieux la tendance des données — la <b>droite de régression</b> :</p>
+    <div class="card text-center">
+        $$y=\frac{s_{xy}}{s_x^2}(x-\bar x)+\bar y$$
+    </div>
+    <p class="text-sm">où $s_{xy}=\frac{1}{n}\sum(x_i-\bar x)(y_i-\bar y)$ est la covariance et $s_x^2$ la variance du caractère $x$.</p>
+    <div class="card">
+        <p class="mb-2"><b>Suite de l'exemple :</b> pour la température et les ventes de glaces, la droite de régression est environ $y\approx4{,}59x-42{,}53$.</p>
+        <p class="slider-label mb-2">🔄 À toi d'essayer : prédis les ventes selon la température</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-teplota-fr" min="15" max="32" value="25" class="flex-grow">
+            <span class="font-mono text-sm w-24 text-right"><span id="teplota-val-fr">25</span> °C</span>
+        </div>
+        <p class="text-sm">Ventes prédites : <b><span id="prodej-pred-fr">72</span> unités</b></p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention :</b> La droite de régression n'a de sens que dans la plage des valeurs mesurées (ici environ $18$–$30$ °C). Une prédiction en dehors de cette plage (dite extrapolation) peut être totalement peu fiable — la relation en dehors de l'intervalle observé peut ne plus être linéaire.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Caractéristique</th><th class="p-1 text-left">Ce qu'elle exprime</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">étendue $R$</td><td class="p-1 text-left">différence entre valeur max et min</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">écart absolu $d_j$</td><td class="p-1 text-left">distance d'une valeur à la moyenne</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">écart relatif $r$</td><td class="p-1 text-left">écart exprimé en % de la moyenne</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">variance $s^2$, écart-type $s_x$</td><td class="p-1 text-left">mesures de variabilité les plus utilisées pour toute la population</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">coefficient de variation $v_x$</td><td class="p-1 text-left">comparaison de la variabilité de populations aux unités différentes</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">coefficient de corrélation $r$</td><td class="p-1 text-left">force et sens de la dépendance linéaire entre deux caractères</td></tr>
+                <tr><td class="p-1 text-left">régression linéaire</td><td class="p-1 text-left">droite représentant la tendance de données bivariées</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-link">
+        <b>Lien :</b> Ce chapitre conclut la série Statistique 1–3. Les caractéristiques de position (moyennes, mode, médiane) indiquent « où » se situe la population ; les caractéristiques de variabilité indiquent « à quel point » les valeurs diffèrent entre elles — et ensemble, elles donnent une image bien plus complète des données que chaque type de caractéristique pris séparément.
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+    document.getElementById('page-title').textContent = czVisible ? 'Statistique 3 — Caractéristiques de variabilité' : 'Statistika 3 — Charakteristiky variability';
+    document.title = czVisible ? 'Statistique 3 — Caractéristiques de variabilité — Théorie' : 'Statistika 3 — Charakteristiky variability — Teorie';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+function fmtNum(x){
+    const r = Math.round(x*100)/100;
+    return r.toString().replace('.', ',');
+}
+
+// ---- Interaktivni demo: absolutni a relativni odchylka ----
+const DEV_DATA = [2,4,4,4,5,5,7,9];
+const DEV_MEAN = 5;
+function updateDeviation(suffix){
+    suffix = suffix || '';
+    const idx = parseInt(document.getElementById('slider-index'+suffix).value);
+    const xval = DEV_DATA[idx];
+    const d = Math.abs(xval - DEV_MEAN);
+    const r = d / Math.abs(DEV_MEAN) * 100;
+    document.getElementById('index-xval'+suffix).textContent = xval;
+    const dEl = document.getElementById('index-d'+suffix);
+    const rEl = document.getElementById('index-r'+suffix);
+    dEl.textContent = '$d_j=' + fmtNum(d) + '$';
+    rEl.textContent = '$r=' + fmtNum(r) + '\\%$';
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([dEl, rEl]);
+}
+
+// ---- Interaktivni demo: predikce linearni regrese ----
+const REG_A = 4.5929, REG_B = -42.5286;
+function updateRegression(suffix){
+    suffix = suffix || '';
+    const t = parseFloat(document.getElementById('slider-teplota'+suffix).value);
+    document.getElementById('teplota-val'+suffix).textContent = t;
+    const pred = Math.round(REG_A*t + REG_B);
+    document.getElementById('prodej-pred'+suffix).textContent = pred;
+}
+
+updateDeviation('');
+updateDeviation('-fr');
+updateRegression('');
+updateRegression('-fr');
+
+document.getElementById('slider-index').addEventListener('input', () => updateDeviation(''));
+document.getElementById('slider-index-fr').addEventListener('input', () => updateDeviation('-fr'));
+document.getElementById('slider-teplota').addEventListener('input', () => updateRegression(''));
+document.getElementById('slider-teplota-fr').addEventListener('input', () => updateRegression('-fr'));
+</script>
+
+</body>
+</html>

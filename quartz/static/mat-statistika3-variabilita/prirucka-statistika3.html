@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistika 3 — Charakteristiky variability — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-statistika3.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Statistika 3 — Charakteristiky variability · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Statistika 3 — Charakteristiky variability</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Variační rozpětí</h2>
+<p class="mb-3">Variační rozpětí $R=x_{max}-x_{min}$ je rozdíl mezi největší a nejmenší hodnotou souboru.</p>
+<p class="mb-3"><b>Příklad:</b> počet hovorů $2,4,4,4,5,5,7,9$ → $R=9-2=7$.</p>
+<div class="warn-box mb-3">
+    <p>Variační rozpětí závisí jen na dvou krajních hodnotách — jediná odlehlá hodnota ho může výrazně zkreslit.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Absolutní odchylka</h2>
+<p class="mb-3">Absolutní odchylka $d_j=|x_j-\bar x|$ je vzdálenost hodnoty $x_j$ od aritmetického průměru.</p>
+<p class="mb-3"><b>Příklad</b> (data $2,4,4,4,5,5,7,9$, $\bar x=5$): odchylky jsou $3,1,1,1,0,0,2,4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Relativní odchylka</h2>
+<p class="mb-3">Relativní odchylka $r=\dfrac{d_j}{|\bar x|}\cdot100\%$ vyjadřuje odchylku jako procento z průměru.</p>
+<p class="mb-3"><b>Příklad:</b> pro $x_j=9$: $d_j=4$, $r=\frac{4}{5}\cdot100\%=80\%$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Průměrná absolutní odchylka</h2>
+<p class="mb-3">$\bar d=\dfrac{1}{n}\sum_{j=1}^n|x_j-\bar x|$ shrnuje variabilitu celého souboru jedním číslem.</p>
+<p class="mb-3"><b>Příklad:</b> $\bar d=\frac{3+1+1+1+0+0+2+4}{8}=1{,}5$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Rozptyl a směrodatná odchylka</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Rozptyl: $s^2=\dfrac{1}{n}\sum_{j=1}^n(x_j-\bar x)^2$</li>
+        <li>Směrodatná odchylka: $s_x=\sqrt{s^2}$ (vrací hodnotu do původních jednotek)</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> odchylky na druhou $9,1,1,1,0,0,4,16$ → $s^2=\frac{32}{8}=4$, $s_x=\sqrt4=2$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Variační koeficient</h2>
+<p class="mb-3">$v_x=\dfrac{s_x}{|\bar x|}\cdot100\%$ umožňuje srovnat variabilitu souborů s různými jednotkami nebo řády.</p>
+<p class="mb-3"><b>Příklad:</b> hmotnost balíčků ($\bar x=100$ g, $s_x\approx3{,}41$, $v_x\approx3{,}4\%$) vs. cena balíčků ($\bar x=48{,}6$ Kč, $s_x\approx7{,}31$, $v_x\approx15{,}0\%$) — cena je relativně variabilnější.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Dvourozměrná data a bodový graf</h2>
+<p class="mb-3">Soubor se dvěma znaky $(x_i;y_i)$ znázorňujeme bodovým grafem (scatter plotem) — první znak na osu $x$, druhý na osu $y$.</p>
+<p class="mb-3"><b>Příklad:</b> teplota (°C) a prodej zmrzliny (ks) v 10 dnech — body zřetelně stoupají zleva doprava.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Korelační koeficient</h2>
+<p class="mb-3">$r=\dfrac{\sum(x_i-\bar x)(y_i-\bar y)}{\sqrt{\sum(x_i-\bar x)^2\cdot\sum(y_i-\bar y)^2}}$, vždy $-1\leq r\leq1$. Znaménko určuje směr, absolutní hodnota sílu závislosti.</p>
+<p class="mb-3"><b>Příklad:</b> teplota a prodej zmrzliny → $r\approx0{,}998$ (velmi silná pozitivní závislost).</p>
+<div class="warn-box mb-3">
+    <p>Korelace neznamená příčinnou souvislost — vysoký korelační koeficient neznamená, že jeden znak způsobuje druhý.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Lineární regrese</h2>
+<p class="mb-3">Regresní přímka $y=\dfrac{s_{xy}}{s_x^2}(x-\bar x)+\bar y$, kde $s_{xy}$ je kovariance a $s_x^2$ rozptyl znaku $x$.</p>
+<p class="mb-3"><b>Příklad:</b> pro teplotu a prodej zmrzliny vyjde přibližně $y\approx4{,}59x-42{,}53$.</p>
+<div class="warn-box mb-3">
+    <p>Regresní přímku má smysl používat jen v rozsahu naměřených hodnot — predikce mimo tento rozsah (extrapolace) může být zcela nespolehlivá.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Charakteristika</th>
+            <th class="text-left py-1">Co vyjadřuje</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">variační rozpětí $R$</td><td class="py-1">rozdíl max a min hodnoty</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">absolutní/relativní odchylka</td><td class="py-1">vzdálenost hodnoty od průměru (absolutně/v %)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">rozptyl $s^2$, směrodatná odchylka $s_x$</td><td class="py-1">nejpoužívanější míry variability</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">variační koeficient $v_x$</td><td class="py-1">srovnání variability různých jednotek</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">korelační koeficient $r$</td><td class="py-1">síla a směr lineární závislosti</td></tr>
+        <tr><td class="py-1 pr-2">lineární regrese</td><td class="py-1">přímka vystihující trend dvourozměrných dat</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Statistique 3 — Caractéristiques de variabilité</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Étendue</h2>
+<p class="mb-3">L'étendue $R=x_{max}-x_{min}$ est la différence entre la plus grande et la plus petite valeur de la population.</p>
+<p class="mb-3"><b>Exemple :</b> nombre d'appels $2,4,4,4,5,5,7,9$ → $R=9-2=7$.</p>
+<div class="warn-box mb-3">
+    <p>L'étendue ne dépend que des deux valeurs extrêmes — une seule valeur aberrante peut la déformer fortement.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Écart absolu</h2>
+<p class="mb-3">L'écart absolu $d_j=|x_j-\bar x|$ est la distance de la valeur $x_j$ à la moyenne arithmétique.</p>
+<p class="mb-3"><b>Exemple</b> (données $2,4,4,4,5,5,7,9$, $\bar x=5$) : les écarts sont $3,1,1,1,0,0,2,4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Écart relatif</h2>
+<p class="mb-3">L'écart relatif $r=\dfrac{d_j}{|\bar x|}\cdot100\%$ exprime l'écart en pourcentage de la moyenne.</p>
+<p class="mb-3"><b>Exemple :</b> pour $x_j=9$ : $d_j=4$, $r=\frac{4}{5}\cdot100\%=80\%$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Écart absolu moyen</h2>
+<p class="mb-3">$\bar d=\dfrac{1}{n}\sum_{j=1}^n|x_j-\bar x|$ résume la variabilité de toute la population par un seul nombre.</p>
+<p class="mb-3"><b>Exemple :</b> $\bar d=\frac{3+1+1+1+0+0+2+4}{8}=1{,}5$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Variance et écart-type</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Variance : $s^2=\dfrac{1}{n}\sum_{j=1}^n(x_j-\bar x)^2$</li>
+        <li>Écart-type : $s_x=\sqrt{s^2}$ (ramène la valeur aux unités d'origine)</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> écarts au carré $9,1,1,1,0,0,4,16$ → $s^2=\frac{32}{8}=4$, $s_x=\sqrt4=2$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Coefficient de variation</h2>
+<p class="mb-3">$v_x=\dfrac{s_x}{|\bar x|}\cdot100\%$ permet de comparer la variabilité de populations aux unités ou ordres de grandeur différents.</p>
+<p class="mb-3"><b>Exemple :</b> poids de colis ($\bar x=100$ g, $s_x\approx3{,}41$, $v_x\approx3{,}4\%$) contre prix de colis ($\bar x=48{,}6$ Kč, $s_x\approx7{,}31$, $v_x\approx15{,}0\%$) — le prix est relativement plus variable.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Données bivariées et nuage de points</h2>
+<p class="mb-3">Une population à deux caractères $(x_i;y_i)$ se représente par un nuage de points — le premier caractère sur l'axe $x$, le second sur l'axe $y$.</p>
+<p class="mb-3"><b>Exemple :</b> température (°C) et ventes de glaces (unités) sur 10 jours — les points montent clairement de gauche à droite.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Coefficient de corrélation</h2>
+<p class="mb-3">$r=\dfrac{\sum(x_i-\bar x)(y_i-\bar y)}{\sqrt{\sum(x_i-\bar x)^2\cdot\sum(y_i-\bar y)^2}}$, toujours $-1\leq r\leq1$. Le signe indique le sens, la valeur absolue la force de la dépendance.</p>
+<p class="mb-3"><b>Exemple :</b> température et ventes de glaces → $r\approx0{,}998$ (dépendance positive très forte).</p>
+<div class="warn-box mb-3">
+    <p>Corrélation ne veut pas dire causalité — un coefficient de corrélation élevé ne signifie pas qu'un caractère cause l'autre.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Régression linéaire</h2>
+<p class="mb-3">Droite de régression $y=\dfrac{s_{xy}}{s_x^2}(x-\bar x)+\bar y$, où $s_{xy}$ est la covariance et $s_x^2$ la variance du caractère $x$.</p>
+<p class="mb-3"><b>Exemple :</b> pour la température et les ventes de glaces, environ $y\approx4{,}59x-42{,}53$.</p>
+<div class="warn-box mb-3">
+    <p>La droite de régression n'a de sens que dans la plage des valeurs mesurées — une prédiction en dehors (extrapolation) peut être peu fiable.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Caractéristique</th>
+            <th class="text-left py-1">Ce qu'elle exprime</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">étendue $R$</td><td class="py-1">différence entre valeur max et min</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">écart absolu/relatif</td><td class="py-1">distance d'une valeur à la moyenne (absolue/en %)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">variance $s^2$, écart-type $s_x$</td><td class="py-1">mesures de variabilité les plus utilisées</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">coefficient de variation $v_x$</td><td class="py-1">comparaison de variabilité entre unités différentes</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">coefficient de corrélation $r$</td><td class="py-1">force et sens de la dépendance linéaire</td></tr>
+        <tr><td class="py-1 pr-2">régression linéaire</td><td class="py-1">droite représentant la tendance de données bivariées</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Statistique 3 — Caractéristiques de variabilité · Manuel' : 'Statistika 3 — Charakteristiky variability · Příručka';
+    document.title = czVisible ? 'Statistique 3 — Caractéristiques de variabilité — Manuel' : 'Statistika 3 — Charakteristiky variability — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Statistika 3 — Charakteristiky variability / Statistique 3 — Caractéristiques de variabilité</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-statistika3.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Statistika 3</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Statistique 3 — Caractéristiques de variabilité
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        { "q": "Co je variační rozpětí $R$?", "a": "rozdíl mezi největší a nejmenší hodnotou souboru" },
+        { "q": "Jaký je vzorec pro variační rozpětí?", "a": "$R=x_{max}-x_{min}$" },
+        { "q": "Data: $2,4,4,4,5,5,7,9$. Jaké je variační rozpětí?", "a": "$R=9-2=7$" },
+        { "q": "Proč je variační rozpětí citlivé na odlehlé hodnoty?", "a": "protože závisí jen na dvou krajních hodnotách souboru" },
+        { "q": "Co je absolutní odchylka $d_j$?", "a": "vzdálenost hodnoty $x_j$ od aritmetického průměru" },
+        { "q": "Jaký je vzorec pro absolutní odchylku?", "a": "$d_j=|x_j-\\bar x|$" },
+        { "q": "Data $2,4,4,4,5,5,7,9$ mají průměr $5$. Jaká je absolutní odchylka hodnoty $9$?", "a": "$d=|9-5|=4$" },
+        { "q": "Co vyjadřuje relativní odchylka $r$?", "a": "absolutní odchylku jako procento z průměru" },
+        { "q": "Jaký je vzorec pro relativní odchylku?", "a": "$r=\\frac{d_j}{|\\bar x|}\\cdot100\\%$" },
+        { "q": "Hodnota $9$ má při průměru $5$ absolutní odchylku $4$. Jaká je relativní odchylka?", "a": "$r=\\frac{4}{5}\\cdot100\\%=80\\%$" },
+        { "q": "Co je průměrná absolutní odchylka $\\bar d$?", "a": "aritmetický průměr všech absolutních odchylek souboru" },
+        { "q": "Jaký je vzorec pro průměrnou absolutní odchylku?", "a": "$\\bar d=\\frac{1}{n}\\sum_{j=1}^n|x_j-\\bar x|$" },
+        { "q": "Odchylky souboru jsou $3,1,1,1,0,0,2,4$. Jaká je průměrná absolutní odchylka?", "a": "$\\bar d=\\frac{12}{8}=1{,}5$" },
+        { "q": "Co je rozptyl $s^2$?", "a": "aritmetický průměr druhých mocnin odchylek od průměru" },
+        { "q": "Jaký je vzorec pro rozptyl?", "a": "$s^2=\\frac{1}{n}\\sum_{j=1}^n(x_j-\\bar x)^2$" },
+        { "q": "Proč se u rozptylu odchylky umocňují na druhou?", "a": "aby se kladné a záporné odchylky navzájem nevyrušily" },
+        { "q": "Co je směrodatná odchylka $s_x$?", "a": "odmocnina z rozptylu, $s_x=\\sqrt{s^2}$" },
+        { "q": "Proč se používá směrodatná odchylka místo samotného rozptylu?", "a": "protože vrací hodnotu zpět do původních jednotek znaku" },
+        { "q": "Odchylky na druhou jsou $9,1,1,1,0,0,4,16$. Jaký je rozptyl?", "a": "$s^2=\\frac{32}{8}=4$" },
+        { "q": "Rozptyl souboru je $4$. Jaká je směrodatná odchylka?", "a": "$s_x=\\sqrt4=2$" },
+        { "q": "Co umožňuje srovnat variační koeficient $v_x$?", "a": "variabilitu souborů s různými jednotkami nebo řády hodnot" },
+        { "q": "Jaký je vzorec pro variační koeficient?", "a": "$v_x=\\frac{s_x}{|\\bar x|}\\cdot100\\%$" },
+        { "q": "Hmotnost balíčků má $\\bar x=100$ g, $s_x=3{,}41$. Jaký je variační koeficient?", "a": "$v_x\\approx3{,}4\\%$" },
+        { "q": "Proč nelze přímo srovnávat směrodatnou odchylku hmotnosti (g) a ceny (Kč)?", "a": "protože mají různé jednotky — je potřeba variační koeficient" },
+        { "q": "Co je statistický soubor se dvěma znaky?", "a": "soubor, kde má každá jednotka dvojici hodnot $(x_i;y_i)$" },
+        { "q": "Jak se nazývá graf znázorňující dvojice hodnot $(x_i;y_i)$?", "a": "bodový graf (scatter plot)" },
+        { "q": "Co znázorňuje bodový graf na osách?", "a": "první znak na ose $x$, druhý znak na ose $y$" },
+        { "q": "Co vyjadřuje korelační koeficient $r$?", "a": "sílu a směr lineární závislosti mezi dvěma znaky" },
+        { "q": "V jakém rozsahu se pohybuje korelační koeficient $r$?", "a": "$-1\\leq r\\leq1$" },
+        { "q": "Co znamená znaménko korelačního koeficientu?", "a": "směr závislosti (kladné = rostoucí, záporné = klesající)" },
+        { "q": "Co znamená absolutní hodnota korelačního koeficientu?", "a": "sílu lineární závislosti" },
+        { "q": "Jaká je hodnota $r$ při dokonalé pozitivní lineární závislosti?", "a": "$r=1$" },
+        { "q": "Jaká je hodnota $r$ při dokonalé negativní lineární závislosti?", "a": "$r=-1$" },
+        { "q": "Co znamená $r\\approx0$?", "a": "mezi znaky neexistuje žádná lineární závislost" },
+        { "q": "Teplota a prodej zmrzliny mají $r\\approx0{,}998$. Jak silná je tato závislost?", "a": "velmi silná pozitivní lineární závislost" },
+        { "q": "Znamená vysoký korelační koeficient, že jeden znak způsobuje druhý?", "a": "ne, korelace neznamená příčinnou souvislost" },
+        { "q": "Co je regresní přímka?", "a": "přímka, která nejlépe vystihuje trend dvourozměrných dat" },
+        { "q": "Jaký je vzorec pro regresní přímku?", "a": "$y=\\frac{s_{xy}}{s_x^2}(x-\\bar x)+\\bar y$" },
+        { "q": "Co je $s_{xy}$ ve vzorci pro regresní přímku?", "a": "kovariance znaků $x$ a $y$" },
+        { "q": "Proč je nebezpečné používat regresní přímku mimo rozsah naměřených hodnot?", "a": "protože jde o extrapolaci, kde vztah nemusí zůstat lineární" },
+        { "q": "Pro data teploty a prodeje zmrzliny vyšla regresní přímka $y\\approx4{,}59x-42{,}53$. Jaký je odhad prodeje při teplotě $30$ °C?", "a": "přibližně $95$ ks" },
+        { "q": "Co říkají charakteristiky polohy o statistickém souboru?", "a": "kde se soubor přibližně nachází (jaká je jeho typická hodnota)" },
+        { "q": "Co říkají charakteristiky variability o statistickém souboru?", "a": "jak moc se jednotlivé hodnoty souboru od sebe liší" },
+        { "q": "Mohou mít dva soubory stejný průměr, ale velmi odlišnou variabilitu?", "a": "ano — proto jsou charakteristiky variability důležitým doplňkem k charakteristikám polohy" },
+        { "q": "Data $2,4,4,4,5,5,7,9$: jaká je hodnota s nejmenší absolutní odchylkou od průměru?", "a": "$5$ (odchylka $0$)" },
+        { "q": "Jaký typ grafu použijeme k vizuálnímu odhadu síly korelace před výpočtem $r$?", "a": "bodový graf (scatter plot)" },
+        { "q": "Co znamená, když body v bodovém grafu tvoří stoupající shluk zleva doprava?", "a": "pozitivní (kladnou) korelaci mezi znaky" },
+        { "q": "Co znamená, když body v bodovém grafu tvoří klesající shluk zleva doprava?", "a": "negativní (zápornou) korelaci mezi znaky" },
+        { "q": "Co znamená, když jsou body v bodovém grafu rozptýlené bez zjevného trendu?", "a": "korelační koeficient blízký nule, žádná lineární závislost" },
+        { "q": "Které tři charakteristiky patří mezi nejpoužívanější míry variability jednorozměrného souboru?", "a": "rozptyl, směrodatná odchylka a variační koeficient" }
+    ],
+    "fr": [
+        { "q": "Qu'est-ce que l'étendue $R$ ?", "a": "la différence entre la plus grande et la plus petite valeur de la population" },
+        { "q": "Quelle est la formule de l'étendue ?", "a": "$R=x_{max}-x_{min}$" },
+        { "q": "Données : $2,4,4,4,5,5,7,9$. Quelle est l'étendue ?", "a": "$R=9-2=7$" },
+        { "q": "Pourquoi l'étendue est-elle sensible aux valeurs aberrantes ?", "a": "parce qu'elle ne dépend que des deux valeurs extrêmes de la population" },
+        { "q": "Qu'est-ce que l'écart absolu $d_j$ ?", "a": "la distance de la valeur $x_j$ à la moyenne arithmétique" },
+        { "q": "Quelle est la formule de l'écart absolu ?", "a": "$d_j=|x_j-\\bar x|$" },
+        { "q": "Les données $2,4,4,4,5,5,7,9$ ont une moyenne de $5$. Quel est l'écart absolu de la valeur $9$ ?", "a": "$d=|9-5|=4$" },
+        { "q": "Que exprime l'écart relatif $r$ ?", "a": "l'écart absolu en pourcentage de la moyenne" },
+        { "q": "Quelle est la formule de l'écart relatif ?", "a": "$r=\\frac{d_j}{|\\bar x|}\\cdot100\\%$" },
+        { "q": "La valeur $9$ a un écart absolu de $4$ pour une moyenne de $5$. Quel est l'écart relatif ?", "a": "$r=\\frac{4}{5}\\cdot100\\%=80\\%$" },
+        { "q": "Qu'est-ce que l'écart absolu moyen $\\bar d$ ?", "a": "la moyenne arithmétique de tous les écarts absolus de la population" },
+        { "q": "Quelle est la formule de l'écart absolu moyen ?", "a": "$\\bar d=\\frac{1}{n}\\sum_{j=1}^n|x_j-\\bar x|$" },
+        { "q": "Les écarts d'une population sont $3,1,1,1,0,0,2,4$. Quel est l'écart absolu moyen ?", "a": "$\\bar d=\\frac{12}{8}=1{,}5$" },
+        { "q": "Qu'est-ce que la variance $s^2$ ?", "a": "la moyenne arithmétique des carrés des écarts à la moyenne" },
+        { "q": "Quelle est la formule de la variance ?", "a": "$s^2=\\frac{1}{n}\\sum_{j=1}^n(x_j-\\bar x)^2$" },
+        { "q": "Pourquoi élève-t-on les écarts au carré dans la variance ?", "a": "pour que les écarts positifs et négatifs ne s'annulent pas entre eux" },
+        { "q": "Qu'est-ce que l'écart-type $s_x$ ?", "a": "la racine carrée de la variance, $s_x=\\sqrt{s^2}$" },
+        { "q": "Pourquoi utilise-t-on l'écart-type plutôt que la variance seule ?", "a": "parce qu'il ramène la valeur aux unités d'origine du caractère" },
+        { "q": "Les écarts au carré sont $9,1,1,1,0,0,4,16$. Quelle est la variance ?", "a": "$s^2=\\frac{32}{8}=4$" },
+        { "q": "La variance d'une population est $4$. Quel est l'écart-type ?", "a": "$s_x=\\sqrt4=2$" },
+        { "q": "Que permet de comparer le coefficient de variation $v_x$ ?", "a": "la variabilité de populations aux unités ou ordres de grandeur différents" },
+        { "q": "Quelle est la formule du coefficient de variation ?", "a": "$v_x=\\frac{s_x}{|\\bar x|}\\cdot100\\%$" },
+        { "q": "Le poids de colis a $\\bar x=100$ g, $s_x=3{,}41$. Quel est le coefficient de variation ?", "a": "$v_x\\approx3{,}4\\%$" },
+        { "q": "Pourquoi ne peut-on pas comparer directement l'écart-type du poids (g) et du prix (Kč) ?", "a": "parce qu'ils ont des unités différentes — il faut le coefficient de variation" },
+        { "q": "Qu'est-ce qu'une population statistique à deux caractères ?", "a": "une population où chaque unité a un couple de valeurs $(x_i;y_i)$" },
+        { "q": "Comment appelle-t-on le graphique représentant les couples $(x_i;y_i)$ ?", "a": "un nuage de points (scatter plot)" },
+        { "q": "Que représente un nuage de points sur les axes ?", "a": "le premier caractère sur l'axe $x$, le second sur l'axe $y$" },
+        { "q": "Que exprime le coefficient de corrélation $r$ ?", "a": "la force et le sens de la dépendance linéaire entre deux caractères" },
+        { "q": "Dans quel intervalle se situe le coefficient de corrélation $r$ ?", "a": "$-1\\leq r\\leq1$" },
+        { "q": "Que signifie le signe du coefficient de corrélation ?", "a": "le sens de la dépendance (positif = croissante, négatif = décroissante)" },
+        { "q": "Que signifie la valeur absolue du coefficient de corrélation ?", "a": "la force de la dépendance linéaire" },
+        { "q": "Quelle est la valeur de $r$ pour une dépendance linéaire positive parfaite ?", "a": "$r=1$" },
+        { "q": "Quelle est la valeur de $r$ pour une dépendance linéaire négative parfaite ?", "a": "$r=-1$" },
+        { "q": "Que signifie $r\\approx0$ ?", "a": "il n'existe aucune dépendance linéaire entre les caractères" },
+        { "q": "La température et les ventes de glaces ont $r\\approx0{,}998$. Quelle est la force de cette dépendance ?", "a": "une dépendance linéaire positive très forte" },
+        { "q": "Un coefficient de corrélation élevé signifie-t-il qu'un caractère cause l'autre ?", "a": "non, corrélation ne veut pas dire causalité" },
+        { "q": "Qu'est-ce que la droite de régression ?", "a": "la droite qui représente le mieux la tendance de données bivariées" },
+        { "q": "Quelle est la formule de la droite de régression ?", "a": "$y=\\frac{s_{xy}}{s_x^2}(x-\\bar x)+\\bar y$" },
+        { "q": "Qu'est-ce que $s_{xy}$ dans la formule de la droite de régression ?", "a": "la covariance des caractères $x$ et $y$" },
+        { "q": "Pourquoi est-il risqué d'utiliser la droite de régression en dehors des valeurs mesurées ?", "a": "il s'agit d'une extrapolation, où la relation peut ne plus être linéaire" },
+        { "q": "Pour la température et les ventes de glaces, la droite de régression est $y\\approx4{,}59x-42{,}53$. Quelle est l'estimation des ventes à $30$ °C ?", "a": "environ $95$ unités" },
+        { "q": "Que indiquent les caractéristiques de position sur une population statistique ?", "a": "où se situe approximativement la population (sa valeur typique)" },
+        { "q": "Que indiquent les caractéristiques de variabilité sur une population statistique ?", "a": "à quel point les valeurs de la population diffèrent entre elles" },
+        { "q": "Deux populations peuvent-elles avoir la même moyenne mais une variabilité très différente ?", "a": "oui — c'est pourquoi les caractéristiques de variabilité complètent utilement celles de position" },
+        { "q": "Données $2,4,4,4,5,5,7,9$ : quelle valeur a l'écart absolu le plus petit par rapport à la moyenne ?", "a": "$5$ (écart $0$)" },
+        { "q": "Quel type de graphique utilise-t-on pour estimer visuellement la force de la corrélation avant de calculer $r$ ?", "a": "un nuage de points (scatter plot)" },
+        { "q": "Que signifie un nuage de points croissant de gauche à droite ?", "a": "une corrélation positive entre les caractères" },
+        { "q": "Que signifie un nuage de points décroissant de gauche à droite ?", "a": "une corrélation négative entre les caractères" },
+        { "q": "Que signifie un nuage de points dispersé sans tendance apparente ?", "a": "un coefficient de corrélation proche de zéro, aucune dépendance linéaire" },
+        { "q": "Quelles trois caractéristiques comptent parmi les mesures de variabilité les plus utilisées pour une population à un caractère ?", "a": "la variance, l'écart-type et le coefficient de variation" }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>
