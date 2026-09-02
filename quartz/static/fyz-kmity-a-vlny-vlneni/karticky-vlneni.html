@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Mechanické vlnění a zvuk / Ondes mécaniques et son</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col font-sans">
+
+    <header class="bg-blue-800 text-white p-6 shadow-md text-center">
+        <h1 class="text-2xl font-bold">Flashcards: Mechanické vlnění a zvuk</h1>
+        <p class="text-blue-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-blue-700 text-blue-700 font-bold hover:bg-blue-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-blue-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Co je mechanické vlnění?</p>
+                </div>
+                <div class="card-face card-back bg-blue-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text">Děj, při němž se rozruch (kmitání) šíří pružným prostředím z místa na místo.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 40</p>
+            <button id="shuffle" class="text-blue-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © Guide d'étude interactif - Fyzika / Physique
+    </footer>
+
+    <script>
+        // ========== DATA ==========
+        const N_CARDS = 40;
+        const rawData = {
+            cs: [
+                { q: "Co je mechanické vlnění?", a: "Děj, při němž se rozruch (kmitání) šíří pružným prostředím z místa na místo; přenáší se energie a hybnost, nikoli částice prostředí." },
+                { q: "Jaké jsou podmínky vzniku mechanického vlnění?", a: "Zdroj kmitů a pružné prostředí, jehož částice jsou vzájemně vázány pružnými silami." },
+                { q: "Může se mechanické vlnění šířit vakuem?", a: "Ne — na rozdíl od elektromagnetického vlnění vyžaduje látkové prostředí (pevné, kapalné nebo plynné)." },
+                { q: "Co je příčné vlnění?", a: "Vlnění, při němž částice kmitají kolmo na směr šíření (např. vlny na struně)." },
+                { q: "Co je podélné vlnění?", a: "Vlnění, při němž částice kmitají ve směru šíření (např. zvuk, podélné vlny v pružině)." },
+                { q: "V jakých prostředích se šíří příčné mechanické vlnění?", a: "Jen v pevných látkách a na volných hladinách kapalin." },
+                { q: "V jakých prostředích se šíří podélné vlnění?", a: "Ve všech skupenstvích — pevném, kapalném i plynném." },
+                { q: "Co je vlnoplocha?", a: "Množina bodů prostředí, které v daném okamžiku kmitají se stejnou fází." },
+                { q: "Co znázorňuje paprsek?", a: "Směr šíření vlnění, kolmý na vlnoplochu." },
+                { q: "Co je vlnová délka λ?", a: "Vzdálenost, na kterou se vlnění rozšíří za dobu jedné periody T; zároveň vzdálenost dvou nejbližších bodů se stejnou fází." },
+                { q: "Jak souvisí rychlost šíření v, vlnová délka λ a perioda T?", a: "v = λ/T = λf." },
+                { q: "Závisí rychlost šíření vlnění na frekvenci zdroje?", a: "Ne, závisí pouze na vlastnostech prostředí." },
+                { q: "Jak zní rovnice postupného vlnění?", a: "y = y<sub>m</sub>sin[ω(t − x/v)]." },
+                { q: "Co ukazuje graf y(x) pro pevné t?", a: "Prostorovou periodicitu vlnění s periodou λ (vlnovou délkou)." },
+                { q: "Co ukazuje graf y(t) pro pevné x?", a: "Časovou periodicitu vlnění s periodou T." },
+                { q: "Co říká Huygensův princip?", a: "Každý bod vlnoplochy se stává zdrojem nového elementárního (kulového) vlnění; nová vlnoplocha je obálkou všech elementárních vlnění." },
+                { q: "Jak souvisí úhel odrazu a úhel dopadu?", a: "Jsou si rovny (zákon odrazu)." },
+                { q: "Co se stane s fází při odrazu vlnění od pevného konce?", a: "Nastává fázový skok o π — odražená vlna má opačnou výchylku." },
+                { q: "Co se stane s fází při odrazu vlnění od volného konce?", a: "Fáze se nemění." },
+                { q: "Co se zachovává při lomu vlnění?", a: "Frekvence (je dána zdrojem); mění se směr šíření a vlnová délka." },
+                { q: "Kdy nastává výrazný ohyb (difrakce) vlnění za překážkou?", a: "Je-li rozměr překážky (štěrbiny) srovnatelný s vlnovou délkou λ." },
+                { q: "Co říká princip superpozice?", a: "Výsledná výchylka při setkání dvou vlnění je dána součtem výchylek jednotlivých vlnění." },
+                { q: "Co jsou koherentní vlnění?", a: "Vlnění se stejnou frekvencí a stálým (časově neměnným) fázovým rozdílem." },
+                { q: "Jaká je podmínka interferenčního maxima?", a: "Dráhový rozdíl Δ = kλ, k = 0, 1, 2, …" },
+                { q: "Jaká je podmínka interferenčního minima?", a: "Dráhový rozdíl Δ = (2k+1)λ/2, k = 0, 1, 2, …" },
+                { q: "Jak vzniká stojaté vlnění?", a: "Interferencí dvou postupných vlnění stejné amplitudy a frekvence, šířících se opačným směrem týmž prostředím." },
+                { q: "Co je uzel stojatého vlnění?", a: "Bod, který trvale zůstává v klidu — jeho výchylka je stále nulová." },
+                { q: "Co je kmitna stojatého vlnění?", a: "Bod s maximální amplitudou kmitání." },
+                { q: "Jaká je vzdálenost dvou sousedních uzlů stojatého vlnění?", a: "λ/2 (vzdálenost uzlu a sousední kmitny je λ/4)." },
+                { q: "Jak zní vzorec pro vlastní frekvence struny upevněné na obou koncích?", a: "f<sub>n</sub> = n·v/(2l), n = 1, 2, 3, …" },
+                { q: "Co je zvuk?", a: "Mechanické podélné vlnění v látkovém prostředí, které vyvolává v lidském uchu sluchový vjem." },
+                { q: "Jaké je slyšitelné frekvenční pásmo pro člověka?", a: "Přibližně 16 Hz až 20 000 Hz." },
+                { q: "Co je infrazvuk?", a: "Zvuk s frekvencí nižší než 16 Hz — člověk jej neslyší, jen vnímá jako chvění." },
+                { q: "Co je ultrazvuk?", a: "Zvuk s frekvencí vyšší než 20 000 Hz; využívá se v lékařství i technice." },
+                { q: "Čím je určena výška tónu?", a: "Frekvencí zvukového vlnění — vyšší frekvence odpovídá vyššímu tónu." },
+                { q: "Čím je určena barva (témbr) tónu?", a: "Zastoupením vyšších harmonických frekvencí nad základním tónem." },
+                { q: "Jak se počítá hladina intenzity zvuku L?", a: "L = 10 log(I/I₀), jednotka decibel (dB); I₀ = 10⁻¹² W·m⁻²." },
+                { q: "Co je ozvěna (echo)?", a: "Odražený zvuk vnímaný jako samostatný, opakovaný zvuk — při zpoždění větším než přibližně 0,1 s." },
+                { q: "Co je akustická rezonance?", a: "Jev, kdy struna nebo vzduchový sloupec začne souznít s velkou amplitudou se zvukem o frekvenci blízké jejich vlastní frekvenci." },
+                { q: "Co je Dopplerův jev?", a: "Změna pozorované frekvence zvuku vlivem vzájemného pohybu zdroje a pozorovatele." }
+            ],
+            fr: [
+                { q: "Qu'est-ce qu'une onde mécanique ?", a: "Un phénomène par lequel une perturbation (une oscillation) se propage de proche en proche dans un milieu élastique ; ce qui se transmet, c'est l'énergie et la quantité de mouvement, pas les particules du milieu." },
+                { q: "Quelles sont les conditions d'apparition d'une onde mécanique ?", a: "Une source d'oscillations et un milieu élastique dont les particules sont liées entre elles par des forces élastiques." },
+                { q: "Une onde mécanique peut-elle se propager dans le vide ?", a: "Non — contrairement à une onde électromagnétique, elle nécessite un milieu matériel (solide, liquide ou gazeux)." },
+                { q: "Qu'est-ce qu'une onde transversale ?", a: "Une onde dans laquelle les particules oscillent perpendiculairement à la direction de propagation (ex. onde sur une corde)." },
+                { q: "Qu'est-ce qu'une onde longitudinale ?", a: "Une onde dans laquelle les particules oscillent dans la direction de propagation (ex. le son, ondes longitudinales dans un ressort)." },
+                { q: "Dans quels milieux se propage une onde mécanique transversale ?", a: "Seulement dans les solides et à la surface libre des liquides." },
+                { q: "Dans quels milieux se propage une onde longitudinale ?", a: "Dans tous les états de la matière — solide, liquide et gazeux." },
+                { q: "Qu'est-ce qu'une surface d'onde ?", a: "L'ensemble des points du milieu qui, à un instant donné, oscillent avec la même phase." },
+                { q: "Que représente un rayon ?", a: "La direction de propagation de l'onde, perpendiculaire à la surface d'onde." },
+                { q: "Qu'est-ce que la longueur d'onde λ ?", a: "La distance parcourue par l'onde pendant une période T ; c'est aussi la distance entre deux points voisins de même phase." },
+                { q: "Quelle est la relation entre la célérité v, la longueur d'onde λ et la période T ?", a: "v = λ/T = λf." },
+                { q: "La célérité de l'onde dépend-elle de la fréquence de la source ?", a: "Non, elle dépend uniquement des propriétés du milieu." },
+                { q: "Quelle est l'équation de l'onde progressive ?", a: "y = y<sub>m</sub>sin[ω(t − x/v)]." },
+                { q: "Que montre le graphe y(x) à t fixé ?", a: "La périodicité spatiale de l'onde, de période λ (la longueur d'onde)." },
+                { q: "Que montre le graphe y(t) à x fixé ?", a: "La périodicité temporelle de l'onde, de période T." },
+                { q: "Que dit le principe de Huygens ?", a: "Chaque point d'une surface d'onde devient la source d'une nouvelle onde élémentaire (sphérique) ; la nouvelle surface d'onde est l'enveloppe de toutes ces ondes élémentaires." },
+                { q: "Quelle est la relation entre l'angle de réflexion et l'angle d'incidence ?", a: "Ils sont égaux (loi de la réflexion)." },
+                { q: "Que se passe-t-il pour la phase lors d'une réflexion sur une extrémité fixe ?", a: "Il se produit un saut de phase de π — l'onde réfléchie a une élongation opposée." },
+                { q: "Que se passe-t-il pour la phase lors d'une réflexion sur une extrémité libre ?", a: "La phase ne change pas." },
+                { q: "Qu'est-ce qui est conservé lors de la réfraction d'une onde ?", a: "La fréquence (fixée par la source) ; la direction de propagation et la longueur d'onde changent." },
+                { q: "Quand se produit une diffraction marquée derrière un obstacle ?", a: "Lorsque la dimension de l'obstacle (de la fente) est comparable à la longueur d'onde λ." },
+                { q: "Que dit le principe de superposition ?", a: "L'élongation résultante de la rencontre de deux ondes est donnée par la somme des élongations de chaque onde." },
+                { q: "Que sont des ondes cohérentes ?", a: "Des ondes de même fréquence et de différence de phase constante (invariable dans le temps)." },
+                { q: "Quelle est la condition d'un maximum d'interférence ?", a: "Différence de marche Δ = kλ, k = 0, 1, 2, …" },
+                { q: "Quelle est la condition d'un minimum d'interférence ?", a: "Différence de marche Δ = (2k+1)λ/2, k = 0, 1, 2, …" },
+                { q: "Comment naît une onde stationnaire ?", a: "Par l'interférence de deux ondes progressives de même amplitude et de même fréquence, se propageant en sens opposés dans le même milieu." },
+                { q: "Qu'est-ce qu'un nœud d'une onde stationnaire ?", a: "Un point qui reste en permanence immobile — son élongation est toujours nulle." },
+                { q: "Qu'est-ce qu'un ventre d'une onde stationnaire ?", a: "Un point d'amplitude d'oscillation maximale." },
+                { q: "Quelle est la distance entre deux nœuds voisins d'une onde stationnaire ?", a: "λ/2 (la distance entre un nœud et un ventre voisin est λ/4)." },
+                { q: "Quelle est la formule des fréquences propres d'une corde fixée à ses deux extrémités ?", a: "f<sub>n</sub> = n·v/(2l), n = 1, 2, 3, …" },
+                { q: "Qu'est-ce que le son ?", a: "Une onde mécanique longitudinale se propageant dans un milieu matériel, qui provoque une sensation auditive dans l'oreille humaine." },
+                { q: "Quel est le domaine de fréquence audible pour l'homme ?", a: "Environ de 16 Hz à 20 000 Hz." },
+                { q: "Qu'est-ce qu'un infrason ?", a: "Un son de fréquence inférieure à 16 Hz — inaudible pour l'homme, perçu seulement comme une vibration." },
+                { q: "Qu'est-ce qu'un ultrason ?", a: "Un son de fréquence supérieure à 20 000 Hz ; utilisé en médecine et dans l'industrie." },
+                { q: "Qu'est-ce qui détermine la hauteur d'un son ?", a: "La fréquence de l'onde sonore — une fréquence plus élevée correspond à un son plus aigu." },
+                { q: "Qu'est-ce qui détermine le timbre d'un son ?", a: "La proportion des harmoniques supérieures au-dessus du fondamental." },
+                { q: "Comment calcule-t-on le niveau d'intensité sonore L ?", a: "L = 10 log(I/I₀), en décibels (dB) ; I₀ = 10⁻¹² W·m⁻²." },
+                { q: "Qu'est-ce qu'un écho ?", a: "Un son réfléchi perçu comme un son distinct et répété — pour un retard supérieur à environ 0,1 s." },
+                { q: "Qu'est-ce que la résonance acoustique ?", a: "Le phénomène par lequel une corde ou une colonne d'air se met à vibrer avec une grande amplitude sous l'effet d'un son de fréquence proche de sa fréquence propre." },
+                { q: "Qu'est-ce que l'effet Doppler ?", a: "Le changement de la fréquence perçue d'un son dû au déplacement relatif de la source et de l'observateur." }
+            ]
+        };
+
+        // ========== KÓD FLASHCARD ==========
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: N_CARDS}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / ${N_CARDS}`;
+            prevBtn.disabled = currentIndex === 0;
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % N_CARDS;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-blue-700', 'text-blue-700');
+            btnFr.classList.remove('border-blue-700', 'text-blue-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-blue-700', 'text-blue-700');
+            btnCs.classList.remove('border-blue-700', 'text-blue-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

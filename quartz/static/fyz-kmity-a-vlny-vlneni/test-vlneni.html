@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Mechanické vlnění a zvuk (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(', '\\)']] },
+            svg: { fontCache: 'local' },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+    <style>
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container svg { display: inline !important; }
+        mjx-container { display: inline-block !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-blue-700">
+            <h1 class="text-3xl font-bold text-blue-800 mb-4">Fyzikální kvíz: Mechanické vlnění a zvuk</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace fyziky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-blue-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (vlnění, interference, stojaté vlnění, zvuk, rezonance, Dopplerův jev).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-blue-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-blue-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-blue-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-blue-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-blue-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                        <!-- sem se vygeneruje vlastní analýza -->
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TOTAL_QUESTIONS = 10;
+        const N_THEORY = 4;
+        const N_MATH = 6;
+
+        // ======== POMOCNÉ FUNKCE ========
+        function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+        function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function fmt(x) {
+            if (Number.isInteger(x)) return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            if (Math.abs(x) < 1 && x !== 0) {
+                let s = x.toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+                return s;
+            }
+            return x.toFixed(2).replace(/\.?0+$/, '');
+        }
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ======== TEORETICKÉ OTÁZKY ========
+        const theoryPool = [
+            { id: 't1', type: 'concept', cs: { q: "Jak souvisí rychlost šíření vlnění v, vlnová délka λ a perioda T?", a: "\\(v = \\dfrac{\\lambda}{T} = \\lambda f\\)", o: ["\\(v = \\dfrac{\\lambda}{T} = \\lambda f\\)", "\\(v = \\lambda T\\)", "\\(v = \\dfrac{T}{\\lambda}\\)", "\\(v = \\dfrac{f}{\\lambda}\\)"], h: "Vlnová délka je dráha, kterou vlnění urazí za jednu periodu.", e: "Platí \\(v = \\dfrac{\\lambda}{T} = \\lambda f\\), protože za dobu T se vlnění posune právě o λ." }, fr: { q: "Quelle est la relation entre la célérité v, la longueur d'onde λ et la période T ?", a: "\\(v = \\dfrac{\\lambda}{T} = \\lambda f\\)", o: ["\\(v = \\dfrac{\\lambda}{T} = \\lambda f\\)", "\\(v = \\lambda T\\)", "\\(v = \\dfrac{T}{\\lambda}\\)", "\\(v = \\dfrac{f}{\\lambda}\\)"], h: "La longueur d'onde est la distance parcourue par l'onde en une période.", e: "On a \\(v = \\dfrac{\\lambda}{T} = \\lambda f\\), car pendant la durée T, l'onde avance exactement de λ." } },
+            { id: 't2', type: 'concept', cs: { q: "Může se mechanické vlnění šířit vakuem?", a: "Ne, vyžaduje látkové prostředí", o: ["Ne, vyžaduje látkové prostředí", "Ano, stejně jako elektromagnetické vlnění", "Ano, ale jen podélné vlnění", "Ano, ale jen příčné vlnění"], h: "Mechanické vlnění potřebuje částice, které mohou kmitat.", e: "Na rozdíl od elektromagnetického vlnění mechanické vlnění vyžaduje látkové prostředí (pevné, kapalné nebo plynné) — ve vakuu se šířit nemůže." }, fr: { q: "Une onde mécanique peut-elle se propager dans le vide ?", a: "Non, elle nécessite un milieu matériel", o: ["Non, elle nécessite un milieu matériel", "Oui, comme une onde électromagnétique", "Oui, mais seulement une onde longitudinale", "Oui, mais seulement une onde transversale"], h: "Une onde mécanique a besoin de particules capables d'osciller.", e: "Contrairement à une onde électromagnétique, une onde mécanique nécessite un milieu matériel (solide, liquide ou gazeux) — elle ne peut pas se propager dans le vide." } },
+            { id: 't3', type: 'concept', cs: { q: "Jak zní rovnice postupného vlnění?", a: "\\(y = y_m\\sin\\!\\left[\\omega(t - x/v)\\right]\\)", o: ["\\(y = y_m\\sin\\!\\left[\\omega(t - x/v)\\right]\\)", "\\(y = y_m\\sin(\\omega t) + x\\)", "\\(y = y_m\\,\\omega x\\)", "\\(y = \\dfrac{y_m}{x - vt}\\)"], h: "Bod ve vzdálenosti x kmitá se zpožděním x/v oproti zdroji.", e: "Rovnice postupného vlnění je \\(y = y_m\\sin\\!\\left[\\omega(t - x/v)\\right]\\) — popisuje výchylku libovolného bodu v závislosti na x a t." }, fr: { q: "Quelle est l'équation de l'onde progressive ?", a: "\\(y = y_m\\sin\\!\\left[\\omega(t - x/v)\\right]\\)", o: ["\\(y = y_m\\sin\\!\\left[\\omega(t - x/v)\\right]\\)", "\\(y = y_m\\sin(\\omega t) + x\\)", "\\(y = y_m\\,\\omega x\\)", "\\(y = \\dfrac{y_m}{x - vt}\\)"], h: "Un point situé à la distance x oscille avec un retard x/v par rapport à la source.", e: "L'équation de l'onde progressive est \\(y = y_m\\sin\\!\\left[\\omega(t - x/v)\\right]\\) — elle décrit l'élongation d'un point quelconque en fonction de x et t." } },
+            { id: 't4', type: 'concept', cs: { q: "Co se zachovává při lomu vlnění na rozhraní dvou prostředí?", a: "Frekvence", o: ["Frekvence", "Vlnová délka", "Rychlost šíření", "Amplituda i frekvence"], h: "Frekvence je dána zdrojem, nikoli prostředím.", e: "Při lomu se frekvence zachovává (je dána zdrojem), zatímco vlnová délka a rychlost šíření se mění podle vlastností nového prostředí." }, fr: { q: "Qu'est-ce qui est conservé lors de la réfraction d'une onde à l'interface de deux milieux ?", a: "La fréquence", o: ["La fréquence", "La longueur d'onde", "La célérité", "L'amplitude et la fréquence"], h: "La fréquence est fixée par la source, pas par le milieu.", e: "Lors de la réfraction, la fréquence est conservée (elle est fixée par la source), tandis que la longueur d'onde et la célérité changent selon les propriétés du nouveau milieu." } },
+            { id: 't5', type: 'concept', cs: { q: "Co se stane s fází vlnění při odrazu od pevného konce?", a: "Nastává fázový skok o π", o: ["Nastává fázový skok o π", "Fáze se nemění", "Fáze se otočí o π/2", "Amplituda se zdvojnásobí"], h: "Odražená vlna má opačnou výchylku než dopadající.", e: "Při odrazu od pevného (vázaného) konce dochází k fázovému skoku o π — odražená vlna má v tomto bodě opačnou výchylku." }, fr: { q: "Que se passe-t-il pour la phase d'une onde lors d'une réflexion sur une extrémité fixe ?", a: "Il se produit un saut de phase de π", o: ["Il se produit un saut de phase de π", "La phase ne change pas", "La phase tourne de π/2", "L'amplitude double"], h: "L'onde réfléchie a une élongation opposée à l'onde incidente.", e: "Lors d'une réflexion sur une extrémité fixe (liée), il se produit un saut de phase de π — l'onde réfléchie a en ce point une élongation opposée." } },
+            { id: 't6', type: 'concept', cs: { q: "Jaká je podmínka interferenčního maxima (zesílení)?", a: "\\(\\Delta = k\\lambda\\)", o: ["\\(\\Delta = k\\lambda\\)", "\\(\\Delta = (2k+1)\\lambda/2\\)", "\\(\\Delta = \\lambda/4\\)", "\\(\\Delta = k/\\lambda\\)"], h: "Dráhový rozdíl musí být celistvým násobkem vlnové délky.", e: "Interferenční maximum (zesílení) nastává, je-li dráhový rozdíl \\(\\Delta = k\\lambda\\), kde k = 0, 1, 2, …" }, fr: { q: "Quelle est la condition d'un maximum d'interférence (renforcement) ?", a: "\\(\\Delta = k\\lambda\\)", o: ["\\(\\Delta = k\\lambda\\)", "\\(\\Delta = (2k+1)\\lambda/2\\)", "\\(\\Delta = \\lambda/4\\)", "\\(\\Delta = k/\\lambda\\)"], h: "La différence de marche doit être un multiple entier de la longueur d'onde.", e: "Un maximum d'interférence (renforcement) se produit lorsque la différence de marche \\(\\Delta = k\\lambda\\), avec k = 0, 1, 2, …" } },
+            { id: 't7', type: 'concept', cs: { q: "Jaká je vzdálenost dvou sousedních uzlů stojatého vlnění?", a: "λ/2", o: ["λ/2", "λ", "λ/4", "2λ"], h: "Stejná jako vzdálenost dvou sousedních kmiten.", e: "Vzdálenost dvou sousedních uzlů (i dvou sousedních kmiten) stojatého vlnění je λ/2; vzdálenost uzlu a sousední kmitny je λ/4." }, fr: { q: "Quelle est la distance entre deux nœuds voisins d'une onde stationnaire ?", a: "λ/2", o: ["λ/2", "λ", "λ/4", "2λ"], h: "La même que la distance entre deux ventres voisins.", e: "La distance entre deux nœuds voisins (ou deux ventres voisins) d'une onde stationnaire est λ/2 ; la distance entre un nœud et un ventre voisin est λ/4." } },
+            { id: 't8', type: 'concept', cs: { q: "Jak zní vzorec pro vlastní frekvence struny upevněné na obou koncích?", a: "\\(f_n = n\\dfrac{v}{2l}\\)", o: ["\\(f_n = n\\dfrac{v}{2l}\\)", "\\(f_n = n\\dfrac{v}{4l}\\)", "\\(f_n = \\dfrac{2l}{nv}\\)", "\\(f_n = n\\,v\\,l\\)"], h: "Do délky struny se musí vejít celistvý počet polovin vlnové délky.", e: "Pro strunu délky l upevněnou na obou koncích platí \\(f_n = n\\dfrac{v}{2l}\\), n = 1, 2, 3, …, protože na konci musí být vždy uzel." }, fr: { q: "Quelle est la formule des fréquences propres d'une corde fixée à ses deux extrémités ?", a: "\\(f_n = n\\dfrac{v}{2l}\\)", o: ["\\(f_n = n\\dfrac{v}{2l}\\)", "\\(f_n = n\\dfrac{v}{4l}\\)", "\\(f_n = \\dfrac{2l}{nv}\\)", "\\(f_n = n\\,v\\,l\\)"], h: "La longueur de la corde doit contenir un nombre entier de demi-longueurs d'onde.", e: "Pour une corde de longueur l fixée à ses deux extrémités, \\(f_n = n\\dfrac{v}{2l}\\), n = 1, 2, 3, …, car il doit toujours y avoir un nœud à chaque extrémité." } },
+            { id: 't9', type: 'concept', cs: { q: "Čím je určena výška tónu?", a: "Frekvencí zvukového vlnění", o: ["Frekvencí zvukového vlnění", "Amplitudou zvukového vlnění", "Rychlostí zvuku v prostředí", "Fází zvukového vlnění"], h: "Vyšší frekvence odpovídá pronikavějšímu, vyššímu tónu.", e: "Výška tónu je určena frekvencí zvukového vlnění — čím vyšší frekvence, tím vyšší (pronikavější) tón." }, fr: { q: "Qu'est-ce qui détermine la hauteur d'un son ?", a: "La fréquence de l'onde sonore", o: ["La fréquence de l'onde sonore", "L'amplitude de l'onde sonore", "La vitesse du son dans le milieu", "La phase de l'onde sonore"], h: "Une fréquence plus élevée correspond à un son plus aigu.", e: "La hauteur d'un son est déterminée par la fréquence de l'onde sonore — plus la fréquence est élevée, plus le son est aigu." } },
+            { id: 't10', type: 'concept', cs: { q: "Co se stane s vnímanou frekvencí zvuku, když se k nám zdroj zvuku přibližuje?", a: "Vnímaná frekvence je vyšší než vysílaná", o: ["Vnímaná frekvence je vyšší než vysílaná", "Vnímaná frekvence je nižší než vysílaná", "Vnímaná frekvence se nemění", "Vnímaná amplituda klesá k nule"], h: "Vlnoplochy se před přibližujícím se zdrojem zhušťují.", e: "Před přibližujícím se zdrojem se vlnoplochy zhušťují (kratší vlnová délka), takže vnímaná frekvence je vyšší než frekvence vysílaná zdrojem — jde o Dopplerův jev." }, fr: { q: "Que se passe-t-il pour la fréquence perçue d'un son quand la source sonore se rapproche de nous ?", a: "La fréquence perçue est plus élevée que la fréquence émise", o: ["La fréquence perçue est plus élevée que la fréquence émise", "La fréquence perçue est plus basse que la fréquence émise", "La fréquence perçue ne change pas", "L'amplitude perçue tombe à zéro"], h: "Les surfaces d'onde se resserrent devant une source qui s'approche.", e: "Devant une source qui s'approche, les surfaces d'onde se resserrent (longueur d'onde plus courte), donc la fréquence perçue est plus élevée que la fréquence émise — c'est l'effet Doppler." } }
+        ];
+
+        // ======== VÝPOČETNÍ ÚLOHY ========
+        const mathPool = [
+            { id: 'm1', type: 'math',
+                cs: { q: "Zdroj vlnění kmitá s frekvencí f = {f} Hz, vlnění se šíří rychlostí v = {v} m/s. Jaká je vlnová délka λ (v m)?", h: "\\(\\lambda = v/f\\).", e: "\\(\\lambda = v/f = {v}/{f} = {res}\\) m." },
+                fr: { q: "Une source vibre avec une fréquence f = {f} Hz ; l'onde se propage à la vitesse v = {v} m/s. Quelle est la longueur d'onde λ (en m) ?", h: "\\(\\lambda = v/f\\).", e: "\\(\\lambda = v/f = {v}/{f} = {res}\\) m." },
+                params: () => { const f = randChoice([2,4,5,8,10,16,20]); const v = randChoice([2,4,5,8,10,16,20,32,40]); return { f, v }; },
+                solve: (p) => { const res = p.v/p.f; return { res, unit: 'm', correct: fmt(res) + ' m' }; } },
+            { id: 'm2', type: 'math',
+                cs: { q: "Vlnění se šíří rychlostí v = {v} m/s. Bod prostředí je vzdálen x = {x} m od zdroje. Za jak dlouho po rozkmitání zdroje se tento bod začne kmitat (zpoždění Δt, v s)?", h: "\\(\\Delta t = x/v\\).", e: "\\(\\Delta t = x/v = {x}/{v} = {res}\\) s." },
+                fr: { q: "Une onde se propage à la vitesse v = {v} m/s. Un point du milieu est situé à la distance x = {x} m de la source. Au bout de combien de temps ce point commence-t-il à osciller après la source (retard Δt, en s) ?", h: "\\(\\Delta t = x/v\\).", e: "\\(\\Delta t = x/v = {x}/{v} = {res}\\) s." },
+                params: () => { const v = randChoice([2,4,5,8,10,16,20]); const x = randChoice([1,2,4,5,8,10,16,20]); return { v, x }; },
+                solve: (p) => { const res = p.x/p.v; return { res, unit: 's', correct: fmt(res) + ' s' }; } },
+            { id: 'm3', type: 'math',
+                cs: { q: "Struna délky l = {l} m je upevněná na obou koncích; rychlost příčného vlnění na struně je v = {v} m/s. Jaká je základní frekvence f₁ (v Hz)?", h: "\\(f_1 = v/(2l)\\).", e: "\\(f_1 = v/(2l) = {v}/(2\\cdot{l}) = {res}\\) Hz." },
+                fr: { q: "Une corde de longueur l = {l} m est fixée à ses deux extrémités ; la vitesse des ondes transversales sur la corde est v = {v} m/s. Quelle est la fréquence fondamentale f₁ (en Hz) ?", h: "\\(f_1 = v/(2l)\\).", e: "\\(f_1 = v/(2l) = {v}/(2\\cdot{l}) = {res}\\) Hz." },
+                params: () => { const l = randChoice([0.4,0.5,0.6,0.8,1.0,1.2]); const v = randChoice([40,60,80,100,120,150,200]); return { l, v }; },
+                solve: (p) => { const res = p.v/(2*p.l); return { res, unit: 'Hz', correct: fmt(res) + ' Hz' }; } },
+            { id: 'm4', type: 'math',
+                cs: { q: "Struna délky l = {l} m upevněná na obou koncích má základní frekvenci f₁ = {f1} Hz. Jaká je rychlost vlnění v na struně (v m/s)?", h: "\\(v = 2 l f_1\\).", e: "\\(v = 2 l f_1 = 2\\cdot{l}\\cdot{f1} = {res}\\,\\text{m/s}\\)." },
+                fr: { q: "Une corde de longueur l = {l} m fixée à ses deux extrémités a une fréquence fondamentale f₁ = {f1} Hz. Quelle est la vitesse v de l'onde sur la corde (en m/s) ?", h: "\\(v = 2 l f_1\\).", e: "\\(v = 2 l f_1 = 2\\cdot{l}\\cdot{f1} = {res}\\,\\text{m/s}\\)." },
+                params: () => { const l = randChoice([0.3,0.4,0.5,0.6,0.8,1.0]); const f1 = randChoice([50,60,75,100,120,150]); return { l, f1 }; },
+                solve: (p) => { const res = 2*p.l*p.f1; return { res, unit: 'm/s', correct: fmt(res) + ' m/s' }; } },
+            { id: 'm5', type: 'math',
+                cs: { q: "Hrom uslyšíme t = {t} s po zablesknutí. Jaká je přibližná vzdálenost bouřky s (v m), je-li rychlost zvuku v = {v} m/s?", h: "\\(s = vt\\).", e: "\\(s = vt = {v}\\cdot{t} = {res}\\) m." },
+                fr: { q: "On entend le tonnerre t = {t} s après l'éclair. Quelle est la distance approximative de l'orage s (en m), sachant que la vitesse du son est v = {v} m/s ?", h: "\\(s = vt\\).", e: "\\(s = vt = {v}\\cdot{t} = {res}\\) m." },
+                params: () => { const t = randChoice([1,2,3,4,5,6,7]); const v = randChoice([330,340,343,345]); return { t, v }; },
+                solve: (p) => { const res = p.v*p.t; return { res, unit: 'm', correct: fmt(res) + ' m' }; } },
+            { id: 'm6', type: 'math',
+                cs: { q: "Zdroj zvuku vytváří intenzitu I = 10<sup>{m}</sup> W/m². Jaká je hladina intenzity zvuku L (v dB)? (I₀ = 10⁻¹² W/m²)", h: "\\(L = 10\\log(I/I_0)\\).", e: "\\(L = 10\\,({m}+12) = {res}\\) dB." },
+                fr: { q: "Une source sonore produit une intensité I = 10<sup>{m}</sup> W/m². Quel est le niveau d'intensité sonore L (en dB) ? (I₀ = 10⁻¹² W/m²)", h: "\\(L = 10\\log(I/I_0)\\).", e: "\\(L = 10\\,({m}+12) = {res}\\) dB." },
+                params: () => { const m = randChoice([-3,-4,-5,-6,-7,-8,-9,-10]); return { m }; },
+                solve: (p) => { const res = 10*(p.m+12); return { res, unit: 'dB', correct: fmt(res) + ' dB' }; } },
+            { id: 'm7', type: 'math',
+                cs: { q: "Trubice uzavřená na jednom konci má délku l = {l} m. Rychlost zvuku ve vzduchu je v = {v} m/s. Jaká je frekvence základního tónu f₀ (v Hz)?", h: "\\(f_0 = v/(4l)\\).", e: "\\(f_0 = v/(4l) = {v}/(4\\cdot{l}) = {res}\\) Hz." },
+                fr: { q: "Un tube fermé à une extrémité a une longueur l = {l} m. La vitesse du son dans l'air est v = {v} m/s. Quelle est la fréquence du son fondamental f₀ (en Hz) ?", h: "\\(f_0 = v/(4l)\\).", e: "\\(f_0 = v/(4l) = {v}/(4\\cdot{l}) = {res}\\) Hz." },
+                params: () => { const l = randChoice([0.15,0.20,0.25,0.30,0.40,0.50]); const v = randChoice([330,340,343]); return { l, v }; },
+                solve: (p) => { const res = p.v/(4*p.l); return { res, unit: 'Hz', correct: fmt(res) + ' Hz' }; } },
+            { id: 'm8', type: 'math',
+                cs: { q: "Vlnění dopadá pod úhlem dopadu α = {alpha}° na rozhraní dvou prostředí; rychlosti šíření jsou v₁ = {v1} m/s a v₂ = {v2} m/s. Jaký je úhel lomu β (ve stupních)?", h: "\\(\\sin\\beta = \\dfrac{v_2}{v_1}\\sin\\alpha\\).", e: "\\(\\sin\\beta = \\dfrac{{v2}}{{v1}}\\sin{alpha}^\\circ\\), tedy \\(\\beta \\approx {res}^\\circ\\)." },
+                fr: { q: "Une onde arrive sous un angle d'incidence α = {alpha}° à l'interface de deux milieux ; les vitesses de propagation sont v₁ = {v1} m/s et v₂ = {v2} m/s. Quel est l'angle de réfraction β (en degrés) ?", h: "\\(\\sin\\beta = \\dfrac{v_2}{v_1}\\sin\\alpha\\).", e: "\\(\\sin\\beta = \\dfrac{{v2}}{{v1}}\\sin{alpha}^\\circ\\), donc \\(\\beta \\approx {res}^\\circ\\)." },
+                params: () => { const alpha = randChoice([20,30,40,45,50,60]); const v1 = 340; const v2 = randChoice([100,150,170,200,220,250,300]); return { alpha, v1, v2 }; },
+                solve: (p) => { const res = Math.asin((p.v2/p.v1)*Math.sin(p.alpha*Math.PI/180)) * 180/Math.PI; return { res, unit: '°', correct: fmt(res) + '°' }; } }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function generateBalancedQuiz() {
+            const sTheory = [...theoryPool].sort(() => Math.random() - 0.5);
+            const sMath = [...mathPool].sort(() => Math.random() - 0.5);
+
+            const selected = [];
+            for(let i=0; i<N_THEORY; i++) {
+                selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+            }
+            for(let i=0; i<N_MATH; i++) {
+                selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+            }
+            return selected.sort(() => Math.random() - 0.5);
+        }
+
+        function prepareQuestion(template, lang) {
+            let q = JSON.parse(JSON.stringify(template[lang]));
+            let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+            if(template.type === 'math') {
+                const p = template.params();
+                const sol = template.solve(p);
+                const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
+                const inject = (obj) => {
+                    obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
+                    obj.a = sol.correct;
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    obj.o = [sol.correct, mk(val*2), mk(val/2), mk(val*1.5)];
+                };
+                inject(q); inject(tr);
+            }
+
+            shuffleArray(q.o);
+            shuffleArray(tr.o);
+
+            return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'fr') {
+                transBtn.classList.remove('hidden-el');
+            } else {
+                transBtn.classList.add('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function typesetMath(el) {
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise(el ? [el] : undefined).catch(err => console.warn('MathJax typeset failed:', err));
+            }
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-blue-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-blue-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.value = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if(!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            typesetMath(document.getElementById('question-container'));
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            typesetMath(hb);
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if(b.dataset.value === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+            typesetMath(fa);
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        // ======== VLASTNÍ ANALÝZA BEZ API ========
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total:0, correct:0 }, math: { total:0, correct:0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) {
+                overallMsg = "Výborně! Mechanické vlnění, zvuk i francouzština ti jdou skvěle.";
+                overallIcon = "🏆";
+            } else if (percent >= 70) {
+                overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
+                overallIcon = "💪";
+            } else if (percent >= 50) {
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat vzorce pro vlnění, interferenci a zvuk.";
+                overallIcon = "📚";
+            } else {
+                overallMsg = "Je potřeba více trénovat – zaměř se na rovnici vlnění, interferenci, stojaté vlnění a zvuk.";
+                overallIcon = "🔍";
+            }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako vlnoplocha, interference či Dopplerův jev.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si veličiny vlnění, princip superpozice a podmínky interferenčních maxim a minim.");
+            if (mathPercent >= 70) strengths.push("Výpočty s vlnovou délkou, frekvencí struny i hladinou intenzity zvuku ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si vzorce v=λf, f₁=v/(2l), f₀=v/(4l) a L=10log(I/I₀).");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní vztahy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování vlnění, interference a zvuku – projdi si příručku a vzorové příklady.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitoly optiky nebo elektromagnetického vlnění.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení vzorců pro vlnění a zvuk.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) {
+                frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně.";
+                frenchIcon = "🇫🇷";
+            } else if (translationUsedCount <= 3) {
+                frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině.";
+                frenchIcon = "📖";
+            } else {
+                frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit.";
+                frenchIcon = "🔁";
+            }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek ve francouzštině)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
+
+</body>
+</html>

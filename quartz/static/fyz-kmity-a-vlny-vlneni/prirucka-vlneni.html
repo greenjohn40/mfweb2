@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mechanické vlnění a zvuk / Ondes mécaniques et son</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: { fontCache: 'local' },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js" crossorigin="anonymous">
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Google Sans', Arial, sans-serif;
+            margin: 20px auto; padding: 0 20px; max-width: 720px;
+            background: #fff; color: #1f1f1f; line-height: 1.6; font-weight: 400;
+            -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px;
+        }
+        h1, h2, h3, h4, h5, h6 { margin: 1.75rem 0 0.5rem; font-weight: 600; }
+        p { margin: 0 0 1rem; }
+        ul, ol { margin: 0.5rem 0; padding-left: 1.75rem; }
+        strong { font-weight: 600; }
+        .MathJax_Display { margin: 1em 0; text-align: center; }
+        table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.9rem; }
+        th, td { border: 1px solid #e0e0e0; padding: 5px 8px; text-align: left; }
+        th { background: #f5f5f5; }
+        .law-box { background: #eff6ff; border-left: 4px solid #1d4ed8; padding: 12px 16px; margin: 1rem 0; border-radius: 6px; }
+
+        #content-cs { display: block; }
+        #content-fr { display: none; }
+        body.lang-fr #content-cs { display: none; }
+        body.lang-fr #content-fr { display: block; }
+
+        .lang-switcher {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: #fff; border-bottom: 1px solid #e0e0e0;
+            padding: 12px 20px; display: flex; justify-content: flex-end; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-switcher button {
+            font-family: 'Inter', sans-serif; font-size: 0.9rem; font-weight: 500;
+            padding: 6px 16px; border: 1px solid #ccc; background: #f5f5f5;
+            border-radius: 20px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
+            color: #1f1f1f;
+        }
+        .lang-switcher button:hover { background: #e8e8e8; }
+        .lang-switcher button:active { background: #d0d0d0; }
+        .lang-switcher button.active { background: #1f1f1f; color: #fff; border-color: #1f1f1f; }
+        .lang-switcher .lang-label { margin-right: 12px; font-size: 0.85rem; color: #555; }
+        .lang-switcher .lang-buttons { display: flex; gap: 6px; }
+        @media (max-width: 480px) {
+            .lang-switcher { padding: 8px 12px; }
+            .lang-switcher .lang-label { font-size: 0.75rem; margin-right: 8px; }
+            body { padding-top: 70px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lang-switcher">
+        <span class="lang-label">Jazyk / Langue :</span>
+        <div class="lang-buttons">
+            <button id="btn-cs" class="active" data-lang="cs">Čeština</button>
+            <button id="btn-fr" data-lang="fr">Français</button>
+        </div>
+    </div>
+
+    <!-- ===== ČESKÝ OBSAH ===== -->
+    <div id="content-cs">
+        <h1>Mechanické vlnění a zvuk</h1>
+        <p><strong>Předmět:</strong> Fyzika
+            <strong>Úroveň:</strong> Gymnázium / Střední škola
+        </p>
+
+        <h2>1. Vznik a druhy vlnění</h2>
+        <p><strong>Mechanické vlnění</strong> je děj, při němž se rozruch (kmitání) šíří pružným prostředím z místa na místo — přenáší se energie a hybnost, nikoli částice prostředí, které jen kmitají kolem rovnovážných poloh. Podmínkou vzniku je <strong>zdroj kmitů</strong> a <strong>pružné prostředí</strong>. Na rozdíl od elektromagnetického vlnění se mechanické vlnění nemůže šířit vakuem.</p>
+        <p>Podle směru kmitání částic vůči směru šíření rozlišujeme <strong>příčné vlnění</strong> (kmitání kolmé na směr šíření — např. vlny na struně) a <strong>podélné vlnění</strong> (kmitání rovnoběžné se směrem šíření — např. zvuk, podélné vlny v pružině). Příčné mechanické vlnění se šíří jen v pevných látkách a na hladinách kapalin; podélné vlnění ve všech skupenstvích.</p>
+        <div class="law-box">Množina bodů kmitajících ve stejné fázi tvoří <strong>vlnoplochu</strong> (u bodového zdroje kulovou). Směr šíření kolmý na vlnoplochu znázorňuje <strong>paprsek</strong>.</div>
+
+        <h2>2. Veličiny postupného vlnění</h2>
+        <p>Každý bod prostředí kmitá se stejnou periodou $T$ a frekvencí $f$ jako zdroj, ale se zpožděním úměrným vzdálenosti od zdroje. Vlnová délka $\lambda$ je vzdálenost, na kterou se vlnění rozšíří za jednu periodu (zároveň vzdálenost dvou nejbližších bodů se stejnou fází):</p>
+        $$ v = \frac{\lambda}{T} = \lambda f $$
+        <p>Rychlost šíření $v$ závisí na vlastnostech prostředí, nikoli na frekvenci zdroje.</p>
+
+        <h4>Vzorový příklad 1</h4>
+        <p><strong>Zadání:</strong> Zdroj vlnění kmitá s frekvencí $f=5{,}0\,\text{Hz}$, vlnění se šíří rychlostí $v=2{,}0\,\text{m}\cdot\text{s}^{-1}$. Určete vlnovou délku a periodu.</p>
+        <p><strong>Řešení:</strong> $T=1/f=0{,}20\,\text{s}$; $\lambda=v/f=2{,}0/5{,}0=0{,}40\,\text{m}$.</p>
+
+        <h2>3. Rovnice postupného vlnění</h2>
+        <p>Bod ve vzdálenosti $x$ od zdroje kmitá se zpožděním $x/v$. Kmitá-li zdroj podle $y=y_m\sin(\omega t)$, platí pro libovolný bod:</p>
+        $$ y = y_m \sin\!\left[\omega\left(t-\frac{x}{v}\right)\right] = y_m\sin\!\left(2\pi\Big(\frac{t}{T}-\frac{x}{\lambda}\Big)\right) $$
+        <p>Graf $y(x)$ pro pevné $t$ ukazuje <strong>prostorovou periodicitu</strong> s periodou $\lambda$; graf $y(t)$ pro pevné $x$ ukazuje <strong>časovou periodicitu</strong> s periodou $T$.</p>
+
+        <h4>Vzorový příklad 2</h4>
+        <p><strong>Zadání:</strong> Zdroj na počátku kmitá podle $y=0{,}02\sin(10\pi t)$ (SI), $v=4{,}0\,\text{m}\cdot\text{s}^{-1}$. Určete výchylku bodu $x=1{,}0\,\text{m}$ v čase $t=1{,}0\,\text{s}$.</p>
+        <p><strong>Řešení:</strong> $y=0{,}02\sin\!\left[10\pi(1{,}0-0{,}25)\right]=0{,}02\sin(7{,}5\pi)\approx-0{,}02\,\text{m}$.</p>
+
+        <h2>4. Odraz, lom a ohyb vlnění. Huygensův princip</h2>
+        <p>Podle <strong>Huygensova principu</strong> se každý bod vlnoplochy stává zdrojem nového elementárního (kulového) vlnění; nová vlnoplocha je obálkou všech elementárních vlnění. Na rozhraní prostředí se vlnění <strong>odráží</strong> (úhel odrazu = úhel dopadu; odraz od pevného konce mění fázi o $\pi$) a při přechodu do prostředí s jinou rychlostí se <strong>láme</strong> (frekvence se zachovává, mění se $\lambda$ a směr):</p>
+        $$ \frac{v_1}{v_2}=\frac{\sin\alpha}{\sin\beta} $$
+        <p>Je-li rozměr překážky srovnatelný s $\lambda$, dochází k výraznému <strong>ohybu (difrakci)</strong> za překážku; je-li překážka mnohem větší než $\lambda$, ohyb je zanedbatelný.</p>
+
+        <h2>5. Interference vlnění</h2>
+        <p>Podle <strong>principu superpozice</strong> je výsledná výchylka při setkání dvou vlnění dána součtem jejich výchylek. Šíří-li se prostředím dvě <strong>koherentní</strong> vlnění (stejná frekvence, stálý fázový rozdíl), vzniká stálé rozložení amplitud — <strong>interference</strong>. Rozhoduje <strong>dráhový rozdíl</strong> $\Delta=|d_2-d_1|$:</p>
+        $$ \text{max.: } \Delta=k\lambda \qquad \text{min.: } \Delta=(2k+1)\frac{\lambda}{2}, \quad k=0,1,2,\dots $$
+
+        <h4>Vzorový příklad 3</h4>
+        <p><strong>Zadání:</strong> Dva reproduktory hrají ve fázi stejný tón s $\lambda=0{,}68\,\text{m}$. V bodě, kde $d_2-d_1=1{,}70\,\text{m}$, je tón zesílený, nebo zeslabený?</p>
+        <p><strong>Řešení:</strong> $\Delta/\lambda=2{,}5=(2\cdot2+1)/2$ — lichý násobek $\lambda/2$, tedy <strong>destruktivní interference</strong> (zeslabení).</p>
+
+        <h2>6. Stojaté vlnění</h2>
+        <p><strong>Stojaté vlnění</strong> vzniká interferencí postupného vlnění s jeho odrazem, šířícím se opačným směrem týmž prostředím (např. na struně upevněné na obou koncích). Vznikají <strong>uzly</strong> (trvale v klidu) a <strong>kmitny</strong> (maximální amplituda), přičemž vzdálenost sousedních uzlů (i kmiten) je $\lambda/2$. Pro strunu délky $l$ upevněnou na obou koncích platí:</p>
+        $$ l = n\frac{\lambda_n}{2} \quad\Rightarrow\quad f_n = n\frac{v}{2l}, \quad n=1,2,3,\dots $$
+        <div class="law-box">$f_1$ je základní frekvence (základní tón), $f_2, f_3,\dots$ jsou vyšší harmonické frekvence, jejichž souzvuk určuje barvu tónu nástroje.</div>
+
+        <h2>7. Zvukové vlnění</h2>
+        <p><strong>Zvuk</strong> je mechanické podélné vlnění v látkovém prostředí, vyvolávající sluchový vjem. Slyšitelné pásmo je přibližně $16\,\text{Hz}$ až $20\,000\,\text{Hz}$; pod ním je <strong>infrazvuk</strong>, nad ním <strong>ultrazvuk</strong>. Rychlost zvuku závisí na prostředí (vzduch $\approx343\,\text{m}\cdot\text{s}^{-1}$, voda $\approx1480\,\text{m}\cdot\text{s}^{-1}$, ocel $\approx5100\,\text{m}\cdot\text{s}^{-1}$) a ve vzduchu roste s teplotou.</p>
+        <p>Vlastnosti zvuku: <strong>výška</strong> (dána frekvencí), <strong>hlasitost</strong> (dána zejména amplitudou/intenzitou) a <strong>barva/témbr</strong> (dána zastoupením vyšších harmonických). Intenzita zvuku $I$ se popisuje logaritmickou <strong>hladinou intenzity zvuku</strong>:</p>
+        $$ L = 10\log\frac{I}{I_0}\ \ [\text{dB}], \qquad I_0 = 10^{-12}\,\text{W}\cdot\text{m}^{-2} $$
+
+        <h4>Vzorový příklad 4</h4>
+        <p><strong>Zadání:</strong> Hrom uslyšíme po $t=4{,}5\,\text{s}$ po blesku. Odhadněte vzdálenost bouřky ($v=340\,\text{m}\cdot\text{s}^{-1}$).</p>
+        <p><strong>Řešení:</strong> $s=vt=340\cdot4{,}5\approx1530\,\text{m}\approx1{,}5\,\text{km}$.</p>
+
+        <h2>8. Odraz zvuku, rezonance a Dopplerův jev</h2>
+        <p>Odraz zvuku od vzdálené překážky vnímáme jako <strong>ozvěnu</strong> (zpoždění $>0{,}1\,\text{s}$); při kratším zpoždění splývá s původním zvukem v <strong>dozvuk</strong>. Zazní-li poblíž struny nebo vzduchového sloupce zvuk s frekvencí blízkou jejich vlastní frekvenci, nastává <strong>akustická rezonance</strong> (rezonanční skříně nástrojů, varhanní píšťaly). U trubice uzavřené na jednom konci musí být na uzavřeném konci uzel a na otevřeném kmitna:</p>
+        $$ l=(2k+1)\frac{\lambda}{4} \quad\Rightarrow\quad f_k=(2k+1)\frac{v}{4l} $$
+        <p>Pohybuje-li se zdroj zvuku vzhledem k pozorovateli, mění se vnímaná frekvence — <strong>Dopplerův jev</strong>: před přibližujícím se zdrojem se vlnoplochy zhušťují (vyšší $f$), za vzdalujícím se rozestupují (nižší $f$).</p>
+        <div class="law-box"><strong>Využití:</strong> Dopplerův radar (rychlost vozidel, meteorologie), dopplerovská ultrasonografie (proudění krve), astronomie (rudý/modrý posuv spektrálních čar), sonar a echolokace.</div>
+
+        <h4>Vzorový příklad 5</h4>
+        <p><strong>Zadání:</strong> Trubice uzavřená na jednom konci rezonuje na základní frekvenci $f=340\,\text{Hz}$ při rychlosti zvuku $v=340\,\text{m}\cdot\text{s}^{-1}$. Určete její délku.</p>
+        <p><strong>Řešení:</strong> Základní tón odpovídá $k=0$: $l=\lambda/4=v/(4f)=340/(4\cdot340)=0{,}25\,\text{m}$.</p>
+
+        <h2>9. Shrnutí k maturitě</h2>
+        <ul>
+            <li><strong>Základní veličiny:</strong> $v=\lambda/T=\lambda f$.</li>
+            <li><strong>Rovnice vlnění:</strong> $y=y_m\sin\!\left[\omega(t-x/v)\right]$.</li>
+            <li><strong>Odraz, lom, ohyb:</strong> $v_1/v_2=\sin\alpha/\sin\beta$; frekvence se zachovává.</li>
+            <li><strong>Interference:</strong> max. $\Delta=k\lambda$, min. $\Delta=(2k+1)\lambda/2$.</li>
+            <li><strong>Stojaté vlnění (struna):</strong> $f_n=n\,v/(2l)$.</li>
+            <li><strong>Zvuk:</strong> $16\,\text{Hz}$–$20\,000\,\text{Hz}$; $L=10\log(I/I_0)$ v dB.</li>
+            <li><strong>Trubice uzavřená na jednom konci:</strong> $f_k=(2k+1)\,v/(4l)$ — jen liché harmonické.</li>
+            <li><strong>Dopplerův jev:</strong> přiblížení zdroje ⇒ vyšší vnímaná frekvence; vzdálení ⇒ nižší.</li>
+        </ul>
+    </div>
+
+    <!-- ===== FRANCOUZSKÝ OBSAH ===== -->
+    <div id="content-fr">
+        <h1>Ondes mécaniques et son</h1>
+        <p><strong>Matière :</strong> Physique
+            <strong>Niveau :</strong> Lycée
+        </p>
+
+        <h2>1. Origine et types d'ondes</h2>
+        <p>Une <strong>onde mécanique</strong> est un phénomène par lequel une perturbation (une oscillation) se propage de proche en proche dans un milieu élastique — ce qui se transmet, c'est de l'énergie et de la quantité de mouvement, pas les particules du milieu, qui ne font qu'osciller autour de leur position d'équilibre. Il faut une <strong>source d'oscillations</strong> et un <strong>milieu élastique</strong>. Contrairement à une onde électromagnétique, une onde mécanique ne peut pas se propager dans le vide.</p>
+        <p>Selon la direction d'oscillation des particules par rapport à la direction de propagation, on distingue les <strong>ondes transversales</strong> (oscillation perpendiculaire à la propagation — ex. onde sur une corde) et les <strong>ondes longitudinales</strong> (oscillation parallèle à la propagation — ex. le son, ondes longitudinales dans un ressort). Une onde mécanique transversale ne se propage que dans les solides et à la surface des liquides ; une onde longitudinale dans tous les états de la matière.</p>
+        <div class="law-box">L'ensemble des points oscillant en phase forme une <strong>surface d'onde</strong> (sphérique pour une source ponctuelle). La direction de propagation, perpendiculaire à la surface d'onde, est représentée par un <strong>rayon</strong>.</div>
+
+        <h2>2. Grandeurs de l'onde progressive</h2>
+        <p>Chaque point du milieu oscille avec la même période $T$ et la même fréquence $f$ que la source, mais avec un retard proportionnel à sa distance à la source. La longueur d'onde $\lambda$ est la distance parcourue par l'onde pendant une période (c'est aussi la distance entre deux points voisins de même phase) :</p>
+        $$ v = \frac{\lambda}{T} = \lambda f $$
+        <p>La célérité $v$ dépend des propriétés du milieu, non de la fréquence de la source.</p>
+
+        <h4>Exemple type 1</h4>
+        <p><strong>Énoncé :</strong> Une source oscille à $f=5{,}0\,\text{Hz}$, l'onde se propage à $v=2{,}0\,\text{m}\cdot\text{s}^{-1}$. Déterminez la longueur d'onde et la période.</p>
+        <p><strong>Solution :</strong> $T=1/f=0{,}20\,\text{s}$ ; $\lambda=v/f=2{,}0/5{,}0=0{,}40\,\text{m}$.</p>
+
+        <h2>3. Équation de l'onde progressive</h2>
+        <p>Un point situé à la distance $x$ de la source oscille avec un retard $x/v$. Si la source oscille selon $y=y_m\sin(\omega t)$, alors pour un point quelconque :</p>
+        $$ y = y_m \sin\!\left[\omega\left(t-\frac{x}{v}\right)\right] = y_m\sin\!\left(2\pi\Big(\frac{t}{T}-\frac{x}{\lambda}\Big)\right) $$
+        <p>Le graphe $y(x)$ à $t$ fixé montre la <strong>périodicité spatiale</strong> de période $\lambda$ ; le graphe $y(t)$ à $x$ fixé montre la <strong>périodicité temporelle</strong> de période $T$.</p>
+
+        <h4>Exemple type 2</h4>
+        <p><strong>Énoncé :</strong> Une source à l'origine oscille selon $y=0{,}02\sin(10\pi t)$ (SI), $v=4{,}0\,\text{m}\cdot\text{s}^{-1}$. Déterminez l'élongation du point $x=1{,}0\,\text{m}$ à $t=1{,}0\,\text{s}$.</p>
+        <p><strong>Solution :</strong> $y=0{,}02\sin\!\left[10\pi(1{,}0-0{,}25)\right]=0{,}02\sin(7{,}5\pi)\approx-0{,}02\,\text{m}$.</p>
+
+        <h2>4. Réflexion, réfraction et diffraction. Principe de Huygens</h2>
+        <p>Selon le <strong>principe de Huygens</strong>, chaque point d'une surface d'onde devient la source d'une nouvelle onde élémentaire (sphérique) ; la nouvelle surface d'onde est l'enveloppe de toutes ces ondes élémentaires. À l'interface entre deux milieux, l'onde se <strong>réfléchit</strong> (angle de réflexion = angle d'incidence ; une réflexion sur une extrémité fixe change la phase de $\pi$) et lors du passage vers un milieu de vitesse différente, elle subit une <strong>réfraction</strong> (la fréquence est conservée, $\lambda$ et la direction changent) :</p>
+        $$ \frac{v_1}{v_2}=\frac{\sin\alpha}{\sin\beta} $$
+        <p>Si la dimension de l'obstacle est comparable à $\lambda$, une <strong>diffraction</strong> marquée se produit derrière l'obstacle ; si l'obstacle est bien plus grand que $\lambda$, la diffraction est négligeable.</p>
+
+        <h2>5. Interférences des ondes</h2>
+        <p>Selon le <strong>principe de superposition</strong>, l'élongation résultante de la rencontre de deux ondes est la somme de leurs élongations. Si deux ondes <strong>cohérentes</strong> (même fréquence, différence de phase constante) se propagent dans le milieu, il se forme une répartition stable des amplitudes — l'<strong>interférence</strong>. Ce qui compte, c'est la <strong>différence de marche</strong> $\Delta=|d_2-d_1|$ :</p>
+        $$ \text{max. : } \Delta=k\lambda \qquad \text{min. : } \Delta=(2k+1)\frac{\lambda}{2}, \quad k=0,1,2,\dots $$
+
+        <h4>Exemple type 3</h4>
+        <p><strong>Énoncé :</strong> Deux haut-parleurs émettent en phase le même son de $\lambda=0{,}68\,\text{m}$. Au point où $d_2-d_1=1{,}70\,\text{m}$, le son est-il renforcé ou affaibli ?</p>
+        <p><strong>Solution :</strong> $\Delta/\lambda=2{,}5=(2\cdot2+1)/2$ — multiple impair de $\lambda/2$, donc <strong>interférence destructive</strong> (affaiblissement).</p>
+
+        <h2>6. Onde stationnaire</h2>
+        <p>Une <strong>onde stationnaire</strong> naît de l'interférence d'une onde progressive et de son onde réfléchie, se propageant en sens opposé dans le même milieu (par exemple sur une corde fixée à ses deux extrémités). Il se forme des <strong>nœuds</strong> (immobiles en permanence) et des <strong>ventres</strong> (amplitude maximale) ; la distance entre nœuds (ou ventres) voisins est $\lambda/2$. Pour une corde de longueur $l$ fixée aux deux extrémités :</p>
+        $$ l = n\frac{\lambda_n}{2} \quad\Rightarrow\quad f_n = n\frac{v}{2l}, \quad n=1,2,3,\dots $$
+        <div class="law-box">$f_1$ est la fréquence fondamentale, $f_2, f_3,\dots$ sont les fréquences des harmoniques supérieures, dont la combinaison détermine le timbre de l'instrument.</div>
+
+        <h2>7. Onde sonore</h2>
+        <p>Le <strong>son</strong> est une onde mécanique longitudinale se propageant dans un milieu matériel, provoquant une sensation auditive. Le domaine audible s'étend d'environ $16\,\text{Hz}$ à $20\,000\,\text{Hz}$ ; en dessous se trouvent les <strong>infrasons</strong>, au-dessus les <strong>ultrasons</strong>. La vitesse du son dépend du milieu (air $\approx343\,\text{m}\cdot\text{s}^{-1}$, eau $\approx1480\,\text{m}\cdot\text{s}^{-1}$, acier $\approx5100\,\text{m}\cdot\text{s}^{-1}$) et augmente avec la température dans l'air.</p>
+        <p>Caractéristiques du son : la <strong>hauteur</strong> (fréquence), l'<strong>intensité sonore perçue</strong> (amplitude/intensité) et le <strong>timbre</strong> (proportion des harmoniques supérieures). L'intensité sonore $I$ se décrit par le <strong>niveau d'intensité sonore</strong>, une grandeur logarithmique :</p>
+        $$ L = 10\log\frac{I}{I_0}\ \ [\text{dB}], \qquad I_0 = 10^{-12}\,\text{W}\cdot\text{m}^{-2} $$
+
+        <h4>Exemple type 4</h4>
+        <p><strong>Énoncé :</strong> Le tonnerre est entendu $t=4{,}5\,\text{s}$ après l'éclair. Estimez la distance de l'orage ($v=340\,\text{m}\cdot\text{s}^{-1}$).</p>
+        <p><strong>Solution :</strong> $s=vt=340\cdot4{,}5\approx1530\,\text{m}\approx1{,}5\,\text{km}$.</p>
+
+        <h2>8. Réflexion du son, résonance et effet Doppler</h2>
+        <p>La réflexion du son sur un obstacle éloigné est perçue comme un <strong>écho</strong> (retard $>0{,}1\,\text{s}$) ; pour un retard plus court, le son réfléchi se confond avec l'original en une <strong>réverbération</strong>. Si un son de fréquence proche de la fréquence propre d'une corde ou d'une colonne d'air retentit à proximité, il se produit une <strong>résonance acoustique</strong> (caisses de résonance des instruments, tuyaux d'orgue). Pour un tube fermé à une extrémité, il faut un nœud à l'extrémité fermée et un ventre à l'extrémité ouverte :</p>
+        $$ l=(2k+1)\frac{\lambda}{4} \quad\Rightarrow\quad f_k=(2k+1)\frac{v}{4l} $$
+        <p>Si la source sonore se déplace par rapport à l'observateur, la fréquence perçue change — l'<strong>effet Doppler</strong> : devant une source qui s'approche, les surfaces d'onde se resserrent (f plus élevée), derrière une source qui s'éloigne, elles s'écartent (f plus basse).</p>
+        <div class="law-box"><strong>Applications :</strong> radar Doppler (vitesse des véhicules, météorologie), échographie Doppler (flux sanguin), astronomie (décalage vers le rouge/le bleu des raies spectrales), sonar et écholocation.</div>
+
+        <h4>Exemple type 5</h4>
+        <p><strong>Énoncé :</strong> Un tube fermé à une extrémité résonne à la fréquence fondamentale $f=340\,\text{Hz}$, avec $v=340\,\text{m}\cdot\text{s}^{-1}$. Déterminez sa longueur.</p>
+        <p><strong>Solution :</strong> Le fondamental correspond à $k=0$ : $l=\lambda/4=v/(4f)=340/(4\cdot340)=0{,}25\,\text{m}$.</p>
+
+        <h2>9. Résumé pour le baccalauréat</h2>
+        <ul>
+            <li><strong>Grandeurs fondamentales :</strong> $v=\lambda/T=\lambda f$.</li>
+            <li><strong>Équation de l'onde :</strong> $y=y_m\sin\!\left[\omega(t-x/v)\right]$.</li>
+            <li><strong>Réflexion, réfraction, diffraction :</strong> $v_1/v_2=\sin\alpha/\sin\beta$ ; la fréquence est conservée.</li>
+            <li><strong>Interférences :</strong> max. $\Delta=k\lambda$, min. $\Delta=(2k+1)\lambda/2$.</li>
+            <li><strong>Onde stationnaire (corde) :</strong> $f_n=n\,v/(2l)$.</li>
+            <li><strong>Son :</strong> $16\,\text{Hz}$–$20\,000\,\text{Hz}$ ; $L=10\log(I/I_0)$ en dB.</li>
+            <li><strong>Tube fermé à une extrémité :</strong> $f_k=(2k+1)\,v/(4l)$ — seulement les harmoniques impaires.</li>
+            <li><strong>Effet Doppler :</strong> source qui s'approche ⇒ fréquence perçue plus élevée ; qui s'éloigne ⇒ plus basse.</li>
+        </ul>
+    </div>
+
+    <script>
+        (function() {
+            var body = document.body;
+            var btnCs = document.getElementById('btn-cs');
+            var btnFr = document.getElementById('btn-fr');
+
+            function setLanguage(lang) {
+                body.classList.remove('lang-cs', 'lang-fr');
+                if (lang === 'cs') {
+                    body.classList.add('lang-cs');
+                    btnCs.classList.add('active');
+                    btnFr.classList.remove('active');
+                } else if (lang === 'fr') {
+                    body.classList.add('lang-fr');
+                    btnFr.classList.add('active');
+                    btnCs.classList.remove('active');
+                }
+                localStorage.setItem('preferredLangVlneni', lang);
+
+                if (window.MathJax && typeof MathJax.typeset === 'function') {
+                    setTimeout(function() {
+                        try { MathJax.typeset(); } catch (e) { console.warn('MathJax typeset failed:', e); }
+                    }, 50);
+                }
+            }
+
+            var saved = localStorage.getItem('preferredLangVlneni');
+            if (saved === 'fr') { setLanguage('fr'); } else { setLanguage('cs'); }
+
+            btnCs.addEventListener('click', function() { setLanguage('cs'); });
+            btnFr.addEventListener('click', function() { setLanguage('fr'); });
+        })();
+    </script>
+
+</body>
+</html>

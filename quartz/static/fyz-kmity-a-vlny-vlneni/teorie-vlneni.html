@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mechanické vlnění a zvuk</title>
+<script src="https://cdn.tailwindcss.com/"></script>
+<style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; }
+    .nav-pill { cursor: pointer; user-select: none; white-space: nowrap; }
+    .badge { display:inline-block; font-size:.7rem; font-weight:700; letter-spacing:.05em; padding:2px 10px; border-radius:9999px; }
+    figure.photo { margin:0; }
+    figure.photo img { border-radius:.75rem; border:1px solid #e2e8f0; width:100%; object-fit:cover; background:#0f172a; }
+    .photo-cap { font-size:.8rem; color:#64748b; margin-top:.4rem; text-align:center; }
+    .formula-box { font-family: 'Cambria Math', Georgia, serif; }
+    .diagram-box svg { max-width: 100%; height: auto; }
+    svg text, svg tspan { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; }
+    mjx-container svg { display: inline !important; }
+    mjx-container { display: inline-block !important; }
+    mjx-container[display="true"] { display: block !important; margin: 1em auto !important; }
+    .lang-container.hidden { display: none; }
+    .lang-switch-btn {
+        position: fixed; top: 16px; right: 16px; z-index: 1000;
+        background: white; border: 1px solid #cbd5e1; border-radius: 9999px;
+        padding: 8px 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        font-weight: 600; cursor: pointer; display: flex; gap: 8px; align-items: center;
+        transition: all 0.2s;
+    }
+    .lang-switch-btn:hover { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+    .lang-indicator {
+        display: inline-block; width: 22px; height: 22px; border-radius: 50%;
+        background: #2563eb; color: white; text-align: center; line-height: 22px;
+        font-size: 11px; font-weight: bold;
+    }
+    .lang-indicator.fr { background: #dc2626; }
+    @media (max-width: 640px) {
+        .lang-switch-btn { top: 8px; right: 8px; padding: 6px 10px; }
+    }
+</style>
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        svg: { fontCache: 'local' },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<button id="langToggle" class="lang-switch-btn" onclick="toggleLanguage()">
+    <span class="lang-indicator fr" id="langIndicator">FR</span>
+    <span class="lang-label" id="langLabel">Français</span>
+</button>
+
+<div id="cz-content" class="lang-container">
+
+<header class="bg-gradient-to-br from-blue-800 to-indigo-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-blue-200 text-sm font-semibold tracking-wider uppercase">
+            <span>🔵 Mechanické kmitání a vlnění</span><span>•</span><span>Část 2: Vlnění a zvuk</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Mechanické vlnění a zvuk</h1>
+        <p class="text-lg md:text-xl text-blue-50 max-w-3xl leading-relaxed">
+            Vznik a druhy vlnění, rovnice postupného vlnění, odraz a lom, interference, stojaté vlnění, zvuk a jeho vlastnosti, rezonance a Dopplerův jev.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('uvod')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Vznik vlnění</span>
+        <span onclick="scrollToId('veliciny')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Veličiny</span>
+        <span onclick="scrollToId('rovnice')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Rovnice vlnění</span>
+        <span onclick="scrollToId('odraz')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Odraz, lom, ohyb</span>
+        <span onclick="scrollToId('interference')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Interference</span>
+        <span onclick="scrollToId('stojate')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Stojaté vlnění</span>
+        <span onclick="scrollToId('zvuk')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Zvuk</span>
+        <span onclick="scrollToId('rezonance')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Rezonance, Doppler</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- 1. VZNIK A DRUHY VLNĚNÍ -->
+    <section id="uvod" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Vznik a druhy vlnění</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-4"><strong>Mechanické vlnění</strong> je děj, při němž se rozruch (kmitání) šíří pružným prostředím z místa na místo. Přenáší se energie a hybnost, nikoli však částice prostředí — ty jen kmitají kolem svých rovnovážných poloh. Podmínkou vzniku vlnění je <strong>zdroj kmitů</strong> a <strong>pružné prostředí</strong>, jehož částice jsou vzájemně vázány pružnými silami (proto se rozruch od kmitajícího zdroje předává sousedním částicím se zpožděním).</p>
+            <p class="text-slate-700">Mechanické vlnění se na rozdíl od vlnění elektromagnetického <strong>nemůže šířit vakuem</strong> — vyžaduje látkové prostředí (pevnou látku, kapalinu nebo plyn).</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Příčné a podélné vlnění</h3>
+            <p class="text-slate-700 mb-4">Podle vztahu mezi směrem kmitání částic a směrem šíření vlnění rozlišujeme:</p>
+            <div class="diagram-box mb-4 max-w-md mx-auto">
+                    <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="300" height="180" fill="#eff6ff" rx="12"/>
+                        <path d="M 20.0 90.0 Q 21.9 86.6 22.8 85.0 Q 23.7 83.3 24.6 81.6 Q 25.6 80.0 26.5 78.3 Q 27.4 76.7 28.4 75.1 Q 29.3 73.5 30.2 71.9 Q 31.1 70.3 32.1 68.8 Q 33.0 67.3 33.9 65.8 Q 34.9 64.4 35.8 62.9 Q 36.7 61.5 37.6 60.2 Q 38.6 58.8 39.5 57.5 Q 40.4 56.3 41.4 55.1 Q 42.3 53.9 43.2 52.7 Q 44.1 51.6 45.1 50.6 Q 46.0 49.5 46.9 48.6 Q 47.9 47.7 48.8 46.8 Q 49.7 46.0 50.6 45.2 Q 51.6 44.5 52.5 43.8 Q 53.4 43.2 54.4 42.7 Q 55.3 42.1 56.2 41.7 Q 57.1 41.3 58.1 40.9 Q 59.0 40.6 59.9 40.4 Q 60.9 40.2 61.8 40.1 Q 62.7 40.0 63.6 40.0 Q 64.6 40.1 65.5 40.2 Q 66.4 40.3 67.4 40.6 Q 68.3 40.8 69.2 41.2 Q 70.1 41.5 71.1 42.0 Q 72.0 42.4 72.9 43.0 Q 73.9 43.6 74.8 44.3 Q 75.7 45.0 76.6 45.7 Q 77.6 46.5 78.5 47.4 Q 79.4 48.3 80.4 49.2 Q 81.3 50.2 82.2 51.3 Q 83.1 52.3 84.1 53.5 Q 85.0 54.6 85.9 55.9 Q 86.9 57.1 87.8 58.4 Q 88.7 59.7 89.6 61.1 Q 90.6 62.5 91.5 63.9 Q 92.4 65.3 93.4 66.8 Q 94.3 68.3 95.2 69.8 Q 96.1 71.4 97.1 73.0 Q 98.0 74.5 98.9 76.2 Q 99.9 77.8 100.8 79.4 Q 101.7 81.1 102.6 82.7 Q 103.6 84.4 104.5 86.1 Q 105.4 87.8 106.4 89.4 Q 107.3 91.1 108.2 92.8 Q 109.1 94.5 110.1 96.2 Q 111.0 97.8 111.9 99.5 Q 112.9 101.1 113.8 102.8 Q 114.7 104.4 115.6 106.0 Q 116.6 107.6 117.5 109.1 Q 118.4 110.7 119.4 112.2 Q 120.3 113.7 121.2 115.1 Q 122.1 116.6 123.1 118.0 Q 124.0 119.4 124.9 120.7 Q 125.9 122.0 126.8 123.3 Q 127.7 124.6 128.6 125.7 Q 129.6 126.9 130.5 128.0 Q 131.4 129.1 132.4 130.1 Q 133.3 131.1 134.2 132.0 Q 135.1 132.9 136.1 133.7 Q 137.0 134.6 137.9 135.3 Q 138.9 136.0 139.8 136.6 Q 140.7 137.2 141.6 137.7 Q 142.6 138.2 143.5 138.6 Q 144.4 139.0 145.4 139.3 Q 146.3 139.5 147.2 139.7 Q 148.1 139.9 149.1 139.9 Q 150.0 140.0 150.9 139.9 Q 151.9 139.9 152.8 139.7 Q 153.7 139.5 154.6 139.3 Q 155.6 139.0 156.5 138.6 Q 157.4 138.2 158.4 137.7 Q 159.3 137.2 160.2 136.6 Q 161.1 136.0 162.1 135.3 Q 163.0 134.6 163.9 133.7 Q 164.9 132.9 165.8 132.0 Q 166.7 131.1 167.6 130.1 Q 168.6 129.1 169.5 128.0 Q 170.4 126.9 171.4 125.7 Q 172.3 124.6 173.2 123.3 Q 174.1 122.0 175.1 120.7 Q 176.0 119.4 176.9 118.0 Q 177.9 116.6 178.8 115.1 Q 179.7 113.7 180.6 112.2 Q 181.6 110.7 182.5 109.1 Q 183.4 107.6 184.4 106.0 Q 185.3 104.4 186.2 102.8 Q 187.1 101.1 188.1 99.5 Q 189.0 97.8 189.9 96.2 Q 190.9 94.5 191.8 92.8 Q 192.7 91.1 193.6 89.4 Q 194.6 87.8 195.5 86.1 Q 196.4 84.4 197.4 82.7 Q 198.3 81.1 199.2 79.4 Q 200.1 77.8 201.1 76.2 Q 202.0 74.5 202.9 73.0 Q 203.9 71.4 204.8 69.8 Q 205.7 68.3 206.6 66.8 Q 207.6 65.3 208.5 63.9 Q 209.4 62.5 210.4 61.1 Q 211.3 59.7 212.2 58.4 Q 213.1 57.1 214.1 55.9 Q 215.0 54.6 215.9 53.5 Q 216.9 52.3 217.8 51.3 Q 218.7 50.2 219.6 49.2 Q 220.6 48.3 221.5 47.4 Q 222.4 46.5 223.4 45.7 Q 224.3 45.0 225.2 44.3 Q 226.1 43.6 227.1 43.0 Q 228.0 42.4 228.9 42.0 Q 229.9 41.5 230.8 41.2 Q 231.7 40.8 232.6 40.6 Q 233.6 40.3 234.5 40.2 Q 235.4 40.1 236.4 40.0 Q 237.3 40.0 238.2 40.1 Q 239.1 40.2 240.1 40.4 Q 241.0 40.6 241.9 40.9 Q 242.9 41.3 243.8 41.7 Q 244.7 42.1 245.6 42.7 Q 246.6 43.2 247.5 43.8 Q 248.4 44.5 249.4 45.2 Q 250.3 46.0 251.2 46.8 Q 252.1 47.7 253.1 48.6 Q 254.0 49.5 254.9 50.6 Q 255.9 51.6 256.8 52.7 Q 257.7 53.9 258.6 55.1 Q 259.6 56.3 260.5 57.5 Q 261.4 58.8 262.4 60.2 Q 263.3 61.5 264.2 62.9 Q 265.1 64.4 266.1 65.8 Q 267.0 67.3 267.9 68.8 Q 268.9 70.3 269.8 71.9 Q 270.7 73.5 271.6 75.1 Q 272.6 76.7 273.5 78.3 Q 274.4 80.0 275.4 81.6 Q 276.3 83.3 277.2 85.0 Q 278.1 86.6 279.1 88.3 Q 280.0 90.0 280.0 90.0" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                        <line x1="150" y1="40" x2="150" y2="140" stroke="#b91c1c" stroke-width="2" stroke-dasharray="3"/>
+                        <path d="M150,60 l-8,10 l16,0 z" fill="#b91c1c"/>
+                        <path d="M150,120 l-8,-10 l16,0 z" fill="#b91c1c"/>
+                        <line x1="250" y1="90" x2="285" y2="90" stroke="#059669" stroke-width="2.5" marker-end="url(#arrgreen1)"/>
+                        <defs><marker id="arrgreen1" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#059669"/></marker></defs>
+                        <text x="252" y="80" font-size="11" fill="#059669">šíření</text>
+                        <text x="60" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">Příčné vlnění</text>
+                        <text x="130" y="35" font-size="11" fill="#b91c1c">kmitání ⊥ šíření</text>
+                    </svg>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Podélné vlnění — zhušťování a zřeďování</h3>
+            <p class="text-slate-700 mb-3">U podélného vlnění kmitají částice prostředí <strong>ve směru šíření</strong> vlnění (např. podélné vlny v pružině, zvuk ve vzduchu). V prostředí tak vznikají místa se zvýšenou hustotou částic — <strong>zhuštění (kondenzace)</strong> — a místa se sníženou hustotou — <strong>zředění (rarefakce)</strong>, které se šíří prostředím.</p>
+            <svg viewBox="0 0 640 140" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="140" fill="#eff6ff" rx="12"/>
+                <g fill="#1d4ed8">
+                    <circle cx="30.0" cy="70" r="7"/><circle cx="50.2" cy="70" r="7"/><circle cx="70.0" cy="70" r="7"/><circle cx="89.1" cy="70" r="7"/><circle cx="107.3" cy="70" r="7"/><circle cx="124.5" cy="70" r="7"/><circle cx="140.7" cy="70" r="7"/><circle cx="156.2" cy="70" r="7"/><circle cx="171.3" cy="70" r="7"/><circle cx="186.2" cy="70" r="7"/><circle cx="201.4" cy="70" r="7"/><circle cx="217.3" cy="70" r="7"/><circle cx="234.0" cy="70" r="7"/><circle cx="251.7" cy="70" r="7"/><circle cx="270.4" cy="70" r="7"/><circle cx="289.9" cy="70" r="7"/><circle cx="309.9" cy="70" r="7"/><circle cx="330.1" cy="70" r="7"/><circle cx="350.1" cy="70" r="7"/><circle cx="369.6" cy="70" r="7"/><circle cx="388.3" cy="70" r="7"/><circle cx="406.0" cy="70" r="7"/><circle cx="422.7" cy="70" r="7"/><circle cx="438.6" cy="70" r="7"/><circle cx="453.8" cy="70" r="7"/><circle cx="468.7" cy="70" r="7"/><circle cx="483.8" cy="70" r="7"/><circle cx="499.3" cy="70" r="7"/><circle cx="515.5" cy="70" r="7"/><circle cx="532.7" cy="70" r="7"/><circle cx="550.9" cy="70" r="7"/><circle cx="570.0" cy="70" r="7"/><circle cx="589.8" cy="70" r="7"/><circle cx="610.0" cy="70" r="7"/>
+                </g>
+                <rect x="180" y="15" width="45" height="20" fill="#fecaca" opacity="0.6"/>
+                <text x="184" y="30" font-size="11" fill="#991b1b" font-weight="bold">zhuštění</text>
+                <rect x="65" y="105" width="55" height="20" fill="#bbf7d0" opacity="0.6"/>
+                <text x="68" y="120" font-size="11" fill="#166534" font-weight="bold">zředění</text>
+                <line x1="360" y1="120" x2="400" y2="120" stroke="#059669" stroke-width="2.5" marker-end="url(#arrgreen2)"/>
+                <defs><marker id="arrgreen2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#059669"/></marker></defs>
+                <text x="355" y="110" font-size="12" fill="#059669">směr šíření</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Podélné vlnění vzniká ve všech typech prostředí (pevném, kapalném i plynném), zatímco příčné mechanické vlnění se šíří jen v pevných látkách a na volných hladinách kapalin — plyny a kapaliny neumožňují přenos smykového napětí potřebného pro příčné kmitání.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Vlnoplocha a paprsek</h3>
+            <p class="text-slate-700">Množina bodů prostředí, které v daném okamžiku kmitají se stejnou fází, tvoří <strong>vlnoplochu</strong> (u bodového zdroje jsou vlnoplochy kulové, u vzdáleného zdroje je lze v malé oblasti považovat za rovinné). Směr šíření vlnění, kolmý na vlnoplochu, znázorňuje <strong>paprsek</strong>.</p>
+        </div>
+    </section>
+
+    <!-- 2. VELIČINY POSTUPNÉHO VLNĚNÍ -->
+    <section id="veliciny" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Popis postupného vlnění — základní veličiny</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Každý bod prostředí, kterým vlnění prochází, kmitá se stejnou periodou <em>T</em> a frekvencí <em>f</em> jako zdroj, ale se zpožděním úměrným jeho vzdálenosti od zdroje. Vlnění popisujeme těmito veličinami:</p>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                <li><strong>Perioda</strong> $T$ — doba jednoho kmitu částice prostředí (stejná jako perioda zdroje).</li>
+                <li><strong>Frekvence</strong> $f = 1/T$ — počet kmitů částice za jednotku času.</li>
+                <li><strong>Vlnová délka</strong> $\lambda$ — vzdálenost, na kterou se vlnění rozšíří za dobu jedné periody $T$; zároveň vzdálenost dvou nejbližších bodů kmitajících ve stejné fázi.</li>
+                <li><strong>Rychlost šíření vlnění</strong> $v$ — rychlost, kterou postupuje vlnoplocha (rozruch) prostředím; závisí na vlastnostech prostředí, nikoli na frekvenci zdroje.</li>
+            </ul>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-4 mt-4">$v = \dfrac{\lambda}{T} = \lambda f$</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Okamžitý obraz vlnění (vlnová „fotografie“)</h3>
+            <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="240" fill="#eff6ff" rx="12"/>
+                <line x1="30" y1="120" x2="620" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="30" y1="20" x2="30" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+                <text x="605" y="115" font-size="13" fill="#334155">x</text>
+                <text x="15" y="30" font-size="13" fill="#334155">y</text>
+                <path d="M 40.0 120.0 Q 44.1 113.3 46.2 109.9 Q 48.3 106.6 50.4 103.3 Q 52.4 100.0 54.5 96.8 Q 56.6 93.6 58.6 90.6 Q 60.7 87.5 62.8 84.5 Q 64.9 81.5 66.9 78.7 Q 69.0 75.9 71.1 73.3 Q 73.1 70.7 75.2 68.2 Q 77.3 65.8 79.4 63.6 Q 81.4 61.4 83.5 59.4 Q 85.6 57.4 87.6 55.7 Q 89.7 54.0 91.8 52.5 Q 93.9 51.0 95.9 49.9 Q 98.0 48.7 100.1 47.8 Q 102.1 46.9 104.2 46.3 Q 106.3 45.7 108.4 45.4 Q 110.4 45.1 112.5 45.1 Q 114.6 45.1 116.6 45.4 Q 118.7 45.7 120.8 46.3 Q 122.9 46.9 124.9 47.8 Q 127.0 48.7 129.1 49.9 Q 131.1 51.0 133.2 52.5 Q 135.3 54.0 137.4 55.7 Q 139.4 57.4 141.5 59.4 Q 143.6 61.4 145.6 63.6 Q 147.7 65.8 149.8 68.2 Q 151.9 70.7 153.9 73.3 Q 156.0 75.9 158.1 78.7 Q 160.1 81.5 162.2 84.5 Q 164.3 87.5 166.4 90.6 Q 168.4 93.6 170.5 96.8 Q 172.6 100.0 174.6 103.3 Q 176.7 106.6 178.8 109.9 Q 180.9 113.3 182.9 116.6 Q 185.0 120.0 187.1 123.4 Q 189.1 126.7 191.2 130.1 Q 193.3 133.4 195.4 136.7 Q 197.4 140.0 199.5 143.2 Q 201.6 146.4 203.6 149.4 Q 205.7 152.5 207.8 155.5 Q 209.9 158.5 211.9 161.3 Q 214.0 164.1 216.1 166.7 Q 218.1 169.3 220.2 171.8 Q 222.3 174.2 224.4 176.4 Q 226.4 178.6 228.5 180.6 Q 230.6 182.6 232.6 184.3 Q 234.7 186.0 236.8 187.5 Q 238.9 189.0 240.9 190.1 Q 243.0 191.3 245.1 192.2 Q 247.1 193.1 249.2 193.7 Q 251.3 194.3 253.4 194.6 Q 255.4 194.9 257.5 194.9 Q 259.6 194.9 261.6 194.6 Q 263.7 194.3 265.8 193.7 Q 267.9 193.1 269.9 192.2 Q 272.0 191.3 274.1 190.1 Q 276.1 189.0 278.2 187.5 Q 280.3 186.0 282.4 184.3 Q 284.4 182.6 286.5 180.6 Q 288.6 178.6 290.6 176.4 Q 292.7 174.2 294.8 171.8 Q 296.9 169.3 298.9 166.7 Q 301.0 164.1 303.1 161.3 Q 305.1 158.5 307.2 155.5 Q 309.3 152.5 311.4 149.4 Q 313.4 146.4 315.5 143.2 Q 317.6 140.0 319.6 136.7 Q 321.7 133.4 323.8 130.1 Q 325.9 126.7 327.9 123.4 Q 330.0 120.0 332.1 116.6 Q 334.1 113.3 336.2 109.9 Q 338.3 106.6 340.4 103.3 Q 342.4 100.0 344.5 96.8 Q 346.6 93.6 348.6 90.6 Q 350.7 87.5 352.8 84.5 Q 354.9 81.5 356.9 78.7 Q 359.0 75.9 361.1 73.3 Q 363.1 70.7 365.2 68.2 Q 367.3 65.8 369.4 63.6 Q 371.4 61.4 373.5 59.4 Q 375.6 57.4 377.6 55.7 Q 379.7 54.0 381.8 52.5 Q 383.9 51.0 385.9 49.9 Q 388.0 48.7 390.1 47.8 Q 392.1 46.9 394.2 46.3 Q 396.3 45.7 398.4 45.4 Q 400.4 45.1 402.5 45.1 Q 404.6 45.1 406.6 45.4 Q 408.7 45.7 410.8 46.3 Q 412.9 46.9 414.9 47.8 Q 417.0 48.7 419.1 49.9 Q 421.1 51.0 423.2 52.5 Q 425.3 54.0 427.4 55.7 Q 429.4 57.4 431.5 59.4 Q 433.6 61.4 435.6 63.6 Q 437.7 65.8 439.8 68.2 Q 441.9 70.7 443.9 73.3 Q 446.0 75.9 448.1 78.7 Q 450.1 81.5 452.2 84.5 Q 454.3 87.5 456.4 90.6 Q 458.4 93.6 460.5 96.8 Q 462.6 100.0 464.6 103.3 Q 466.7 106.6 468.8 109.9 Q 470.9 113.3 472.9 116.6 Q 475.0 120.0 477.1 123.4 Q 479.1 126.7 481.2 130.1 Q 483.3 133.4 485.4 136.7 Q 487.4 140.0 489.5 143.2 Q 491.6 146.4 493.6 149.4 Q 495.7 152.5 497.8 155.5 Q 499.9 158.5 501.9 161.3 Q 504.0 164.1 506.1 166.7 Q 508.1 169.3 510.2 171.8 Q 512.3 174.2 514.4 176.4 Q 516.4 178.6 518.5 180.6 Q 520.6 182.6 522.6 184.3 Q 524.7 186.0 526.8 187.5 Q 528.9 189.0 530.9 190.1 Q 533.0 191.3 535.1 192.2 Q 537.1 193.1 539.2 193.7 Q 541.3 194.3 543.4 194.6 Q 545.4 194.9 547.5 194.9 Q 549.6 194.9 551.6 194.6 Q 553.7 194.3 555.8 193.7 Q 557.9 193.1 559.9 192.2 Q 562.0 191.3 564.1 190.1 Q 566.1 189.0 568.2 187.5 Q 570.3 186.0 572.4 184.3 Q 574.4 182.6 576.5 180.6 Q 578.6 178.6 580.6 176.4 Q 582.7 174.2 584.8 171.8 Q 586.9 169.3 588.9 166.7 Q 591.0 164.1 593.1 161.3 Q 595.1 158.5 597.2 155.5 Q 599.3 152.5 601.4 149.4 Q 603.4 146.4 605.5 143.2 Q 607.6 140.0 609.6 136.7 Q 611.7 133.4 613.8 130.1 Q 615.9 126.7 617.9 123.4 Q 620.0 120.0 620.0 120.0" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                <line x1="30" y1="45" x2="612" y2="45" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <line x1="30" y1="195" x2="612" y2="195" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <text x="2" y="41" font-size="13" fill="#1e3a8a">y<tspan baseline-shift="sub" font-size="9">m</tspan></text>
+                <text x="2" y="200" font-size="13" fill="#1e3a8a">−y<tspan baseline-shift="sub" font-size="9">m</tspan></text>
+                <line x1="112" y1="130" x2="112" y2="140" stroke="#b91c1c" stroke-width="2"/>
+                <line x1="402" y1="130" x2="402" y2="140" stroke="#b91c1c" stroke-width="2"/>
+                <path d="M 112 135 L 402 135" stroke="#b91c1c" stroke-width="1.5" marker-start="url(#larr)" marker-end="url(#larr)"/>
+                <text x="248" y="150" font-size="13" fill="#b91c1c" font-weight="bold">λ</text>
+                <defs><marker id="larr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#b91c1c"/></marker></defs>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Graf zachycuje výchylky všech bodů prostředí v jednom pevném okamžiku (v závislosti na souřadnici $x$). Vzdálenost mezi dvěma sousedními body se stejnou fází (např. dva sousední vrcholy) je vlnová délka $\lambda$.</p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+            <p class="font-semibold text-amber-900 mb-2">Řešený příklad:</p>
+            <p class="text-slate-700 text-sm mb-2">Zdroj vlnění kmitá s frekvencí $f = 5{,}0\,\text{Hz}$, vlnění se šíří rychlostí $v = 2{,}0\,\text{m}\cdot\text{s}^{-1}$. Určete vlnovou délku a periodu vlnění.</p>
+            <p class="text-slate-600 text-sm">Řešení: $T = 1/f = 1/5{,}0 = 0{,}20\,\text{s}$; &nbsp; $\lambda = v/f = 2{,}0/5{,}0 = 0{,}40\,\text{m}$.</p>
+        </div>
+    </section>
+
+    <!-- 3. ROVNICE POSTUPNÉHO VLNĚNÍ -->
+    <section id="rovnice" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Rovnice postupného vlnění</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3">Bod prostředí ve vzdálenosti $x$ od zdroje se rozkmitá se zpožděním $x/v$ potřebným k tomu, aby k němu vlnění doputovalo. Kmitá-li zdroj harmonicky podle $y = y_m\sin(\omega t)$, pak bod ve vzdálenosti $x$ kmitá podle stejného zákona, ale s časem posunutým o $x/v$:</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-4 mb-3">$y = y_m \sin\!\left[\omega\left(t - \dfrac{x}{v}\right)\right] = y_m\sin\!\left(2\pi\Big(\dfrac{t}{T}-\dfrac{x}{\lambda}\Big)\right)$</p>
+            <p class="text-slate-600 text-sm">Tato rovnice popisuje výchylku $y$ libovolného bodu prostředí ve vzdálenosti $x$ od zdroje v libovolném čase $t$ (pro vlnění šířící se ve směru rostoucího $x$; vlnění opačným směrem odpovídá znaménko $+$ místo $-$).</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 diagram-box">
+                <h3 class="font-bold text-blue-800 mb-3 text-sm">Řez v pevném čase — $y(x)$</h3>
+                <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="640" height="240" fill="#eff6ff" rx="12"/>
+                    <line x1="30" y1="120" x2="620" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+                    <line x1="30" y1="20" x2="30" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+                    <text x="600" y="115" font-size="13" fill="#334155">x</text>
+                    <text x="15" y="30" font-size="13" fill="#334155">y</text>
+                    <path d="M 40.0 115.0 Q 44.1 110.3 46.1 107.9 Q 48.1 105.6 50.2 103.3 Q 52.2 101.0 54.2 98.7 Q 56.3 96.4 58.3 94.1 Q 60.4 91.9 62.4 89.7 Q 64.4 87.5 66.5 85.4 Q 68.5 83.2 70.5 81.2 Q 72.6 79.1 74.6 77.1 Q 76.6 75.1 78.7 73.2 Q 80.7 71.4 82.8 69.6 Q 84.8 67.8 86.8 66.1 Q 88.9 64.4 90.9 62.8 Q 92.9 61.3 95.0 59.8 Q 97.0 58.4 99.0 57.0 Q 101.1 55.7 103.1 54.5 Q 105.1 53.4 107.2 52.3 Q 109.2 51.3 111.2 50.4 Q 113.3 49.5 115.3 48.7 Q 117.4 48.0 119.4 47.4 Q 121.4 46.8 123.5 46.3 Q 125.5 45.9 127.5 45.6 Q 129.6 45.3 131.6 45.1 Q 133.6 45.0 135.7 45.0 Q 137.7 45.1 139.8 45.3 Q 141.8 45.4 143.8 45.8 Q 145.9 46.1 147.9 46.6 Q 149.9 47.1 152.0 47.8 Q 154.0 48.4 156.0 49.2 Q 158.1 50.0 160.1 51.0 Q 162.1 51.9 164.2 53.0 Q 166.2 54.1 168.2 55.3 Q 170.3 56.6 172.3 57.9 Q 174.4 59.3 176.4 60.8 Q 178.4 62.3 180.5 63.9 Q 182.5 65.5 184.5 67.2 Q 186.6 68.9 188.6 70.8 Q 190.6 72.6 192.7 74.5 Q 194.7 76.4 196.8 78.4 Q 198.8 80.5 200.8 82.5 Q 202.9 84.6 204.9 86.8 Q 206.9 88.9 209.0 91.2 Q 211.0 93.4 213.0 95.6 Q 215.1 97.9 217.1 100.2 Q 219.1 102.5 221.2 104.8 Q 223.2 107.2 225.2 109.5 Q 227.3 111.9 229.3 114.2 Q 231.4 116.6 233.4 118.9 Q 235.4 121.3 237.5 123.6 Q 239.5 126.0 241.5 128.3 Q 243.6 130.6 245.6 132.9 Q 247.6 135.1 249.7 137.4 Q 251.7 139.6 253.8 141.8 Q 255.8 143.9 257.8 146.1 Q 259.9 148.2 261.9 150.2 Q 263.9 152.2 266.0 154.2 Q 268.0 156.1 270.0 158.0 Q 272.1 159.9 274.1 161.6 Q 276.1 163.4 278.2 165.0 Q 280.2 166.7 282.2 168.2 Q 284.3 169.7 286.3 171.1 Q 288.4 172.5 290.4 173.8 Q 292.4 175.1 294.5 176.2 Q 296.5 177.4 298.5 178.4 Q 300.6 179.4 302.6 180.2 Q 304.6 181.1 306.7 181.8 Q 308.7 182.5 310.8 183.0 Q 312.8 183.6 314.8 184.0 Q 316.9 184.4 318.9 184.6 Q 320.9 184.8 323.0 184.9 Q 325.0 185.0 327.0 184.9 Q 329.1 184.8 331.1 184.6 Q 333.1 184.4 335.2 184.0 Q 337.2 183.6 339.2 183.0 Q 341.3 182.5 343.3 181.8 Q 345.4 181.1 347.4 180.2 Q 349.4 179.4 351.5 178.4 Q 353.5 177.4 355.5 176.2 Q 357.6 175.1 359.6 173.8 Q 361.6 172.5 363.7 171.1 Q 365.7 169.7 367.8 168.2 Q 369.8 166.7 371.8 165.0 Q 373.9 163.4 375.9 161.6 Q 377.9 159.9 380.0 158.0 Q 382.0 156.1 384.0 154.2 Q 386.1 152.2 388.1 150.2 Q 390.1 148.2 392.2 146.1 Q 394.2 143.9 396.2 141.8 Q 398.3 139.6 400.3 137.4 Q 402.4 135.1 404.4 132.9 Q 406.4 130.6 408.5 128.3 Q 410.5 126.0 412.5 123.6 Q 414.6 121.3 416.6 118.9 Q 418.6 116.6 420.7 114.2 Q 422.7 111.9 424.8 109.5 Q 426.8 107.2 428.8 104.8 Q 430.9 102.5 432.9 100.2 Q 434.9 97.9 437.0 95.6 Q 439.0 93.4 441.0 91.2 Q 443.1 88.9 445.1 86.8 Q 447.1 84.6 449.2 82.5 Q 451.2 80.5 453.2 78.4 Q 455.3 76.4 457.3 74.5 Q 459.4 72.6 461.4 70.8 Q 463.4 68.9 465.5 67.2 Q 467.5 65.5 469.5 63.9 Q 471.6 62.3 473.6 60.8 Q 475.6 59.3 477.7 57.9 Q 479.7 56.6 481.8 55.3 Q 483.8 54.1 485.8 53.0 Q 487.9 51.9 489.9 51.0 Q 491.9 50.0 494.0 49.2 Q 496.0 48.4 498.0 47.8 Q 500.1 47.1 502.1 46.6 Q 504.1 46.1 506.2 45.8 Q 508.2 45.4 510.2 45.3 Q 512.3 45.1 514.3 45.0 Q 516.4 45.0 518.4 45.1 Q 520.4 45.3 522.5 45.6 Q 524.5 45.9 526.5 46.3 Q 528.6 46.8 530.6 47.4 Q 532.6 48.0 534.7 48.7 Q 536.7 49.5 538.8 50.4 Q 540.8 51.3 542.8 52.3 Q 544.9 53.4 546.9 54.5 Q 548.9 55.7 551.0 57.0 Q 553.0 58.4 555.0 59.8 Q 557.1 61.3 559.1 62.8 Q 561.1 64.4 563.2 66.1 Q 565.2 67.8 567.2 69.6 Q 569.3 71.4 571.3 73.2 Q 573.4 75.1 575.4 77.1 Q 577.4 79.1 579.5 81.2 Q 581.5 83.2 583.5 85.4 Q 585.6 87.5 587.6 89.7 Q 589.6 91.9 591.7 94.1 Q 593.7 96.4 595.8 98.7 Q 597.8 101.0 599.8 103.3 Q 601.9 105.6 603.9 107.9 Q 605.9 110.3 608.0 112.6 Q 610.0 115.0 610.0 115.0" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                    <text x="330" y="230" font-size="12" fill="#64748b" text-anchor="middle">okamžik $t_0$: nejbližší stejná fáze ve vzdálenosti λ</text>
+                </svg>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 diagram-box">
+                <h3 class="font-bold text-blue-800 mb-3 text-sm">Kmitání jednoho bodu — $y(t)$</h3>
+                <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="640" height="240" fill="#f0fdf4" rx="12"/>
+                    <line x1="30" y1="120" x2="620" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+                    <line x1="30" y1="20" x2="30" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+                    <text x="600" y="115" font-size="13" fill="#334155">t</text>
+                    <text x="15" y="30" font-size="13" fill="#334155">y</text>
+                    <path d="M 40.0 115.0 Q 44.1 110.3 46.1 107.9 Q 48.1 105.6 50.2 103.3 Q 52.2 101.0 54.2 98.7 Q 56.3 96.4 58.3 94.1 Q 60.4 91.9 62.4 89.7 Q 64.4 87.5 66.5 85.4 Q 68.5 83.2 70.5 81.2 Q 72.6 79.1 74.6 77.1 Q 76.6 75.1 78.7 73.2 Q 80.7 71.4 82.8 69.6 Q 84.8 67.8 86.8 66.1 Q 88.9 64.4 90.9 62.8 Q 92.9 61.3 95.0 59.8 Q 97.0 58.4 99.0 57.0 Q 101.1 55.7 103.1 54.5 Q 105.1 53.4 107.2 52.3 Q 109.2 51.3 111.2 50.4 Q 113.3 49.5 115.3 48.7 Q 117.4 48.0 119.4 47.4 Q 121.4 46.8 123.5 46.3 Q 125.5 45.9 127.5 45.6 Q 129.6 45.3 131.6 45.1 Q 133.6 45.0 135.7 45.0 Q 137.7 45.1 139.8 45.3 Q 141.8 45.4 143.8 45.8 Q 145.9 46.1 147.9 46.6 Q 149.9 47.1 152.0 47.8 Q 154.0 48.4 156.0 49.2 Q 158.1 50.0 160.1 51.0 Q 162.1 51.9 164.2 53.0 Q 166.2 54.1 168.2 55.3 Q 170.3 56.6 172.3 57.9 Q 174.4 59.3 176.4 60.8 Q 178.4 62.3 180.5 63.9 Q 182.5 65.5 184.5 67.2 Q 186.6 68.9 188.6 70.8 Q 190.6 72.6 192.7 74.5 Q 194.7 76.4 196.8 78.4 Q 198.8 80.5 200.8 82.5 Q 202.9 84.6 204.9 86.8 Q 206.9 88.9 209.0 91.2 Q 211.0 93.4 213.0 95.6 Q 215.1 97.9 217.1 100.2 Q 219.1 102.5 221.2 104.8 Q 223.2 107.2 225.2 109.5 Q 227.3 111.9 229.3 114.2 Q 231.4 116.6 233.4 118.9 Q 235.4 121.3 237.5 123.6 Q 239.5 126.0 241.5 128.3 Q 243.6 130.6 245.6 132.9 Q 247.6 135.1 249.7 137.4 Q 251.7 139.6 253.8 141.8 Q 255.8 143.9 257.8 146.1 Q 259.9 148.2 261.9 150.2 Q 263.9 152.2 266.0 154.2 Q 268.0 156.1 270.0 158.0 Q 272.1 159.9 274.1 161.6 Q 276.1 163.4 278.2 165.0 Q 280.2 166.7 282.2 168.2 Q 284.3 169.7 286.3 171.1 Q 288.4 172.5 290.4 173.8 Q 292.4 175.1 294.5 176.2 Q 296.5 177.4 298.5 178.4 Q 300.6 179.4 302.6 180.2 Q 304.6 181.1 306.7 181.8 Q 308.7 182.5 310.8 183.0 Q 312.8 183.6 314.8 184.0 Q 316.9 184.4 318.9 184.6 Q 320.9 184.8 323.0 184.9 Q 325.0 185.0 327.0 184.9 Q 329.1 184.8 331.1 184.6 Q 333.1 184.4 335.2 184.0 Q 337.2 183.6 339.2 183.0 Q 341.3 182.5 343.3 181.8 Q 345.4 181.1 347.4 180.2 Q 349.4 179.4 351.5 178.4 Q 353.5 177.4 355.5 176.2 Q 357.6 175.1 359.6 173.8 Q 361.6 172.5 363.7 171.1 Q 365.7 169.7 367.8 168.2 Q 369.8 166.7 371.8 165.0 Q 373.9 163.4 375.9 161.6 Q 377.9 159.9 380.0 158.0 Q 382.0 156.1 384.0 154.2 Q 386.1 152.2 388.1 150.2 Q 390.1 148.2 392.2 146.1 Q 394.2 143.9 396.2 141.8 Q 398.3 139.6 400.3 137.4 Q 402.4 135.1 404.4 132.9 Q 406.4 130.6 408.5 128.3 Q 410.5 126.0 412.5 123.6 Q 414.6 121.3 416.6 118.9 Q 418.6 116.6 420.7 114.2 Q 422.7 111.9 424.8 109.5 Q 426.8 107.2 428.8 104.8 Q 430.9 102.5 432.9 100.2 Q 434.9 97.9 437.0 95.6 Q 439.0 93.4 441.0 91.2 Q 443.1 88.9 445.1 86.8 Q 447.1 84.6 449.2 82.5 Q 451.2 80.5 453.2 78.4 Q 455.3 76.4 457.3 74.5 Q 459.4 72.6 461.4 70.8 Q 463.4 68.9 465.5 67.2 Q 467.5 65.5 469.5 63.9 Q 471.6 62.3 473.6 60.8 Q 475.6 59.3 477.7 57.9 Q 479.7 56.6 481.8 55.3 Q 483.8 54.1 485.8 53.0 Q 487.9 51.9 489.9 51.0 Q 491.9 50.0 494.0 49.2 Q 496.0 48.4 498.0 47.8 Q 500.1 47.1 502.1 46.6 Q 504.1 46.1 506.2 45.8 Q 508.2 45.4 510.2 45.3 Q 512.3 45.1 514.3 45.0 Q 516.4 45.0 518.4 45.1 Q 520.4 45.3 522.5 45.6 Q 524.5 45.9 526.5 46.3 Q 528.6 46.8 530.6 47.4 Q 532.6 48.0 534.7 48.7 Q 536.7 49.5 538.8 50.4 Q 540.8 51.3 542.8 52.3 Q 544.9 53.4 546.9 54.5 Q 548.9 55.7 551.0 57.0 Q 553.0 58.4 555.0 59.8 Q 557.1 61.3 559.1 62.8 Q 561.1 64.4 563.2 66.1 Q 565.2 67.8 567.2 69.6 Q 569.3 71.4 571.3 73.2 Q 573.4 75.1 575.4 77.1 Q 577.4 79.1 579.5 81.2 Q 581.5 83.2 583.5 85.4 Q 585.6 87.5 587.6 89.7 Q 589.6 91.9 591.7 94.1 Q 593.7 96.4 595.8 98.7 Q 597.8 101.0 599.8 103.3 Q 601.9 105.6 603.9 107.9 Q 605.9 110.3 608.0 112.6 Q 610.0 115.0 610.0 115.0" fill="none" stroke="#059669" stroke-width="3"/>
+                    <text x="330" y="230" font-size="12" fill="#64748b" text-anchor="middle">bod $x_0$: perioda opakování je T</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="bg-sky-50 border border-sky-200 rounded-2xl p-6">
+            <p class="text-slate-700 text-sm"><strong>Nezaměňovat:</strong> graf $y(x)$ pro pevné $t$ ukazuje <em>prostorovou periodicitu</em> s periodou $\lambda$ (vlnovou délkou), zatímco graf $y(t)$ pro pevné $x$ ukazuje <em>časovou periodicitu</em> s periodou $T$. Ačkoli mají oba grafy tvar sinusoidy, popisují odlišné veličiny.</p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5 mt-6">
+            <p class="font-semibold text-amber-900 mb-2">Řešený příklad:</p>
+            <p class="text-slate-700 text-sm mb-2">Zdroj na počátku ($x=0$) kmitá podle $y = 0{,}02\sin(10\pi t)$ (SI). Vlnění se šíří rychlostí $v = 4{,}0\,\text{m}\cdot\text{s}^{-1}$. Napište rovnici vlnění a určete výchylku bodu $x = 1{,}0\,\text{m}$ v čase $t = 1{,}0\,\text{s}$.</p>
+            <p class="text-slate-600 text-sm">Řešení: $\omega = 10\pi\,\text{rad}\cdot\text{s}^{-1}$, tedy $y = 0{,}02\sin\!\left[10\pi\left(t-\dfrac{x}{4{,}0}\right)\right]$. Pro $x=1{,}0\,\text{m}$, $t=1{,}0\,\text{s}$: $y = 0{,}02\sin\!\left[10\pi(1{,}0-0{,}25)\right] = 0{,}02\sin(7{,}5\pi) \approx -0{,}02\,\text{m}$.</p>
+        </div>
+    </section>
+
+    <!-- 4. ODRAZ, LOM, OHYB -->
+    <section id="odraz" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Odraz, lom a ohyb vlnění. Huygensův princip</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Huygensův princip</h3>
+            <p class="text-slate-700">Každý bod vlnoplochy, do kterého vlnění dorazilo, se stává zdrojem nového <strong>elementárního (kulového) vlnění</strong>. Nová vlnoplocha v následujícím okamžiku je pak vnější obalovou plochou (obálkou) všech elementárních vlnění. Huygensův princip umožňuje odvodit zákony odrazu, lomu i ohybu vlnění.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Ohyb (difrakce) na štěrbině</h3>
+            <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <clipPath id="afterSlit">
+                        <rect x="300" y="0" width="340" height="260"/>
+                    </clipPath>
+                </defs>
+                <rect width="640" height="260" fill="#eff6ff" rx="12"/>
+                <g stroke="#1d4ed8" stroke-width="2">
+                    <line x1="70" y1="20" x2="70" y2="90" />
+                    <line x1="130" y1="20" x2="130" y2="90" />
+                    <line x1="190" y1="20" x2="190" y2="90" />
+                    <line x1="250" y1="20" x2="250" y2="90" />
+                    <line x1="70" y1="170" x2="70" y2="240" />
+                    <line x1="130" y1="170" x2="130" y2="240" />
+                    <line x1="190" y1="170" x2="190" y2="240" />
+                    <line x1="250" y1="170" x2="250" y2="240" />
+                </g>
+                <rect x="290" y="0" width="14" height="100" fill="#334155"/>
+                <rect x="290" y="160" width="14" height="100" fill="#334155"/>
+                <text x="240" y="15" font-size="12" fill="#1e3a8a">rovinné vlnoplochy</text>
+                <text x="230" y="253" font-size="12" fill="#334155">překážka se štěrbinou</text>
+                <g clip-path="url(#afterSlit)" fill="none" stroke="#b91c1c" stroke-width="2">
+                    <circle cx="297" cy="130" r="40"/>
+                    <circle cx="297" cy="130" r="80"/>
+                    <circle cx="297" cy="130" r="120"/>
+                    <circle cx="297" cy="130" r="160"/>
+                    <circle cx="297" cy="130" r="200"/>
+                    <circle cx="297" cy="130" r="240"/>
+                    <circle cx="297" cy="130" r="280"/>
+                </g>
+                <text x="400" y="60" font-size="12" fill="#b91c1c">kruhové vlnoplochy</text>
+                <text x="400" y="76" font-size="12" fill="#b91c1c">za štěrbinou (ohyb)</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Je-li rozměr štěrbiny (překážky) srovnatelný s vlnovou délkou $\lambda$, ohýbá se vlnění výrazně za překážku (difrakce). Je-li štěrbina mnohem větší než $\lambda$, ohyb je zanedbatelný a vlnění se šíří téměř přímočaře.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-3">Odraz vlnění</h3>
+                <p class="text-slate-700 text-sm">Na rozhraní dvou prostředí (nebo na pevné překážce) se vlnění odráží: úhel odrazu se rovná úhlu dopadu. Odráží-li se vlna od <strong>pevného konce</strong> (vázaný konec), dochází k fázovému skoku o $\pi$ (odražená vlna má opačnou výchylku); při odrazu od <strong>volného konce</strong> se fáze nemění.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-3">Lom vlnění</h3>
+                <p class="text-slate-700 text-sm">Při přechodu vlnění do prostředí s jinou rychlostí šíření dochází k lomu — mění se směr šíření i vlnová délka, avšak <strong>frekvence zůstává zachována</strong> (je dána zdrojem). Platí $\dfrac{v_1}{v_2}=\dfrac{\sin\alpha}{\sin\beta}$, kde $\alpha$ je úhel dopadu a $\beta$ úhel lomu.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. INTERFERENCE -->
+    <section id="interference" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Skládání vlnění — interference</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Princip superpozice</h3>
+            <p class="text-slate-700 mb-3">Setkají-li se v daném bodě prostředí dvě (nebo více) vlnění, výsledná výchylka je dána <strong>součtem</strong> výchylek jednotlivých vlnění (princip superpozice). Po průchodu se obě vlnění dále šíří beze změny, jako kdyby se nesetkala.</p>
+            <p class="text-slate-700">Šíří-li se prostředím dvě vlnění se stejnou frekvencí a stálým fázovým rozdílem (tzv. <strong>koherentní</strong> vlnění), vzniká v prostoru stálé, časově neproměnné rozložení amplitud výsledného kmitání — jev nazýváme <strong>interference</strong>.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Podmínky interferenčních maxim a minim</h3>
+            <p class="text-slate-700 mb-3">Rozhodující je <strong>dráhový rozdíl</strong> $\Delta = |d_2-d_1|$ vzdáleností bodu od obou zdrojů:</p>
+            <p class="text-center formula-box text-lg bg-emerald-100 rounded-xl py-3 mb-3">Maximum (zesílení): $\Delta = k\lambda,\quad k = 0,1,2,\dots$</p>
+            <p class="text-center formula-box text-lg bg-rose-100 rounded-xl py-3">Minimum (zeslabení): $\Delta = (2k+1)\dfrac{\lambda}{2},\quad k = 0,1,2,\dots$</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Interferenční obrazec dvou bodových zdrojů</h3>
+            <svg viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="420" fill="#eff6ff" rx="12"/>
+                <g fill="none" stroke="#1d4ed8" stroke-width="1.2" opacity="0.35">
+                    <circle cx="220" cy="210" r="20"/><circle cx="220" cy="210" r="40"/><circle cx="220" cy="210" r="60"/><circle cx="220" cy="210" r="80"/><circle cx="220" cy="210" r="100"/><circle cx="220" cy="210" r="120"/><circle cx="220" cy="210" r="140"/><circle cx="220" cy="210" r="160"/>
+                </g>
+                <g fill="none" stroke="#b91c1c" stroke-width="1.2" opacity="0.35">
+                    <circle cx="420" cy="210" r="20"/><circle cx="420" cy="210" r="40"/><circle cx="420" cy="210" r="60"/><circle cx="420" cy="210" r="80"/><circle cx="420" cy="210" r="100"/><circle cx="420" cy="210" r="120"/><circle cx="420" cy="210" r="140"/><circle cx="420" cy="210" r="160"/>
+                </g>
+
+                <!-- Pásy zesílení (konstruktivní interference), Δ = kλ -->
+                <g id="maxima-group" fill="none" stroke="#059669" stroke-width="3">
+                    <path d="M 320.0 30.0 L 320.0 390.0"/>
+                    <path d="M 341.6 20.0 Q 340.7 29.8 340.3 34.5 Q 339.9 39.3 339.5 43.8 Q 339.1 48.3 338.7 52.7 Q 338.3 57.0 338.0 61.2 Q 337.6 65.4 337.3 69.4 Q 337.0 73.4 336.7 77.3 Q 336.4 81.2 336.1 84.9 Q 335.8 88.7 335.5 92.3 Q 335.2 95.9 335.0 99.3 Q 334.7 102.8 334.5 106.2 Q 334.2 109.5 334.0 112.8 Q 333.8 116.0 333.5 119.2 Q 333.3 122.3 333.1 125.4 Q 332.9 128.4 332.7 131.4 Q 332.6 134.4 332.4 137.3 Q 332.2 140.1 332.1 142.9 Q 331.9 145.7 331.8 148.5 Q 331.6 151.2 331.5 153.9 Q 331.4 156.5 331.2 159.2 Q 331.1 161.8 331.0 164.3 Q 330.9 166.9 330.8 169.4 Q 330.7 171.9 330.6 174.4 Q 330.5 176.9 330.5 179.3 Q 330.4 181.7 330.3 184.1 Q 330.3 186.5 330.2 188.9 Q 330.2 191.3 330.1 193.6 Q 330.1 196.0 330.1 198.3 Q 330.0 200.7 330.0 203.0 Q 330.0 205.3 330.0 207.7 Q 330.0 210.0 330.0 212.3 Q 330.0 214.7 330.0 217.0 Q 330.0 219.3 330.1 221.7 Q 330.1 224.0 330.1 226.4 Q 330.2 228.7 330.2 231.1 Q 330.3 233.5 330.3 235.9 Q 330.4 238.3 330.5 240.7 Q 330.5 243.1 330.6 245.6 Q 330.7 248.1 330.8 250.6 Q 330.9 253.1 331.0 255.7 Q 331.1 258.2 331.2 260.8 Q 331.4 263.5 331.5 266.1 Q 331.6 268.8 331.8 271.5 Q 331.9 274.3 332.1 277.1 Q 332.2 279.9 332.4 282.7 Q 332.6 285.6 332.7 288.6 Q 332.9 291.6 333.1 294.6 Q 333.3 297.7 333.5 300.8 Q 333.8 304.0 334.0 307.2 Q 334.2 310.5 334.5 313.8 Q 334.7 317.2 335.0 320.7 Q 335.2 324.1 335.5 327.7 Q 335.8 331.3 336.1 335.1 Q 336.4 338.8 336.7 342.7 Q 337.0 346.6 337.3 350.6 Q 337.6 354.6 338.0 358.8 Q 338.3 363.0 338.7 367.3 Q 339.1 371.7 339.5 376.2 Q 339.9 380.7 340.3 385.5 Q 340.7 390.2 341.1 395.1 Q 341.6 400.0 341.6 400.0"/>
+                    <path d="M 298.4 20.0 Q 299.3 29.8 299.7 34.5 Q 300.1 39.3 300.5 43.8 Q 300.9 48.3 301.3 52.7 Q 301.7 57.0 302.0 61.2 Q 302.4 65.4 302.7 69.4 Q 303.0 73.4 303.3 77.3 Q 303.6 81.2 303.9 84.9 Q 304.2 88.7 304.5 92.3 Q 304.8 95.9 305.0 99.3 Q 305.3 102.8 305.5 106.2 Q 305.8 109.5 306.0 112.8 Q 306.2 116.0 306.5 119.2 Q 306.7 122.3 306.9 125.4 Q 307.1 128.4 307.3 131.4 Q 307.4 134.4 307.6 137.3 Q 307.8 140.1 307.9 142.9 Q 308.1 145.7 308.2 148.5 Q 308.4 151.2 308.5 153.9 Q 308.6 156.5 308.8 159.2 Q 308.9 161.8 309.0 164.3 Q 309.1 166.9 309.2 169.4 Q 309.3 171.9 309.4 174.4 Q 309.5 176.9 309.5 179.3 Q 309.6 181.7 309.7 184.1 Q 309.7 186.5 309.8 188.9 Q 309.8 191.3 309.9 193.6 Q 309.9 196.0 309.9 198.3 Q 310.0 200.7 310.0 203.0 Q 310.0 205.3 310.0 207.7 Q 310.0 210.0 310.0 212.3 Q 310.0 214.7 310.0 217.0 Q 310.0 219.3 309.9 221.7 Q 309.9 224.0 309.9 226.4 Q 309.8 228.7 309.8 231.1 Q 309.7 233.5 309.7 235.9 Q 309.6 238.3 309.5 240.7 Q 309.5 243.1 309.4 245.6 Q 309.3 248.1 309.2 250.6 Q 309.1 253.1 309.0 255.7 Q 308.9 258.2 308.8 260.8 Q 308.6 263.5 308.5 266.1 Q 308.4 268.8 308.2 271.5 Q 308.1 274.3 307.9 277.1 Q 307.8 279.9 307.6 282.7 Q 307.4 285.6 307.3 288.6 Q 307.1 291.6 306.9 294.6 Q 306.7 297.7 306.5 300.8 Q 306.2 304.0 306.0 307.2 Q 305.8 310.5 305.5 313.8 Q 305.3 317.2 305.0 320.7 Q 304.8 324.1 304.5 327.7 Q 304.2 331.3 303.9 335.1 Q 303.6 338.8 303.3 342.7 Q 303.0 346.6 302.7 350.6 Q 302.4 354.6 302.0 358.8 Q 301.7 363.0 301.3 367.3 Q 300.9 371.7 300.5 376.2 Q 300.1 380.7 299.7 385.5 Q 299.3 390.2 298.9 395.1 Q 298.4 400.0 298.4 400.0"/>
+                    <path d="M 363.6 20.0 Q 361.9 29.9 361.0 34.6 Q 360.2 39.4 359.4 43.9 Q 358.6 48.5 357.8 52.8 Q 357.1 57.2 356.3 61.4 Q 355.6 65.6 354.9 69.6 Q 354.3 73.7 353.6 77.6 Q 353.0 81.5 352.4 85.2 Q 351.8 89.0 351.2 92.6 Q 350.7 96.2 350.1 99.7 Q 349.6 103.1 349.1 106.5 Q 348.6 109.9 348.1 113.1 Q 347.7 116.4 347.2 119.5 Q 346.8 122.7 346.4 125.7 Q 346.0 128.8 345.6 131.7 Q 345.2 134.7 344.9 137.6 Q 344.5 140.4 344.2 143.2 Q 343.9 146.0 343.6 148.8 Q 343.3 151.5 343.0 154.1 Q 342.8 156.8 342.5 159.4 Q 342.3 162.0 342.1 164.6 Q 341.8 167.1 341.6 169.6 Q 341.4 172.1 341.3 174.6 Q 341.1 177.0 341.0 179.5 Q 340.8 181.9 340.7 184.3 Q 340.6 186.7 340.5 189.0 Q 340.4 191.4 340.3 193.7 Q 340.2 196.1 340.1 198.4 Q 340.1 200.7 340.1 203.1 Q 340.0 205.4 340.0 207.7 Q 340.0 210.0 340.0 212.3 Q 340.0 214.6 340.1 216.9 Q 340.1 219.3 340.1 221.6 Q 340.2 223.9 340.3 226.3 Q 340.4 228.6 340.5 231.0 Q 340.6 233.3 340.7 235.7 Q 340.8 238.1 341.0 240.5 Q 341.1 243.0 341.3 245.4 Q 341.4 247.9 341.6 250.4 Q 341.8 252.9 342.1 255.4 Q 342.3 258.0 342.5 260.6 Q 342.8 263.2 343.0 265.9 Q 343.3 268.5 343.6 271.2 Q 343.9 274.0 344.2 276.8 Q 344.5 279.6 344.9 282.4 Q 345.2 285.3 345.6 288.3 Q 346.0 291.2 346.4 294.3 Q 346.8 297.3 347.2 300.5 Q 347.7 303.6 348.1 306.9 Q 348.6 310.1 349.1 313.5 Q 349.6 316.9 350.1 320.3 Q 350.7 323.8 351.2 327.4 Q 351.8 331.0 352.4 334.8 Q 353.0 338.5 353.6 342.4 Q 354.3 346.3 354.9 350.4 Q 355.6 354.4 356.3 358.6 Q 357.1 362.8 357.8 367.2 Q 358.6 371.5 359.4 376.1 Q 360.2 380.6 361.0 385.4 Q 361.9 390.1 362.7 395.1 Q 363.6 400.0 363.6 400.0"/>
+                    <path d="M 276.4 20.0 Q 278.1 29.9 279.0 34.6 Q 279.8 39.4 280.6 43.9 Q 281.4 48.5 282.2 52.8 Q 282.9 57.2 283.7 61.4 Q 284.4 65.6 285.1 69.6 Q 285.7 73.7 286.4 77.6 Q 287.0 81.5 287.6 85.2 Q 288.2 89.0 288.8 92.6 Q 289.3 96.2 289.9 99.7 Q 290.4 103.1 290.9 106.5 Q 291.4 109.9 291.9 113.1 Q 292.3 116.4 292.8 119.5 Q 293.2 122.7 293.6 125.7 Q 294.0 128.8 294.4 131.7 Q 294.8 134.7 295.1 137.6 Q 295.5 140.4 295.8 143.2 Q 296.1 146.0 296.4 148.8 Q 296.7 151.5 297.0 154.1 Q 297.2 156.8 297.5 159.4 Q 297.7 162.0 297.9 164.6 Q 298.2 167.1 298.4 169.6 Q 298.6 172.1 298.7 174.6 Q 298.9 177.0 299.0 179.5 Q 299.2 181.9 299.3 184.3 Q 299.4 186.7 299.5 189.0 Q 299.6 191.4 299.7 193.7 Q 299.8 196.1 299.9 198.4 Q 299.9 200.7 299.9 203.1 Q 300.0 205.4 300.0 207.7 Q 300.0 210.0 300.0 212.3 Q 300.0 214.6 299.9 216.9 Q 299.9 219.3 299.9 221.6 Q 299.8 223.9 299.7 226.3 Q 299.6 228.6 299.5 231.0 Q 299.4 233.3 299.3 235.7 Q 299.2 238.1 299.0 240.5 Q 298.9 243.0 298.7 245.4 Q 298.6 247.9 298.4 250.4 Q 298.2 252.9 297.9 255.4 Q 297.7 258.0 297.5 260.6 Q 297.2 263.2 297.0 265.9 Q 296.7 268.5 296.4 271.2 Q 296.1 274.0 295.8 276.8 Q 295.5 279.6 295.1 282.4 Q 294.8 285.3 294.4 288.3 Q 294.0 291.2 293.6 294.3 Q 293.2 297.3 292.8 300.5 Q 292.3 303.6 291.9 306.9 Q 291.4 310.1 290.9 313.5 Q 290.4 316.9 289.9 320.3 Q 289.3 323.8 288.8 327.4 Q 288.2 331.0 287.6 334.8 Q 287.0 338.5 286.4 342.4 Q 285.7 346.3 285.1 350.4 Q 284.4 354.4 283.7 358.6 Q 282.9 362.8 282.2 367.2 Q 281.4 371.5 280.6 376.1 Q 279.8 380.6 279.0 385.4 Q 278.1 390.1 277.3 395.1 Q 276.4 400.0 276.4 400.0"/>
+                </g>
+
+                <!-- Pásy zeslabení (destruktivní interference), Δ = (k+1/2)λ -->
+                <g id="minima-group" fill="none" stroke="#d97706" stroke-width="2.5" stroke-dasharray="7 5">
+                    <path d="M 330.7 20.0 Q 330.3 29.8 330.1 34.5 Q 329.9 39.2 329.7 43.7 Q 329.5 48.3 329.3 52.6 Q 329.1 57.0 329.0 61.1 Q 328.8 65.3 328.6 69.3 Q 328.5 73.4 328.3 77.2 Q 328.2 81.1 328.0 84.8 Q 327.9 88.6 327.7 92.2 Q 327.6 95.8 327.5 99.3 Q 327.3 102.7 327.2 106.1 Q 327.1 109.5 327.0 112.7 Q 326.9 116.0 326.8 119.1 Q 326.7 122.3 326.6 125.3 Q 326.5 128.4 326.4 131.3 Q 326.3 134.3 326.2 137.2 Q 326.1 140.1 326.0 142.9 Q 325.9 145.7 325.9 148.4 Q 325.8 151.1 325.7 153.8 Q 325.7 156.5 325.6 159.1 Q 325.6 161.7 325.5 164.3 Q 325.4 166.8 325.4 169.4 Q 325.4 171.9 325.3 174.3 Q 325.3 176.8 325.2 179.2 Q 325.2 181.7 325.2 184.1 Q 325.1 186.5 325.1 188.9 Q 325.1 191.3 325.1 193.6 Q 325.0 196.0 325.0 198.3 Q 325.0 200.7 325.0 203.0 Q 325.0 205.3 325.0 207.7 Q 325.0 210.0 325.0 212.3 Q 325.0 214.7 325.0 217.0 Q 325.0 219.3 325.0 221.7 Q 325.0 224.0 325.1 226.4 Q 325.1 228.7 325.1 231.1 Q 325.1 233.5 325.2 235.9 Q 325.2 238.3 325.2 240.8 Q 325.3 243.2 325.3 245.7 Q 325.4 248.1 325.4 250.6 Q 325.4 253.2 325.5 255.7 Q 325.6 258.3 325.6 260.9 Q 325.7 263.5 325.7 266.2 Q 325.8 268.9 325.9 271.6 Q 325.9 274.3 326.0 277.1 Q 326.1 279.9 326.2 282.8 Q 326.3 285.7 326.4 288.7 Q 326.5 291.6 326.6 294.7 Q 326.7 297.7 326.8 300.9 Q 326.9 304.0 327.0 307.3 Q 327.1 310.5 327.2 313.9 Q 327.3 317.3 327.5 320.7 Q 327.6 324.2 327.7 327.8 Q 327.9 331.4 328.0 335.2 Q 328.2 338.9 328.3 342.8 Q 328.5 346.6 328.6 350.7 Q 328.8 354.7 329.0 358.9 Q 329.1 363.0 329.3 367.4 Q 329.5 371.7 329.7 376.3 Q 329.9 380.8 330.1 385.5 Q 330.3 390.2 330.5 395.1 Q 330.7 400.0 330.7 400.0"/>
+                    <path d="M 309.3 20.0 Q 309.7 29.8 309.9 34.5 Q 310.1 39.2 310.3 43.7 Q 310.5 48.3 310.7 52.6 Q 310.9 57.0 311.0 61.1 Q 311.2 65.3 311.4 69.3 Q 311.5 73.4 311.7 77.2 Q 311.8 81.1 312.0 84.8 Q 312.1 88.6 312.3 92.2 Q 312.4 95.8 312.5 99.3 Q 312.7 102.7 312.8 106.1 Q 312.9 109.5 313.0 112.7 Q 313.1 116.0 313.2 119.1 Q 313.3 122.3 313.4 125.3 Q 313.5 128.4 313.6 131.3 Q 313.7 134.3 313.8 137.2 Q 313.9 140.1 314.0 142.9 Q 314.1 145.7 314.1 148.4 Q 314.2 151.1 314.3 153.8 Q 314.3 156.5 314.4 159.1 Q 314.4 161.7 314.5 164.3 Q 314.6 166.8 314.6 169.4 Q 314.6 171.9 314.7 174.3 Q 314.7 176.8 314.8 179.2 Q 314.8 181.7 314.8 184.1 Q 314.9 186.5 314.9 188.9 Q 314.9 191.3 314.9 193.6 Q 315.0 196.0 315.0 198.3 Q 315.0 200.7 315.0 203.0 Q 315.0 205.3 315.0 207.7 Q 315.0 210.0 315.0 212.3 Q 315.0 214.7 315.0 217.0 Q 315.0 219.3 315.0 221.7 Q 315.0 224.0 314.9 226.4 Q 314.9 228.7 314.9 231.1 Q 314.9 233.5 314.8 235.9 Q 314.8 238.3 314.8 240.8 Q 314.7 243.2 314.7 245.7 Q 314.6 248.1 314.6 250.6 Q 314.6 253.2 314.5 255.7 Q 314.4 258.3 314.4 260.9 Q 314.3 263.5 314.3 266.2 Q 314.2 268.9 314.1 271.6 Q 314.1 274.3 314.0 277.1 Q 313.9 279.9 313.8 282.8 Q 313.7 285.7 313.6 288.7 Q 313.5 291.6 313.4 294.7 Q 313.3 297.7 313.2 300.9 Q 313.1 304.0 313.0 307.3 Q 312.9 310.5 312.8 313.9 Q 312.7 317.3 312.5 320.7 Q 312.4 324.2 312.3 327.8 Q 312.1 331.4 312.0 335.2 Q 311.8 338.9 311.7 342.8 Q 311.5 346.6 311.4 350.7 Q 311.2 354.7 311.0 358.9 Q 310.9 363.0 310.7 367.4 Q 310.5 371.7 310.3 376.3 Q 310.1 380.8 309.9 385.5 Q 309.7 390.2 309.5 395.1 Q 309.3 400.0 309.3 400.0"/>
+                    <path d="M 352.5 20.0 Q 351.2 29.8 350.6 34.6 Q 349.9 39.3 349.3 43.8 Q 348.7 48.4 348.2 52.7 Q 347.6 57.1 347.1 61.3 Q 346.6 65.5 346.1 69.5 Q 345.6 73.5 345.1 77.4 Q 344.6 81.3 344.2 85.0 Q 343.7 88.8 343.3 92.4 Q 342.9 96.0 342.5 99.5 Q 342.1 102.9 341.7 106.3 Q 341.4 109.7 341.0 112.9 Q 340.7 116.2 340.4 119.3 Q 340.0 122.5 339.7 125.5 Q 339.4 128.6 339.2 131.5 Q 338.9 134.5 338.6 137.4 Q 338.4 140.3 338.1 143.1 Q 337.9 145.9 337.7 148.6 Q 337.4 151.3 337.2 154.0 Q 337.0 156.7 336.9 159.3 Q 336.7 161.9 336.5 164.4 Q 336.4 167.0 336.2 169.5 Q 336.1 172.0 335.9 174.5 Q 335.8 176.9 335.7 179.4 Q 335.6 181.8 335.5 184.2 Q 335.4 186.6 335.3 189.0 Q 335.3 191.3 335.2 193.7 Q 335.1 196.0 335.1 198.4 Q 335.1 200.7 335.0 203.0 Q 335.0 205.4 335.0 207.7 Q 335.0 210.0 335.0 212.3 Q 335.0 214.6 335.0 217.0 Q 335.1 219.3 335.1 221.6 Q 335.1 224.0 335.2 226.3 Q 335.3 228.7 335.3 231.0 Q 335.4 233.4 335.5 235.8 Q 335.6 238.2 335.7 240.6 Q 335.8 243.1 335.9 245.5 Q 336.1 248.0 336.2 250.5 Q 336.4 253.0 336.5 255.6 Q 336.7 258.1 336.9 260.7 Q 337.0 263.3 337.2 266.0 Q 337.4 268.7 337.7 271.4 Q 337.9 274.1 338.1 276.9 Q 338.4 279.7 338.6 282.6 Q 338.9 285.5 339.2 288.5 Q 339.4 291.4 339.7 294.5 Q 340.0 297.5 340.4 300.7 Q 340.7 303.8 341.0 307.1 Q 341.4 310.3 341.7 313.7 Q 342.1 317.1 342.5 320.5 Q 342.9 324.0 343.3 327.6 Q 343.7 331.2 344.2 335.0 Q 344.6 338.7 345.1 342.6 Q 345.6 346.5 346.1 350.5 Q 346.6 354.5 347.1 358.7 Q 347.6 362.9 348.2 367.3 Q 348.7 371.6 349.3 376.2 Q 349.9 380.7 350.6 385.4 Q 351.2 390.2 351.8 395.1 Q 352.5 400.0 352.5 400.0"/>
+                    <path d="M 287.5 20.0 Q 288.8 29.8 289.4 34.6 Q 290.1 39.3 290.7 43.8 Q 291.3 48.4 291.8 52.7 Q 292.4 57.1 292.9 61.3 Q 293.4 65.5 293.9 69.5 Q 294.4 73.5 294.9 77.4 Q 295.4 81.3 295.8 85.0 Q 296.3 88.8 296.7 92.4 Q 297.1 96.0 297.5 99.5 Q 297.9 102.9 298.3 106.3 Q 298.6 109.7 299.0 112.9 Q 299.3 116.2 299.6 119.3 Q 300.0 122.5 300.3 125.5 Q 300.6 128.6 300.8 131.5 Q 301.1 134.5 301.4 137.4 Q 301.6 140.3 301.9 143.1 Q 302.1 145.9 302.3 148.6 Q 302.6 151.3 302.8 154.0 Q 303.0 156.7 303.1 159.3 Q 303.3 161.9 303.5 164.4 Q 303.6 167.0 303.8 169.5 Q 303.9 172.0 304.1 174.5 Q 304.2 176.9 304.3 179.4 Q 304.4 181.8 304.5 184.2 Q 304.6 186.6 304.7 189.0 Q 304.7 191.3 304.8 193.7 Q 304.9 196.0 304.9 198.4 Q 304.9 200.7 305.0 203.0 Q 305.0 205.4 305.0 207.7 Q 305.0 210.0 305.0 212.3 Q 305.0 214.6 305.0 217.0 Q 304.9 219.3 304.9 221.6 Q 304.9 224.0 304.8 226.3 Q 304.7 228.7 304.7 231.0 Q 304.6 233.4 304.5 235.8 Q 304.4 238.2 304.3 240.6 Q 304.2 243.1 304.1 245.5 Q 303.9 248.0 303.8 250.5 Q 303.6 253.0 303.5 255.6 Q 303.3 258.1 303.1 260.7 Q 303.0 263.3 302.8 266.0 Q 302.6 268.7 302.3 271.4 Q 302.1 274.1 301.9 276.9 Q 301.6 279.7 301.4 282.6 Q 301.1 285.5 300.8 288.5 Q 300.6 291.4 300.3 294.5 Q 300.0 297.5 299.6 300.7 Q 299.3 303.8 299.0 307.1 Q 298.6 310.3 298.3 313.7 Q 297.9 317.1 297.5 320.5 Q 297.1 324.0 296.7 327.6 Q 296.3 331.2 295.8 335.0 Q 295.4 338.7 294.9 342.6 Q 294.4 346.5 293.9 350.5 Q 293.4 354.5 292.9 358.7 Q 292.4 362.9 291.8 367.3 Q 291.3 371.6 290.7 376.2 Q 290.1 380.7 289.4 385.4 Q 288.8 390.2 288.2 395.1 Q 287.5 400.0 287.5 400.0"/>
+                </g>
+
+                <circle cx="220" cy="210" r="6" fill="#1e3a8a"/>
+                <circle cx="420" cy="210" r="6" fill="#7f1d1d"/>
+                <text x="203" y="195" font-size="14" fill="#1e3a8a" font-weight="bold">S₁</text>
+                <text x="428" y="195" font-size="14" fill="#7f1d1d" font-weight="bold">S₂</text>
+            </svg>
+            <div class="flex flex-wrap gap-3 mt-3">
+                <button type="button" id="btn-maxima" onclick="toggleInterferenceBand('maxima-group','btn-maxima')"
+                    class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border-2 transition"
+                    style="border-color:#059669;color:#059669;background:#ecfdf5;">
+                    <span style="display:inline-block;width:16px;height:0;border-top:3px solid #059669;"></span>
+                    maxima (zesílení), Δ = kλ
+                </button>
+                <button type="button" id="btn-minima" onclick="toggleInterferenceBand('minima-group','btn-minima')"
+                    class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border-2 transition"
+                    style="border-color:#d97706;color:#d97706;background:#fffbeb;">
+                    <span style="display:inline-block;width:16px;height:0;border-top:3px dashed #d97706;"></span>
+                    minima (zeslabení), Δ = (2k+1)λ/2
+                </button>
+            </div>
+            <p class="text-slate-600 text-sm mt-2">Tenké modré a červené kružnice znázorňují vlnoplochy šířící se od zdrojů S₁ a S₂. Tlačítky výše lze samostatně zobrazit nebo skrýt pásy maxim (zelené) a pásy minim (oranžové) — silné křivky jsou větve hyperbol s ohnisky v S₁ a S₂, které ukazují skutečné pásy stálého zesílení, resp. zeslabení, jež v prostoru vznikají interferencí obou vlnění.</p>
+        </div>
+
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+            <p class="font-semibold text-amber-900 mb-2">Řešený příklad:</p>
+            <p class="text-slate-700 text-sm mb-2">Dva reproduktory hrají stejný tón o vlnové délce $\lambda = 0{,}68\,\text{m}$ ve fázi. Posluchač stojí v bodě, kde $d_2 - d_1 = 1{,}70\,\text{m}$. Slyší tón zesílený, nebo zeslabený?</p>
+            <p class="text-slate-600 text-sm">Řešení: $\Delta/\lambda = 1{,}70/0{,}68 = 2{,}5$, tedy $\Delta = 2{,}5\lambda = (2\cdot 2+1)\lambda/2$ — jde o lichý násobek poloviny vlnové délky, takže nastává <strong>destruktivní interference</strong> (zeslabení, případně vyrušení tónu).</p>
+        </div>
+    </section>
+
+    <!-- 6. STOJATÉ VLNĚNÍ -->
+    <section id="stojate" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Stojaté vlnění</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3"><strong>Stojaté vlnění</strong> vzniká interferencí dvou postupných vlnění se stejnou amplitudou a frekvencí, které se šíří <strong>opačným směrem</strong> týmž prostředím — typicky postupné vlnění a jeho odraz (např. na struně upevněné na obou koncích). Na rozdíl od postupného vlnění se stojaté vlnění „nešíří“ — energie mezi jednotlivými body neputuje, obrazec kmitání zůstává v prostoru na místě.</p>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                <li><strong>Uzly</strong> — body, které trvale zůstávají v klidu (výchylka je nulová stále).</li>
+                <li><strong>Kmitny</strong> — body s maximální amplitudou kmitání.</li>
+                <li>Vzdálenost dvou sousedních uzlů (i dvou sousedních kmiten) je $\lambda/2$; vzdálenost sousedního uzlu a kmitny je $\lambda/4$.</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Vlastní kmity struny upevněné na obou koncích</h3>
+            <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="130" fill="#eff6ff" rx="10"/>
+                <line x1="60" y1="60" x2="600" y2="60" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <path d="M 60.0 60.0 Q 63.9 59.2 65.8 58.8 Q 67.7 58.4 69.6 58.0 Q 71.6 57.6 73.5 57.3 Q 75.4 56.9 77.4 56.5 Q 79.3 56.1 81.2 55.7 Q 83.1 55.3 85.1 54.9 Q 87.0 54.5 88.9 54.1 Q 90.9 53.8 92.8 53.4 Q 94.7 53.0 96.6 52.6 Q 98.6 52.2 100.5 51.8 Q 102.4 51.4 104.4 51.1 Q 106.3 50.7 108.2 50.3 Q 110.1 49.9 112.1 49.6 Q 114.0 49.2 115.9 48.8 Q 117.9 48.4 119.8 48.1 Q 121.7 47.7 123.6 47.3 Q 125.6 47.0 127.5 46.6 Q 129.4 46.2 131.4 45.9 Q 133.3 45.5 135.2 45.2 Q 137.1 44.8 139.1 44.5 Q 141.0 44.1 142.9 43.8 Q 144.9 43.4 146.8 43.1 Q 148.7 42.7 150.6 42.4 Q 152.6 42.0 154.5 41.7 Q 156.4 41.4 158.4 41.0 Q 160.3 40.7 162.2 40.4 Q 164.1 40.1 166.1 39.7 Q 168.0 39.4 169.9 39.1 Q 171.9 38.8 173.8 38.5 Q 175.7 38.2 177.6 37.9 Q 179.6 37.6 181.5 37.3 Q 183.4 37.0 185.4 36.7 Q 187.3 36.4 189.2 36.1 Q 191.1 35.8 193.1 35.5 Q 195.0 35.3 196.9 35.0 Q 198.9 34.7 200.8 34.4 Q 202.7 34.2 204.6 33.9 Q 206.6 33.6 208.5 33.4 Q 210.4 33.1 212.4 32.9 Q 214.3 32.6 216.2 32.4 Q 218.1 32.2 220.1 31.9 Q 222.0 31.7 223.9 31.5 Q 225.9 31.2 227.8 31.0 Q 229.7 30.8 231.6 30.6 Q 233.6 30.4 235.5 30.2 Q 237.4 30.0 239.4 29.8 Q 241.3 29.6 243.2 29.4 Q 245.1 29.2 247.1 29.0 Q 249.0 28.8 250.9 28.6 Q 252.9 28.5 254.8 28.3 Q 256.7 28.1 258.6 28.0 Q 260.6 27.8 262.5 27.7 Q 264.4 27.5 266.4 27.4 Q 268.3 27.2 270.2 27.1 Q 272.1 27.0 274.1 26.8 Q 276.0 26.7 277.9 26.6 Q 279.9 26.5 281.8 26.4 Q 283.7 26.3 285.6 26.2 Q 287.6 26.1 289.5 26.0 Q 291.4 25.9 293.4 25.8 Q 295.3 25.7 297.2 25.6 Q 299.1 25.6 301.1 25.5 Q 303.0 25.4 304.9 25.4 Q 306.9 25.3 308.8 25.3 Q 310.7 25.2 312.6 25.2 Q 314.6 25.1 316.5 25.1 Q 318.4 25.1 320.4 25.1 Q 322.3 25.0 324.2 25.0 Q 326.1 25.0 328.1 25.0 Q 330.0 25.0 331.9 25.0 Q 333.9 25.0 335.8 25.0 Q 337.7 25.0 339.6 25.1 Q 341.6 25.1 343.5 25.1 Q 345.4 25.1 347.4 25.2 Q 349.3 25.2 351.2 25.3 Q 353.1 25.3 355.1 25.4 Q 357.0 25.4 358.9 25.5 Q 360.9 25.6 362.8 25.6 Q 364.7 25.7 366.6 25.8 Q 368.6 25.9 370.5 26.0 Q 372.4 26.1 374.4 26.2 Q 376.3 26.3 378.2 26.4 Q 380.1 26.5 382.1 26.6 Q 384.0 26.7 385.9 26.8 Q 387.9 27.0 389.8 27.1 Q 391.7 27.2 393.6 27.4 Q 395.6 27.5 397.5 27.7 Q 399.4 27.8 401.4 28.0 Q 403.3 28.1 405.2 28.3 Q 407.1 28.5 409.1 28.6 Q 411.0 28.8 412.9 29.0 Q 414.9 29.2 416.8 29.4 Q 418.7 29.6 420.6 29.8 Q 422.6 30.0 424.5 30.2 Q 426.4 30.4 428.4 30.6 Q 430.3 30.8 432.2 31.0 Q 434.1 31.2 436.1 31.5 Q 438.0 31.7 439.9 31.9 Q 441.9 32.2 443.8 32.4 Q 445.7 32.6 447.6 32.9 Q 449.6 33.1 451.5 33.4 Q 453.4 33.6 455.4 33.9 Q 457.3 34.2 459.2 34.4 Q 461.1 34.7 463.1 35.0 Q 465.0 35.3 466.9 35.5 Q 468.9 35.8 470.8 36.1 Q 472.7 36.4 474.6 36.7 Q 476.6 37.0 478.5 37.3 Q 480.4 37.6 482.4 37.9 Q 484.3 38.2 486.2 38.5 Q 488.1 38.8 490.1 39.1 Q 492.0 39.4 493.9 39.7 Q 495.9 40.1 497.8 40.4 Q 499.7 40.7 501.6 41.0 Q 503.6 41.4 505.5 41.7 Q 507.4 42.0 509.4 42.4 Q 511.3 42.7 513.2 43.1 Q 515.1 43.4 517.1 43.8 Q 519.0 44.1 520.9 44.5 Q 522.9 44.8 524.8 45.2 Q 526.7 45.5 528.6 45.9 Q 530.6 46.2 532.5 46.6 Q 534.4 47.0 536.4 47.3 Q 538.3 47.7 540.2 48.1 Q 542.1 48.4 544.1 48.8 Q 546.0 49.2 547.9 49.6 Q 549.9 49.9 551.8 50.3 Q 553.7 50.7 555.6 51.1 Q 557.6 51.4 559.5 51.8 Q 561.4 52.2 563.4 52.6 Q 565.3 53.0 567.2 53.4 Q 569.1 53.8 571.1 54.1 Q 573.0 54.5 574.9 54.9 Q 576.9 55.3 578.8 55.7 Q 580.7 56.1 582.6 56.5 Q 584.6 56.9 586.5 57.3 Q 588.4 57.6 590.4 58.0 Q 592.3 58.4 594.2 58.8 Q 596.1 59.2 598.1 59.6 Q 600.0 60.0 600.0 60.0" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+                <circle cx="60" cy="60" r="5" fill="#b91c1c"/><circle cx="600" cy="60" r="5" fill="#b91c1c"/>
+                <text x="10" y="20" font-size="12" fill="#334155" font-weight="bold">n = 1 (základní tón, f₀)</text>
+                <text x="315" y="18" font-size="11" fill="#64748b">uzel — kmitna — uzel</text>
+            </svg>
+            <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg" class="mt-2">
+                <rect width="640" height="130" fill="#eff6ff" rx="10"/>
+                <line x1="60" y1="60" x2="600" y2="60" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <path d="M 60.0 60.0 Q 63.9 58.4 65.8 57.6 Q 67.7 56.9 69.6 56.1 Q 71.6 55.3 73.5 54.5 Q 75.4 53.8 77.4 53.0 Q 79.3 52.2 81.2 51.5 Q 83.1 50.7 85.1 49.9 Q 87.0 49.2 88.9 48.4 Q 90.9 47.7 92.8 47.0 Q 94.7 46.2 96.6 45.5 Q 98.6 44.8 100.5 44.1 Q 102.4 43.4 104.4 42.7 Q 106.3 42.0 108.2 41.4 Q 110.1 40.7 112.1 40.1 Q 114.0 39.4 115.9 38.8 Q 117.9 38.2 119.8 37.6 Q 121.7 37.0 123.6 36.4 Q 125.6 35.8 127.5 35.3 Q 129.4 34.7 131.4 34.2 Q 133.3 33.6 135.2 33.1 Q 137.1 32.6 139.1 32.2 Q 141.0 31.7 142.9 31.2 Q 144.9 30.8 146.8 30.4 Q 148.7 30.0 150.6 29.6 Q 152.6 29.2 154.5 28.8 Q 156.4 28.5 158.4 28.1 Q 160.3 27.8 162.2 27.5 Q 164.1 27.2 166.1 27.0 Q 168.0 26.7 169.9 26.5 Q 171.9 26.3 173.8 26.1 Q 175.7 25.9 177.6 25.7 Q 179.6 25.6 181.5 25.4 Q 183.4 25.3 185.4 25.2 Q 187.3 25.1 189.2 25.1 Q 191.1 25.0 193.1 25.0 Q 195.0 25.0 196.9 25.0 Q 198.9 25.0 200.8 25.1 Q 202.7 25.1 204.6 25.2 Q 206.6 25.3 208.5 25.4 Q 210.4 25.6 212.4 25.7 Q 214.3 25.9 216.2 26.1 Q 218.1 26.3 220.1 26.5 Q 222.0 26.7 223.9 27.0 Q 225.9 27.2 227.8 27.5 Q 229.7 27.8 231.6 28.1 Q 233.6 28.5 235.5 28.8 Q 237.4 29.2 239.4 29.6 Q 241.3 30.0 243.2 30.4 Q 245.1 30.8 247.1 31.2 Q 249.0 31.7 250.9 32.2 Q 252.9 32.6 254.8 33.1 Q 256.7 33.6 258.6 34.2 Q 260.6 34.7 262.5 35.3 Q 264.4 35.8 266.4 36.4 Q 268.3 37.0 270.2 37.6 Q 272.1 38.2 274.1 38.8 Q 276.0 39.4 277.9 40.1 Q 279.9 40.7 281.8 41.4 Q 283.7 42.0 285.6 42.7 Q 287.6 43.4 289.5 44.1 Q 291.4 44.8 293.4 45.5 Q 295.3 46.2 297.2 47.0 Q 299.1 47.7 301.1 48.4 Q 303.0 49.2 304.9 49.9 Q 306.9 50.7 308.8 51.5 Q 310.7 52.2 312.6 53.0 Q 314.6 53.8 316.5 54.5 Q 318.4 55.3 320.4 56.1 Q 322.3 56.9 324.2 57.6 Q 326.1 58.4 328.1 59.2 Q 330.0 60.0 331.9 60.8 Q 333.9 61.6 335.8 62.4 Q 337.7 63.1 339.6 63.9 Q 341.6 64.7 343.5 65.5 Q 345.4 66.2 347.4 67.0 Q 349.3 67.8 351.2 68.5 Q 353.1 69.3 355.1 70.1 Q 357.0 70.8 358.9 71.6 Q 360.9 72.3 362.8 73.0 Q 364.7 73.8 366.6 74.5 Q 368.6 75.2 370.5 75.9 Q 372.4 76.6 374.4 77.3 Q 376.3 78.0 378.2 78.6 Q 380.1 79.3 382.1 79.9 Q 384.0 80.6 385.9 81.2 Q 387.9 81.8 389.8 82.4 Q 391.7 83.0 393.6 83.6 Q 395.6 84.2 397.5 84.7 Q 399.4 85.3 401.4 85.8 Q 403.3 86.4 405.2 86.9 Q 407.1 87.4 409.1 87.8 Q 411.0 88.3 412.9 88.8 Q 414.9 89.2 416.8 89.6 Q 418.7 90.0 420.6 90.4 Q 422.6 90.8 424.5 91.2 Q 426.4 91.5 428.4 91.9 Q 430.3 92.2 432.2 92.5 Q 434.1 92.8 436.1 93.0 Q 438.0 93.3 439.9 93.5 Q 441.9 93.7 443.8 93.9 Q 445.7 94.1 447.6 94.3 Q 449.6 94.4 451.5 94.6 Q 453.4 94.7 455.4 94.8 Q 457.3 94.9 459.2 94.9 Q 461.1 95.0 463.1 95.0 Q 465.0 95.0 466.9 95.0 Q 468.9 95.0 470.8 94.9 Q 472.7 94.9 474.6 94.8 Q 476.6 94.7 478.5 94.6 Q 480.4 94.4 482.4 94.3 Q 484.3 94.1 486.2 93.9 Q 488.1 93.7 490.1 93.5 Q 492.0 93.3 493.9 93.0 Q 495.9 92.8 497.8 92.5 Q 499.7 92.2 501.6 91.9 Q 503.6 91.5 505.5 91.2 Q 507.4 90.8 509.4 90.4 Q 511.3 90.0 513.2 89.6 Q 515.1 89.2 517.1 88.8 Q 519.0 88.3 520.9 87.8 Q 522.9 87.4 524.8 86.9 Q 526.7 86.4 528.6 85.8 Q 530.6 85.3 532.5 84.7 Q 534.4 84.2 536.4 83.6 Q 538.3 83.0 540.2 82.4 Q 542.1 81.8 544.1 81.2 Q 546.0 80.6 547.9 79.9 Q 549.9 79.3 551.8 78.6 Q 553.7 78.0 555.6 77.3 Q 557.6 76.6 559.5 75.9 Q 561.4 75.2 563.4 74.5 Q 565.3 73.8 567.2 73.0 Q 569.1 72.3 571.1 71.6 Q 573.0 70.8 574.9 70.1 Q 576.9 69.3 578.8 68.5 Q 580.7 67.8 582.6 67.0 Q 584.6 66.2 586.5 65.5 Q 588.4 64.7 590.4 63.9 Q 592.3 63.1 594.2 62.4 Q 596.1 61.6 598.1 60.8 Q 600.0 60.0 600.0 60.0" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+                <circle cx="60" cy="60" r="5" fill="#b91c1c"/><circle cx="330" cy="60" r="5" fill="#b91c1c"/><circle cx="600" cy="60" r="5" fill="#b91c1c"/>
+                <text x="10" y="20" font-size="12" fill="#334155" font-weight="bold">n = 2 (první vyšší harmonická, f₁ = 2f₀)</text>
+            </svg>
+            <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg" class="mt-2">
+                <rect width="640" height="130" fill="#eff6ff" rx="10"/>
+                <line x1="60" y1="60" x2="600" y2="60" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <path d="M 60.0 60.0 Q 63.9 57.6 65.8 56.5 Q 67.7 55.3 69.6 54.1 Q 71.6 53.0 73.5 51.8 Q 75.4 50.7 77.4 49.6 Q 79.3 48.4 81.2 47.3 Q 83.1 46.2 85.1 45.2 Q 87.0 44.1 88.9 43.1 Q 90.9 42.0 92.8 41.1 Q 94.7 40.1 96.6 39.1 Q 98.6 38.2 100.5 37.3 Q 102.4 36.4 104.4 35.5 Q 106.3 34.7 108.2 33.9 Q 110.1 33.1 112.1 32.4 Q 114.0 31.7 115.9 31.0 Q 117.9 30.4 119.8 29.8 Q 121.7 29.2 123.6 28.7 Q 125.6 28.1 127.5 27.7 Q 129.4 27.2 131.4 26.9 Q 133.3 26.5 135.2 26.2 Q 137.1 25.9 139.1 25.7 Q 141.0 25.4 142.9 25.3 Q 144.9 25.1 146.8 25.1 Q 148.7 25.0 150.6 25.0 Q 152.6 25.0 154.5 25.1 Q 156.4 25.2 158.4 25.4 Q 160.3 25.6 162.2 25.8 Q 164.1 26.1 166.1 26.4 Q 168.0 26.7 169.9 27.1 Q 171.9 27.5 173.8 28.0 Q 175.7 28.5 177.6 29.0 Q 179.6 29.6 181.5 30.2 Q 183.4 30.8 185.4 31.5 Q 187.3 32.2 189.2 32.9 Q 191.1 33.6 193.1 34.4 Q 195.0 35.3 196.9 36.1 Q 198.9 37.0 200.8 37.9 Q 202.7 38.8 204.6 39.8 Q 206.6 40.7 208.5 41.7 Q 210.4 42.7 212.4 43.8 Q 214.3 44.8 216.2 45.9 Q 218.1 47.0 220.1 48.1 Q 222.0 49.2 223.9 50.3 Q 225.9 51.4 227.8 52.6 Q 229.7 53.8 231.6 54.9 Q 233.6 56.1 235.5 57.3 Q 237.4 58.4 239.4 59.6 Q 241.3 60.8 243.2 62.0 Q 245.1 63.1 247.1 64.3 Q 249.0 65.5 250.9 66.6 Q 252.9 67.8 254.8 68.9 Q 256.7 70.1 258.6 71.2 Q 260.6 72.3 262.5 73.4 Q 264.4 74.5 266.4 75.5 Q 268.3 76.6 270.2 77.6 Q 272.1 78.6 274.1 79.6 Q 276.0 80.6 277.9 81.5 Q 279.9 82.4 281.8 83.3 Q 283.7 84.2 285.6 85.0 Q 287.6 85.8 289.5 86.6 Q 291.4 87.4 293.4 88.1 Q 295.3 88.8 297.2 89.4 Q 299.1 90.0 301.1 90.6 Q 303.0 91.2 304.9 91.7 Q 306.9 92.2 308.8 92.6 Q 310.7 93.0 312.6 93.4 Q 314.6 93.7 316.5 94.0 Q 318.4 94.3 320.4 94.5 Q 322.3 94.7 324.2 94.8 Q 326.1 94.9 328.1 95.0 Q 330.0 95.0 331.9 95.0 Q 333.9 94.9 335.8 94.8 Q 337.7 94.7 339.6 94.5 Q 341.6 94.3 343.5 94.0 Q 345.4 93.7 347.4 93.4 Q 349.3 93.0 351.2 92.6 Q 353.1 92.2 355.1 91.7 Q 357.0 91.2 358.9 90.6 Q 360.9 90.0 362.8 89.4 Q 364.7 88.8 366.6 88.1 Q 368.6 87.4 370.5 86.6 Q 372.4 85.8 374.4 85.0 Q 376.3 84.2 378.2 83.3 Q 380.1 82.4 382.1 81.5 Q 384.0 80.6 385.9 79.6 Q 387.9 78.6 389.8 77.6 Q 391.7 76.6 393.6 75.5 Q 395.6 74.5 397.5 73.4 Q 399.4 72.3 401.4 71.2 Q 403.3 70.1 405.2 68.9 Q 407.1 67.8 409.1 66.6 Q 411.0 65.5 412.9 64.3 Q 414.9 63.1 416.8 62.0 Q 418.7 60.8 420.6 59.6 Q 422.6 58.4 424.5 57.3 Q 426.4 56.1 428.4 54.9 Q 430.3 53.8 432.2 52.6 Q 434.1 51.4 436.1 50.3 Q 438.0 49.2 439.9 48.1 Q 441.9 47.0 443.8 45.9 Q 445.7 44.8 447.6 43.8 Q 449.6 42.7 451.5 41.7 Q 453.4 40.7 455.4 39.8 Q 457.3 38.8 459.2 37.9 Q 461.1 37.0 463.1 36.1 Q 465.0 35.3 466.9 34.4 Q 468.9 33.6 470.8 32.9 Q 472.7 32.2 474.6 31.5 Q 476.6 30.8 478.5 30.2 Q 480.4 29.6 482.4 29.0 Q 484.3 28.5 486.2 28.0 Q 488.1 27.5 490.1 27.1 Q 492.0 26.7 493.9 26.4 Q 495.9 26.1 497.8 25.8 Q 499.7 25.6 501.6 25.4 Q 503.6 25.2 505.5 25.1 Q 507.4 25.0 509.4 25.0 Q 511.3 25.0 513.2 25.1 Q 515.1 25.1 517.1 25.3 Q 519.0 25.4 520.9 25.7 Q 522.9 25.9 524.8 26.2 Q 526.7 26.5 528.6 26.9 Q 530.6 27.2 532.5 27.7 Q 534.4 28.1 536.4 28.7 Q 538.3 29.2 540.2 29.8 Q 542.1 30.4 544.1 31.0 Q 546.0 31.7 547.9 32.4 Q 549.9 33.1 551.8 33.9 Q 553.7 34.7 555.6 35.5 Q 557.6 36.4 559.5 37.3 Q 561.4 38.2 563.4 39.1 Q 565.3 40.1 567.2 41.1 Q 569.1 42.0 571.1 43.1 Q 573.0 44.1 574.9 45.2 Q 576.9 46.2 578.8 47.3 Q 580.7 48.4 582.6 49.6 Q 584.6 50.7 586.5 51.8 Q 588.4 53.0 590.4 54.1 Q 592.3 55.3 594.2 56.5 Q 596.1 57.6 598.1 58.8 Q 600.0 60.0 600.0 60.0" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+                <circle cx="60" cy="60" r="5" fill="#b91c1c"/><circle cx="240" cy="60" r="5" fill="#b91c1c"/><circle cx="420" cy="60" r="5" fill="#b91c1c"/><circle cx="600" cy="60" r="5" fill="#b91c1c"/>
+                <text x="10" y="20" font-size="12" fill="#334155" font-weight="bold">n = 3 (druhá vyšší harmonická, f₂ = 3f₀)</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Křivky znázorňují okamžitou (krajní) výchylku struny; ve skutečnosti struna kmitá mezi touto polohou a zrcadlovou polohou pod osou. Červené body jsou pevné uzly (konce struny jsou vždy uzly, protože jsou upevněné).</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Vlastní frekvence struny</h3>
+            <p class="text-slate-700 mb-3">Pro strunu délky $l$ upevněnou na obou koncích musí být na jejím konci vždy uzel — do délky $l$ se proto vejde jen celistvý počet polovin vlnové délky:</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-3 mb-3">$l = n\dfrac{\lambda_n}{2} \quad\Rightarrow\quad f_n = n\dfrac{v}{2l},\quad n = 1,2,3,\dots$</p>
+            <p class="text-slate-600 text-sm">$f_1$ je základní frekvence (základní tón), $f_2, f_3,\dots$ jsou vyšší harmonické frekvence (vyšší tóny/alikvotní tóny), jejichž souzvuk určuje barvu tónu hudebního nástroje.</p>
+        </div>
+    </section>
+
+    <!-- 7. ZVUK -->
+    <section id="zvuk" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Zvukové vlnění — vznik a šíření</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3"><strong>Zvuk</strong> je mechanické <strong>podélné</strong> vlnění v látkovém prostředí (nejčastěji ve vzduchu), které vyvolává v lidském uchu sluchový vjem. Zdrojem zvuku je chvějící se těleso (hlasivky, struna, membrána reproduktoru), jehož kmity se přenášejí na okolní vzduch jako zhušťování a zřeďování — kolísání akustického tlaku kolem atmosférické hodnoty.</p>
+            <p class="text-slate-700">Protože zvuk je mechanické vlnění, <strong>nešíří se vakuem</strong> — ve vesmíru bychom žádný zvuk neslyšeli.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-3">Frekvenční pásma</h3>
+                <ul class="list-disc ml-6 space-y-1 text-slate-700 text-sm">
+                    <li><strong>Infrazvuk</strong>: $f < 16\,\text{Hz}$ — člověk neslyší (vnímá jej jen jako chvění); vzniká např. při zemětřesení.</li>
+                    <li><strong>Slyšitelný zvuk</strong>: přibližně $16\,\text{Hz}$ až $20\,000\,\text{Hz}$.</li>
+                    <li><strong>Ultrazvuk</strong>: $f > 20\,000\,\text{Hz}$ — využívá se v lékařství (sonografie), technice (defektoskopie, čištění), i v přírodě (echolokace netopýrů, delfínů).</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-3">Rychlost zvuku v různých prostředích</h3>
+                <table class="w-full text-sm text-slate-700">
+                    <tr class="border-b border-slate-200"><td class="py-1">vzduch (20 °C)</td><td class="text-right font-semibold">≈ 343 m·s⁻¹</td></tr>
+                    <tr class="border-b border-slate-200"><td class="py-1">voda</td><td class="text-right font-semibold">≈ 1480 m·s⁻¹</td></tr>
+                    <tr><td class="py-1">ocel</td><td class="text-right font-semibold">≈ 5100 m·s⁻¹</td></tr>
+                </table>
+                <p class="text-slate-600 text-xs mt-2">Rychlost zvuku ve vzduchu roste s rostoucí teplotou (přibližně o 0,6 m·s⁻¹ na 1 °C); v pevných látkách je vždy výrazně vyšší než ve vzduchu.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Vlastnosti zvuku</h3>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                <li><strong>Výška tónu</strong> — určena frekvencí; vyšší frekvence = vyšší (pronikavější) tón.</li>
+                <li><strong>Hlasitost</strong> — subjektivní vjem síly zvuku, závisí zejména na amplitudě (a tedy intenzitě) zvukového vlnění.</li>
+                <li><strong>Barva (témbr)</strong> — dána přítomností a poměrným zastoupením vyšších harmonických frekvencí nad základním tónem; umožňuje rozlišit stejný tón zahraný na různé nástroje.</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Intenzita zvuku a hladina intenzity</h3>
+            <p class="text-slate-700 mb-3">Intenzita zvuku $I$ (výkon procházející jednotkovou plochou, jednotka W·m⁻²) se v rozsahu vnímaném uchem mění o mnoho řádů, proto se v praxi používá logaritmická <strong>hladina intenzity zvuku</strong>:</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-3 mb-3">$L = 10\log\dfrac{I}{I_0}\ \ [\text{dB}],\qquad I_0 = 10^{-12}\,\text{W}\cdot\text{m}^{-2}$</p>
+            <p class="text-slate-600 text-sm">$I_0$ je práh slyšitelnosti při $f=1000\,\text{Hz}$. Orientačně: šepot ≈ 20 dB, běžný rozhovor ≈ 60 dB, provoz na rušné ulici ≈ 80 dB, práh bolesti ≈ 120–130 dB.</p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5 mt-6">
+            <p class="font-semibold text-amber-900 mb-2">Řešený příklad:</p>
+            <p class="text-slate-700 text-sm mb-2">Blesk uvidíme prakticky okamžitě, hrom uslyšíme po $t = 4{,}5\,\text{s}$. Odhadněte vzdálenost bouřky, je-li rychlost zvuku ve vzduchu $v = 340\,\text{m}\cdot\text{s}^{-1}$.</p>
+            <p class="text-slate-600 text-sm">Řešení: $s = v t = 340 \cdot 4{,}5 \approx 1530\,\text{m} \approx 1{,}5\,\text{km}$ (rychlost světla je natolik velká, že dobu šíření světla zanedbáváme).</p>
+        </div>
+    </section>
+
+    <!-- 8. REZONANCE, DOPPLER -->
+    <section id="rezonance" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Odraz zvuku, rezonance a Dopplerův jev</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Odraz zvuku — ozvěna a dozvuk</h3>
+            <p class="text-slate-700">Odrazí-li se zvuk od vzdálené překážky (stěna, skála) a vrátí se k pozorovateli se zpožděním větším než přibližně $0{,}1\,\text{s}$ (tj. odrazná plocha je vzdálena alespoň ~17 m), ucho vnímá odražený zvuk jako samostatný, opakovaný zvuk — <strong>ozvěnu (echo)</strong>. Při kratším zpoždění (blízké stěny, uzavřené místnosti) splývá odražený zvuk s původním v <strong>dozvuk</strong>, který ovlivňuje akustiku sálů a místností.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Rezonance vzduchového sloupce v trubici (uzavřené na jednom konci)</h3>
+            <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="130" fill="#eff6ff" rx="10"/>
+                <rect x="45" y="30" width="15" height="70" fill="#334155"/>
+                <line x1="60" y1="70" x2="560" y2="70" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <path d="M 60.0 70.0 Q 63.6 69.5 65.4 69.2 Q 67.1 69.0 68.9 68.7 Q 70.7 68.5 72.5 68.2 Q 74.3 68.0 76.1 67.7 Q 77.9 67.5 79.6 67.2 Q 81.4 67.0 83.2 66.7 Q 85.0 66.5 86.8 66.2 Q 88.6 66.0 90.4 65.7 Q 92.1 65.5 93.9 65.2 Q 95.7 65.0 97.5 64.7 Q 99.3 64.5 101.1 64.2 Q 102.9 64.0 104.6 63.7 Q 106.4 63.5 108.2 63.2 Q 110.0 63.0 111.8 62.7 Q 113.6 62.5 115.4 62.2 Q 117.1 62.0 118.9 61.7 Q 120.7 61.5 122.5 61.2 Q 124.3 61.0 126.1 60.7 Q 127.9 60.5 129.6 60.2 Q 131.4 60.0 133.2 59.7 Q 135.0 59.5 136.8 59.2 Q 138.6 59.0 140.4 58.8 Q 142.1 58.5 143.9 58.3 Q 145.7 58.0 147.5 57.8 Q 149.3 57.5 151.1 57.3 Q 152.9 57.1 154.6 56.8 Q 156.4 56.6 158.2 56.3 Q 160.0 56.1 161.8 55.9 Q 163.6 55.6 165.4 55.4 Q 167.1 55.1 168.9 54.9 Q 170.7 54.7 172.5 54.4 Q 174.3 54.2 176.1 54.0 Q 177.9 53.7 179.6 53.5 Q 181.4 53.2 183.2 53.0 Q 185.0 52.8 186.8 52.5 Q 188.6 52.3 190.4 52.1 Q 192.1 51.9 193.9 51.6 Q 195.7 51.4 197.5 51.2 Q 199.3 50.9 201.1 50.7 Q 202.9 50.5 204.6 50.2 Q 206.4 50.0 208.2 49.8 Q 210.0 49.6 211.8 49.3 Q 213.6 49.1 215.4 48.9 Q 217.1 48.7 218.9 48.5 Q 220.7 48.2 222.5 48.0 Q 224.3 47.8 226.1 47.6 Q 227.9 47.4 229.6 47.1 Q 231.4 46.9 233.2 46.7 Q 235.0 46.5 236.8 46.3 Q 238.6 46.1 240.4 45.8 Q 242.1 45.6 243.9 45.4 Q 245.7 45.2 247.5 45.0 Q 249.3 44.8 251.1 44.6 Q 252.9 44.4 254.6 44.2 Q 256.4 44.0 258.2 43.8 Q 260.0 43.5 261.8 43.3 Q 263.6 43.1 265.4 42.9 Q 267.1 42.7 268.9 42.5 Q 270.7 42.3 272.5 42.1 Q 274.3 41.9 276.1 41.7 Q 277.9 41.5 279.6 41.4 Q 281.4 41.2 283.2 41.0 Q 285.0 40.8 286.8 40.6 Q 288.6 40.4 290.4 40.2 Q 292.1 40.0 293.9 39.8 Q 295.7 39.6 297.5 39.5 Q 299.3 39.3 301.1 39.1 Q 302.9 38.9 304.6 38.7 Q 306.4 38.5 308.2 38.4 Q 310.0 38.2 311.8 38.0 Q 313.6 37.8 315.4 37.6 Q 317.1 37.5 318.9 37.3 Q 320.7 37.1 322.5 37.0 Q 324.3 36.8 326.1 36.6 Q 327.9 36.4 329.6 36.3 Q 331.4 36.1 333.2 35.9 Q 335.0 35.8 336.8 35.6 Q 338.6 35.5 340.4 35.3 Q 342.1 35.1 343.9 35.0 Q 345.7 34.8 347.5 34.7 Q 349.3 34.5 351.1 34.4 Q 352.9 34.2 354.6 34.0 Q 356.4 33.9 358.2 33.7 Q 360.0 33.6 361.8 33.4 Q 363.6 33.3 365.4 33.2 Q 367.1 33.0 368.9 32.9 Q 370.7 32.7 372.5 32.6 Q 374.3 32.4 376.1 32.3 Q 377.9 32.2 379.6 32.0 Q 381.4 31.9 383.2 31.8 Q 385.0 31.6 386.8 31.5 Q 388.6 31.4 390.4 31.2 Q 392.1 31.1 393.9 31.0 Q 395.7 30.9 397.5 30.7 Q 399.3 30.6 401.1 30.5 Q 402.9 30.4 404.6 30.3 Q 406.4 30.1 408.2 30.0 Q 410.0 29.9 411.8 29.8 Q 413.6 29.7 415.4 29.6 Q 417.1 29.5 418.9 29.3 Q 420.7 29.2 422.5 29.1 Q 424.3 29.0 426.1 28.9 Q 427.9 28.8 429.6 28.7 Q 431.4 28.6 433.2 28.5 Q 435.0 28.4 436.8 28.3 Q 438.6 28.2 440.4 28.1 Q 442.1 28.0 443.9 28.0 Q 445.7 27.9 447.5 27.8 Q 449.3 27.7 451.1 27.6 Q 452.9 27.5 454.6 27.4 Q 456.4 27.4 458.2 27.3 Q 460.0 27.2 461.8 27.1 Q 463.6 27.0 465.4 27.0 Q 467.1 26.9 468.9 26.8 Q 470.7 26.8 472.5 26.7 Q 474.3 26.6 476.1 26.6 Q 477.9 26.5 479.6 26.4 Q 481.4 26.4 483.2 26.3 Q 485.0 26.2 486.8 26.2 Q 488.6 26.1 490.4 26.1 Q 492.1 26.0 493.9 26.0 Q 495.7 25.9 497.5 25.9 Q 499.3 25.8 501.1 25.8 Q 502.9 25.7 504.6 25.7 Q 506.4 25.6 508.2 25.6 Q 510.0 25.6 511.8 25.5 Q 513.6 25.5 515.4 25.4 Q 517.1 25.4 518.9 25.4 Q 520.7 25.3 522.5 25.3 Q 524.3 25.3 526.1 25.3 Q 527.9 25.2 529.6 25.2 Q 531.4 25.2 533.2 25.2 Q 535.0 25.1 536.8 25.1 Q 538.6 25.1 540.4 25.1 Q 542.1 25.1 543.9 25.1 Q 545.7 25.0 547.5 25.0 Q 549.3 25.0 551.1 25.0 Q 552.9 25.0 554.6 25.0 Q 556.4 25.0 558.2 25.0 Q 560.0 25.0 560.0 25.0" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+                <circle cx="60" cy="70" r="5" fill="#b91c1c"/>
+                <text x="20" y="118" font-size="11" fill="#334155">uzavřený konec (uzel)</text>
+                <text x="430" y="20" font-size="11" fill="#334155">otevřený konec (kmitna)</text>
+                <text x="20" y="20" font-size="12" fill="#334155" font-weight="bold">Základní tón: l = λ/4</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">U trubice uzavřené na jednom konci musí být na uzavřeném konci <strong>uzel</strong> výchylky a na otevřeném konci <strong>kmitna</strong>. Do délky $l$ trubice se proto vejde jen lichý násobek čtvrtiny vlnové délky: $l = (2k+1)\dfrac{\lambda}{4}$, tedy $f_k = (2k+1)\dfrac{v}{4l}$ — vznikají pouze liché harmonické frekvence.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Akustická rezonance</h3>
+            <p class="text-slate-700">Zazní-li v blízkosti struny nebo vzduchového sloupce zvuk s frekvencí rovnou (nebo blízkou) jejich vlastní frekvenci, začnou tato tělesa souznít vlastním kmitáním s velkou amplitudou — jde o týž jev <strong>rezonance</strong>, jaký byl popsán u mechanických oscilátorů. Na akustické rezonanci je založena funkce rezonanční skříně hudebních nástrojů (kytara, housle) i naladění varhanních píšťal.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Dopplerův jev</h3>
+            <p class="text-slate-700 mb-3">Pohybuje-li se zdroj zvuku vzhledem k pozorovateli (nebo naopak), mění se pozorovaná frekvence oproti frekvenci vysílané zdrojem — jde o <strong>Dopplerův jev</strong>. Před přibližujícím se zdrojem se vlnoplochy „namačkávají“ blíž k sobě (kratší vlnová délka → vyšší vnímaná frekvence), za vzdalujícím se zdrojem se naopak rozestupují (nižší vnímaná frekvence).</p>
+            <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="260" fill="#eff6ff" rx="12"/>
+                <g fill="none" stroke="#1d4ed8" stroke-width="2" opacity="0.8">
+                    <circle cx="170.0" cy="130" r="300.0"/>
+                    <circle cx="200.0" cy="130" r="240.0"/>
+                    <circle cx="230.0" cy="130" r="180.0"/>
+                    <circle cx="260.0" cy="130" r="120.0"/>
+                    <circle cx="290.0" cy="130" r="60.0"/>
+                </g>
+                <circle cx="290" cy="130" r="8" fill="#b91c1c"/>
+                <path d="M320,130 l-20,-8 l0,16 z" fill="#b91c1c"/>
+                <text x="255" y="115" font-size="11" fill="#7f1d1d" font-weight="bold">zdroj</text>
+                <text x="420" y="60" font-size="13" fill="#1e3a8a" font-weight="bold">vpředu: λ kratší</text>
+                <text x="420" y="78" font-size="13" fill="#1e3a8a" font-weight="bold">→ f vyšší</text>
+                <text x="20" y="235" font-size="13" fill="#1e3a8a" font-weight="bold">vzadu: λ delší → f nižší</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Proto sirénu blížícího se vozidla slyšíme jako vyšší tón, který se v okamžiku míjení a následného vzdalování náhle sníží. Jev se stejně projevuje i při pohybu pozorovatele vůči nehybnému zdroji.</p>
+        </div>
+
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-6 md:p-8">
+            <h3 class="font-bold text-rose-800 mb-3">Využití v praxi</h3>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700 text-sm">
+                <li><strong>Dopplerův radar</strong> — měření rychlosti vozidel policií, meteorologické radary (sledování bouřek a srážek).</li>
+                <li><strong>Dopplerovská ultrasonografie</strong> — v lékařství měření rychlosti proudění krve v cévách.</li>
+                <li><strong>Astronomie</strong> — z posunu spektrálních čar (červený/modrý posuv) se určuje, zda se hvězdy a galaxie od nás vzdalují, nebo přibližují.</li>
+                <li><strong>Ozvěna a echolokace</strong> — sonar lodí a ponorek, echolokace netopýrů a delfínů využívající odraz ultrazvuku.</li>
+            </ul>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Výukový modul z fyziky · Mechanické vlnění a zvuk · gymnaziální učivo</p>
+</footer>
+
+</div>
+<!-- ============================================================ -->
+<!-- FRANCOUZSKÝ OBSAH / CONTENU FRANÇAIS                          -->
+<!-- ============================================================ -->
+<div id="fr-content" class="lang-container hidden">
+
+<header class="bg-gradient-to-br from-blue-800 to-indigo-900 text-white py-14 px-4 shadow-md">
+    <div class="max-w-5xl mx-auto">
+        <div class="flex items-center gap-3 mb-4 text-blue-200 text-sm font-semibold tracking-wider uppercase">
+            <span>🔵 Oscillations et ondes mécaniques</span><span>•</span><span>Partie 2 : Ondes et son</span>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Ondes mécaniques et son</h1>
+        <p class="text-lg md:text-xl text-blue-50 max-w-3xl leading-relaxed">
+            Origine et types d'ondes, équation de l'onde progressive, réflexion et réfraction, interférences, onde stationnaire, le son et ses propriétés, résonance et effet Doppler.
+        </p>
+    </div>
+</header>
+
+<nav class="sticky top-0 bg-white/95 backdrop-blur shadow-md z-40 border-b border-slate-200">
+    <div class="max-w-6xl mx-auto flex overflow-x-auto gap-2 px-4 py-3 text-sm font-semibold">
+        <span onclick="scrollToId('fr-uvod')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Origine des ondes</span>
+        <span onclick="scrollToId('fr-veliciny')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Grandeurs</span>
+        <span onclick="scrollToId('fr-rovnice')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Équation de l'onde</span>
+        <span onclick="scrollToId('fr-odraz')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Réflexion, réfraction, diffraction</span>
+        <span onclick="scrollToId('fr-interference')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Interférences</span>
+        <span onclick="scrollToId('fr-stojate')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Onde stationnaire</span>
+        <span onclick="scrollToId('fr-zvuk')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Son</span>
+        <span onclick="scrollToId('fr-rezonance')" class="nav-pill hover:text-blue-700 px-3 py-1 rounded-full hover:bg-blue-50">Résonance, Doppler</span>
+    </div>
+</nav>
+
+<main class="max-w-5xl mx-auto px-4 py-10 space-y-16">
+
+    <!-- 1. VZNIK A DRUHY VLNĚNÍ -->
+    <section id="fr-uvod" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Origine et types d'ondes</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-lg text-slate-700 mb-4">Une <strong>onde mécanique</strong> est un phénomène par lequel une perturbation (une oscillation) se propage de proche en proche dans un milieu élastique. Ce qui se transmet, c'est de l'énergie et de la quantité de mouvement, mais pas les particules du milieu elles-mêmes — celles-ci ne font qu'osciller autour de leur position d'équilibre. La naissance d'une onde exige une <strong>source d'oscillations</strong> et un <strong>milieu élastique</strong> dont les particules sont liées entre elles par des forces élastiques (c'est pourquoi la perturbation se transmet aux particules voisines avec un certain retard).</p>
+            <p class="text-slate-700">Contrairement à une onde électromagnétique, une onde mécanique <strong>ne peut pas se propager dans le vide</strong> — elle nécessite un milieu matériel (solide, liquide ou gazeux).</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Ondes transversales et longitudinales</h3>
+            <p class="text-slate-700 mb-4">Selon la relation entre la direction d'oscillation des particules et la direction de propagation de l'onde, on distingue :</p>
+            <div class="diagram-box mb-4 max-w-md mx-auto">
+                    <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="300" height="180" fill="#eff6ff" rx="12"/>
+                        <path d="M 20.0 90.0 Q 21.9 86.6 22.8 85.0 Q 23.7 83.3 24.6 81.6 Q 25.6 80.0 26.5 78.3 Q 27.4 76.7 28.4 75.1 Q 29.3 73.5 30.2 71.9 Q 31.1 70.3 32.1 68.8 Q 33.0 67.3 33.9 65.8 Q 34.9 64.4 35.8 62.9 Q 36.7 61.5 37.6 60.2 Q 38.6 58.8 39.5 57.5 Q 40.4 56.3 41.4 55.1 Q 42.3 53.9 43.2 52.7 Q 44.1 51.6 45.1 50.6 Q 46.0 49.5 46.9 48.6 Q 47.9 47.7 48.8 46.8 Q 49.7 46.0 50.6 45.2 Q 51.6 44.5 52.5 43.8 Q 53.4 43.2 54.4 42.7 Q 55.3 42.1 56.2 41.7 Q 57.1 41.3 58.1 40.9 Q 59.0 40.6 59.9 40.4 Q 60.9 40.2 61.8 40.1 Q 62.7 40.0 63.6 40.0 Q 64.6 40.1 65.5 40.2 Q 66.4 40.3 67.4 40.6 Q 68.3 40.8 69.2 41.2 Q 70.1 41.5 71.1 42.0 Q 72.0 42.4 72.9 43.0 Q 73.9 43.6 74.8 44.3 Q 75.7 45.0 76.6 45.7 Q 77.6 46.5 78.5 47.4 Q 79.4 48.3 80.4 49.2 Q 81.3 50.2 82.2 51.3 Q 83.1 52.3 84.1 53.5 Q 85.0 54.6 85.9 55.9 Q 86.9 57.1 87.8 58.4 Q 88.7 59.7 89.6 61.1 Q 90.6 62.5 91.5 63.9 Q 92.4 65.3 93.4 66.8 Q 94.3 68.3 95.2 69.8 Q 96.1 71.4 97.1 73.0 Q 98.0 74.5 98.9 76.2 Q 99.9 77.8 100.8 79.4 Q 101.7 81.1 102.6 82.7 Q 103.6 84.4 104.5 86.1 Q 105.4 87.8 106.4 89.4 Q 107.3 91.1 108.2 92.8 Q 109.1 94.5 110.1 96.2 Q 111.0 97.8 111.9 99.5 Q 112.9 101.1 113.8 102.8 Q 114.7 104.4 115.6 106.0 Q 116.6 107.6 117.5 109.1 Q 118.4 110.7 119.4 112.2 Q 120.3 113.7 121.2 115.1 Q 122.1 116.6 123.1 118.0 Q 124.0 119.4 124.9 120.7 Q 125.9 122.0 126.8 123.3 Q 127.7 124.6 128.6 125.7 Q 129.6 126.9 130.5 128.0 Q 131.4 129.1 132.4 130.1 Q 133.3 131.1 134.2 132.0 Q 135.1 132.9 136.1 133.7 Q 137.0 134.6 137.9 135.3 Q 138.9 136.0 139.8 136.6 Q 140.7 137.2 141.6 137.7 Q 142.6 138.2 143.5 138.6 Q 144.4 139.0 145.4 139.3 Q 146.3 139.5 147.2 139.7 Q 148.1 139.9 149.1 139.9 Q 150.0 140.0 150.9 139.9 Q 151.9 139.9 152.8 139.7 Q 153.7 139.5 154.6 139.3 Q 155.6 139.0 156.5 138.6 Q 157.4 138.2 158.4 137.7 Q 159.3 137.2 160.2 136.6 Q 161.1 136.0 162.1 135.3 Q 163.0 134.6 163.9 133.7 Q 164.9 132.9 165.8 132.0 Q 166.7 131.1 167.6 130.1 Q 168.6 129.1 169.5 128.0 Q 170.4 126.9 171.4 125.7 Q 172.3 124.6 173.2 123.3 Q 174.1 122.0 175.1 120.7 Q 176.0 119.4 176.9 118.0 Q 177.9 116.6 178.8 115.1 Q 179.7 113.7 180.6 112.2 Q 181.6 110.7 182.5 109.1 Q 183.4 107.6 184.4 106.0 Q 185.3 104.4 186.2 102.8 Q 187.1 101.1 188.1 99.5 Q 189.0 97.8 189.9 96.2 Q 190.9 94.5 191.8 92.8 Q 192.7 91.1 193.6 89.4 Q 194.6 87.8 195.5 86.1 Q 196.4 84.4 197.4 82.7 Q 198.3 81.1 199.2 79.4 Q 200.1 77.8 201.1 76.2 Q 202.0 74.5 202.9 73.0 Q 203.9 71.4 204.8 69.8 Q 205.7 68.3 206.6 66.8 Q 207.6 65.3 208.5 63.9 Q 209.4 62.5 210.4 61.1 Q 211.3 59.7 212.2 58.4 Q 213.1 57.1 214.1 55.9 Q 215.0 54.6 215.9 53.5 Q 216.9 52.3 217.8 51.3 Q 218.7 50.2 219.6 49.2 Q 220.6 48.3 221.5 47.4 Q 222.4 46.5 223.4 45.7 Q 224.3 45.0 225.2 44.3 Q 226.1 43.6 227.1 43.0 Q 228.0 42.4 228.9 42.0 Q 229.9 41.5 230.8 41.2 Q 231.7 40.8 232.6 40.6 Q 233.6 40.3 234.5 40.2 Q 235.4 40.1 236.4 40.0 Q 237.3 40.0 238.2 40.1 Q 239.1 40.2 240.1 40.4 Q 241.0 40.6 241.9 40.9 Q 242.9 41.3 243.8 41.7 Q 244.7 42.1 245.6 42.7 Q 246.6 43.2 247.5 43.8 Q 248.4 44.5 249.4 45.2 Q 250.3 46.0 251.2 46.8 Q 252.1 47.7 253.1 48.6 Q 254.0 49.5 254.9 50.6 Q 255.9 51.6 256.8 52.7 Q 257.7 53.9 258.6 55.1 Q 259.6 56.3 260.5 57.5 Q 261.4 58.8 262.4 60.2 Q 263.3 61.5 264.2 62.9 Q 265.1 64.4 266.1 65.8 Q 267.0 67.3 267.9 68.8 Q 268.9 70.3 269.8 71.9 Q 270.7 73.5 271.6 75.1 Q 272.6 76.7 273.5 78.3 Q 274.4 80.0 275.4 81.6 Q 276.3 83.3 277.2 85.0 Q 278.1 86.6 279.1 88.3 Q 280.0 90.0 280.0 90.0" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                        <line x1="150" y1="40" x2="150" y2="140" stroke="#b91c1c" stroke-width="2" stroke-dasharray="3"/>
+                        <path d="M150,60 l-8,10 l16,0 z" fill="#b91c1c"/>
+                        <path d="M150,120 l-8,-10 l16,0 z" fill="#b91c1c"/>
+                        <line x1="250" y1="90" x2="285" y2="90" stroke="#059669" stroke-width="2.5" marker-end="url(#fr-arrgreen1)"/>
+                        <defs><marker id="fr-arrgreen1" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#059669"/></marker></defs>
+                        <text x="252" y="80" font-size="11" fill="#059669">propagation</text>
+                        <text x="60" y="20" font-size="13" font-weight="bold" fill="#1e3a8a">Onde transversale</text>
+                        <text x="130" y="35" font-size="11" fill="#b91c1c">oscillation ⊥ propagation</text>
+                    </svg>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Onde longitudinale — compressions et raréfactions</h3>
+            <p class="text-slate-700 mb-3">Dans une onde longitudinale, les particules du milieu oscillent <strong>dans la direction de propagation</strong> de l'onde (par exemple les ondes longitudinales dans un ressort, ou le son dans l'air). Il se forme ainsi dans le milieu des zones de densité accrue — <strong>compressions (condensations)</strong> — et des zones de densité réduite — <strong>raréfactions (dilatations)</strong>, qui se propagent dans le milieu.</p>
+            <svg viewBox="0 0 640 140" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="140" fill="#eff6ff" rx="12"/>
+                <g fill="#1d4ed8">
+                    <circle cx="30.0" cy="70" r="7"/><circle cx="50.2" cy="70" r="7"/><circle cx="70.0" cy="70" r="7"/><circle cx="89.1" cy="70" r="7"/><circle cx="107.3" cy="70" r="7"/><circle cx="124.5" cy="70" r="7"/><circle cx="140.7" cy="70" r="7"/><circle cx="156.2" cy="70" r="7"/><circle cx="171.3" cy="70" r="7"/><circle cx="186.2" cy="70" r="7"/><circle cx="201.4" cy="70" r="7"/><circle cx="217.3" cy="70" r="7"/><circle cx="234.0" cy="70" r="7"/><circle cx="251.7" cy="70" r="7"/><circle cx="270.4" cy="70" r="7"/><circle cx="289.9" cy="70" r="7"/><circle cx="309.9" cy="70" r="7"/><circle cx="330.1" cy="70" r="7"/><circle cx="350.1" cy="70" r="7"/><circle cx="369.6" cy="70" r="7"/><circle cx="388.3" cy="70" r="7"/><circle cx="406.0" cy="70" r="7"/><circle cx="422.7" cy="70" r="7"/><circle cx="438.6" cy="70" r="7"/><circle cx="453.8" cy="70" r="7"/><circle cx="468.7" cy="70" r="7"/><circle cx="483.8" cy="70" r="7"/><circle cx="499.3" cy="70" r="7"/><circle cx="515.5" cy="70" r="7"/><circle cx="532.7" cy="70" r="7"/><circle cx="550.9" cy="70" r="7"/><circle cx="570.0" cy="70" r="7"/><circle cx="589.8" cy="70" r="7"/><circle cx="610.0" cy="70" r="7"/>
+                </g>
+                <rect x="180" y="15" width="45" height="20" fill="#fecaca" opacity="0.6"/>
+                <text x="184" y="30" font-size="11" fill="#991b1b" font-weight="bold">compression</text>
+                <rect x="65" y="105" width="55" height="20" fill="#bbf7d0" opacity="0.6"/>
+                <text x="68" y="120" font-size="11" fill="#166534" font-weight="bold">raréfaction</text>
+                <line x1="360" y1="120" x2="400" y2="120" stroke="#059669" stroke-width="2.5" marker-end="url(#fr-arrgreen2)"/>
+                <defs><marker id="fr-arrgreen2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#059669"/></marker></defs>
+                <text x="355" y="110" font-size="12" fill="#059669">sens de propagation</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Une onde longitudinale peut apparaître dans tout type de milieu (solide, liquide ou gazeux), tandis qu'une onde mécanique transversale ne se propage que dans les solides et à la surface libre des liquides — les gaz et les liquides ne permettent pas la transmission des contraintes de cisaillement nécessaires à une oscillation transversale.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Surface d'onde et rayon</h3>
+            <p class="text-slate-700">L'ensemble des points du milieu qui oscillent à un instant donné avec la même phase forme une <strong>surface d'onde</strong> (pour une source ponctuelle, les surfaces d'onde sont sphériques ; pour une source éloignée, on peut, dans une petite région, les considérer comme planes). La direction de propagation de l'onde, perpendiculaire à la surface d'onde, est représentée par un <strong>rayon</strong>.</p>
+        </div>
+    </section>
+
+    <!-- 2. VELIČINY POSTUPNÉHO VLNĚNÍ -->
+    <section id="fr-veliciny" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Description de l'onde progressive — grandeurs fondamentales</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-4">Chaque point du milieu traversé par l'onde oscille avec la même période <em>T</em> et la même fréquence <em>f</em> que la source, mais avec un retard proportionnel à sa distance à la source. On décrit l'onde à l'aide des grandeurs suivantes :</p>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                <li><strong>Période</strong> $T$ — durée d'une oscillation complète d'une particule du milieu (identique à la période de la source).</li>
+                <li><strong>Fréquence</strong> $f = 1/T$ — nombre d'oscillations d'une particule par unité de temps.</li>
+                <li><strong>Longueur d'onde</strong> $\lambda$ — distance parcourue par l'onde pendant une période $T$ ; c'est aussi la distance entre deux points voisins qui oscillent en phase.</li>
+                <li><strong>Célérité (vitesse de propagation)</strong> $v$ — vitesse à laquelle la surface d'onde (la perturbation) avance dans le milieu ; elle dépend des propriétés du milieu, non de la fréquence de la source.</li>
+            </ul>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-4 mt-4">$v = \dfrac{\lambda}{T} = \lambda f$</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Image instantanée de l'onde (« photographie » de l'onde)</h3>
+            <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="240" fill="#eff6ff" rx="12"/>
+                <line x1="30" y1="120" x2="620" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+                <line x1="30" y1="20" x2="30" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+                <text x="605" y="115" font-size="13" fill="#334155">x</text>
+                <text x="15" y="30" font-size="13" fill="#334155">y</text>
+                <path d="M 40.0 120.0 Q 44.1 113.3 46.2 109.9 Q 48.3 106.6 50.4 103.3 Q 52.4 100.0 54.5 96.8 Q 56.6 93.6 58.6 90.6 Q 60.7 87.5 62.8 84.5 Q 64.9 81.5 66.9 78.7 Q 69.0 75.9 71.1 73.3 Q 73.1 70.7 75.2 68.2 Q 77.3 65.8 79.4 63.6 Q 81.4 61.4 83.5 59.4 Q 85.6 57.4 87.6 55.7 Q 89.7 54.0 91.8 52.5 Q 93.9 51.0 95.9 49.9 Q 98.0 48.7 100.1 47.8 Q 102.1 46.9 104.2 46.3 Q 106.3 45.7 108.4 45.4 Q 110.4 45.1 112.5 45.1 Q 114.6 45.1 116.6 45.4 Q 118.7 45.7 120.8 46.3 Q 122.9 46.9 124.9 47.8 Q 127.0 48.7 129.1 49.9 Q 131.1 51.0 133.2 52.5 Q 135.3 54.0 137.4 55.7 Q 139.4 57.4 141.5 59.4 Q 143.6 61.4 145.6 63.6 Q 147.7 65.8 149.8 68.2 Q 151.9 70.7 153.9 73.3 Q 156.0 75.9 158.1 78.7 Q 160.1 81.5 162.2 84.5 Q 164.3 87.5 166.4 90.6 Q 168.4 93.6 170.5 96.8 Q 172.6 100.0 174.6 103.3 Q 176.7 106.6 178.8 109.9 Q 180.9 113.3 182.9 116.6 Q 185.0 120.0 187.1 123.4 Q 189.1 126.7 191.2 130.1 Q 193.3 133.4 195.4 136.7 Q 197.4 140.0 199.5 143.2 Q 201.6 146.4 203.6 149.4 Q 205.7 152.5 207.8 155.5 Q 209.9 158.5 211.9 161.3 Q 214.0 164.1 216.1 166.7 Q 218.1 169.3 220.2 171.8 Q 222.3 174.2 224.4 176.4 Q 226.4 178.6 228.5 180.6 Q 230.6 182.6 232.6 184.3 Q 234.7 186.0 236.8 187.5 Q 238.9 189.0 240.9 190.1 Q 243.0 191.3 245.1 192.2 Q 247.1 193.1 249.2 193.7 Q 251.3 194.3 253.4 194.6 Q 255.4 194.9 257.5 194.9 Q 259.6 194.9 261.6 194.6 Q 263.7 194.3 265.8 193.7 Q 267.9 193.1 269.9 192.2 Q 272.0 191.3 274.1 190.1 Q 276.1 189.0 278.2 187.5 Q 280.3 186.0 282.4 184.3 Q 284.4 182.6 286.5 180.6 Q 288.6 178.6 290.6 176.4 Q 292.7 174.2 294.8 171.8 Q 296.9 169.3 298.9 166.7 Q 301.0 164.1 303.1 161.3 Q 305.1 158.5 307.2 155.5 Q 309.3 152.5 311.4 149.4 Q 313.4 146.4 315.5 143.2 Q 317.6 140.0 319.6 136.7 Q 321.7 133.4 323.8 130.1 Q 325.9 126.7 327.9 123.4 Q 330.0 120.0 332.1 116.6 Q 334.1 113.3 336.2 109.9 Q 338.3 106.6 340.4 103.3 Q 342.4 100.0 344.5 96.8 Q 346.6 93.6 348.6 90.6 Q 350.7 87.5 352.8 84.5 Q 354.9 81.5 356.9 78.7 Q 359.0 75.9 361.1 73.3 Q 363.1 70.7 365.2 68.2 Q 367.3 65.8 369.4 63.6 Q 371.4 61.4 373.5 59.4 Q 375.6 57.4 377.6 55.7 Q 379.7 54.0 381.8 52.5 Q 383.9 51.0 385.9 49.9 Q 388.0 48.7 390.1 47.8 Q 392.1 46.9 394.2 46.3 Q 396.3 45.7 398.4 45.4 Q 400.4 45.1 402.5 45.1 Q 404.6 45.1 406.6 45.4 Q 408.7 45.7 410.8 46.3 Q 412.9 46.9 414.9 47.8 Q 417.0 48.7 419.1 49.9 Q 421.1 51.0 423.2 52.5 Q 425.3 54.0 427.4 55.7 Q 429.4 57.4 431.5 59.4 Q 433.6 61.4 435.6 63.6 Q 437.7 65.8 439.8 68.2 Q 441.9 70.7 443.9 73.3 Q 446.0 75.9 448.1 78.7 Q 450.1 81.5 452.2 84.5 Q 454.3 87.5 456.4 90.6 Q 458.4 93.6 460.5 96.8 Q 462.6 100.0 464.6 103.3 Q 466.7 106.6 468.8 109.9 Q 470.9 113.3 472.9 116.6 Q 475.0 120.0 477.1 123.4 Q 479.1 126.7 481.2 130.1 Q 483.3 133.4 485.4 136.7 Q 487.4 140.0 489.5 143.2 Q 491.6 146.4 493.6 149.4 Q 495.7 152.5 497.8 155.5 Q 499.9 158.5 501.9 161.3 Q 504.0 164.1 506.1 166.7 Q 508.1 169.3 510.2 171.8 Q 512.3 174.2 514.4 176.4 Q 516.4 178.6 518.5 180.6 Q 520.6 182.6 522.6 184.3 Q 524.7 186.0 526.8 187.5 Q 528.9 189.0 530.9 190.1 Q 533.0 191.3 535.1 192.2 Q 537.1 193.1 539.2 193.7 Q 541.3 194.3 543.4 194.6 Q 545.4 194.9 547.5 194.9 Q 549.6 194.9 551.6 194.6 Q 553.7 194.3 555.8 193.7 Q 557.9 193.1 559.9 192.2 Q 562.0 191.3 564.1 190.1 Q 566.1 189.0 568.2 187.5 Q 570.3 186.0 572.4 184.3 Q 574.4 182.6 576.5 180.6 Q 578.6 178.6 580.6 176.4 Q 582.7 174.2 584.8 171.8 Q 586.9 169.3 588.9 166.7 Q 591.0 164.1 593.1 161.3 Q 595.1 158.5 597.2 155.5 Q 599.3 152.5 601.4 149.4 Q 603.4 146.4 605.5 143.2 Q 607.6 140.0 609.6 136.7 Q 611.7 133.4 613.8 130.1 Q 615.9 126.7 617.9 123.4 Q 620.0 120.0 620.0 120.0" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                <line x1="30" y1="45" x2="612" y2="45" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <line x1="30" y1="195" x2="612" y2="195" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <text x="2" y="41" font-size="13" fill="#1e3a8a">y<tspan baseline-shift="sub" font-size="9">m</tspan></text>
+                <text x="2" y="200" font-size="13" fill="#1e3a8a">−y<tspan baseline-shift="sub" font-size="9">m</tspan></text>
+                <line x1="112" y1="130" x2="112" y2="140" stroke="#b91c1c" stroke-width="2"/>
+                <line x1="402" y1="130" x2="402" y2="140" stroke="#b91c1c" stroke-width="2"/>
+                <path d="M 112 135 L 402 135" stroke="#b91c1c" stroke-width="1.5" marker-start="url(#fr-larr)" marker-end="url(#fr-larr)"/>
+                <text x="248" y="150" font-size="13" fill="#b91c1c" font-weight="bold">λ</text>
+                <defs><marker id="fr-larr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#b91c1c"/></marker></defs>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Le graphe représente les élongations de tous les points du milieu à un instant fixé (en fonction de la coordonnée $x$). La distance entre deux points voisins de même phase (par exemple deux crêtes voisines) est la longueur d'onde $\lambda$.</p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+            <p class="font-semibold text-amber-900 mb-2">Exemple résolu :</p>
+            <p class="text-slate-700 text-sm mb-2">Une source oscille avec une fréquence $f = 5{,}0\,\text{Hz}$, l'onde se propage à la vitesse $v = 2{,}0\,\text{m}\cdot\text{s}^{-1}$. Déterminez la longueur d'onde et la période de l'onde.</p>
+            <p class="text-slate-600 text-sm">Solution : $T = 1/f = 1/5{,}0 = 0{,}20\,\text{s}$; &nbsp; $\lambda = v/f = 2{,}0/5{,}0 = 0{,}40\,\text{m}$.</p>
+        </div>
+    </section>
+
+    <!-- 3. ROVNICE POSTUPNÉHO VLNĚNÍ -->
+    <section id="fr-rovnice" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Équation de l'onde progressive</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3">Un point du milieu situé à la distance $x$ de la source se met à osciller avec un retard $x/v$, le temps nécessaire pour que l'onde l'atteigne. Si la source oscille selon $y = y_m\sin(\omega t)$, alors le point situé à la distance $x$ oscille selon la même loi, mais avec le temps décalé de $x/v$ :</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-4 mb-3">$y = y_m \sin\!\left[\omega\left(t - \dfrac{x}{v}\right)\right] = y_m\sin\!\left(2\pi\Big(\dfrac{t}{T}-\dfrac{x}{\lambda}\Big)\right)$</p>
+            <p class="text-slate-600 text-sm">Cette équation décrit l'élongation $y$ d'un point quelconque du milieu, situé à la distance $x$ de la source, à un instant $t$ quelconque (pour une onde se propageant dans le sens des $x$ croissants ; pour une onde se propageant en sens inverse, on utilise le signe $+$ au lieu de $-$).</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 diagram-box">
+                <h3 class="font-bold text-blue-800 mb-3 text-sm">Coupe à un instant fixé — $y(x)$</h3>
+                <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="640" height="240" fill="#eff6ff" rx="12"/>
+                    <line x1="30" y1="120" x2="620" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+                    <line x1="30" y1="20" x2="30" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+                    <text x="600" y="115" font-size="13" fill="#334155">x</text>
+                    <text x="15" y="30" font-size="13" fill="#334155">y</text>
+                    <path d="M 40.0 115.0 Q 44.1 110.3 46.1 107.9 Q 48.1 105.6 50.2 103.3 Q 52.2 101.0 54.2 98.7 Q 56.3 96.4 58.3 94.1 Q 60.4 91.9 62.4 89.7 Q 64.4 87.5 66.5 85.4 Q 68.5 83.2 70.5 81.2 Q 72.6 79.1 74.6 77.1 Q 76.6 75.1 78.7 73.2 Q 80.7 71.4 82.8 69.6 Q 84.8 67.8 86.8 66.1 Q 88.9 64.4 90.9 62.8 Q 92.9 61.3 95.0 59.8 Q 97.0 58.4 99.0 57.0 Q 101.1 55.7 103.1 54.5 Q 105.1 53.4 107.2 52.3 Q 109.2 51.3 111.2 50.4 Q 113.3 49.5 115.3 48.7 Q 117.4 48.0 119.4 47.4 Q 121.4 46.8 123.5 46.3 Q 125.5 45.9 127.5 45.6 Q 129.6 45.3 131.6 45.1 Q 133.6 45.0 135.7 45.0 Q 137.7 45.1 139.8 45.3 Q 141.8 45.4 143.8 45.8 Q 145.9 46.1 147.9 46.6 Q 149.9 47.1 152.0 47.8 Q 154.0 48.4 156.0 49.2 Q 158.1 50.0 160.1 51.0 Q 162.1 51.9 164.2 53.0 Q 166.2 54.1 168.2 55.3 Q 170.3 56.6 172.3 57.9 Q 174.4 59.3 176.4 60.8 Q 178.4 62.3 180.5 63.9 Q 182.5 65.5 184.5 67.2 Q 186.6 68.9 188.6 70.8 Q 190.6 72.6 192.7 74.5 Q 194.7 76.4 196.8 78.4 Q 198.8 80.5 200.8 82.5 Q 202.9 84.6 204.9 86.8 Q 206.9 88.9 209.0 91.2 Q 211.0 93.4 213.0 95.6 Q 215.1 97.9 217.1 100.2 Q 219.1 102.5 221.2 104.8 Q 223.2 107.2 225.2 109.5 Q 227.3 111.9 229.3 114.2 Q 231.4 116.6 233.4 118.9 Q 235.4 121.3 237.5 123.6 Q 239.5 126.0 241.5 128.3 Q 243.6 130.6 245.6 132.9 Q 247.6 135.1 249.7 137.4 Q 251.7 139.6 253.8 141.8 Q 255.8 143.9 257.8 146.1 Q 259.9 148.2 261.9 150.2 Q 263.9 152.2 266.0 154.2 Q 268.0 156.1 270.0 158.0 Q 272.1 159.9 274.1 161.6 Q 276.1 163.4 278.2 165.0 Q 280.2 166.7 282.2 168.2 Q 284.3 169.7 286.3 171.1 Q 288.4 172.5 290.4 173.8 Q 292.4 175.1 294.5 176.2 Q 296.5 177.4 298.5 178.4 Q 300.6 179.4 302.6 180.2 Q 304.6 181.1 306.7 181.8 Q 308.7 182.5 310.8 183.0 Q 312.8 183.6 314.8 184.0 Q 316.9 184.4 318.9 184.6 Q 320.9 184.8 323.0 184.9 Q 325.0 185.0 327.0 184.9 Q 329.1 184.8 331.1 184.6 Q 333.1 184.4 335.2 184.0 Q 337.2 183.6 339.2 183.0 Q 341.3 182.5 343.3 181.8 Q 345.4 181.1 347.4 180.2 Q 349.4 179.4 351.5 178.4 Q 353.5 177.4 355.5 176.2 Q 357.6 175.1 359.6 173.8 Q 361.6 172.5 363.7 171.1 Q 365.7 169.7 367.8 168.2 Q 369.8 166.7 371.8 165.0 Q 373.9 163.4 375.9 161.6 Q 377.9 159.9 380.0 158.0 Q 382.0 156.1 384.0 154.2 Q 386.1 152.2 388.1 150.2 Q 390.1 148.2 392.2 146.1 Q 394.2 143.9 396.2 141.8 Q 398.3 139.6 400.3 137.4 Q 402.4 135.1 404.4 132.9 Q 406.4 130.6 408.5 128.3 Q 410.5 126.0 412.5 123.6 Q 414.6 121.3 416.6 118.9 Q 418.6 116.6 420.7 114.2 Q 422.7 111.9 424.8 109.5 Q 426.8 107.2 428.8 104.8 Q 430.9 102.5 432.9 100.2 Q 434.9 97.9 437.0 95.6 Q 439.0 93.4 441.0 91.2 Q 443.1 88.9 445.1 86.8 Q 447.1 84.6 449.2 82.5 Q 451.2 80.5 453.2 78.4 Q 455.3 76.4 457.3 74.5 Q 459.4 72.6 461.4 70.8 Q 463.4 68.9 465.5 67.2 Q 467.5 65.5 469.5 63.9 Q 471.6 62.3 473.6 60.8 Q 475.6 59.3 477.7 57.9 Q 479.7 56.6 481.8 55.3 Q 483.8 54.1 485.8 53.0 Q 487.9 51.9 489.9 51.0 Q 491.9 50.0 494.0 49.2 Q 496.0 48.4 498.0 47.8 Q 500.1 47.1 502.1 46.6 Q 504.1 46.1 506.2 45.8 Q 508.2 45.4 510.2 45.3 Q 512.3 45.1 514.3 45.0 Q 516.4 45.0 518.4 45.1 Q 520.4 45.3 522.5 45.6 Q 524.5 45.9 526.5 46.3 Q 528.6 46.8 530.6 47.4 Q 532.6 48.0 534.7 48.7 Q 536.7 49.5 538.8 50.4 Q 540.8 51.3 542.8 52.3 Q 544.9 53.4 546.9 54.5 Q 548.9 55.7 551.0 57.0 Q 553.0 58.4 555.0 59.8 Q 557.1 61.3 559.1 62.8 Q 561.1 64.4 563.2 66.1 Q 565.2 67.8 567.2 69.6 Q 569.3 71.4 571.3 73.2 Q 573.4 75.1 575.4 77.1 Q 577.4 79.1 579.5 81.2 Q 581.5 83.2 583.5 85.4 Q 585.6 87.5 587.6 89.7 Q 589.6 91.9 591.7 94.1 Q 593.7 96.4 595.8 98.7 Q 597.8 101.0 599.8 103.3 Q 601.9 105.6 603.9 107.9 Q 605.9 110.3 608.0 112.6 Q 610.0 115.0 610.0 115.0" fill="none" stroke="#1d4ed8" stroke-width="3"/>
+                    <text x="330" y="230" font-size="12" fill="#64748b" text-anchor="middle">instant $t_0$ : même phase la plus proche à la distance λ</text>
+                </svg>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 diagram-box">
+                <h3 class="font-bold text-blue-800 mb-3 text-sm">Oscillation d'un point — $y(t)$</h3>
+                <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="640" height="240" fill="#f0fdf4" rx="12"/>
+                    <line x1="30" y1="120" x2="620" y2="120" stroke="#94a3b8" stroke-width="1.5"/>
+                    <line x1="30" y1="20" x2="30" y2="220" stroke="#94a3b8" stroke-width="1.5"/>
+                    <text x="600" y="115" font-size="13" fill="#334155">t</text>
+                    <text x="15" y="30" font-size="13" fill="#334155">y</text>
+                    <path d="M 40.0 115.0 Q 44.1 110.3 46.1 107.9 Q 48.1 105.6 50.2 103.3 Q 52.2 101.0 54.2 98.7 Q 56.3 96.4 58.3 94.1 Q 60.4 91.9 62.4 89.7 Q 64.4 87.5 66.5 85.4 Q 68.5 83.2 70.5 81.2 Q 72.6 79.1 74.6 77.1 Q 76.6 75.1 78.7 73.2 Q 80.7 71.4 82.8 69.6 Q 84.8 67.8 86.8 66.1 Q 88.9 64.4 90.9 62.8 Q 92.9 61.3 95.0 59.8 Q 97.0 58.4 99.0 57.0 Q 101.1 55.7 103.1 54.5 Q 105.1 53.4 107.2 52.3 Q 109.2 51.3 111.2 50.4 Q 113.3 49.5 115.3 48.7 Q 117.4 48.0 119.4 47.4 Q 121.4 46.8 123.5 46.3 Q 125.5 45.9 127.5 45.6 Q 129.6 45.3 131.6 45.1 Q 133.6 45.0 135.7 45.0 Q 137.7 45.1 139.8 45.3 Q 141.8 45.4 143.8 45.8 Q 145.9 46.1 147.9 46.6 Q 149.9 47.1 152.0 47.8 Q 154.0 48.4 156.0 49.2 Q 158.1 50.0 160.1 51.0 Q 162.1 51.9 164.2 53.0 Q 166.2 54.1 168.2 55.3 Q 170.3 56.6 172.3 57.9 Q 174.4 59.3 176.4 60.8 Q 178.4 62.3 180.5 63.9 Q 182.5 65.5 184.5 67.2 Q 186.6 68.9 188.6 70.8 Q 190.6 72.6 192.7 74.5 Q 194.7 76.4 196.8 78.4 Q 198.8 80.5 200.8 82.5 Q 202.9 84.6 204.9 86.8 Q 206.9 88.9 209.0 91.2 Q 211.0 93.4 213.0 95.6 Q 215.1 97.9 217.1 100.2 Q 219.1 102.5 221.2 104.8 Q 223.2 107.2 225.2 109.5 Q 227.3 111.9 229.3 114.2 Q 231.4 116.6 233.4 118.9 Q 235.4 121.3 237.5 123.6 Q 239.5 126.0 241.5 128.3 Q 243.6 130.6 245.6 132.9 Q 247.6 135.1 249.7 137.4 Q 251.7 139.6 253.8 141.8 Q 255.8 143.9 257.8 146.1 Q 259.9 148.2 261.9 150.2 Q 263.9 152.2 266.0 154.2 Q 268.0 156.1 270.0 158.0 Q 272.1 159.9 274.1 161.6 Q 276.1 163.4 278.2 165.0 Q 280.2 166.7 282.2 168.2 Q 284.3 169.7 286.3 171.1 Q 288.4 172.5 290.4 173.8 Q 292.4 175.1 294.5 176.2 Q 296.5 177.4 298.5 178.4 Q 300.6 179.4 302.6 180.2 Q 304.6 181.1 306.7 181.8 Q 308.7 182.5 310.8 183.0 Q 312.8 183.6 314.8 184.0 Q 316.9 184.4 318.9 184.6 Q 320.9 184.8 323.0 184.9 Q 325.0 185.0 327.0 184.9 Q 329.1 184.8 331.1 184.6 Q 333.1 184.4 335.2 184.0 Q 337.2 183.6 339.2 183.0 Q 341.3 182.5 343.3 181.8 Q 345.4 181.1 347.4 180.2 Q 349.4 179.4 351.5 178.4 Q 353.5 177.4 355.5 176.2 Q 357.6 175.1 359.6 173.8 Q 361.6 172.5 363.7 171.1 Q 365.7 169.7 367.8 168.2 Q 369.8 166.7 371.8 165.0 Q 373.9 163.4 375.9 161.6 Q 377.9 159.9 380.0 158.0 Q 382.0 156.1 384.0 154.2 Q 386.1 152.2 388.1 150.2 Q 390.1 148.2 392.2 146.1 Q 394.2 143.9 396.2 141.8 Q 398.3 139.6 400.3 137.4 Q 402.4 135.1 404.4 132.9 Q 406.4 130.6 408.5 128.3 Q 410.5 126.0 412.5 123.6 Q 414.6 121.3 416.6 118.9 Q 418.6 116.6 420.7 114.2 Q 422.7 111.9 424.8 109.5 Q 426.8 107.2 428.8 104.8 Q 430.9 102.5 432.9 100.2 Q 434.9 97.9 437.0 95.6 Q 439.0 93.4 441.0 91.2 Q 443.1 88.9 445.1 86.8 Q 447.1 84.6 449.2 82.5 Q 451.2 80.5 453.2 78.4 Q 455.3 76.4 457.3 74.5 Q 459.4 72.6 461.4 70.8 Q 463.4 68.9 465.5 67.2 Q 467.5 65.5 469.5 63.9 Q 471.6 62.3 473.6 60.8 Q 475.6 59.3 477.7 57.9 Q 479.7 56.6 481.8 55.3 Q 483.8 54.1 485.8 53.0 Q 487.9 51.9 489.9 51.0 Q 491.9 50.0 494.0 49.2 Q 496.0 48.4 498.0 47.8 Q 500.1 47.1 502.1 46.6 Q 504.1 46.1 506.2 45.8 Q 508.2 45.4 510.2 45.3 Q 512.3 45.1 514.3 45.0 Q 516.4 45.0 518.4 45.1 Q 520.4 45.3 522.5 45.6 Q 524.5 45.9 526.5 46.3 Q 528.6 46.8 530.6 47.4 Q 532.6 48.0 534.7 48.7 Q 536.7 49.5 538.8 50.4 Q 540.8 51.3 542.8 52.3 Q 544.9 53.4 546.9 54.5 Q 548.9 55.7 551.0 57.0 Q 553.0 58.4 555.0 59.8 Q 557.1 61.3 559.1 62.8 Q 561.1 64.4 563.2 66.1 Q 565.2 67.8 567.2 69.6 Q 569.3 71.4 571.3 73.2 Q 573.4 75.1 575.4 77.1 Q 577.4 79.1 579.5 81.2 Q 581.5 83.2 583.5 85.4 Q 585.6 87.5 587.6 89.7 Q 589.6 91.9 591.7 94.1 Q 593.7 96.4 595.8 98.7 Q 597.8 101.0 599.8 103.3 Q 601.9 105.6 603.9 107.9 Q 605.9 110.3 608.0 112.6 Q 610.0 115.0 610.0 115.0" fill="none" stroke="#059669" stroke-width="3"/>
+                    <text x="330" y="230" font-size="12" fill="#64748b" text-anchor="middle">point $x_0$ : la période de répétition est T</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="bg-sky-50 border border-sky-200 rounded-2xl p-6">
+            <p class="text-slate-700 text-sm"><strong>À ne pas confondre :</strong> le graphe $y(x)$ à $t$ fixé montre la <em>périodicité spatiale</em> de période $\lambda$ (la longueur d'onde), tandis que le graphe $y(t)$ à $x$ fixé montre la <em>périodicité temporelle</em> de période $T$. Bien que les deux graphes aient la forme d'une sinusoïde, ils décrivent des grandeurs différentes.</p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5 mt-6">
+            <p class="font-semibold text-amber-900 mb-2">Exemple résolu :</p>
+            <p class="text-slate-700 text-sm mb-2">Une source à l'origine ($x=0$) oscille selon $y = 0{,}02\sin(10\pi t)$ (SI). L'onde se propage à la vitesse $v = 4{,}0\,\text{m}\cdot\text{s}^{-1}$. Écrivez l'équation de l'onde et déterminez l'élongation du point $x = 1{,}0\,\text{m}$ à l'instant $t = 1{,}0\,\text{s}$.</p>
+            <p class="text-slate-600 text-sm">Solution : $\omega = 10\pi\,\text{rad}\cdot\text{s}^{-1}$, donc $y = 0{,}02\sin\!\left[10\pi\left(t-\dfrac{x}{4{,}0}\right)\right]$. Pour $x=1{,}0\,\text{m}$, $t=1{,}0\,\text{s}$ : $y = 0{,}02\sin\!\left[10\pi(1{,}0-0{,}25)\right] = 0{,}02\sin(7{,}5\pi) \approx -0{,}02\,\text{m}$.</p>
+        </div>
+    </section>
+
+    <!-- 4. ODRAZ, LOM, OHYB -->
+    <section id="fr-odraz" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Réflexion, réfraction et diffraction des ondes. Principe de Huygens</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Principe de Huygens</h3>
+            <p class="text-slate-700">Chaque point d'une surface d'onde atteint par l'onde devient à son tour la source d'une nouvelle <strong>onde élémentaire (sphérique)</strong>. La nouvelle surface d'onde, à l'instant suivant, est l'enveloppe extérieure de toutes ces ondes élémentaires. Le principe de Huygens permet de retrouver les lois de la réflexion, de la réfraction et de la diffraction des ondes.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Diffraction par une fente</h3>
+            <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <clipPath id="fr-afterSlit">
+                        <rect x="300" y="0" width="340" height="260"/>
+                    </clipPath>
+                </defs>
+                <rect width="640" height="260" fill="#eff6ff" rx="12"/>
+                <g stroke="#1d4ed8" stroke-width="2">
+                    <line x1="70" y1="20" x2="70" y2="90" />
+                    <line x1="130" y1="20" x2="130" y2="90" />
+                    <line x1="190" y1="20" x2="190" y2="90" />
+                    <line x1="250" y1="20" x2="250" y2="90" />
+                    <line x1="70" y1="170" x2="70" y2="240" />
+                    <line x1="130" y1="170" x2="130" y2="240" />
+                    <line x1="190" y1="170" x2="190" y2="240" />
+                    <line x1="250" y1="170" x2="250" y2="240" />
+                </g>
+                <rect x="290" y="0" width="14" height="100" fill="#334155"/>
+                <rect x="290" y="160" width="14" height="100" fill="#334155"/>
+                <text x="240" y="15" font-size="12" fill="#1e3a8a">surfaces d'onde planes</text>
+                <text x="230" y="253" font-size="12" fill="#334155">obstacle percé d'une fente</text>
+                <g clip-path="url(#fr-afterSlit)" fill="none" stroke="#b91c1c" stroke-width="2">
+                    <circle cx="297" cy="130" r="40"/>
+                    <circle cx="297" cy="130" r="80"/>
+                    <circle cx="297" cy="130" r="120"/>
+                    <circle cx="297" cy="130" r="160"/>
+                    <circle cx="297" cy="130" r="200"/>
+                    <circle cx="297" cy="130" r="240"/>
+                    <circle cx="297" cy="130" r="280"/>
+                </g>
+                <text x="400" y="60" font-size="12" fill="#b91c1c">surfaces d'onde circulaires</text>
+                <text x="400" y="76" font-size="12" fill="#b91c1c">après la fente (diffraction)</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Si la dimension de la fente (de l'obstacle) est comparable à la longueur d'onde $\lambda$, l'onde se courbe nettement derrière l'obstacle (diffraction). Si la fente est beaucoup plus grande que $\lambda$, la diffraction est négligeable et l'onde se propage presque en ligne droite.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-3">Réflexion de l'onde</h3>
+                <p class="text-slate-700 text-sm">À l'interface entre deux milieux (ou sur un obstacle fixe), l'onde se réfléchit : l'angle de réflexion est égal à l'angle d'incidence. Si l'onde se réfléchit sur une <strong>extrémité fixe</strong> (extrémité liée), il se produit un saut de phase de $\pi$ (l'onde réfléchie a une élongation opposée) ; lors d'une réflexion sur une <strong>extrémité libre</strong>, la phase ne change pas.</p>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-3">Réfraction de l'onde</h3>
+                <p class="text-slate-700 text-sm">Lorsque l'onde passe dans un milieu où la vitesse de propagation est différente, elle subit une réfraction — la direction de propagation et la longueur d'onde changent, mais <strong>la fréquence reste inchangée</strong> (elle est fixée par la source). On a $\dfrac{v_1}{v_2}=\dfrac{\sin\alpha}{\sin\beta}$, où $\alpha$ est l'angle d'incidence et $\beta$ l'angle de réfraction.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. INTERFERENCE -->
+    <section id="fr-interference" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Superposition des ondes — interférences</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Principe de superposition</h3>
+            <p class="text-slate-700 mb-3">Lorsque deux (ou plusieurs) ondes se rencontrent en un point donné du milieu, l'élongation résultante est donnée par la <strong>somme</strong> des élongations de chaque onde (principe de superposition). Après s'être croisées, les deux ondes continuent de se propager sans changement, comme si elles ne s'étaient pas rencontrées.</p>
+            <p class="text-slate-700">Si deux ondes de même fréquence et de différence de phase constante (ondes dites <strong>cohérentes</strong>) se propagent dans le milieu, il apparaît dans l'espace une répartition stable et invariable dans le temps des amplitudes de l'oscillation résultante — ce phénomène s'appelle l'<strong>interférence</strong>.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Conditions des maxima et minima d'interférence</h3>
+            <p class="text-slate-700 mb-3">Ce qui est déterminant, c'est la <strong>différence de marche</strong> $\Delta = |d_2-d_1|$ des distances du point aux deux sources :</p>
+            <p class="text-center formula-box text-lg bg-emerald-100 rounded-xl py-3 mb-3">Maximum (renforcement) : $\Delta = k\lambda,\quad k = 0,1,2,\dots$</p>
+            <p class="text-center formula-box text-lg bg-rose-100 rounded-xl py-3">Minimum (affaiblissement) : $\Delta = (2k+1)\dfrac{\lambda}{2},\quad k = 0,1,2,\dots$</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Figure d'interférence de deux sources ponctuelles</h3>
+            <svg viewBox="0 0 640 420" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="420" fill="#eff6ff" rx="12"/>
+                <g fill="none" stroke="#1d4ed8" stroke-width="1.2" opacity="0.35">
+                    <circle cx="220" cy="210" r="20"/><circle cx="220" cy="210" r="40"/><circle cx="220" cy="210" r="60"/><circle cx="220" cy="210" r="80"/><circle cx="220" cy="210" r="100"/><circle cx="220" cy="210" r="120"/><circle cx="220" cy="210" r="140"/><circle cx="220" cy="210" r="160"/>
+                </g>
+                <g fill="none" stroke="#b91c1c" stroke-width="1.2" opacity="0.35">
+                    <circle cx="420" cy="210" r="20"/><circle cx="420" cy="210" r="40"/><circle cx="420" cy="210" r="60"/><circle cx="420" cy="210" r="80"/><circle cx="420" cy="210" r="100"/><circle cx="420" cy="210" r="120"/><circle cx="420" cy="210" r="140"/><circle cx="420" cy="210" r="160"/>
+                </g>
+
+                <!-- Pásy zesílení (konstruktivní interference), Δ = kλ -->
+                <g id="fr-maxima-group" fill="none" stroke="#059669" stroke-width="3">
+                    <path d="M 320.0 30.0 L 320.0 390.0"/>
+                    <path d="M 341.6 20.0 Q 340.7 29.8 340.3 34.5 Q 339.9 39.3 339.5 43.8 Q 339.1 48.3 338.7 52.7 Q 338.3 57.0 338.0 61.2 Q 337.6 65.4 337.3 69.4 Q 337.0 73.4 336.7 77.3 Q 336.4 81.2 336.1 84.9 Q 335.8 88.7 335.5 92.3 Q 335.2 95.9 335.0 99.3 Q 334.7 102.8 334.5 106.2 Q 334.2 109.5 334.0 112.8 Q 333.8 116.0 333.5 119.2 Q 333.3 122.3 333.1 125.4 Q 332.9 128.4 332.7 131.4 Q 332.6 134.4 332.4 137.3 Q 332.2 140.1 332.1 142.9 Q 331.9 145.7 331.8 148.5 Q 331.6 151.2 331.5 153.9 Q 331.4 156.5 331.2 159.2 Q 331.1 161.8 331.0 164.3 Q 330.9 166.9 330.8 169.4 Q 330.7 171.9 330.6 174.4 Q 330.5 176.9 330.5 179.3 Q 330.4 181.7 330.3 184.1 Q 330.3 186.5 330.2 188.9 Q 330.2 191.3 330.1 193.6 Q 330.1 196.0 330.1 198.3 Q 330.0 200.7 330.0 203.0 Q 330.0 205.3 330.0 207.7 Q 330.0 210.0 330.0 212.3 Q 330.0 214.7 330.0 217.0 Q 330.0 219.3 330.1 221.7 Q 330.1 224.0 330.1 226.4 Q 330.2 228.7 330.2 231.1 Q 330.3 233.5 330.3 235.9 Q 330.4 238.3 330.5 240.7 Q 330.5 243.1 330.6 245.6 Q 330.7 248.1 330.8 250.6 Q 330.9 253.1 331.0 255.7 Q 331.1 258.2 331.2 260.8 Q 331.4 263.5 331.5 266.1 Q 331.6 268.8 331.8 271.5 Q 331.9 274.3 332.1 277.1 Q 332.2 279.9 332.4 282.7 Q 332.6 285.6 332.7 288.6 Q 332.9 291.6 333.1 294.6 Q 333.3 297.7 333.5 300.8 Q 333.8 304.0 334.0 307.2 Q 334.2 310.5 334.5 313.8 Q 334.7 317.2 335.0 320.7 Q 335.2 324.1 335.5 327.7 Q 335.8 331.3 336.1 335.1 Q 336.4 338.8 336.7 342.7 Q 337.0 346.6 337.3 350.6 Q 337.6 354.6 338.0 358.8 Q 338.3 363.0 338.7 367.3 Q 339.1 371.7 339.5 376.2 Q 339.9 380.7 340.3 385.5 Q 340.7 390.2 341.1 395.1 Q 341.6 400.0 341.6 400.0"/>
+                    <path d="M 298.4 20.0 Q 299.3 29.8 299.7 34.5 Q 300.1 39.3 300.5 43.8 Q 300.9 48.3 301.3 52.7 Q 301.7 57.0 302.0 61.2 Q 302.4 65.4 302.7 69.4 Q 303.0 73.4 303.3 77.3 Q 303.6 81.2 303.9 84.9 Q 304.2 88.7 304.5 92.3 Q 304.8 95.9 305.0 99.3 Q 305.3 102.8 305.5 106.2 Q 305.8 109.5 306.0 112.8 Q 306.2 116.0 306.5 119.2 Q 306.7 122.3 306.9 125.4 Q 307.1 128.4 307.3 131.4 Q 307.4 134.4 307.6 137.3 Q 307.8 140.1 307.9 142.9 Q 308.1 145.7 308.2 148.5 Q 308.4 151.2 308.5 153.9 Q 308.6 156.5 308.8 159.2 Q 308.9 161.8 309.0 164.3 Q 309.1 166.9 309.2 169.4 Q 309.3 171.9 309.4 174.4 Q 309.5 176.9 309.5 179.3 Q 309.6 181.7 309.7 184.1 Q 309.7 186.5 309.8 188.9 Q 309.8 191.3 309.9 193.6 Q 309.9 196.0 309.9 198.3 Q 310.0 200.7 310.0 203.0 Q 310.0 205.3 310.0 207.7 Q 310.0 210.0 310.0 212.3 Q 310.0 214.7 310.0 217.0 Q 310.0 219.3 309.9 221.7 Q 309.9 224.0 309.9 226.4 Q 309.8 228.7 309.8 231.1 Q 309.7 233.5 309.7 235.9 Q 309.6 238.3 309.5 240.7 Q 309.5 243.1 309.4 245.6 Q 309.3 248.1 309.2 250.6 Q 309.1 253.1 309.0 255.7 Q 308.9 258.2 308.8 260.8 Q 308.6 263.5 308.5 266.1 Q 308.4 268.8 308.2 271.5 Q 308.1 274.3 307.9 277.1 Q 307.8 279.9 307.6 282.7 Q 307.4 285.6 307.3 288.6 Q 307.1 291.6 306.9 294.6 Q 306.7 297.7 306.5 300.8 Q 306.2 304.0 306.0 307.2 Q 305.8 310.5 305.5 313.8 Q 305.3 317.2 305.0 320.7 Q 304.8 324.1 304.5 327.7 Q 304.2 331.3 303.9 335.1 Q 303.6 338.8 303.3 342.7 Q 303.0 346.6 302.7 350.6 Q 302.4 354.6 302.0 358.8 Q 301.7 363.0 301.3 367.3 Q 300.9 371.7 300.5 376.2 Q 300.1 380.7 299.7 385.5 Q 299.3 390.2 298.9 395.1 Q 298.4 400.0 298.4 400.0"/>
+                    <path d="M 363.6 20.0 Q 361.9 29.9 361.0 34.6 Q 360.2 39.4 359.4 43.9 Q 358.6 48.5 357.8 52.8 Q 357.1 57.2 356.3 61.4 Q 355.6 65.6 354.9 69.6 Q 354.3 73.7 353.6 77.6 Q 353.0 81.5 352.4 85.2 Q 351.8 89.0 351.2 92.6 Q 350.7 96.2 350.1 99.7 Q 349.6 103.1 349.1 106.5 Q 348.6 109.9 348.1 113.1 Q 347.7 116.4 347.2 119.5 Q 346.8 122.7 346.4 125.7 Q 346.0 128.8 345.6 131.7 Q 345.2 134.7 344.9 137.6 Q 344.5 140.4 344.2 143.2 Q 343.9 146.0 343.6 148.8 Q 343.3 151.5 343.0 154.1 Q 342.8 156.8 342.5 159.4 Q 342.3 162.0 342.1 164.6 Q 341.8 167.1 341.6 169.6 Q 341.4 172.1 341.3 174.6 Q 341.1 177.0 341.0 179.5 Q 340.8 181.9 340.7 184.3 Q 340.6 186.7 340.5 189.0 Q 340.4 191.4 340.3 193.7 Q 340.2 196.1 340.1 198.4 Q 340.1 200.7 340.1 203.1 Q 340.0 205.4 340.0 207.7 Q 340.0 210.0 340.0 212.3 Q 340.0 214.6 340.1 216.9 Q 340.1 219.3 340.1 221.6 Q 340.2 223.9 340.3 226.3 Q 340.4 228.6 340.5 231.0 Q 340.6 233.3 340.7 235.7 Q 340.8 238.1 341.0 240.5 Q 341.1 243.0 341.3 245.4 Q 341.4 247.9 341.6 250.4 Q 341.8 252.9 342.1 255.4 Q 342.3 258.0 342.5 260.6 Q 342.8 263.2 343.0 265.9 Q 343.3 268.5 343.6 271.2 Q 343.9 274.0 344.2 276.8 Q 344.5 279.6 344.9 282.4 Q 345.2 285.3 345.6 288.3 Q 346.0 291.2 346.4 294.3 Q 346.8 297.3 347.2 300.5 Q 347.7 303.6 348.1 306.9 Q 348.6 310.1 349.1 313.5 Q 349.6 316.9 350.1 320.3 Q 350.7 323.8 351.2 327.4 Q 351.8 331.0 352.4 334.8 Q 353.0 338.5 353.6 342.4 Q 354.3 346.3 354.9 350.4 Q 355.6 354.4 356.3 358.6 Q 357.1 362.8 357.8 367.2 Q 358.6 371.5 359.4 376.1 Q 360.2 380.6 361.0 385.4 Q 361.9 390.1 362.7 395.1 Q 363.6 400.0 363.6 400.0"/>
+                    <path d="M 276.4 20.0 Q 278.1 29.9 279.0 34.6 Q 279.8 39.4 280.6 43.9 Q 281.4 48.5 282.2 52.8 Q 282.9 57.2 283.7 61.4 Q 284.4 65.6 285.1 69.6 Q 285.7 73.7 286.4 77.6 Q 287.0 81.5 287.6 85.2 Q 288.2 89.0 288.8 92.6 Q 289.3 96.2 289.9 99.7 Q 290.4 103.1 290.9 106.5 Q 291.4 109.9 291.9 113.1 Q 292.3 116.4 292.8 119.5 Q 293.2 122.7 293.6 125.7 Q 294.0 128.8 294.4 131.7 Q 294.8 134.7 295.1 137.6 Q 295.5 140.4 295.8 143.2 Q 296.1 146.0 296.4 148.8 Q 296.7 151.5 297.0 154.1 Q 297.2 156.8 297.5 159.4 Q 297.7 162.0 297.9 164.6 Q 298.2 167.1 298.4 169.6 Q 298.6 172.1 298.7 174.6 Q 298.9 177.0 299.0 179.5 Q 299.2 181.9 299.3 184.3 Q 299.4 186.7 299.5 189.0 Q 299.6 191.4 299.7 193.7 Q 299.8 196.1 299.9 198.4 Q 299.9 200.7 299.9 203.1 Q 300.0 205.4 300.0 207.7 Q 300.0 210.0 300.0 212.3 Q 300.0 214.6 299.9 216.9 Q 299.9 219.3 299.9 221.6 Q 299.8 223.9 299.7 226.3 Q 299.6 228.6 299.5 231.0 Q 299.4 233.3 299.3 235.7 Q 299.2 238.1 299.0 240.5 Q 298.9 243.0 298.7 245.4 Q 298.6 247.9 298.4 250.4 Q 298.2 252.9 297.9 255.4 Q 297.7 258.0 297.5 260.6 Q 297.2 263.2 297.0 265.9 Q 296.7 268.5 296.4 271.2 Q 296.1 274.0 295.8 276.8 Q 295.5 279.6 295.1 282.4 Q 294.8 285.3 294.4 288.3 Q 294.0 291.2 293.6 294.3 Q 293.2 297.3 292.8 300.5 Q 292.3 303.6 291.9 306.9 Q 291.4 310.1 290.9 313.5 Q 290.4 316.9 289.9 320.3 Q 289.3 323.8 288.8 327.4 Q 288.2 331.0 287.6 334.8 Q 287.0 338.5 286.4 342.4 Q 285.7 346.3 285.1 350.4 Q 284.4 354.4 283.7 358.6 Q 282.9 362.8 282.2 367.2 Q 281.4 371.5 280.6 376.1 Q 279.8 380.6 279.0 385.4 Q 278.1 390.1 277.3 395.1 Q 276.4 400.0 276.4 400.0"/>
+                </g>
+
+                <!-- Pásy zeslabení (destruktivní interference), Δ = (k+1/2)λ -->
+                <g id="fr-minima-group" fill="none" stroke="#d97706" stroke-width="2.5" stroke-dasharray="7 5">
+                    <path d="M 330.7 20.0 Q 330.3 29.8 330.1 34.5 Q 329.9 39.2 329.7 43.7 Q 329.5 48.3 329.3 52.6 Q 329.1 57.0 329.0 61.1 Q 328.8 65.3 328.6 69.3 Q 328.5 73.4 328.3 77.2 Q 328.2 81.1 328.0 84.8 Q 327.9 88.6 327.7 92.2 Q 327.6 95.8 327.5 99.3 Q 327.3 102.7 327.2 106.1 Q 327.1 109.5 327.0 112.7 Q 326.9 116.0 326.8 119.1 Q 326.7 122.3 326.6 125.3 Q 326.5 128.4 326.4 131.3 Q 326.3 134.3 326.2 137.2 Q 326.1 140.1 326.0 142.9 Q 325.9 145.7 325.9 148.4 Q 325.8 151.1 325.7 153.8 Q 325.7 156.5 325.6 159.1 Q 325.6 161.7 325.5 164.3 Q 325.4 166.8 325.4 169.4 Q 325.4 171.9 325.3 174.3 Q 325.3 176.8 325.2 179.2 Q 325.2 181.7 325.2 184.1 Q 325.1 186.5 325.1 188.9 Q 325.1 191.3 325.1 193.6 Q 325.0 196.0 325.0 198.3 Q 325.0 200.7 325.0 203.0 Q 325.0 205.3 325.0 207.7 Q 325.0 210.0 325.0 212.3 Q 325.0 214.7 325.0 217.0 Q 325.0 219.3 325.0 221.7 Q 325.0 224.0 325.1 226.4 Q 325.1 228.7 325.1 231.1 Q 325.1 233.5 325.2 235.9 Q 325.2 238.3 325.2 240.8 Q 325.3 243.2 325.3 245.7 Q 325.4 248.1 325.4 250.6 Q 325.4 253.2 325.5 255.7 Q 325.6 258.3 325.6 260.9 Q 325.7 263.5 325.7 266.2 Q 325.8 268.9 325.9 271.6 Q 325.9 274.3 326.0 277.1 Q 326.1 279.9 326.2 282.8 Q 326.3 285.7 326.4 288.7 Q 326.5 291.6 326.6 294.7 Q 326.7 297.7 326.8 300.9 Q 326.9 304.0 327.0 307.3 Q 327.1 310.5 327.2 313.9 Q 327.3 317.3 327.5 320.7 Q 327.6 324.2 327.7 327.8 Q 327.9 331.4 328.0 335.2 Q 328.2 338.9 328.3 342.8 Q 328.5 346.6 328.6 350.7 Q 328.8 354.7 329.0 358.9 Q 329.1 363.0 329.3 367.4 Q 329.5 371.7 329.7 376.3 Q 329.9 380.8 330.1 385.5 Q 330.3 390.2 330.5 395.1 Q 330.7 400.0 330.7 400.0"/>
+                    <path d="M 309.3 20.0 Q 309.7 29.8 309.9 34.5 Q 310.1 39.2 310.3 43.7 Q 310.5 48.3 310.7 52.6 Q 310.9 57.0 311.0 61.1 Q 311.2 65.3 311.4 69.3 Q 311.5 73.4 311.7 77.2 Q 311.8 81.1 312.0 84.8 Q 312.1 88.6 312.3 92.2 Q 312.4 95.8 312.5 99.3 Q 312.7 102.7 312.8 106.1 Q 312.9 109.5 313.0 112.7 Q 313.1 116.0 313.2 119.1 Q 313.3 122.3 313.4 125.3 Q 313.5 128.4 313.6 131.3 Q 313.7 134.3 313.8 137.2 Q 313.9 140.1 314.0 142.9 Q 314.1 145.7 314.1 148.4 Q 314.2 151.1 314.3 153.8 Q 314.3 156.5 314.4 159.1 Q 314.4 161.7 314.5 164.3 Q 314.6 166.8 314.6 169.4 Q 314.6 171.9 314.7 174.3 Q 314.7 176.8 314.8 179.2 Q 314.8 181.7 314.8 184.1 Q 314.9 186.5 314.9 188.9 Q 314.9 191.3 314.9 193.6 Q 315.0 196.0 315.0 198.3 Q 315.0 200.7 315.0 203.0 Q 315.0 205.3 315.0 207.7 Q 315.0 210.0 315.0 212.3 Q 315.0 214.7 315.0 217.0 Q 315.0 219.3 315.0 221.7 Q 315.0 224.0 314.9 226.4 Q 314.9 228.7 314.9 231.1 Q 314.9 233.5 314.8 235.9 Q 314.8 238.3 314.8 240.8 Q 314.7 243.2 314.7 245.7 Q 314.6 248.1 314.6 250.6 Q 314.6 253.2 314.5 255.7 Q 314.4 258.3 314.4 260.9 Q 314.3 263.5 314.3 266.2 Q 314.2 268.9 314.1 271.6 Q 314.1 274.3 314.0 277.1 Q 313.9 279.9 313.8 282.8 Q 313.7 285.7 313.6 288.7 Q 313.5 291.6 313.4 294.7 Q 313.3 297.7 313.2 300.9 Q 313.1 304.0 313.0 307.3 Q 312.9 310.5 312.8 313.9 Q 312.7 317.3 312.5 320.7 Q 312.4 324.2 312.3 327.8 Q 312.1 331.4 312.0 335.2 Q 311.8 338.9 311.7 342.8 Q 311.5 346.6 311.4 350.7 Q 311.2 354.7 311.0 358.9 Q 310.9 363.0 310.7 367.4 Q 310.5 371.7 310.3 376.3 Q 310.1 380.8 309.9 385.5 Q 309.7 390.2 309.5 395.1 Q 309.3 400.0 309.3 400.0"/>
+                    <path d="M 352.5 20.0 Q 351.2 29.8 350.6 34.6 Q 349.9 39.3 349.3 43.8 Q 348.7 48.4 348.2 52.7 Q 347.6 57.1 347.1 61.3 Q 346.6 65.5 346.1 69.5 Q 345.6 73.5 345.1 77.4 Q 344.6 81.3 344.2 85.0 Q 343.7 88.8 343.3 92.4 Q 342.9 96.0 342.5 99.5 Q 342.1 102.9 341.7 106.3 Q 341.4 109.7 341.0 112.9 Q 340.7 116.2 340.4 119.3 Q 340.0 122.5 339.7 125.5 Q 339.4 128.6 339.2 131.5 Q 338.9 134.5 338.6 137.4 Q 338.4 140.3 338.1 143.1 Q 337.9 145.9 337.7 148.6 Q 337.4 151.3 337.2 154.0 Q 337.0 156.7 336.9 159.3 Q 336.7 161.9 336.5 164.4 Q 336.4 167.0 336.2 169.5 Q 336.1 172.0 335.9 174.5 Q 335.8 176.9 335.7 179.4 Q 335.6 181.8 335.5 184.2 Q 335.4 186.6 335.3 189.0 Q 335.3 191.3 335.2 193.7 Q 335.1 196.0 335.1 198.4 Q 335.1 200.7 335.0 203.0 Q 335.0 205.4 335.0 207.7 Q 335.0 210.0 335.0 212.3 Q 335.0 214.6 335.0 217.0 Q 335.1 219.3 335.1 221.6 Q 335.1 224.0 335.2 226.3 Q 335.3 228.7 335.3 231.0 Q 335.4 233.4 335.5 235.8 Q 335.6 238.2 335.7 240.6 Q 335.8 243.1 335.9 245.5 Q 336.1 248.0 336.2 250.5 Q 336.4 253.0 336.5 255.6 Q 336.7 258.1 336.9 260.7 Q 337.0 263.3 337.2 266.0 Q 337.4 268.7 337.7 271.4 Q 337.9 274.1 338.1 276.9 Q 338.4 279.7 338.6 282.6 Q 338.9 285.5 339.2 288.5 Q 339.4 291.4 339.7 294.5 Q 340.0 297.5 340.4 300.7 Q 340.7 303.8 341.0 307.1 Q 341.4 310.3 341.7 313.7 Q 342.1 317.1 342.5 320.5 Q 342.9 324.0 343.3 327.6 Q 343.7 331.2 344.2 335.0 Q 344.6 338.7 345.1 342.6 Q 345.6 346.5 346.1 350.5 Q 346.6 354.5 347.1 358.7 Q 347.6 362.9 348.2 367.3 Q 348.7 371.6 349.3 376.2 Q 349.9 380.7 350.6 385.4 Q 351.2 390.2 351.8 395.1 Q 352.5 400.0 352.5 400.0"/>
+                    <path d="M 287.5 20.0 Q 288.8 29.8 289.4 34.6 Q 290.1 39.3 290.7 43.8 Q 291.3 48.4 291.8 52.7 Q 292.4 57.1 292.9 61.3 Q 293.4 65.5 293.9 69.5 Q 294.4 73.5 294.9 77.4 Q 295.4 81.3 295.8 85.0 Q 296.3 88.8 296.7 92.4 Q 297.1 96.0 297.5 99.5 Q 297.9 102.9 298.3 106.3 Q 298.6 109.7 299.0 112.9 Q 299.3 116.2 299.6 119.3 Q 300.0 122.5 300.3 125.5 Q 300.6 128.6 300.8 131.5 Q 301.1 134.5 301.4 137.4 Q 301.6 140.3 301.9 143.1 Q 302.1 145.9 302.3 148.6 Q 302.6 151.3 302.8 154.0 Q 303.0 156.7 303.1 159.3 Q 303.3 161.9 303.5 164.4 Q 303.6 167.0 303.8 169.5 Q 303.9 172.0 304.1 174.5 Q 304.2 176.9 304.3 179.4 Q 304.4 181.8 304.5 184.2 Q 304.6 186.6 304.7 189.0 Q 304.7 191.3 304.8 193.7 Q 304.9 196.0 304.9 198.4 Q 304.9 200.7 305.0 203.0 Q 305.0 205.4 305.0 207.7 Q 305.0 210.0 305.0 212.3 Q 305.0 214.6 305.0 217.0 Q 304.9 219.3 304.9 221.6 Q 304.9 224.0 304.8 226.3 Q 304.7 228.7 304.7 231.0 Q 304.6 233.4 304.5 235.8 Q 304.4 238.2 304.3 240.6 Q 304.2 243.1 304.1 245.5 Q 303.9 248.0 303.8 250.5 Q 303.6 253.0 303.5 255.6 Q 303.3 258.1 303.1 260.7 Q 303.0 263.3 302.8 266.0 Q 302.6 268.7 302.3 271.4 Q 302.1 274.1 301.9 276.9 Q 301.6 279.7 301.4 282.6 Q 301.1 285.5 300.8 288.5 Q 300.6 291.4 300.3 294.5 Q 300.0 297.5 299.6 300.7 Q 299.3 303.8 299.0 307.1 Q 298.6 310.3 298.3 313.7 Q 297.9 317.1 297.5 320.5 Q 297.1 324.0 296.7 327.6 Q 296.3 331.2 295.8 335.0 Q 295.4 338.7 294.9 342.6 Q 294.4 346.5 293.9 350.5 Q 293.4 354.5 292.9 358.7 Q 292.4 362.9 291.8 367.3 Q 291.3 371.6 290.7 376.2 Q 290.1 380.7 289.4 385.4 Q 288.8 390.2 288.2 395.1 Q 287.5 400.0 287.5 400.0"/>
+                </g>
+
+                <circle cx="220" cy="210" r="6" fill="#1e3a8a"/>
+                <circle cx="420" cy="210" r="6" fill="#7f1d1d"/>
+                <text x="203" y="195" font-size="14" fill="#1e3a8a" font-weight="bold">S₁</text>
+                <text x="428" y="195" font-size="14" fill="#7f1d1d" font-weight="bold">S₂</text>
+            </svg>
+            <div class="flex flex-wrap gap-3 mt-3">
+                <button type="button" id="fr-btn-maxima" onclick="toggleInterferenceBand('fr-maxima-group','fr-btn-maxima')"
+                    class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border-2 transition"
+                    style="border-color:#059669;color:#059669;background:#ecfdf5;">
+                    <span style="display:inline-block;width:16px;height:0;border-top:3px solid #059669;"></span>
+                    maxima (renforcement), Δ = kλ
+                </button>
+                <button type="button" id="fr-btn-minima" onclick="toggleInterferenceBand('fr-minima-group','fr-btn-minima')"
+                    class="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full border-2 transition"
+                    style="border-color:#d97706;color:#d97706;background:#fffbeb;">
+                    <span style="display:inline-block;width:16px;height:0;border-top:3px dashed #d97706;"></span>
+                    minima (affaiblissement), Δ = (2k+1)λ/2
+                </button>
+            </div>
+            <p class="text-slate-600 text-sm mt-2">Les cercles fins bleus et rouges représentent les surfaces d'onde se propageant depuis les sources S₁ et S₂. Les boutons ci-dessus permettent d'afficher ou de masquer séparément les bandes de maxima (vertes) et les bandes de minima (oranges) — les courbes épaisses sont des branches d'hyperboles de foyers S₁ et S₂, qui indiquent les bandes réelles de renforcement, respectivement d'affaiblissement, stables, créées dans l'espace par l'interférence des deux ondes.</p>
+        </div>
+
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5">
+            <p class="font-semibold text-amber-900 mb-2">Exemple résolu :</p>
+            <p class="text-slate-700 text-sm mb-2">Deux haut-parleurs émettent en phase le même son de longueur d'onde $\lambda = 0{,}68\,\text{m}$. Un auditeur se trouve en un point où $d_2 - d_1 = 1{,}70\,\text{m}$. Entend-il un son renforcé ou affaibli ?</p>
+            <p class="text-slate-600 text-sm">Solution : $\Delta/\lambda = 1{,}70/0{,}68 = 2{,}5$, donc $\Delta = 2{,}5\lambda = (2\cdot 2+1)\lambda/2$ — il s'agit d'un multiple impair de la demi-longueur d'onde, donc il se produit une <strong>interférence destructive</strong> (affaiblissement, voire annulation du son).</p>
+        </div>
+    </section>
+
+    <!-- 6. STOJATÉ VLNĚNÍ -->
+    <section id="fr-stojate" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Onde stationnaire</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3"><strong>Une onde stationnaire</strong> naît de l'interférence de deux ondes progressives de même amplitude et de même fréquence, se propageant en <strong>sens opposés</strong> dans le même milieu — typiquement une onde progressive et son onde réfléchie (par exemple sur une corde fixée à ses deux extrémités). Contrairement à une onde progressive, une onde stationnaire ne « se propage pas » — l'énergie ne circule pas entre les différents points, la figure d'oscillation reste fixe dans l'espace.</p>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                <li><strong>Nœuds</strong> — points qui restent en permanence immobiles (l'élongation y est toujours nulle).</li>
+                <li><strong>Ventres</strong> — points d'amplitude d'oscillation maximale.</li>
+                <li>La distance entre deux nœuds voisins (ou deux ventres voisins) est $\lambda/2$ ; la distance entre un nœud et un ventre voisin est $\lambda/4$.</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Modes propres d'une corde fixée à ses deux extrémités</h3>
+            <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="130" fill="#eff6ff" rx="10"/>
+                <line x1="60" y1="60" x2="600" y2="60" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <path d="M 60.0 60.0 Q 63.9 59.2 65.8 58.8 Q 67.7 58.4 69.6 58.0 Q 71.6 57.6 73.5 57.3 Q 75.4 56.9 77.4 56.5 Q 79.3 56.1 81.2 55.7 Q 83.1 55.3 85.1 54.9 Q 87.0 54.5 88.9 54.1 Q 90.9 53.8 92.8 53.4 Q 94.7 53.0 96.6 52.6 Q 98.6 52.2 100.5 51.8 Q 102.4 51.4 104.4 51.1 Q 106.3 50.7 108.2 50.3 Q 110.1 49.9 112.1 49.6 Q 114.0 49.2 115.9 48.8 Q 117.9 48.4 119.8 48.1 Q 121.7 47.7 123.6 47.3 Q 125.6 47.0 127.5 46.6 Q 129.4 46.2 131.4 45.9 Q 133.3 45.5 135.2 45.2 Q 137.1 44.8 139.1 44.5 Q 141.0 44.1 142.9 43.8 Q 144.9 43.4 146.8 43.1 Q 148.7 42.7 150.6 42.4 Q 152.6 42.0 154.5 41.7 Q 156.4 41.4 158.4 41.0 Q 160.3 40.7 162.2 40.4 Q 164.1 40.1 166.1 39.7 Q 168.0 39.4 169.9 39.1 Q 171.9 38.8 173.8 38.5 Q 175.7 38.2 177.6 37.9 Q 179.6 37.6 181.5 37.3 Q 183.4 37.0 185.4 36.7 Q 187.3 36.4 189.2 36.1 Q 191.1 35.8 193.1 35.5 Q 195.0 35.3 196.9 35.0 Q 198.9 34.7 200.8 34.4 Q 202.7 34.2 204.6 33.9 Q 206.6 33.6 208.5 33.4 Q 210.4 33.1 212.4 32.9 Q 214.3 32.6 216.2 32.4 Q 218.1 32.2 220.1 31.9 Q 222.0 31.7 223.9 31.5 Q 225.9 31.2 227.8 31.0 Q 229.7 30.8 231.6 30.6 Q 233.6 30.4 235.5 30.2 Q 237.4 30.0 239.4 29.8 Q 241.3 29.6 243.2 29.4 Q 245.1 29.2 247.1 29.0 Q 249.0 28.8 250.9 28.6 Q 252.9 28.5 254.8 28.3 Q 256.7 28.1 258.6 28.0 Q 260.6 27.8 262.5 27.7 Q 264.4 27.5 266.4 27.4 Q 268.3 27.2 270.2 27.1 Q 272.1 27.0 274.1 26.8 Q 276.0 26.7 277.9 26.6 Q 279.9 26.5 281.8 26.4 Q 283.7 26.3 285.6 26.2 Q 287.6 26.1 289.5 26.0 Q 291.4 25.9 293.4 25.8 Q 295.3 25.7 297.2 25.6 Q 299.1 25.6 301.1 25.5 Q 303.0 25.4 304.9 25.4 Q 306.9 25.3 308.8 25.3 Q 310.7 25.2 312.6 25.2 Q 314.6 25.1 316.5 25.1 Q 318.4 25.1 320.4 25.1 Q 322.3 25.0 324.2 25.0 Q 326.1 25.0 328.1 25.0 Q 330.0 25.0 331.9 25.0 Q 333.9 25.0 335.8 25.0 Q 337.7 25.0 339.6 25.1 Q 341.6 25.1 343.5 25.1 Q 345.4 25.1 347.4 25.2 Q 349.3 25.2 351.2 25.3 Q 353.1 25.3 355.1 25.4 Q 357.0 25.4 358.9 25.5 Q 360.9 25.6 362.8 25.6 Q 364.7 25.7 366.6 25.8 Q 368.6 25.9 370.5 26.0 Q 372.4 26.1 374.4 26.2 Q 376.3 26.3 378.2 26.4 Q 380.1 26.5 382.1 26.6 Q 384.0 26.7 385.9 26.8 Q 387.9 27.0 389.8 27.1 Q 391.7 27.2 393.6 27.4 Q 395.6 27.5 397.5 27.7 Q 399.4 27.8 401.4 28.0 Q 403.3 28.1 405.2 28.3 Q 407.1 28.5 409.1 28.6 Q 411.0 28.8 412.9 29.0 Q 414.9 29.2 416.8 29.4 Q 418.7 29.6 420.6 29.8 Q 422.6 30.0 424.5 30.2 Q 426.4 30.4 428.4 30.6 Q 430.3 30.8 432.2 31.0 Q 434.1 31.2 436.1 31.5 Q 438.0 31.7 439.9 31.9 Q 441.9 32.2 443.8 32.4 Q 445.7 32.6 447.6 32.9 Q 449.6 33.1 451.5 33.4 Q 453.4 33.6 455.4 33.9 Q 457.3 34.2 459.2 34.4 Q 461.1 34.7 463.1 35.0 Q 465.0 35.3 466.9 35.5 Q 468.9 35.8 470.8 36.1 Q 472.7 36.4 474.6 36.7 Q 476.6 37.0 478.5 37.3 Q 480.4 37.6 482.4 37.9 Q 484.3 38.2 486.2 38.5 Q 488.1 38.8 490.1 39.1 Q 492.0 39.4 493.9 39.7 Q 495.9 40.1 497.8 40.4 Q 499.7 40.7 501.6 41.0 Q 503.6 41.4 505.5 41.7 Q 507.4 42.0 509.4 42.4 Q 511.3 42.7 513.2 43.1 Q 515.1 43.4 517.1 43.8 Q 519.0 44.1 520.9 44.5 Q 522.9 44.8 524.8 45.2 Q 526.7 45.5 528.6 45.9 Q 530.6 46.2 532.5 46.6 Q 534.4 47.0 536.4 47.3 Q 538.3 47.7 540.2 48.1 Q 542.1 48.4 544.1 48.8 Q 546.0 49.2 547.9 49.6 Q 549.9 49.9 551.8 50.3 Q 553.7 50.7 555.6 51.1 Q 557.6 51.4 559.5 51.8 Q 561.4 52.2 563.4 52.6 Q 565.3 53.0 567.2 53.4 Q 569.1 53.8 571.1 54.1 Q 573.0 54.5 574.9 54.9 Q 576.9 55.3 578.8 55.7 Q 580.7 56.1 582.6 56.5 Q 584.6 56.9 586.5 57.3 Q 588.4 57.6 590.4 58.0 Q 592.3 58.4 594.2 58.8 Q 596.1 59.2 598.1 59.6 Q 600.0 60.0 600.0 60.0" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+                <circle cx="60" cy="60" r="5" fill="#b91c1c"/><circle cx="600" cy="60" r="5" fill="#b91c1c"/>
+                <text x="10" y="20" font-size="12" fill="#334155" font-weight="bold">n = 1 (fondamental, f₀)</text>
+                <text x="315" y="18" font-size="11" fill="#64748b">nœud — ventre — nœud</text>
+            </svg>
+            <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg" class="mt-2">
+                <rect width="640" height="130" fill="#eff6ff" rx="10"/>
+                <line x1="60" y1="60" x2="600" y2="60" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <path d="M 60.0 60.0 Q 63.9 58.4 65.8 57.6 Q 67.7 56.9 69.6 56.1 Q 71.6 55.3 73.5 54.5 Q 75.4 53.8 77.4 53.0 Q 79.3 52.2 81.2 51.5 Q 83.1 50.7 85.1 49.9 Q 87.0 49.2 88.9 48.4 Q 90.9 47.7 92.8 47.0 Q 94.7 46.2 96.6 45.5 Q 98.6 44.8 100.5 44.1 Q 102.4 43.4 104.4 42.7 Q 106.3 42.0 108.2 41.4 Q 110.1 40.7 112.1 40.1 Q 114.0 39.4 115.9 38.8 Q 117.9 38.2 119.8 37.6 Q 121.7 37.0 123.6 36.4 Q 125.6 35.8 127.5 35.3 Q 129.4 34.7 131.4 34.2 Q 133.3 33.6 135.2 33.1 Q 137.1 32.6 139.1 32.2 Q 141.0 31.7 142.9 31.2 Q 144.9 30.8 146.8 30.4 Q 148.7 30.0 150.6 29.6 Q 152.6 29.2 154.5 28.8 Q 156.4 28.5 158.4 28.1 Q 160.3 27.8 162.2 27.5 Q 164.1 27.2 166.1 27.0 Q 168.0 26.7 169.9 26.5 Q 171.9 26.3 173.8 26.1 Q 175.7 25.9 177.6 25.7 Q 179.6 25.6 181.5 25.4 Q 183.4 25.3 185.4 25.2 Q 187.3 25.1 189.2 25.1 Q 191.1 25.0 193.1 25.0 Q 195.0 25.0 196.9 25.0 Q 198.9 25.0 200.8 25.1 Q 202.7 25.1 204.6 25.2 Q 206.6 25.3 208.5 25.4 Q 210.4 25.6 212.4 25.7 Q 214.3 25.9 216.2 26.1 Q 218.1 26.3 220.1 26.5 Q 222.0 26.7 223.9 27.0 Q 225.9 27.2 227.8 27.5 Q 229.7 27.8 231.6 28.1 Q 233.6 28.5 235.5 28.8 Q 237.4 29.2 239.4 29.6 Q 241.3 30.0 243.2 30.4 Q 245.1 30.8 247.1 31.2 Q 249.0 31.7 250.9 32.2 Q 252.9 32.6 254.8 33.1 Q 256.7 33.6 258.6 34.2 Q 260.6 34.7 262.5 35.3 Q 264.4 35.8 266.4 36.4 Q 268.3 37.0 270.2 37.6 Q 272.1 38.2 274.1 38.8 Q 276.0 39.4 277.9 40.1 Q 279.9 40.7 281.8 41.4 Q 283.7 42.0 285.6 42.7 Q 287.6 43.4 289.5 44.1 Q 291.4 44.8 293.4 45.5 Q 295.3 46.2 297.2 47.0 Q 299.1 47.7 301.1 48.4 Q 303.0 49.2 304.9 49.9 Q 306.9 50.7 308.8 51.5 Q 310.7 52.2 312.6 53.0 Q 314.6 53.8 316.5 54.5 Q 318.4 55.3 320.4 56.1 Q 322.3 56.9 324.2 57.6 Q 326.1 58.4 328.1 59.2 Q 330.0 60.0 331.9 60.8 Q 333.9 61.6 335.8 62.4 Q 337.7 63.1 339.6 63.9 Q 341.6 64.7 343.5 65.5 Q 345.4 66.2 347.4 67.0 Q 349.3 67.8 351.2 68.5 Q 353.1 69.3 355.1 70.1 Q 357.0 70.8 358.9 71.6 Q 360.9 72.3 362.8 73.0 Q 364.7 73.8 366.6 74.5 Q 368.6 75.2 370.5 75.9 Q 372.4 76.6 374.4 77.3 Q 376.3 78.0 378.2 78.6 Q 380.1 79.3 382.1 79.9 Q 384.0 80.6 385.9 81.2 Q 387.9 81.8 389.8 82.4 Q 391.7 83.0 393.6 83.6 Q 395.6 84.2 397.5 84.7 Q 399.4 85.3 401.4 85.8 Q 403.3 86.4 405.2 86.9 Q 407.1 87.4 409.1 87.8 Q 411.0 88.3 412.9 88.8 Q 414.9 89.2 416.8 89.6 Q 418.7 90.0 420.6 90.4 Q 422.6 90.8 424.5 91.2 Q 426.4 91.5 428.4 91.9 Q 430.3 92.2 432.2 92.5 Q 434.1 92.8 436.1 93.0 Q 438.0 93.3 439.9 93.5 Q 441.9 93.7 443.8 93.9 Q 445.7 94.1 447.6 94.3 Q 449.6 94.4 451.5 94.6 Q 453.4 94.7 455.4 94.8 Q 457.3 94.9 459.2 94.9 Q 461.1 95.0 463.1 95.0 Q 465.0 95.0 466.9 95.0 Q 468.9 95.0 470.8 94.9 Q 472.7 94.9 474.6 94.8 Q 476.6 94.7 478.5 94.6 Q 480.4 94.4 482.4 94.3 Q 484.3 94.1 486.2 93.9 Q 488.1 93.7 490.1 93.5 Q 492.0 93.3 493.9 93.0 Q 495.9 92.8 497.8 92.5 Q 499.7 92.2 501.6 91.9 Q 503.6 91.5 505.5 91.2 Q 507.4 90.8 509.4 90.4 Q 511.3 90.0 513.2 89.6 Q 515.1 89.2 517.1 88.8 Q 519.0 88.3 520.9 87.8 Q 522.9 87.4 524.8 86.9 Q 526.7 86.4 528.6 85.8 Q 530.6 85.3 532.5 84.7 Q 534.4 84.2 536.4 83.6 Q 538.3 83.0 540.2 82.4 Q 542.1 81.8 544.1 81.2 Q 546.0 80.6 547.9 79.9 Q 549.9 79.3 551.8 78.6 Q 553.7 78.0 555.6 77.3 Q 557.6 76.6 559.5 75.9 Q 561.4 75.2 563.4 74.5 Q 565.3 73.8 567.2 73.0 Q 569.1 72.3 571.1 71.6 Q 573.0 70.8 574.9 70.1 Q 576.9 69.3 578.8 68.5 Q 580.7 67.8 582.6 67.0 Q 584.6 66.2 586.5 65.5 Q 588.4 64.7 590.4 63.9 Q 592.3 63.1 594.2 62.4 Q 596.1 61.6 598.1 60.8 Q 600.0 60.0 600.0 60.0" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+                <circle cx="60" cy="60" r="5" fill="#b91c1c"/><circle cx="330" cy="60" r="5" fill="#b91c1c"/><circle cx="600" cy="60" r="5" fill="#b91c1c"/>
+                <text x="10" y="20" font-size="12" fill="#334155" font-weight="bold">n = 2 (premier harmonique, f₁ = 2f₀)</text>
+            </svg>
+            <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg" class="mt-2">
+                <rect width="640" height="130" fill="#eff6ff" rx="10"/>
+                <line x1="60" y1="60" x2="600" y2="60" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <path d="M 60.0 60.0 Q 63.9 57.6 65.8 56.5 Q 67.7 55.3 69.6 54.1 Q 71.6 53.0 73.5 51.8 Q 75.4 50.7 77.4 49.6 Q 79.3 48.4 81.2 47.3 Q 83.1 46.2 85.1 45.2 Q 87.0 44.1 88.9 43.1 Q 90.9 42.0 92.8 41.1 Q 94.7 40.1 96.6 39.1 Q 98.6 38.2 100.5 37.3 Q 102.4 36.4 104.4 35.5 Q 106.3 34.7 108.2 33.9 Q 110.1 33.1 112.1 32.4 Q 114.0 31.7 115.9 31.0 Q 117.9 30.4 119.8 29.8 Q 121.7 29.2 123.6 28.7 Q 125.6 28.1 127.5 27.7 Q 129.4 27.2 131.4 26.9 Q 133.3 26.5 135.2 26.2 Q 137.1 25.9 139.1 25.7 Q 141.0 25.4 142.9 25.3 Q 144.9 25.1 146.8 25.1 Q 148.7 25.0 150.6 25.0 Q 152.6 25.0 154.5 25.1 Q 156.4 25.2 158.4 25.4 Q 160.3 25.6 162.2 25.8 Q 164.1 26.1 166.1 26.4 Q 168.0 26.7 169.9 27.1 Q 171.9 27.5 173.8 28.0 Q 175.7 28.5 177.6 29.0 Q 179.6 29.6 181.5 30.2 Q 183.4 30.8 185.4 31.5 Q 187.3 32.2 189.2 32.9 Q 191.1 33.6 193.1 34.4 Q 195.0 35.3 196.9 36.1 Q 198.9 37.0 200.8 37.9 Q 202.7 38.8 204.6 39.8 Q 206.6 40.7 208.5 41.7 Q 210.4 42.7 212.4 43.8 Q 214.3 44.8 216.2 45.9 Q 218.1 47.0 220.1 48.1 Q 222.0 49.2 223.9 50.3 Q 225.9 51.4 227.8 52.6 Q 229.7 53.8 231.6 54.9 Q 233.6 56.1 235.5 57.3 Q 237.4 58.4 239.4 59.6 Q 241.3 60.8 243.2 62.0 Q 245.1 63.1 247.1 64.3 Q 249.0 65.5 250.9 66.6 Q 252.9 67.8 254.8 68.9 Q 256.7 70.1 258.6 71.2 Q 260.6 72.3 262.5 73.4 Q 264.4 74.5 266.4 75.5 Q 268.3 76.6 270.2 77.6 Q 272.1 78.6 274.1 79.6 Q 276.0 80.6 277.9 81.5 Q 279.9 82.4 281.8 83.3 Q 283.7 84.2 285.6 85.0 Q 287.6 85.8 289.5 86.6 Q 291.4 87.4 293.4 88.1 Q 295.3 88.8 297.2 89.4 Q 299.1 90.0 301.1 90.6 Q 303.0 91.2 304.9 91.7 Q 306.9 92.2 308.8 92.6 Q 310.7 93.0 312.6 93.4 Q 314.6 93.7 316.5 94.0 Q 318.4 94.3 320.4 94.5 Q 322.3 94.7 324.2 94.8 Q 326.1 94.9 328.1 95.0 Q 330.0 95.0 331.9 95.0 Q 333.9 94.9 335.8 94.8 Q 337.7 94.7 339.6 94.5 Q 341.6 94.3 343.5 94.0 Q 345.4 93.7 347.4 93.4 Q 349.3 93.0 351.2 92.6 Q 353.1 92.2 355.1 91.7 Q 357.0 91.2 358.9 90.6 Q 360.9 90.0 362.8 89.4 Q 364.7 88.8 366.6 88.1 Q 368.6 87.4 370.5 86.6 Q 372.4 85.8 374.4 85.0 Q 376.3 84.2 378.2 83.3 Q 380.1 82.4 382.1 81.5 Q 384.0 80.6 385.9 79.6 Q 387.9 78.6 389.8 77.6 Q 391.7 76.6 393.6 75.5 Q 395.6 74.5 397.5 73.4 Q 399.4 72.3 401.4 71.2 Q 403.3 70.1 405.2 68.9 Q 407.1 67.8 409.1 66.6 Q 411.0 65.5 412.9 64.3 Q 414.9 63.1 416.8 62.0 Q 418.7 60.8 420.6 59.6 Q 422.6 58.4 424.5 57.3 Q 426.4 56.1 428.4 54.9 Q 430.3 53.8 432.2 52.6 Q 434.1 51.4 436.1 50.3 Q 438.0 49.2 439.9 48.1 Q 441.9 47.0 443.8 45.9 Q 445.7 44.8 447.6 43.8 Q 449.6 42.7 451.5 41.7 Q 453.4 40.7 455.4 39.8 Q 457.3 38.8 459.2 37.9 Q 461.1 37.0 463.1 36.1 Q 465.0 35.3 466.9 34.4 Q 468.9 33.6 470.8 32.9 Q 472.7 32.2 474.6 31.5 Q 476.6 30.8 478.5 30.2 Q 480.4 29.6 482.4 29.0 Q 484.3 28.5 486.2 28.0 Q 488.1 27.5 490.1 27.1 Q 492.0 26.7 493.9 26.4 Q 495.9 26.1 497.8 25.8 Q 499.7 25.6 501.6 25.4 Q 503.6 25.2 505.5 25.1 Q 507.4 25.0 509.4 25.0 Q 511.3 25.0 513.2 25.1 Q 515.1 25.1 517.1 25.3 Q 519.0 25.4 520.9 25.7 Q 522.9 25.9 524.8 26.2 Q 526.7 26.5 528.6 26.9 Q 530.6 27.2 532.5 27.7 Q 534.4 28.1 536.4 28.7 Q 538.3 29.2 540.2 29.8 Q 542.1 30.4 544.1 31.0 Q 546.0 31.7 547.9 32.4 Q 549.9 33.1 551.8 33.9 Q 553.7 34.7 555.6 35.5 Q 557.6 36.4 559.5 37.3 Q 561.4 38.2 563.4 39.1 Q 565.3 40.1 567.2 41.1 Q 569.1 42.0 571.1 43.1 Q 573.0 44.1 574.9 45.2 Q 576.9 46.2 578.8 47.3 Q 580.7 48.4 582.6 49.6 Q 584.6 50.7 586.5 51.8 Q 588.4 53.0 590.4 54.1 Q 592.3 55.3 594.2 56.5 Q 596.1 57.6 598.1 58.8 Q 600.0 60.0 600.0 60.0" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+                <circle cx="60" cy="60" r="5" fill="#b91c1c"/><circle cx="240" cy="60" r="5" fill="#b91c1c"/><circle cx="420" cy="60" r="5" fill="#b91c1c"/><circle cx="600" cy="60" r="5" fill="#b91c1c"/>
+                <text x="10" y="20" font-size="12" fill="#334155" font-weight="bold">n = 3 (deuxième harmonique, f₂ = 3f₀)</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Les courbes représentent l'élongation instantanée (extrême) de la corde ; en réalité, la corde oscille entre cette position et la position symétrique sous l'axe. Les points rouges sont les nœuds fixes (les extrémités de la corde sont toujours des nœuds, car elles y sont fixées).</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Fréquences propres d'une corde</h3>
+            <p class="text-slate-700 mb-3">Pour une corde de longueur $l$ fixée à ses deux extrémités, il doit toujours y avoir un nœud à chaque extrémité — la longueur $l$ ne peut donc contenir qu'un nombre entier de demi-longueurs d'onde :</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-3 mb-3">$l = n\dfrac{\lambda_n}{2} \quad\Rightarrow\quad f_n = n\dfrac{v}{2l},\quad n = 1,2,3,\dots$</p>
+            <p class="text-slate-600 text-sm">$f_1$ est la fréquence fondamentale, $f_2, f_3,\dots$ sont les fréquences des harmoniques supérieures, dont la combinaison détermine le timbre d'un instrument de musique.</p>
+        </div>
+    </section>
+
+    <!-- 7. ZVUK -->
+    <section id="fr-zvuk" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Onde sonore — origine et propagation</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <p class="text-slate-700 mb-3"><strong>Le son</strong> est une onde mécanique <strong>longitudinale</strong> se propageant dans un milieu matériel (le plus souvent l'air), qui provoque une sensation auditive dans l'oreille humaine. La source du son est un corps qui vibre (cordes vocales, corde d'instrument, membrane de haut-parleur), dont les oscillations se transmettent à l'air environnant sous forme de compressions et de raréfactions — une variation de la pression acoustique autour de la valeur atmosphérique.</p>
+            <p class="text-slate-700">Le son étant une onde mécanique, il <strong>ne se propage pas dans le vide</strong> — dans l'espace, nous n'entendrions aucun son.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-3">Domaines de fréquence</h3>
+                <ul class="list-disc ml-6 space-y-1 text-slate-700 text-sm">
+                    <li><strong>Infrasons</strong> : $f < 16\,\text{Hz}$ — inaudibles pour l'homme (perçus seulement comme une vibration) ; produits par exemple lors d'un tremblement de terre.</li>
+                    <li><strong>Son audible</strong> : d'environ $16\,\text{Hz}$ à $20\,000\,\text{Hz}$.</li>
+                    <li><strong>Ultrasons</strong> : $f > 20\,000\,\text{Hz}$ — utilisés en médecine (échographie), dans l'industrie (contrôle non destructif, nettoyage), ainsi que dans la nature (écholocation des chauves-souris, des dauphins).</li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="font-bold text-blue-800 mb-3">Vitesse du son dans différents milieux</h3>
+                <table class="w-full text-sm text-slate-700">
+                    <tr class="border-b border-slate-200"><td class="py-1">air (20 °C)</td><td class="text-right font-semibold">≈ 343 m·s⁻¹</td></tr>
+                    <tr class="border-b border-slate-200"><td class="py-1">eau</td><td class="text-right font-semibold">≈ 1480 m·s⁻¹</td></tr>
+                    <tr><td class="py-1">acier</td><td class="text-right font-semibold">≈ 5100 m·s⁻¹</td></tr>
+                </table>
+                <p class="text-slate-600 text-xs mt-2">La vitesse du son dans l'air augmente avec la température (d'environ 0,6 m·s⁻¹ par °C) ; dans les solides, elle est toujours nettement plus élevée que dans l'air.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Caractéristiques du son</h3>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700">
+                <li><strong>Hauteur du son</strong> — déterminée par la fréquence ; une fréquence plus élevée correspond à un son plus aigu.</li>
+                <li><strong>Intensité sonore perçue</strong> — sensation subjective liée principalement à l'amplitude (donc à l'intensité) de l'onde sonore.</li>
+                <li><strong>Timbre</strong> — déterminé par la présence et la proportion des harmoniques supérieures au-dessus du fondamental ; il permet de distinguer une même note jouée par des instruments différents.</li>
+            </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h3 class="font-bold text-blue-800 mb-3">Intensité sonore et niveau d'intensité sonore</h3>
+            <p class="text-slate-700 mb-3">L'intensité sonore $I$ (puissance traversant une surface unitaire, en W·m⁻²) varie de plusieurs ordres de grandeur dans le domaine perçu par l'oreille ; c'est pourquoi on utilise en pratique le <strong>niveau d'intensité sonore</strong>, une grandeur logarithmique :</p>
+            <p class="text-center formula-box text-lg bg-blue-100 rounded-xl py-3 mb-3">$L = 10\log\dfrac{I}{I_0}\ \ [\text{dB}],\qquad I_0 = 10^{-12}\,\text{W}\cdot\text{m}^{-2}$</p>
+            <p class="text-slate-600 text-sm">$I_0$ est le seuil d'audibilité à $f=1000\,\text{Hz}$. À titre indicatif : un chuchotement ≈ 20 dB, une conversation normale ≈ 60 dB, une rue bruyante ≈ 80 dB, le seuil de la douleur ≈ 120–130 dB.</p>
+        </div>
+
+        <div class="bg-amber-50 border border-amber-300 rounded-xl p-5 mt-6">
+            <p class="font-semibold text-amber-900 mb-2">Exemple résolu :</p>
+            <p class="text-slate-700 text-sm mb-2">On voit l'éclair pratiquement instantanément, mais on entend le tonnerre après $t = 4{,}5\,\text{s}$. Estimez la distance de l'orage, sachant que la vitesse du son dans l'air est $v = 340\,\text{m}\cdot\text{s}^{-1}$.</p>
+            <p class="text-slate-600 text-sm">Solution : $s = v t = 340 \cdot 4{,}5 \approx 1530\,\text{m} \approx 1{,}5\,\text{km}$ (la vitesse de la lumière est si grande que l'on néglige la durée de propagation de la lumière).</p>
+        </div>
+    </section>
+
+    <!-- 8. REZONANCE, DOPPLER -->
+    <section id="fr-rezonance" class="scroll-mt-24">
+        <h2 class="text-3xl font-bold mb-6 text-slate-900">Réflexion du son, résonance et effet Doppler</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Réflexion du son — écho et réverbération</h3>
+            <p class="text-slate-700">Si le son se réfléchit sur un obstacle éloigné (mur, paroi rocheuse) et revient à l'observateur avec un retard supérieur à environ $0{,}1\,\text{s}$ (c'est-à-dire que la surface réfléchissante est à au moins ~17 m), l'oreille perçoit le son réfléchi comme un son distinct et répété — un <strong>écho</strong>. Pour un retard plus court (parois proches, pièces fermées), le son réfléchi se confond avec le son original en une <strong>réverbération</strong>, qui influence l'acoustique des salles et des pièces.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Résonance d'une colonne d'air dans un tube (fermé à une extrémité)</h3>
+            <svg viewBox="0 0 640 130" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="130" fill="#eff6ff" rx="10"/>
+                <rect x="45" y="30" width="15" height="70" fill="#334155"/>
+                <line x1="60" y1="70" x2="560" y2="70" stroke="#cbd5e1" stroke-width="1" stroke-dasharray="3"/>
+                <path d="M 60.0 70.0 Q 63.6 69.5 65.4 69.2 Q 67.1 69.0 68.9 68.7 Q 70.7 68.5 72.5 68.2 Q 74.3 68.0 76.1 67.7 Q 77.9 67.5 79.6 67.2 Q 81.4 67.0 83.2 66.7 Q 85.0 66.5 86.8 66.2 Q 88.6 66.0 90.4 65.7 Q 92.1 65.5 93.9 65.2 Q 95.7 65.0 97.5 64.7 Q 99.3 64.5 101.1 64.2 Q 102.9 64.0 104.6 63.7 Q 106.4 63.5 108.2 63.2 Q 110.0 63.0 111.8 62.7 Q 113.6 62.5 115.4 62.2 Q 117.1 62.0 118.9 61.7 Q 120.7 61.5 122.5 61.2 Q 124.3 61.0 126.1 60.7 Q 127.9 60.5 129.6 60.2 Q 131.4 60.0 133.2 59.7 Q 135.0 59.5 136.8 59.2 Q 138.6 59.0 140.4 58.8 Q 142.1 58.5 143.9 58.3 Q 145.7 58.0 147.5 57.8 Q 149.3 57.5 151.1 57.3 Q 152.9 57.1 154.6 56.8 Q 156.4 56.6 158.2 56.3 Q 160.0 56.1 161.8 55.9 Q 163.6 55.6 165.4 55.4 Q 167.1 55.1 168.9 54.9 Q 170.7 54.7 172.5 54.4 Q 174.3 54.2 176.1 54.0 Q 177.9 53.7 179.6 53.5 Q 181.4 53.2 183.2 53.0 Q 185.0 52.8 186.8 52.5 Q 188.6 52.3 190.4 52.1 Q 192.1 51.9 193.9 51.6 Q 195.7 51.4 197.5 51.2 Q 199.3 50.9 201.1 50.7 Q 202.9 50.5 204.6 50.2 Q 206.4 50.0 208.2 49.8 Q 210.0 49.6 211.8 49.3 Q 213.6 49.1 215.4 48.9 Q 217.1 48.7 218.9 48.5 Q 220.7 48.2 222.5 48.0 Q 224.3 47.8 226.1 47.6 Q 227.9 47.4 229.6 47.1 Q 231.4 46.9 233.2 46.7 Q 235.0 46.5 236.8 46.3 Q 238.6 46.1 240.4 45.8 Q 242.1 45.6 243.9 45.4 Q 245.7 45.2 247.5 45.0 Q 249.3 44.8 251.1 44.6 Q 252.9 44.4 254.6 44.2 Q 256.4 44.0 258.2 43.8 Q 260.0 43.5 261.8 43.3 Q 263.6 43.1 265.4 42.9 Q 267.1 42.7 268.9 42.5 Q 270.7 42.3 272.5 42.1 Q 274.3 41.9 276.1 41.7 Q 277.9 41.5 279.6 41.4 Q 281.4 41.2 283.2 41.0 Q 285.0 40.8 286.8 40.6 Q 288.6 40.4 290.4 40.2 Q 292.1 40.0 293.9 39.8 Q 295.7 39.6 297.5 39.5 Q 299.3 39.3 301.1 39.1 Q 302.9 38.9 304.6 38.7 Q 306.4 38.5 308.2 38.4 Q 310.0 38.2 311.8 38.0 Q 313.6 37.8 315.4 37.6 Q 317.1 37.5 318.9 37.3 Q 320.7 37.1 322.5 37.0 Q 324.3 36.8 326.1 36.6 Q 327.9 36.4 329.6 36.3 Q 331.4 36.1 333.2 35.9 Q 335.0 35.8 336.8 35.6 Q 338.6 35.5 340.4 35.3 Q 342.1 35.1 343.9 35.0 Q 345.7 34.8 347.5 34.7 Q 349.3 34.5 351.1 34.4 Q 352.9 34.2 354.6 34.0 Q 356.4 33.9 358.2 33.7 Q 360.0 33.6 361.8 33.4 Q 363.6 33.3 365.4 33.2 Q 367.1 33.0 368.9 32.9 Q 370.7 32.7 372.5 32.6 Q 374.3 32.4 376.1 32.3 Q 377.9 32.2 379.6 32.0 Q 381.4 31.9 383.2 31.8 Q 385.0 31.6 386.8 31.5 Q 388.6 31.4 390.4 31.2 Q 392.1 31.1 393.9 31.0 Q 395.7 30.9 397.5 30.7 Q 399.3 30.6 401.1 30.5 Q 402.9 30.4 404.6 30.3 Q 406.4 30.1 408.2 30.0 Q 410.0 29.9 411.8 29.8 Q 413.6 29.7 415.4 29.6 Q 417.1 29.5 418.9 29.3 Q 420.7 29.2 422.5 29.1 Q 424.3 29.0 426.1 28.9 Q 427.9 28.8 429.6 28.7 Q 431.4 28.6 433.2 28.5 Q 435.0 28.4 436.8 28.3 Q 438.6 28.2 440.4 28.1 Q 442.1 28.0 443.9 28.0 Q 445.7 27.9 447.5 27.8 Q 449.3 27.7 451.1 27.6 Q 452.9 27.5 454.6 27.4 Q 456.4 27.4 458.2 27.3 Q 460.0 27.2 461.8 27.1 Q 463.6 27.0 465.4 27.0 Q 467.1 26.9 468.9 26.8 Q 470.7 26.8 472.5 26.7 Q 474.3 26.6 476.1 26.6 Q 477.9 26.5 479.6 26.4 Q 481.4 26.4 483.2 26.3 Q 485.0 26.2 486.8 26.2 Q 488.6 26.1 490.4 26.1 Q 492.1 26.0 493.9 26.0 Q 495.7 25.9 497.5 25.9 Q 499.3 25.8 501.1 25.8 Q 502.9 25.7 504.6 25.7 Q 506.4 25.6 508.2 25.6 Q 510.0 25.6 511.8 25.5 Q 513.6 25.5 515.4 25.4 Q 517.1 25.4 518.9 25.4 Q 520.7 25.3 522.5 25.3 Q 524.3 25.3 526.1 25.3 Q 527.9 25.2 529.6 25.2 Q 531.4 25.2 533.2 25.2 Q 535.0 25.1 536.8 25.1 Q 538.6 25.1 540.4 25.1 Q 542.1 25.1 543.9 25.1 Q 545.7 25.0 547.5 25.0 Q 549.3 25.0 551.1 25.0 Q 552.9 25.0 554.6 25.0 Q 556.4 25.0 558.2 25.0 Q 560.0 25.0 560.0 25.0" fill="none" stroke="#1d4ed8" stroke-width="2.5"/>
+                <circle cx="60" cy="70" r="5" fill="#b91c1c"/>
+                <text x="20" y="118" font-size="11" fill="#334155">extrémité fermée (nœud)</text>
+                <text x="430" y="20" font-size="11" fill="#334155">extrémité ouverte (ventre)</text>
+                <text x="20" y="20" font-size="12" fill="#334155" font-weight="bold">Fondamental : l = λ/4</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">Pour un tube fermé à une extrémité, il doit y avoir un <strong>nœud</strong> d'élongation à l'extrémité fermée et un <strong>ventre</strong> à l'extrémité ouverte. La longueur $l$ du tube ne peut donc contenir qu'un multiple impair du quart de la longueur d'onde : $l = (2k+1)\dfrac{\lambda}{4}$, soit $f_k = (2k+1)\dfrac{v}{4l}$ — seules les harmoniques impaires apparaissent.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6">
+            <h3 class="font-bold text-blue-800 mb-3">Résonance acoustique</h3>
+            <p class="text-slate-700">Si un son de fréquence égale (ou proche) à la fréquence propre d'une corde ou d'une colonne d'air retentit à proximité, ce corps se met à vibrer en phase avec une grande amplitude — il s'agit du même phénomène de <strong>résonance</strong> que celui décrit pour les oscillateurs mécaniques. La résonance acoustique est à la base du fonctionnement de la caisse de résonance des instruments de musique (guitare, violon) ainsi que de l'accord des tuyaux d'orgue.</p>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mb-6 diagram-box">
+            <h3 class="font-bold text-blue-800 mb-3">Effet Doppler</h3>
+            <p class="text-slate-700 mb-3">Si la source sonore se déplace par rapport à l'observateur (ou inversement), la fréquence perçue diffère de la fréquence émise par la source — c'est l'<strong>effet Doppler</strong>. Devant une source qui s'approche, les surfaces d'onde se resserrent (longueur d'onde plus courte → fréquence perçue plus élevée) ; derrière une source qui s'éloigne, elles s'écartent au contraire (fréquence perçue plus basse).</p>
+            <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg">
+                <rect width="640" height="260" fill="#eff6ff" rx="12"/>
+                <g fill="none" stroke="#1d4ed8" stroke-width="2" opacity="0.8">
+                    <circle cx="170.0" cy="130" r="300.0"/>
+                    <circle cx="200.0" cy="130" r="240.0"/>
+                    <circle cx="230.0" cy="130" r="180.0"/>
+                    <circle cx="260.0" cy="130" r="120.0"/>
+                    <circle cx="290.0" cy="130" r="60.0"/>
+                </g>
+                <circle cx="290" cy="130" r="8" fill="#b91c1c"/>
+                <path d="M320,130 l-20,-8 l0,16 z" fill="#b91c1c"/>
+                <text x="255" y="115" font-size="11" fill="#7f1d1d" font-weight="bold">source</text>
+                <text x="420" y="60" font-size="13" fill="#1e3a8a" font-weight="bold">devant : λ plus courte</text>
+                <text x="420" y="78" font-size="13" fill="#1e3a8a" font-weight="bold">→ f plus élevée</text>
+                <text x="20" y="235" font-size="13" fill="#1e3a8a" font-weight="bold">derrière : λ plus longue → f plus basse</text>
+            </svg>
+            <p class="text-slate-600 text-sm mt-2">C'est pourquoi la sirène d'un véhicule qui approche nous paraît plus aiguë, puis s'abaisse brusquement au moment où il nous dépasse et s'éloigne. Le phénomène se manifeste de la même façon lors du déplacement de l'observateur par rapport à une source immobile.</p>
+        </div>
+
+        <div class="bg-rose-50 border border-rose-200 rounded-2xl p-6 md:p-8">
+            <h3 class="font-bold text-rose-800 mb-3">Applications pratiques</h3>
+            <ul class="list-disc ml-6 space-y-2 text-slate-700 text-sm">
+                <li><strong>Radar Doppler</strong> — mesure de la vitesse des véhicules par la police, radars météorologiques (suivi des orages et des précipitations).</li>
+                <li><strong>Échographie Doppler</strong> — en médecine, mesure de la vitesse du flux sanguin dans les vaisseaux.</li>
+                <li><strong>Astronomie</strong> — le décalage des raies spectrales (vers le rouge ou le bleu) permet de déterminer si les étoiles et les galaxies s'éloignent de nous ou s'en rapprochent.</li>
+                <li><strong>Écho et écholocation</strong> — sonar des navires et sous-marins, écholocation des chauves-souris et des dauphins utilisant la réflexion des ultrasons.</li>
+            </ul>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-slate-900 text-slate-500 py-10 text-center border-t border-slate-800 mt-16 text-sm">
+    <p>Module éducatif de Physique · Ondes mécaniques et son · programme de lycée</p>
+</footer>
+
+</div>
+
+
+<script>
+    function toggleInterferenceBand(groupId, btnId) {
+        const group = document.getElementById(groupId);
+        const btn = document.getElementById(btnId);
+        const currentlyHidden = group.style.display === 'none';
+        group.style.display = currentlyHidden ? '' : 'none';
+        btn.style.opacity = currentlyHidden ? '1' : '0.4';
+    }
+
+    function toggleLanguage() {
+        const cz = document.getElementById('cz-content');
+        const fr = document.getElementById('fr-content');
+        const indicator = document.getElementById('langIndicator');
+        const label = document.getElementById('langLabel');
+        if (cz.classList.contains('hidden')) {
+            cz.classList.remove('hidden'); fr.classList.add('hidden');
+            indicator.textContent = 'FR'; indicator.className = 'lang-indicator fr'; label.textContent = 'Français';
+        } else {
+            fr.classList.remove('hidden'); cz.classList.add('hidden');
+            indicator.textContent = 'CZ'; indicator.className = 'lang-indicator'; label.textContent = 'Čeština';
+        }
+        if (window.MathJax) { setTimeout(() => MathJax.typesetPromise && MathJax.typesetPromise(), 50); }
+    }
+
+    function scrollToId(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const offset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
