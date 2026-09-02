@@ -206,7 +206,7 @@ Francouzština stejně jako čeština rozlišuje mezi **řešením jako činnost
 
 ## 7. Geometrie (la géométrie)
 
-### 6.1 Základní útvary
+### 7.1 Základní útvary
 
 | Français | Čeština |
 |---|---|
@@ -226,7 +226,7 @@ Francouzština stejně jako čeština rozlišuje mezi **řešením jako činnost
 | un disque | kruh |
 | un polygone | mnohoúhelník |
 
-### 6.2 Vlastnosti a vztahy
+### 7.2 Vlastnosti a vztahy
 
 | Français | Čeština |
 |---|---|
@@ -244,7 +244,7 @@ Francouzština stejně jako čeština rozlišuje mezi **řešením jako činnost
 | congru(e) / isométrique | shodný |
 | semblable | podobný |
 
-### 6.3 Míry a výpočty
+### 7.3 Míry a výpočty
 
 | Français | Čeština |
 |---|---|
