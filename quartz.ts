@@ -4,7 +4,7 @@ import * as ExternalPlugin from "./.quartz/plugins"
 const customOrder = ["matematika", "fyzika", "hodnocení", "o-sekci"]
 
 ExternalPlugin.Explorer({
-  sortFn: (a, b) => {
+    sortFn: (a: any, b: any) => {
     const indexA = customOrder.indexOf(a.name)
     const indexB = customOrder.indexOf(b.name)
 
