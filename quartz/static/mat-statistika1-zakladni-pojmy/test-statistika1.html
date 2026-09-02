@@ -148,7 +148,7 @@ function buildOptions(correct, extras, spread) {
     return shuffleArray([...set].slice(0, 4).map(fmt));
 }
 function pctOptions(correct, spread) {
-    return buildOptions(correct, [], spread).map(x => x + '\\%');
+    return buildOptions(correct, [], spread).map(x => '$' + x + '\\%$');
 }
 function buildCategoryOptions(correct, allCategories) {
     const others = allCategories.filter(c => c !== correct);
@@ -190,7 +190,7 @@ const mathPool = [
         cs: { q: "Statistický soubor má rozsah $n={n}$. Hodnota znaku $x_i$ má absolutní četnost $n_i={ni}$. Jaká je relativní četnost $p_i$ v procentech?", h: "Použij vzorec $p_i=\\frac{n_i}{n}$ a převeď na procenta.", e: "$p_i=\\frac{ {ni} }{ {n} } = {res}\\%$." },
         fr: { q: "Une population statistique a une taille $n={n}$. La valeur $x_i$ a un effectif absolu $n_i={ni}$. Quelle est la fréquence relative $p_i$ en pourcentage ?", h: "Utilise la formule $p_i=\\frac{n_i}{n}$ et convertis en pourcentage.", e: "$p_i=\\frac{ {ni} }{ {n} } = {res}\\%$." },
         params: () => { const n = randChoice([20,25,50]); const ni = randInt(1, n-1); return { n, ni }; },
-        solve: (p) => { const res = Math.round(p.ni/p.n*1000)/10; return { res, correct: fmt(res) + '\\%' }; },
+        solve: (p) => { const res = Math.round(p.ni/p.n*1000)/10; return { res, correct: '$' + fmt(res) + '\\%$' }; },
         wrongOptions: (p, sol) => pctOptions(sol.res, 8) },
 
     { id: 'm2', type: 'math',
@@ -238,7 +238,7 @@ const mathPool = [
         cs: { q: "Úspěšnost vzrostla z ${before}\\%$ na ${after}\\%$. Kolik je to přibližně relativně (v procentech vzhledem k původní hodnotě)?", h: "Relativní změna = (nová hodnota − stará hodnota) / stará hodnota, vyjádřeno v procentech.", e: "$\\frac{ {after}-{before} }{ {before} }\\times100\\%\\approx{res}\\%$." },
         fr: { q: "Le taux de réussite est passé de ${before}\\%$ à ${after}\\%$. Quelle est la variation relative approximative (en pourcentage par rapport à la valeur initiale) ?", h: "Variation relative = (nouvelle valeur − ancienne valeur) / ancienne valeur, exprimée en pourcentage.", e: "$\\frac{ {after}-{before} }{ {before} }\\times100\\%\\approx{res}\\%$." },
         params: () => { const before = randInt(20,75); const after = before + randInt(5,20); return { before, after: Math.min(after,98) }; },
-        solve: (p) => { const res = Math.round((p.after-p.before)/p.before*1000)/10; return { res, correct: fmt(res) + '\\%' }; },
+        solve: (p) => { const res = Math.round((p.after-p.before)/p.before*1000)/10; return { res, correct: '$' + fmt(res) + '\\%$' }; },
         wrongOptions: (p, sol) => pctOptions(sol.res, 6) },
 
     { id: 'm6', type: 'math',
@@ -416,6 +416,7 @@ function generateBalancedQuiz() {
                 const btn = document.createElement('button');
                 btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
                 btn.innerHTML = opt;
+                btn.dataset.optText = opt;
                 btn.onclick = () => checkAnswer(btn, opt, data.a);
                 grid.appendChild(btn);
             });
@@ -458,7 +459,7 @@ function generateBalancedQuiz() {
             if (isCorrect) { btn.classList.add('correct'); score++; }
             else {
                 btn.classList.add('wrong');
-                allBtns.forEach(b => { if (b.innerHTML === correct) b.classList.add('correct'); });
+                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
             }
 
             document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
