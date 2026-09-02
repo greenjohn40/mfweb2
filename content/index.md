@@ -2,9 +2,15 @@
 title: MFWeb francouzské sekce GP
 ---
 
-Podpůrné studijní materiály k výuce matematiky a fyziky.
+Tento web slouží jako studijní podpora žáků francouzské sekce GP
+v předmětech Matematika a Fyzika.
 
-- [[hodnocení/index|Hodnocení]] – principy a požadavky ke klasifikaci
-- [[matematika/index|Matematika]] – teorie, příklady, odkazy podle témat
-- [[fyzika/index|Fyzika]] – teorie, příklady, odkazy podle témat
-- [[o-sekci|O sekci]] – k čemu je tento web a jak se v něm orientovat
+Materiály jsou rozděleny podle témat a jsou zpracovány dvojjazyčně. 
+Vždy obsahují dvě hlavní části:
+- **Teorie** je zpracovaná jako webová stránka s interaktivními prvky.
+- **Příručka** je textové zpracování Teorie do přehledné podoby vhodné k vytištění.
+
+a dále tři části určené k procvičování a autoevaluaci:
+- **Úlohy** jsou minisbírkou řešených příkladů.
+- **Kartičky** jsou aplikací typu Flashcards vhodnou k procvičování teorie i výpočtů.
+- **Test** je interaktivní test se zpětnou vazbou.
