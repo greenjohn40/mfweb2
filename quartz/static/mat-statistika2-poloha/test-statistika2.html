@@ -435,6 +435,7 @@ function generateBalancedQuiz() {
                 const btn = document.createElement('button');
                 btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
                 btn.innerHTML = opt;
+                btn.dataset.optText = opt;
                 btn.onclick = () => checkAnswer(btn, opt, data.a);
                 grid.appendChild(btn);
             });
@@ -477,7 +478,7 @@ function generateBalancedQuiz() {
             if (isCorrect) { btn.classList.add('correct'); score++; }
             else {
                 btn.classList.add('wrong');
-                allBtns.forEach(b => { if (b.innerHTML === correct) b.classList.add('correct'); });
+                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
             }
 
             document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
