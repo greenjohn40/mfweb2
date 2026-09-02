@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistika 2 — Charakteristiky polohy — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-statistika2.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Statistika 2 — Charakteristiky polohy · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Statistika 2 — Charakteristiky polohy</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Aritmetický průměr</h2>
+<p class="mb-3">Aritmetický průměr $\bar x=\frac{1}{n}\sum_{i=1}^n x_i$ je součet hodnot dělený jejich počtem.</p>
+<p class="mb-3"><b>Příklad:</b> teploty $18,21,19,23,20$ °C → $\bar x=\frac{101}{5}=20{,}2$ °C.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Vážený aritmetický průměr</h2>
+<p class="mb-3">$\bar x=\dfrac{\sum n_i x_i}{\sum n_i}$ — používá se, když hodnoty mají různou váhu (četnost, důležitost).</p>
+<p class="mb-3"><b>Příklad:</b> známky $1,2,1,3$ vážené kredity $4,6,2,3$ → $\bar x=\frac{27}{15}=1{,}8$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Vlastnosti aritmetického průměru</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Přičtením konstanty $c$ ke všem hodnotám se průměr zvětší o $c$.</li>
+        <li>Vynásobením konstantou $k$ se průměr vynásobí $k$.</li>
+        <li>Součet odchylek od průměru je vždy $0$: $\sum(x_i-\bar x)=0$.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> data $10,14,8,12,16$ (průměr $12$) — po přičtení $5$ ke všem hodnotám je nový průměr $17$; po vynásobení $3$ je nový průměr $36$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Geometrický průměr</h2>
+<p class="mb-3">$x_G=\sqrt[n]{x_1\cdot x_2\cdots x_n}$ — používá se pro průměrování tempa růstu (indexů, koeficientů).</p>
+<p class="mb-3"><b>Příklad:</b> tržby firmy $800\to880\to950\to1100\to1250$ tis. Kč, meziroční indexy $1{,}100$; $1{,}080$; $1{,}158$; $1{,}136$ → průměrné tempo růstu $x_G\approx1{,}118$, tj. $11{,}8\%$ ročně.</p>
+<div class="warn-box mb-3">
+    <p>Pro násobné (multiplikativní) veličiny je nutné použít geometrický, ne aritmetický průměr.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Harmonický průměr</h2>
+<p class="mb-3">$x_H=\dfrac{n}{\sum \frac{1}{x_i}}$ — používá se pro průměrování rychlostí/sazeb při stejné druhé veličině (např. stejná vzdálenost).</p>
+<p class="mb-3"><b>Příklad:</b> cyklista jede tři stejně dlouhé úseky rychlostmi $15,20,12$ km/h → $x_H=\frac{3}{0{,}2}=15$ km/h.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Vážený harmonický průměr</h2>
+<p class="mb-3">Používá se při nákupu za stejnou částku (ne stejné množství) při různých cenách.</p>
+<p class="mb-3"><b>Příklad:</b> nákup vždy za $300$ Kč při cenách $15,25,20$ Kč/kus → $47$ kusů za $900$ Kč, průměrná cena $\approx19{,}15$ Kč/kus.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Vztah mezi průměry</h2>
+<p class="mb-3">Pro kladná čísla, která nejsou všechna stejná, platí $x_H\leq x_G\leq x_A$ (rovnost jen při stejných hodnotách).</p>
+<p class="mb-3"><b>Příklad:</b> $x_H=15\lt x_G\approx15{,}33\lt x_A\approx15{,}67$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Modus</h2>
+<p class="mb-3">Modus $\mathrm{Mod}(x)$ je nejčetnější hodnota znaku. Pro intervalově tříděná data: $\mathrm{Mod}(x)=L+\dfrac{n_m-n_{-}}{(n_m-n_{-})+(n_m-n_{+})}\cdot h$.</p>
+<p class="mb-3"><b>Příklady:</b> velikost boty u 20 lidí — modus $41$ (šestkrát). Doba čekání ve frontě, modální interval $\langle10;15)$ ($n_{-}=9$, $n_{+}=8$) → $\mathrm{Mod}(x)=10+\frac{15-9}{(15-9)+(15-8)}\cdot5\approx12{,}3$ min.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Medián</h2>
+<p class="mb-3">Prostřední hodnota seřazeného souboru; pro sudé $n$ průměr dvou prostředních hodnot.</p>
+<p class="mb-3"><b>Příklady:</b> $7$ hodnot $68,74,75,79,82,88,91$ → medián $=79$. $8$ hodnot (totéž $+95$) → medián $=\frac{79+82}{2}=80{,}5$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Kvantily, kvartily a box plot</h2>
+<p class="mb-3">Kvartily $Q_1,Q_2,Q_3$ dělí seřazený soubor na čtvrtiny ($Q_2$=medián). Mezikvartilové rozpětí $\mathrm{IQR}=Q_3-Q_1$ se používá pro box plot (krabice od $Q_1$ do $Q_3$, čára uvnitř = medián, vousy = min/max bez odlehlých hodnot).</p>
+<p class="mb-3"><b>Příklad:</b> 20 hodnot → $Q_1=25$, medián $=39{,}5$, $Q_3=51{,}75$, $\mathrm{IQR}=26{,}75$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Charakteristika</th>
+            <th class="text-left py-1">Kdy použít</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">aritmetický průměr</td><td class="py-1">obecné průměrování hodnot stejné povahy</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">geometrický průměr</td><td class="py-1">tempo růstu (indexy, koeficienty)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">harmonický průměr</td><td class="py-1">rychlosti/sazby při stejné druhé veličině</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">modus</td><td class="py-1">nejčastější hodnota</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">medián</td><td class="py-1">prostřední hodnota, odolná vůči odlehlým hodnotám</td></tr>
+        <tr><td class="py-1 pr-2">kvartily, percentily</td><td class="py-1">rozdělení souboru, box plot</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Statistique 2 — Caractéristiques de position</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Moyenne arithmétique</h2>
+<p class="mb-3">La moyenne arithmétique $\bar x=\frac{1}{n}\sum_{i=1}^n x_i$ est la somme des valeurs divisée par leur nombre.</p>
+<p class="mb-3"><b>Exemple :</b> températures $18,21,19,23,20$ °C → $\bar x=\frac{101}{5}=20{,}2$ °C.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Moyenne arithmétique pondérée</h2>
+<p class="mb-3">$\bar x=\dfrac{\sum n_i x_i}{\sum n_i}$ — utilisée quand les valeurs ont un poids différent (effectif, importance).</p>
+<p class="mb-3"><b>Exemple :</b> notes $1,2,1,3$ pondérées par les crédits $4,6,2,3$ → $\bar x=\frac{27}{15}=1{,}8$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Propriétés de la moyenne arithmétique</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Ajouter une constante $c$ à toutes les valeurs augmente la moyenne de $c$.</li>
+        <li>Multiplier par une constante $k$ multiplie la moyenne par $k$.</li>
+        <li>La somme des écarts à la moyenne vaut toujours $0$ : $\sum(x_i-\bar x)=0$.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> données $10,14,8,12,16$ (moyenne $12$) — après avoir ajouté $5$ à toutes les valeurs, la nouvelle moyenne est $17$ ; après multiplication par $3$, elle est $36$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Moyenne géométrique</h2>
+<p class="mb-3">$x_G=\sqrt[n]{x_1\cdot x_2\cdots x_n}$ — utilisée pour moyenner un taux de croissance (indices, coefficients).</p>
+<p class="mb-3"><b>Exemple :</b> chiffre d'affaires $800\to880\to950\to1100\to1250$ milliers Kč, indices annuels $1{,}100$ ; $1{,}080$ ; $1{,}158$ ; $1{,}136$ → taux de croissance moyen $x_G\approx1{,}118$, soit $11{,}8\%$ par an.</p>
+<div class="warn-box mb-3">
+    <p>Pour les grandeurs multiplicatives, il faut utiliser la moyenne géométrique, pas la moyenne arithmétique.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Moyenne harmonique</h2>
+<p class="mb-3">$x_H=\dfrac{n}{\sum \frac{1}{x_i}}$ — utilisée pour moyenner des vitesses/taux à seconde grandeur constante (par ex. même distance).</p>
+<p class="mb-3"><b>Exemple :</b> un cycliste parcourt trois tronçons égaux aux vitesses $15,20,12$ km/h → $x_H=\frac{3}{0{,}2}=15$ km/h.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Moyenne harmonique pondérée</h2>
+<p class="mb-3">Utilisée pour un achat à montant constant (et non quantité constante) à des prix différents.</p>
+<p class="mb-3"><b>Exemple :</b> achat toujours de $300$ Kč aux prix $15,25,20$ Kč/pièce → $47$ pièces pour $900$ Kč, prix moyen $\approx19{,}15$ Kč/pièce.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Relation entre les moyennes</h2>
+<p class="mb-3">Pour des nombres positifs non tous égaux, $x_H\leq x_G\leq x_A$ (égalité seulement si toutes les valeurs sont égales).</p>
+<p class="mb-3"><b>Exemple :</b> $x_H=15\lt x_G\approx15{,}33\lt x_A\approx15{,}67$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Mode</h2>
+<p class="mb-3">Le mode $\mathrm{Mod}(x)$ est la valeur la plus fréquente. Pour des classes : $\mathrm{Mod}(x)=L+\dfrac{n_m-n_{-}}{(n_m-n_{-})+(n_m-n_{+})}\cdot h$.</p>
+<p class="mb-3"><b>Exemples :</b> pointures chez 20 personnes — mode $41$ (six fois). Temps d'attente, classe modale $\langle10;15)$ ($n_{-}=9$, $n_{+}=8$) → $\mathrm{Mod}(x)=10+\frac{15-9}{(15-9)+(15-8)}\cdot5\approx12{,}3$ min.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Médiane</h2>
+<p class="mb-3">Valeur du milieu de la population triée ; pour $n$ pair, moyenne des deux valeurs du milieu.</p>
+<p class="mb-3"><b>Exemples :</b> $7$ valeurs $68,74,75,79,82,88,91$ → médiane $=79$. $8$ valeurs (idem $+95$) → médiane $=\frac{79+82}{2}=80{,}5$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Quantiles, quartiles et boîte à moustaches</h2>
+<p class="mb-3">Les quartiles $Q_1,Q_2,Q_3$ partagent la population triée en quarts ($Q_2$=médiane). L'écart interquartile $\mathrm{IQR}=Q_3-Q_1$ sert à la boîte à moustaches (boîte de $Q_1$ à $Q_3$, ligne intérieure = médiane, moustaches = min/max sans valeurs aberrantes).</p>
+<p class="mb-3"><b>Exemple :</b> 20 valeurs → $Q_1=25$, médiane $=39{,}5$, $Q_3=51{,}75$, $\mathrm{IQR}=26{,}75$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Caractéristique</th>
+            <th class="text-left py-1">Quand l'utiliser</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">moyenne arithmétique</td><td class="py-1">moyenne générale de valeurs de même nature</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">moyenne géométrique</td><td class="py-1">taux de croissance (indices, coefficients)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">moyenne harmonique</td><td class="py-1">vitesses/taux à seconde grandeur constante</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">mode</td><td class="py-1">valeur la plus fréquente</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">médiane</td><td class="py-1">valeur du milieu, résistante aux valeurs aberrantes</td></tr>
+        <tr><td class="py-1 pr-2">quartiles, centiles</td><td class="py-1">répartition de la population, boîte à moustaches</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Statistique 2 — Caractéristiques de position · Manuel' : 'Statistika 2 — Charakteristiky polohy · Příručka';
+    document.title = czVisible ? 'Statistique 2 — Caractéristiques de position — Manuel' : 'Statistika 2 — Charakteristiky polohy — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

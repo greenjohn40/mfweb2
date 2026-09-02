@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistique 2 — Caractéristiques de position — Exercices</title>
+    <script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #7c3aed;
+        --secondary: #5b21b6;
+        --bg: #fafaf9;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #f5f3ff;
+        --translation: #64748b;
+    }
+    body {
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    .back-link { display: block; text-align: center; margin-bottom: 1rem; color: var(--translation); font-size: 0.9rem; text-decoration: none; }
+    .back-link:hover { color: var(--primary); }
+    h1 { text-align: center; color: var(--primary); font-size: 2.5rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 2.5rem; }
+    .exercise-card {
+        background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;
+    }
+    .exercise-body { margin-bottom: 18px; font-size: 1.05rem; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .btn { border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+    .btn-translation { background: transparent; color: var(--translation); border: 1px solid var(--translation); }
+    .btn-translation:hover { background: var(--translation); color: #fff; }
+    .btn-solution { background: var(--primary); color: #fff; }
+    .btn-solution:hover { background: var(--secondary); }
+    .content-box { display: none; margin-top: 14px; padding: 15px; border-radius: 6px; font-size: 0.95rem; animation: fadeIn 0.3s ease-in; }
+    .translation-box { background: #f1f5f9; color: #475569; border-left: 4px solid var(--translation); font-style: italic; }
+    .solution-box { background: var(--accent); border-left: 4px solid var(--primary); }
+    .active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    footer { text-align: center; margin-top: 40px; padding: 20px; color: #94a3b8; font-size: 0.9rem; }
+    .uloha-svg { width: 100%; max-width: 280px; display: block; margin: 14px auto 4px; }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="rozcestnik-statistika2.html" class="back-link">← Rozcestník</a>
+        <h1>Statistique 2</h1>
+        <p class="subtitle">Série de 10 exercices avec solutions et traductions — Caractéristiques de position</p>
+
+        <!-- 1 -->
+        <div class="exercise-card">
+            <div class="exercise-header">1. Moyenne arithmétique pondérée</div>
+            <div class="exercise-body">
+                Un investisseur a acheté des actions à trois reprises : 10 actions à 250 Kč, 5 actions à 300 Kč et 8 actions à 280 Kč pièce. Calcule le prix moyen pondéré par action.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr1',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol1',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr1" class="content-box translation-box">
+                Investor koupil akcie ve třech nákupech: 10 akcií po 250 Kč, 5 akcií po 300 Kč a 8 akcií po 280 Kč za kus. Vypočítej vážený průměr ceny za akcii.
+            </div>
+            <div id="sol1" class="content-box solution-box">
+                Montant total dépensé : $10\cdot250+5\cdot300+8\cdot280=2500+1500+2240=6240$ Kč, pour un total de $10+5+8=23$ actions. Prix moyen pondéré : $\bar x=\frac{6240}{23}\approx271{,}30$ Kč par action.
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="exercise-card">
+            <div class="exercise-header">2. Propriétés de la moyenne arithmétique</div>
+            <div class="exercise-body">
+                Les températures relevées un jour donné dans 5 villes sont $5,8,3,9,5$ °C, de moyenne $6$ °C. Un capteur mal calibré a systématiquement mesuré $2$ °C de moins que la réalité. Quelle est la moyenne réelle des températures ?
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr2',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol2',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr2" class="content-box translation-box">
+                Teploty naměřené jednoho dne v 5 městech jsou $5,8,3,9,5$ °C, s průměrem $6$ °C. Špatně kalibrovaný senzor systematicky měřil o $2$ °C méně, než byla skutečnost. Jaký je skutečný průměr teplot?
+            </div>
+            <div id="sol2" class="content-box solution-box">
+                Puisque chaque valeur mesurée est inférieure de $2$ °C à la valeur réelle, la moyenne réelle est supérieure de $2$ °C à la moyenne mesurée (propriété du décalage par une constante) : $6+2=8$ °C.
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="exercise-card">
+            <div class="exercise-header">3. Moyenne géométrique</div>
+            <div class="exercise-body">
+                Le nombre d'utilisateurs d'une application est passé de $1200$ à $1500$, puis à $1950$, puis à $2340$ (mesures à trois intervalles réguliers). Calcule le taux de croissance moyen entre deux mesures consécutives.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr3',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol3',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr3" class="content-box translation-box">
+                Počet uživatelů aplikace vzrostl z $1200$ na $1500$, pak na $1950$ a nakonec na $2340$ (měření ve třech pravidelných intervalech). Vypočítej průměrné tempo růstu mezi dvěma po sobě jdoucími měřeními.
+            </div>
+            <div id="sol3" class="content-box solution-box">
+                Indices de croissance : $\frac{1500}{1200}=1{,}25$, $\frac{1950}{1500}=1{,}3$, $\frac{2340}{1950}=1{,}2$. Taux de croissance moyen : $x_G=\sqrt[3]{1{,}25\cdot1{,}3\cdot1{,}2}\approx1{,}249$, soit une croissance moyenne d'environ $24{,}9\,\%$ entre deux mesures.
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="exercise-card">
+            <div class="exercise-header">4. Moyenne harmonique</div>
+            <div class="exercise-body">
+                Un coureur parcourt quatre tronçons de même longueur aux vitesses de $10$, $12$, $8$ et $15$ km/h. Calcule sa vitesse moyenne sur l'ensemble du parcours.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr4',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol4',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr4" class="content-box translation-box">
+                Běžec uběhne čtyři stejně dlouhé úseky rychlostmi $10$, $12$, $8$ a $15$ km/h. Vypočítej jeho průměrnou rychlost na celé trase.
+            </div>
+            <div id="sol4" class="content-box solution-box">
+                $$x_H=\frac{4}{\frac{1}{10}+\frac{1}{12}+\frac{1}{8}+\frac{1}{15}}=\frac{4}{\frac{3}{8}}=\frac{32}{3}\approx10{,}67\ \text{km/h}$$
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="exercise-card">
+            <div class="exercise-header">5. Moyenne harmonique pondérée</div>
+            <div class="exercise-body">
+                Un automobiliste fait toujours le plein pour un montant de $1000$ Kč, le prix du carburant étant successivement de $32$, $35$ et $30$ Kč par litre. Calcule le prix moyen payé par litre sur les trois pleins.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr5',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol5',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr5" class="content-box translation-box">
+                Řidič vždy natankuje za částku $1000$ Kč, přičemž cena paliva byla postupně $32$, $35$ a $30$ Kč za litr. Vypočítej průměrnou cenu za litr zaplacenou za tato tři tankování.
+            </div>
+            <div id="sol5" class="content-box solution-box">
+                Litres achetés à chaque plein : $\frac{1000}{32}\approx31{,}25$, $\frac{1000}{35}\approx28{,}57$, $\frac{1000}{30}\approx33{,}33$ litres — soit environ $93{,}15$ litres pour $3000$ Kč au total. Prix moyen : $\bar x=\frac{3000}{93{,}15}\approx32{,}20$ Kč par litre.
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="exercise-card">
+            <div class="exercise-header">6. Relation entre les moyennes</div>
+            <div class="exercise-body">
+                Vérifie la relation $x_H\leq x_G\leq x_A$ sur les trois valeurs $8$, $12$, $18$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr6',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol6',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr6" class="content-box translation-box">
+                Ověř vztah $x_H\leq x_G\leq x_A$ na třech hodnotách $8$, $12$, $18$.
+            </div>
+            <div id="sol6" class="content-box solution-box">
+                $x_A=\frac{8+12+18}{3}=\frac{38}{3}\approx12{,}67$. $x_G=\sqrt[3]{8\cdot12\cdot18}=\sqrt[3]{1728}=12$ (car $12^3=1728$). $x_H=\frac{3}{\frac{1}{8}+\frac{1}{12}+\frac{1}{18}}=\frac{3}{\frac{19}{72}}=\frac{216}{19}\approx11{,}37$. On vérifie bien $11{,}37\lt12\lt12{,}67$, donc $x_H\lt x_G\lt x_A$.
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="exercise-card">
+            <div class="exercise-header">7. Mode (caractère discret)</div>
+            <div class="exercise-body">
+                Voici le nombre d'enfants dans 20 familles interrogées : $0,1,1,2,2,2,2,3,1,2,0,1,2,3,2,1,2,4,2,1$. Détermine le mode de ce caractère.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr7',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol7',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr7" class="content-box translation-box">
+                Zde je počet dětí ve 20 dotázaných rodinách: $0,1,1,2,2,2,2,3,1,2,0,1,2,3,2,1,2,4,2,1$. Urči modus tohoto znaku.
+            </div>
+            <div id="sol7" class="content-box solution-box">
+                Effectifs : $0$ enfant (2 familles), $1$ enfant (6), $2$ enfants (9), $3$ enfants (2), $4$ enfants (1) — total $20$ familles. La valeur la plus fréquente est $2$ enfants (9 fois), donc $\mathrm{Mod}(x)=2$.
+                <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="201.0" x2="50.0" y2="201.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="205.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="201.0" x2="360.0" y2="201.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="157.0" x2="50.0" y2="157.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="161.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="157.0" x2="360.0" y2="157.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="113.0" x2="50.0" y2="113.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="117.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="113.0" x2="360.0" y2="113.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="69.0" x2="50.0" y2="69.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="73.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="69.0" x2="360.0" y2="69.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">10</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="58.7" y="201.0" width="44.6" height="44.0" fill="#7c3aed" opacity="0.85"/><text x="81.0" y="195.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="81.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">0</text><rect x="120.7" y="113.0" width="44.6" height="132.0" fill="#7c3aed" opacity="0.85"/><text x="143.0" y="107.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">6</text><text x="143.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">1</text><rect x="182.7" y="47.0" width="44.6" height="198.0" fill="#7c3aed" opacity="0.85"/><text x="205.0" y="41.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">9</text><text x="205.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">2</text><rect x="244.7" y="201.0" width="44.6" height="44.0" fill="#7c3aed" opacity="0.85"/><text x="267.0" y="195.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="267.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">3</text><rect x="306.7" y="223.0" width="44.6" height="22.0" fill="#7c3aed" opacity="0.85"/><text x="329.0" y="217.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">1</text><text x="329.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">4</text></svg>
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="exercise-card">
+            <div class="exercise-header">8. Mode (données regroupées en classes)</div>
+            <div class="exercise-body">
+                La répartition des salaires (en milliers de Kč) de 100 employés d'une entreprise est donnée par les classes suivantes : $\langle20;30)$ — 8 employés, $\langle30;40)$ — 22, $\langle40;50)$ — 35, $\langle50;60)$ — 20, $\langle60;70\rangle$ — 15. Calcule le mode de cette distribution.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr8',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol8',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr8" class="content-box translation-box">
+                Rozdělení mezd (v tisících Kč) 100 zaměstnanců firmy je dáno těmito intervaly: $\langle20;30)$ — 8 zaměstnanců, $\langle30;40)$ — 22, $\langle40;50)$ — 35, $\langle50;60)$ — 20, $\langle60;70\rangle$ — 15. Vypočítej modus tohoto rozdělení.
+            </div>
+            <div id="sol8" class="content-box solution-box">
+                La classe modale est $\langle40;50)$ avec $35$ employés ($n_{-}=22$, $n_{+}=20$) : $$\mathrm{Mod}(x)=40+\frac{35-22}{(35-22)+(35-20)}\cdot10=40+\frac{13}{28}\cdot10\approx44{,}6\ \text{milliers de Kč}$$
+                <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="202.2" x2="50.0" y2="202.2" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="206.2" font-size="11" fill="#57534e" text-anchor="end">7</text><line x1="50.0" y1="202.2" x2="360.0" y2="202.2" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="159.4" x2="50.0" y2="159.4" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="163.4" font-size="11" fill="#57534e" text-anchor="end">14</text><line x1="50.0" y1="159.4" x2="360.0" y2="159.4" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="116.7" x2="50.0" y2="116.7" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="120.7" font-size="11" fill="#57534e" text-anchor="end">21</text><line x1="50.0" y1="116.7" x2="360.0" y2="116.7" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="73.9" x2="50.0" y2="73.9" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="77.9" font-size="11" fill="#57534e" text-anchor="end">28</text><line x1="50.0" y1="73.9" x2="360.0" y2="73.9" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="31.1" x2="50.0" y2="31.1" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="35.1" font-size="11" fill="#57534e" text-anchor="end">35</text><line x1="50.0" y1="31.1" x2="360.0" y2="31.1" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="50.0" y="196.1" width="62.0" height="48.9" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="81.0" y="190.1" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">8</text><rect x="112.0" y="110.6" width="62.0" height="134.4" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="143.0" y="104.6" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">22</text><rect x="174.0" y="31.1" width="62.0" height="213.9" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="205.0" y="25.1" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">35</text><rect x="236.0" y="122.8" width="62.0" height="122.2" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="267.0" y="116.8" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">20</text><rect x="298.0" y="153.3" width="62.0" height="91.7" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="329.0" y="147.3" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">15</text><line x1="50.0" y1="245.0" x2="50.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">20</text><line x1="112.0" y1="245.0" x2="112.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="112.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">30</text><line x1="174.0" y1="245.0" x2="174.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="174.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">40</text><line x1="236.0" y1="245.0" x2="236.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="236.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">50</text><line x1="298.0" y1="245.0" x2="298.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="298.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">60</text><line x1="360.0" y1="245.0" x2="360.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">70</text><line x1="202.8" y1="25" x2="202.8" y2="245" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5,4"/><text x="202.8" y="18" font-size="11" fill="#b91c1c" text-anchor="middle" font-weight="600">Mod≈44,6</text></svg>
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="exercise-card">
+            <div class="exercise-header">9. Médiane (n impair puis n pair)</div>
+            <div class="exercise-body">
+                Voici les résultats ($n=9$, impair) d'un concours de tir à l'arc : $55,62,48,71,66,59,64,73,51$. Calcule la médiane. Un dixième tireur obtient ensuite $67$ points ($n=10$, pair) — recalcule la médiane.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr9',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol9',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr9" class="content-box translation-box">
+                Zde jsou výsledky ($n=9$, liché) soutěže v lukostřelbě: $55,62,48,71,66,59,64,73,51$. Vypočítej medián. Desátý střelec pak získá $67$ bodů ($n=10$, sudé) — přepočítej medián.
+            </div>
+            <div id="sol9" class="content-box solution-box">
+                Triés ($n=9$) : $48,51,55,59,\underline{62},64,66,71,73$ → médiane $=62$. Avec le dixième résultat, triés ($n=10$) : $48,51,55,59,\underline{62,64},66,67,71,73$ → médiane $=\frac{62+64}{2}=63$.
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="exercise-card">
+            <div class="exercise-header">10. Quartiles et écart interquartile</div>
+            <div class="exercise-body">
+                Voici 16 valeurs triées représentant des temps de réaction (en centièmes de seconde) : $38,39,42,44,45,47,49,51,52,55,56,58,60,61,63,67$. Calcule $Q_1$, $Q_2$ (médiane), $Q_3$ et l'écart interquartile, puis construis la boîte à moustaches correspondante.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr10',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol10',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr10" class="content-box translation-box">
+                Zde je 16 seřazených hodnot představujících reakční dobu (v setinách sekundy): $38,39,42,44,45,47,49,51,52,55,56,58,60,61,63,67$. Vypočítej $Q_1$, $Q_2$ (medián), $Q_3$ a mezikvartilové rozpětí, a sestroj odpovídající box plot.
+            </div>
+            <div id="sol10" class="content-box solution-box">
+                Par la méthode d'interpolation (position $p/100\cdot(n-1)$) : $Q_1=44{,}75$, $Q_2=51{,}5$, $Q_3=58{,}5$. Écart interquartile : $\mathrm{IQR}=Q_3-Q_1=58{,}5-44{,}75=13{,}75$.
+                <svg viewBox="0 0 380 200" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="30.0" y1="175.0" x2="350.0" y2="175.0" stroke="#57534e" stroke-width="1.5"/><line x1="39.7" y1="175.0" x2="39.7" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="39.7" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">35</text><line x1="82.6" y1="175.0" x2="82.6" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="82.6" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">40</text><line x1="125.6" y1="175.0" x2="125.6" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="125.6" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">45</text><line x1="168.5" y1="175.0" x2="168.5" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="168.5" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">50</text><line x1="211.5" y1="175.0" x2="211.5" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="211.5" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">55</text><line x1="254.4" y1="175.0" x2="254.4" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="254.4" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">60</text><line x1="297.4" y1="175.0" x2="297.4" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="297.4" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">65</text><line x1="340.3" y1="175.0" x2="340.3" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="340.3" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">70</text><line x1="65.4" y1="100.0" x2="123.4" y2="100.0" stroke="#7c3aed" stroke-width="2"/><line x1="241.5" y1="100.0" x2="314.6" y2="100.0" stroke="#7c3aed" stroke-width="2"/><line x1="65.4" y1="88.0" x2="65.4" y2="112.0" stroke="#7c3aed" stroke-width="2"/><line x1="314.6" y1="88.0" x2="314.6" y2="112.0" stroke="#7c3aed" stroke-width="2"/><rect x="123.4" y="78.0" width="118.1" height="44.0" fill="rgba(124,58,237,0.18)" opacity="1.0" stroke="#7c3aed" stroke-width="1"/><line x1="181.4" y1="78.0" x2="181.4" y2="122.0" stroke="#b91c1c" stroke-width="2.5"/><text x="65.4" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">min=38</text><text x="123.4" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">Q1=44.75</text><text x="181.4" y="140.0" font-size="11" fill="#b91c1c" text-anchor="middle" font-weight="600">Q2=51.5</text><text x="241.5" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">Q3=58.5</text><text x="314.6" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">max=67</text></svg>
+            </div>
+        </div>
+
+        <footer>
+            © 2026 – Mathématiques en Français – Exercices sur les Caractéristiques de Position
+        </footer>
+    </div>
+
+    <script>
+        function toggle(id, btn, openLabel, closeLabel) {
+            const el = document.getElementById(id);
+            const active = el.classList.toggle('active');
+            btn.textContent = active ? closeLabel : openLabel;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Statistika 2 — Charakteristiky polohy / Statistique 2 — Caractéristiques de position</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-statistika2.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Statistika 2</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Statistique 2 — Caractéristiques de position
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        { "q": "Co je aritmetický průměr?", "a": "charakteristika polohy rovna součtu hodnot dělenému jejich počtem" },
+        { "q": "Jaký je vzorec pro aritmetický průměr?", "a": "$\\bar x=\\frac{1}{n}\\sum_{i=1}^n x_i$" },
+        { "q": "Denní teploty $18,21,19,23,20$ °C. Jaký je jejich aritmetický průměr?", "a": "$20{,}2$ °C" },
+        { "q": "Kdy počítáme vážený aritmetický průměr?", "a": "když se hodnoty opakují nebo mají různou váhu (četnost, důležitost)" },
+        { "q": "Jaký je vzorec pro vážený aritmetický průměr?", "a": "$\\bar x=\\frac{\\sum n_i x_i}{\\sum n_i}$" },
+        { "q": "Známky $1,2,1,3$ vážené kredity $4,6,2,3$. Jaký je vážený průměr?", "a": "$1{,}8$" },
+        { "q": "Co se stane s aritmetickým průměrem, přičteme-li ke každé hodnotě konstantu $c$?", "a": "zvětší se o $c$" },
+        { "q": "Co se stane s aritmetickým průměrem, vynásobíme-li každou hodnotu konstantou $k$?", "a": "vynásobí se $k$" },
+        { "q": "Čemu se rovná součet odchylek všech hodnot od aritmetického průměru?", "a": "$0$" },
+        { "q": "Data $10,14,8,12,16$ mají průměr $12$. Jaký je průměr po přičtení $5$ ke každé hodnotě?", "a": "$17$" },
+        { "q": "Data $10,14,8,12,16$ mají průměr $12$. Jaký je průměr po vynásobení $3$?", "a": "$36$" },
+        { "q": "Co je geometrický průměr?", "a": "$n$-tá odmocnina ze součinu $n$ kladných hodnot" },
+        { "q": "Jaký je vzorec pro geometrický průměr?", "a": "$x_G=\\sqrt[n]{x_1\\cdot x_2\\cdots x_n}$" },
+        { "q": "K čemu se používá geometrický průměr?", "a": "k průměrování tempa růstu (indexů, koeficientů)" },
+        { "q": "Jaký je geometrický průměr čísel $4$ a $9$?", "a": "$6$" },
+        { "q": "Tržby firmy rostly indexy $1{,}100$; $1{,}080$; $1{,}158$; $1{,}136$. Jaké je přibližně průměrné tempo růstu?", "a": "přibližně $1{,}118$ (tj. $11{,}8\\%$)" },
+        { "q": "Proč nelze tempo růstu počítat aritmetickým průměrem indexů?", "a": "protože jde o multiplikativní (násobnou) veličinu, vyžaduje geometrický průměr" },
+        { "q": "Co je harmonický průměr?", "a": "převrácená hodnota aritmetického průměru převrácených hodnot" },
+        { "q": "Jaký je vzorec pro harmonický průměr?", "a": "$x_H=\\frac{n}{\\sum \\frac{1}{x_i}}$" },
+        { "q": "K čemu se používá harmonický průměr?", "a": "k průměrování rychlostí/sazeb při stejné druhé veličině (např. stejná vzdálenost)" },
+        { "q": "Cyklista jede tři stejně dlouhé úseky rychlostmi $15,20,12$ km/h. Jaká je jeho průměrná rychlost?", "a": "$15$ km/h" },
+        { "q": "Proč není v tomto případě správné použít aritmetický průměr rychlostí?", "a": "protože úseky trvaly různě dlouho (na pomalejším úseku strávil víc času)" },
+        { "q": "Kdy počítáme vážený harmonický průměr?", "a": "při nákupu za stejnou částku (ne stejné množství) při různých cenách" },
+        { "q": "Nákup vždy za $300$ Kč při cenách $15,25,20$ Kč/kus. Kolik kusů celkem koupíme?", "a": "$47$ kusů" },
+        { "q": "Jaký vztah platí mezi harmonickým, geometrickým a aritmetickým průměrem?", "a": "$x_H\\leq x_G\\leq x_A$" },
+        { "q": "Kdy nastává rovnost ve vztahu $x_H\\leq x_G\\leq x_A$?", "a": "když jsou všechny hodnoty stejné" },
+        { "q": "Co je modus?", "a": "nejčetnější hodnota znaku v souboru" },
+        { "q": "Může mít soubor víc než jeden modus?", "a": "ano (bimodální rozdělení)" },
+        { "q": "Ve výběru velikostí bot je nejčetnější hodnota $41$ (šestkrát). Jaký je modus?", "a": "$41$" },
+        { "q": "Jak se nazývá interval s nejvyšší četností u intervalově tříděných dat?", "a": "modální interval" },
+        { "q": "Jaký je vzorec pro modus intervalově tříděných dat?", "a": "$\\mathrm{Mod}(x)=L+\\frac{n_m-n_{-}}{(n_m-n_{-})+(n_m-n_{+})}\\cdot h$" },
+        { "q": "Co znamená $L$ ve vzorci pro modus intervalových dat?", "a": "dolní mez modálního intervalu" },
+        { "q": "Co znamená $h$ ve vzorci pro modus intervalových dat?", "a": "šířka modálního intervalu" },
+        { "q": "Modální interval doby čekání je $\\langle10;15)$ s četností $15$, sousední četnosti jsou $9$ a $8$. Jaký je modus?", "a": "přibližně $12{,}3$" },
+        { "q": "Co je medián?", "a": "prostřední hodnota seřazeného souboru" },
+        { "q": "Jak se počítá medián pro sudý počet hodnot $n$?", "a": "jako aritmetický průměr dvou prostředních hodnot" },
+        { "q": "Jak se počítá medián pro lichý počet hodnot $n$?", "a": "je to přesně prostřední hodnota seřazeného souboru" },
+        { "q": "Výsledky testu $68,74,75,79,82,88,91$ (7 hodnot). Jaký je medián?", "a": "$79$" },
+        { "q": "K předchozím 7 hodnotám přidáme hodnotu $95$ (celkem 8). Jaký je nyní medián?", "a": "$80{,}5$" },
+        { "q": "Co jsou kvantily?", "a": "čísla zobecňující medián, dělící seřazený soubor na části v daném poměru" },
+        { "q": "Co jsou kvartily?", "a": "kvantily dělící seřazený soubor na čtvrtiny ($Q_1,Q_2,Q_3$)" },
+        { "q": "Čemu se rovná $Q_2$ (druhý kvartil)?", "a": "mediánu" },
+        { "q": "Co je mezikvartilové rozpětí (IQR)?", "a": "rozdíl $Q_3-Q_1$" },
+        { "q": "Co znázorňuje box plot (krabicový graf)?", "a": "rozdělení souboru pomocí kvartilů — krabici od $Q_1$ do $Q_3$, medián uvnitř a vousy k min/max" },
+        { "q": "V souboru 20 hodnot vyšlo $Q_1=25$, $Q_3=51{,}75$. Jaké je IQR?", "a": "$26{,}75$" },
+        { "q": "Co jsou percentily?", "a": "kvantily dělící seřazený soubor na setiny" },
+        { "q": "Kolikátý percentil odpovídá mediánu?", "a": "$50$. percentil" },
+        { "q": "Jak se souhrnně nazývají aritmetický, geometrický a harmonický charakteristiky?", "a": "průměry" },
+        { "q": "Jaký typ hodnot vyžaduje geometrický průměr (kladné, nebo libovolné)?", "a": "jen kladné hodnoty" },
+        { "q": "Proč je medián odolnější vůči odlehlým hodnotám než aritmetický průměr?", "a": "protože závisí jen na pořadí hodnot, ne na jejich konkrétní velikosti" }
+    ],
+    "fr": [
+        { "q": "Qu'est-ce que la moyenne arithmétique ?", "a": "une caractéristique de position égale à la somme des valeurs divisée par leur nombre" },
+        { "q": "Quelle est la formule de la moyenne arithmétique ?", "a": "$\\bar x=\\frac{1}{n}\\sum_{i=1}^n x_i$" },
+        { "q": "Températures $18,21,19,23,20$ °C. Quelle est leur moyenne arithmétique ?", "a": "$20{,}2$ °C" },
+        { "q": "Quand calcule-t-on la moyenne arithmétique pondérée ?", "a": "quand les valeurs se répètent ou ont un poids différent (effectif, importance)" },
+        { "q": "Quelle est la formule de la moyenne arithmétique pondérée ?", "a": "$\\bar x=\\frac{\\sum n_i x_i}{\\sum n_i}$" },
+        { "q": "Notes $1,2,1,3$ pondérées par les crédits $4,6,2,3$. Quelle est la moyenne pondérée ?", "a": "$1{,}8$" },
+        { "q": "Que se passe-t-il pour la moyenne arithmétique si on ajoute une constante $c$ à chaque valeur ?", "a": "elle augmente de $c$" },
+        { "q": "Que se passe-t-il pour la moyenne arithmétique si on multiplie chaque valeur par une constante $k$ ?", "a": "elle est multipliée par $k$" },
+        { "q": "À quoi est égale la somme des écarts de toutes les valeurs à la moyenne arithmétique ?", "a": "$0$" },
+        { "q": "Les données $10,14,8,12,16$ ont une moyenne de $12$. Quelle est la moyenne après avoir ajouté $5$ à chaque valeur ?", "a": "$17$" },
+        { "q": "Les données $10,14,8,12,16$ ont une moyenne de $12$. Quelle est la moyenne après multiplication par $3$ ?", "a": "$36$" },
+        { "q": "Qu'est-ce que la moyenne géométrique ?", "a": "la racine $n$-ième du produit de $n$ valeurs positives" },
+        { "q": "Quelle est la formule de la moyenne géométrique ?", "a": "$x_G=\\sqrt[n]{x_1\\cdot x_2\\cdots x_n}$" },
+        { "q": "À quoi sert la moyenne géométrique ?", "a": "à moyenner un taux de croissance (indices, coefficients)" },
+        { "q": "Quelle est la moyenne géométrique des nombres $4$ et $9$ ?", "a": "$6$" },
+        { "q": "Le chiffre d'affaires d'une entreprise a crû avec les indices $1{,}100$ ; $1{,}080$ ; $1{,}158$ ; $1{,}136$. Quel est le taux de croissance moyen approximatif ?", "a": "environ $1{,}118$ (soit $11{,}8\\%$)" },
+        { "q": "Pourquoi ne peut-on pas calculer le taux de croissance avec une moyenne arithmétique des indices ?", "a": "parce que c'est une grandeur multiplicative, elle nécessite la moyenne géométrique" },
+        { "q": "Qu'est-ce que la moyenne harmonique ?", "a": "l'inverse de la moyenne arithmétique des inverses des valeurs" },
+        { "q": "Quelle est la formule de la moyenne harmonique ?", "a": "$x_H=\\frac{n}{\\sum \\frac{1}{x_i}}$" },
+        { "q": "À quoi sert la moyenne harmonique ?", "a": "à moyenner des vitesses/taux à seconde grandeur constante (par ex. même distance)" },
+        { "q": "Un cycliste parcourt trois tronçons égaux aux vitesses $15,20,12$ km/h. Quelle est sa vitesse moyenne ?", "a": "$15$ km/h" },
+        { "q": "Pourquoi n'est-il pas correct d'utiliser ici la moyenne arithmétique des vitesses ?", "a": "parce que les tronçons ont duré des temps différents (plus de temps sur le tronçon lent)" },
+        { "q": "Quand calcule-t-on la moyenne harmonique pondérée ?", "a": "pour un achat à montant constant (et non quantité constante) à des prix différents" },
+        { "q": "Achat toujours de $300$ Kč aux prix $15,25,20$ Kč/pièce. Combien de pièces au total ?", "a": "$47$ pièces" },
+        { "q": "Quelle relation existe entre les moyennes harmonique, géométrique et arithmétique ?", "a": "$x_H\\leq x_G\\leq x_A$" },
+        { "q": "Quand l'égalité a-t-elle lieu dans $x_H\\leq x_G\\leq x_A$ ?", "a": "quand toutes les valeurs sont égales" },
+        { "q": "Qu'est-ce que le mode ?", "a": "la valeur la plus fréquente du caractère dans la population" },
+        { "q": "Une population peut-elle avoir plus d'un mode ?", "a": "oui (distribution bimodale)" },
+        { "q": "Dans un échantillon de pointures, la valeur la plus fréquente est $41$ (six fois). Quel est le mode ?", "a": "$41$" },
+        { "q": "Comment appelle-t-on la classe à l'effectif le plus élevé pour des données regroupées ?", "a": "la classe modale" },
+        { "q": "Quelle est la formule du mode pour des données regroupées en classes ?", "a": "$\\mathrm{Mod}(x)=L+\\frac{n_m-n_{-}}{(n_m-n_{-})+(n_m-n_{+})}\\cdot h$" },
+        { "q": "Que représente $L$ dans la formule du mode pour des données groupées ?", "a": "la borne inférieure de la classe modale" },
+        { "q": "Que représente $h$ dans la formule du mode pour des données groupées ?", "a": "la largeur de la classe modale" },
+        { "q": "La classe modale du temps d'attente est $\\langle10;15)$ avec un effectif $15$, effectifs voisins $9$ et $8$. Quel est le mode ?", "a": "environ $12{,}3$" },
+        { "q": "Qu'est-ce que la médiane ?", "a": "la valeur du milieu de la population triée" },
+        { "q": "Comment calcule-t-on la médiane pour un nombre pair de valeurs $n$ ?", "a": "comme la moyenne arithmétique des deux valeurs du milieu" },
+        { "q": "Comment calcule-t-on la médiane pour un nombre impair de valeurs $n$ ?", "a": "c'est exactement la valeur du milieu de la population triée" },
+        { "q": "Résultats d'un contrôle $68,74,75,79,82,88,91$ (7 valeurs). Quelle est la médiane ?", "a": "$79$" },
+        { "q": "On ajoute la valeur $95$ aux 7 précédentes (total 8). Quelle est la nouvelle médiane ?", "a": "$80{,}5$" },
+        { "q": "Que sont les quantiles ?", "a": "des nombres généralisant la médiane, partageant la population triée selon un rapport donné" },
+        { "q": "Que sont les quartiles ?", "a": "des quantiles partageant la population triée en quarts ($Q_1,Q_2,Q_3$)" },
+        { "q": "À quoi est égal $Q_2$ (le deuxième quartile) ?", "a": "à la médiane" },
+        { "q": "Qu'est-ce que l'écart interquartile (IQR) ?", "a": "la différence $Q_3-Q_1$" },
+        { "q": "Que représente la boîte à moustaches ?", "a": "la répartition de la population par quartiles — boîte de $Q_1$ à $Q_3$, médiane à l'intérieur, moustaches vers min/max" },
+        { "q": "Dans une population de 20 valeurs, $Q_1=25$ et $Q_3=51{,}75$. Quel est l'IQR ?", "a": "$26{,}75$" },
+        { "q": "Que sont les centiles ?", "a": "des quantiles partageant la population triée en centièmes" },
+        { "q": "À quel centile correspond la médiane ?", "a": "le $50^{\\text{e}}$ centile" },
+        { "q": "Comment appelle-t-on collectivement les caractéristiques arithmétique, géométrique et harmonique ?", "a": "les moyennes" },
+        { "q": "Quel type de valeurs exige la moyenne géométrique (positives, ou quelconques) ?", "a": "seulement des valeurs positives" },
+        { "q": "Pourquoi la médiane est-elle plus résistante aux valeurs aberrantes que la moyenne arithmétique ?", "a": "parce qu'elle ne dépend que du rang des valeurs, pas de leur grandeur exacte" }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

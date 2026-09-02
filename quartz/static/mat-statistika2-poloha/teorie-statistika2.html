@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Statistika 2 — Charakteristiky polohy — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f5f5f4; border-left: 4px solid #78716c; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Statistika 2 — Charakteristiky polohy</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-statistika2.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Jak shrnout celý soubor jedním číslem?</h2>
+    <p>V minulé kapitole jsme se naučili popsat statistický soubor pomocí četností a grafů. Často ale potřebujeme jít ještě dál — shrnout celý soubor <b>jediným reprezentativním číslem</b>. Když učitel řekne „průměr třídy z pololetí byl 2,3", nebo když realitní portál uvádí „medián ceny bytu v Praze je 6,8 milionu Kč", používá právě takové číslo — nazýváme ho <b>charakteristika polohy</b>.</p>
+    <p>V této kapitole probereme tři typy průměrů (aritmetický, geometrický, harmonický), a dále modus, medián a kvantily — čísla, která nám řeknou, „kde uprostřed" se soubor nachází.</p>
+</section>
+
+<section id="sec-aritmeticky-prumer" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Aritmetický průměr</h2>
+    <p><b>Aritmetický průměr</b> $\bar x$ souboru hodnot $x_1,x_2,\dots,x_n$ je součet všech hodnot dělený jejich počtem:</p>
+    <div class="card text-center">
+        $$\bar x=\frac{1}{n}\sum_{i=1}^{n}x_i$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Denní teploty naměřené v 5 po sobě jdoucích dnech (°C): $18,21,19,23,20$.</p>
+        <p>$$\bar x=\frac{18+21+19+23+20}{5}=\frac{101}{5}=20{,}2\ \text{°C}$$</p>
+    </div>
+</section>
+
+<section id="sec-vazeny-prumer" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vážený aritmetický průměr</h2>
+    <p>Pokud se hodnoty v souboru opakují (nebo mají různou důležitost — <b>váhu</b>), počítáme <b>vážený aritmetický průměr</b>: každou hodnotu $x_i$ vynásobíme její četností (vahou) $n_i$, sečteme a vydělíme součtem vah.</p>
+    <div class="card text-center">
+        $$\bar x=\frac{\sum_{i=1}^{k} n_i x_i}{\sum_{i=1}^{k} n_i}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Student má na vysvědčení čtyři různé známky (1, 2, 1, 3), přičemž jednotlivé předměty mají různý počet kreditů (4, 6, 2, 3) — kredit je tu váha.</p>
+        <p>$$\bar x=\frac{1\cdot4+2\cdot6+1\cdot2+3\cdot3}{4+6+2+3}=\frac{4+12+2+9}{15}=\frac{27}{15}=1{,}8$$</p>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Vážený průměr jsme nepřímo použili už v minulé kapitole u intervalového třídění — při výpočtu s hodnotami reprezentovanými středy intervalů se váhou stává právě četnost intervalu.
+    </div>
+</section>
+
+<section id="sec-vlastnosti-prumeru" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vlastnosti aritmetického průměru</h2>
+    <p>Aritmetický průměr má tři užitečné vlastnosti:</p>
+    <div class="def-grid grid sm:grid-cols-1 gap-3">
+        <div class="card text-sm">
+            <ul class="list-disc list-inside space-y-1">
+                <li>Přičteme-li ke každé hodnotě konstantu $c$, průměr se zvětší o $c$.</li>
+                <li>Vynásobíme-li každou hodnotu konstantou $k$, průměr se vynásobí $k$.</li>
+                <li>Součet odchylek všech hodnot od průměru je vždy roven $0$: $\sum_{i=1}^n(x_i-\bar x)=0$.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: data $10,14,8,12,16$ (průměr $\bar x=12$)</p>
+        <div class="flex items-center gap-3 mb-2">
+            <span class="text-sm w-32">přičíst konstantu $c$:</span>
+            <input type="range" id="slider-shift" min="-10" max="10" value="0" class="flex-grow">
+            <span class="font-mono text-sm w-24 text-right"><span id="shift-val">0</span></span>
+        </div>
+        <p class="text-sm mb-3">Nový průměr: <b><span id="shift-mean">12</span></b> (očekáváno: $12+c$)</p>
+        <div class="flex items-center gap-3 mb-2">
+            <span class="text-sm w-32">vynásobit konstantou $k$:</span>
+            <input type="range" id="slider-scale" min="0.5" max="3" step="0.5" value="1" class="flex-grow">
+            <span class="font-mono text-sm w-24 text-right"><span id="scale-val">1</span></span>
+        </div>
+        <p class="text-sm">Nový průměr: <b><span id="scale-mean">12</span></b> (očekáváno: $12\cdot k$)</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Obě vlastnosti plynou přímo z definice — pro posun stačí jedna řádka výpočtu: $\frac{1}{n}\sum(x_i+c)=\frac{1}{n}\sum x_i+\frac{1}{n}\cdot nc=\bar x+c$. Podobně pro násobení: $\frac{1}{n}\sum(k\cdot x_i)=k\cdot\frac{1}{n}\sum x_i=k\bar x$. Toto jsou obecné důkazy platné pro libovolná data — posuvník výše slouží jen k vyzkoušení na konkrétních číslech, ne jako důkaz samotný.
+    </div>
+</section>
+
+<section id="sec-geometricky-prumer" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Geometrický průměr</h2>
+    <p><b>Geometrický průměr</b> $x_G$ souboru <b>kladných</b> hodnot je $n$-tá odmocnina z jejich součinu. Používá se hlavně tam, kde chceme zprůměrovat <b>tempo růstu</b> — tedy koeficienty (indexy), kterými se veličina mezi obdobími násobí.</p>
+    <div class="card text-center">
+        $$x_G=\sqrt[n]{x_1\cdot x_2\cdots x_n}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Tržby firmy za 5 let (v tisících Kč):</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="255.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="255.0" x2="50.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="259.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="222.1" x2="50.0" y2="222.1" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="226.1" font-size="11" fill="#57534e" text-anchor="end">200</text><line x1="50.0" y1="222.1" x2="360.0" y2="222.1" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="189.3" x2="50.0" y2="189.3" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="193.3" font-size="11" fill="#57534e" text-anchor="end">400</text><line x1="50.0" y1="189.3" x2="360.0" y2="189.3" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="156.4" x2="50.0" y2="156.4" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="160.4" font-size="11" fill="#57534e" text-anchor="end">600</text><line x1="50.0" y1="156.4" x2="360.0" y2="156.4" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="123.6" x2="50.0" y2="123.6" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="127.6" font-size="11" fill="#57534e" text-anchor="end">800</text><line x1="50.0" y1="123.6" x2="360.0" y2="123.6" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="90.7" x2="50.0" y2="90.7" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="94.7" font-size="11" fill="#57534e" text-anchor="end">1000</text><line x1="50.0" y1="90.7" x2="360.0" y2="90.7" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="57.9" x2="50.0" y2="57.9" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="61.9" font-size="11" fill="#57534e" text-anchor="end">1200</text><line x1="50.0" y1="57.9" x2="360.0" y2="57.9" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">1400</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="50.0" y1="255.0" x2="50.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2020</text><line x1="127.5" y1="255.0" x2="127.5" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="127.5" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2021</text><line x1="205.0" y1="255.0" x2="205.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="205.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2022</text><line x1="282.5" y1="255.0" x2="282.5" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="282.5" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2023</text><line x1="360.0" y1="255.0" x2="360.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2024</text><line x1="50.0" y1="123.6" x2="127.5" y2="110.4" stroke="#0d9488" stroke-width="3"/><line x1="127.5" y1="110.4" x2="205.0" y2="98.9" stroke="#0d9488" stroke-width="3"/><line x1="205.0" y1="98.9" x2="282.5" y2="74.3" stroke="#0d9488" stroke-width="3"/><line x1="282.5" y1="74.3" x2="360.0" y2="49.6" stroke="#0d9488" stroke-width="3"/><circle cx="50.0" cy="123.6" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="50.0" y="112.6" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">800</text><circle cx="127.5" cy="110.4" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="127.5" y="99.4" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">880</text><circle cx="205.0" cy="98.9" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="205.0" y="87.9" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">950</text><circle cx="282.5" cy="74.3" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="282.5" y="63.3" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">1100</text><circle cx="360.0" cy="49.6" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="360.0" y="38.6" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">1250</text></svg>
+        <p class="text-sm mt-2">Meziroční indexy růstu: $\frac{880}{800}=1{,}100$, $\frac{950}{880}\approx1{,}080$, $\frac{1100}{950}\approx1{,}158$, $\frac{1250}{1100}\approx1{,}136$.</p>
+        <p class="text-sm">Průměrné tempo růstu: $x_G=\sqrt[4]{1{,}100\cdot1{,}080\cdot1{,}158\cdot1{,}136}\approx1{,}118$, tedy firma rostla v průměru o $11{,}8\,\%$ ročně.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Kdybychom tempo růstu spočítali obyčejným aritmetickým průměrem indexů, dostali bychom mírně jiné (nesprávné) číslo — pro násobné (multiplikativní) veličiny je vždy potřeba geometrický, ne aritmetický průměr.
+    </div>
+</section>
+
+<section id="sec-harmonicky-prumer" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Harmonický průměr</h2>
+    <p><b>Harmonický průměr</b> $x_H$ se používá tam, kde průměrujeme <b>rychlosti nebo sazby</b> (veličiny typu „něco za jednotku něčeho"), a to konkrétně tehdy, když je druhá veličina (např. vzdálenost) pro všechny hodnoty <b>stejná</b>.</p>
+    <div class="card text-center">
+        $$x_H=\frac{n}{\sum_{i=1}^n \frac{1}{x_i}}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Cyklista jede tři stejně dlouhé úseky trasy rychlostmi $15$, $20$ a $12$ km/h. Jaká je jeho průměrná rychlost na celé trase?</p>
+        <p>$$x_H=\frac{3}{\frac{1}{15}+\frac{1}{20}+\frac{1}{12}}=\frac{3}{0{,}2}=15\ \text{km/h}$$</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Obyčejný aritmetický průměr rychlostí $\frac{15+20+12}{3}\approx15{,}67$ km/h by byl <b>špatně</b> — protože úseky trvaly různě dlouho (na pomalejším úseku strávil cyklista víc času), je potřeba harmonický průměr.
+    </div>
+</section>
+
+<section id="sec-vazeny-harmonicky" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vážený harmonický průměr</h2>
+    <p>Podobná situace nastává, když nakupujeme opakovaně za <b>stejnou částku</b> (ne stejné množství) při různých cenách za kus.</p>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Zákazník nakupuje pokaždé za $300$ Kč, přičemž cena zboží byla postupně $15$, $25$ a $20$ Kč za kus.</p>
+        <p class="text-sm mb-2">Počet kusů při jednotlivých nákupech: $\frac{300}{15}=20$, $\frac{300}{25}=12$, $\frac{300}{20}=15$ kusů — celkem $47$ kusů za $900$ Kč.</p>
+        <p>$$\bar x=\frac{900}{47}\approx19{,}15\ \text{Kč za kus}$$</p>
+    </div>
+</section>
+
+<section id="sec-vztah-prumeru" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vztah mezi průměry</h2>
+    <p>Pro libovolný soubor kladných čísel, která nejsou všechna stejná, platí:</p>
+    <div class="card text-center">
+        $$x_H\leq x_G\leq x_A$$
+    </div>
+    <p class="text-sm">(Pokud jsou si všechny hodnoty rovny, nastává rovnost ve všech třech výrazech.)</p>
+    <div class="card">
+        <p class="mb-2"><b>Ověření na datech cyklisty</b> ($15,20,12$):</p>
+        <p>$$x_H=15\ \lt\ x_G=\sqrt[3]{15\cdot20\cdot12}\approx15{,}33\ \lt\ x_A=\frac{15+20+12}{3}\approx15{,}67$$</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Tato nerovnost je zobecněním klasické nerovnosti mezi aritmetickým a geometrickým průměrem (tzv. AG nerovnost), jejíž rigorózní obecný důkaz (např. pomocí konvexity nebo indukcí) přesahuje rozsah této kapitoly — zde ji používáme jako ověřený a obecně platný matematický fakt.
+    </div>
+</section>
+
+<section id="sec-modus" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Modus</h2>
+    <p><b>Modus</b> $\mathrm{Mod}(x)$ je hodnota znaku, která se v souboru vyskytuje <b>nejčastěji</b> (má nejvyšší četnost). Soubor může mít i více modů (bimodální rozdělení), nebo modus nemusí existovat vůbec.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Vlastní příklad (diskrétní znak):</b> Velikost boty u 20 lidí:</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="190.0" x2="50.0" y2="190.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="194.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="190.0" x2="360.0" y2="190.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="135.0" x2="50.0" y2="135.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="139.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="135.0" x2="360.0" y2="135.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="80.0" x2="50.0" y2="80.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="84.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="80.0" x2="360.0" y2="80.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="56.2" y="217.5" width="31.9" height="27.5" fill="#7c3aed" opacity="0.85"/><text x="72.1" y="211.5" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">1</text><text x="72.1" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">38</text><rect x="100.5" y="190.0" width="31.9" height="55.0" fill="#7c3aed" opacity="0.85"/><text x="116.4" y="184.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="116.4" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">39</text><rect x="144.8" y="135.0" width="31.9" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="160.7" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="160.7" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">40</text><rect x="189.1" y="80.0" width="31.9" height="165.0" fill="#7c3aed" opacity="0.85"/><text x="205.0" y="74.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">6</text><text x="205.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">41</text><rect x="233.3" y="135.0" width="31.9" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="249.3" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="249.3" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">42</text><rect x="277.6" y="190.0" width="31.9" height="55.0" fill="#7c3aed" opacity="0.85"/><text x="293.6" y="184.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="293.6" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">43</text><rect x="321.9" y="217.5" width="31.9" height="27.5" fill="#7c3aed" opacity="0.85"/><text x="337.9" y="211.5" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">1</text><text x="337.9" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">44</text></svg>
+        <p class="text-sm mt-2">Nejčetnější je velikost $41$ (šestkrát), tedy $\mathrm{Mod}(x)=41$.</p>
+    </div>
+    <p>U <b>intervalově tříděných dat</b> nejprve najdeme <b>modální interval</b> (s nejvyšší četností) a modus dopočítáme interpolačním vzorcem:</p>
+    <div class="card text-center">
+        $$\mathrm{Mod}(x)=L+\frac{n_m-n_{-}}{(n_m-n_{-})+(n_m-n_{+})}\cdot h$$
+    </div>
+    <p class="text-sm">kde $L$ je dolní mez modálního intervalu, $h$ jeho šířka, $n_m$ jeho četnost a $n_{-}$, $n_{+}$ četnosti sousedních intervalů.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Vlastní příklad (intervalově tříděná data):</b> Doba čekání ve frontě (min) u 40 zákazníků:</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="203.8" x2="50.0" y2="203.8" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="207.8" font-size="11" fill="#57534e" text-anchor="end">3</text><line x1="50.0" y1="203.8" x2="360.0" y2="203.8" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="162.5" x2="50.0" y2="162.5" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="166.5" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="162.5" x2="360.0" y2="162.5" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="121.2" x2="50.0" y2="121.2" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="125.2" font-size="11" fill="#57534e" text-anchor="end">9</text><line x1="50.0" y1="121.2" x2="360.0" y2="121.2" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="80.0" x2="50.0" y2="80.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="84.0" font-size="11" fill="#57534e" text-anchor="end">12</text><line x1="50.0" y1="80.0" x2="360.0" y2="80.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="38.8" x2="50.0" y2="38.8" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="42.8" font-size="11" fill="#57534e" text-anchor="end">15</text><line x1="50.0" y1="38.8" x2="360.0" y2="38.8" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="50.0" y="190.0" width="62.0" height="55.0" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="81.0" y="184.0" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">4</text><rect x="112.0" y="121.2" width="62.0" height="123.8" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="143.0" y="115.2" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">9</text><rect x="174.0" y="38.8" width="62.0" height="206.2" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="205.0" y="32.8" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">15</text><rect x="236.0" y="135.0" width="62.0" height="110.0" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="267.0" y="129.0" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">8</text><rect x="298.0" y="190.0" width="62.0" height="55.0" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="329.0" y="184.0" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">4</text><line x1="50.0" y1="245.0" x2="50.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">0</text><line x1="112.0" y1="245.0" x2="112.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="112.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">5</text><line x1="174.0" y1="245.0" x2="174.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="174.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">10</text><line x1="236.0" y1="245.0" x2="236.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="236.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">15</text><line x1="298.0" y1="245.0" x2="298.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="298.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">20</text><line x1="360.0" y1="245.0" x2="360.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">25</text><line x1="202.6" y1="25" x2="202.6" y2="245" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5,4"/><text x="202.6" y="18" font-size="11" fill="#b91c1c" text-anchor="middle" font-weight="600">Mod≈12,3</text></svg>
+        <p class="text-sm mt-2">Modální interval je $\langle10;15)$ se 15 zákazníky ($n_{-}=9$, $n_{+}=8$):</p>
+        <p>$$\mathrm{Mod}(x)=10+\frac{15-9}{(15-9)+(15-8)}\cdot5\approx12{,}3\ \text{min}$$</p>
+    </div>
+</section>
+
+<section id="sec-median" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Medián</h2>
+    <p><b>Medián</b> $\mathrm{Med}(x)$ je prostřední hodnota souboru <b>seřazeného</b> podle velikosti. Polovina hodnot je menší nebo rovna mediánu, druhá polovina větší nebo rovna.</p>
+    <div class="def-grid grid sm:grid-cols-2 gap-3">
+        <div class="card text-sm">
+            <p class="font-semibold mb-1">Liché $n$</p>
+            <p>Medián je přesně prostřední hodnota seřazeného souboru.</p>
+        </div>
+        <div class="card text-sm">
+            <p class="font-semibold mb-1">Sudé $n$</p>
+            <p>Medián je aritmetický průměr dvou prostředních hodnot.</p>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad (liché $n=7$):</b> Výsledky testu: $82,75,91,68,74,88,79$.</p>
+        <p class="text-sm">Seřazeno: $68,74,75,\underline{79},82,88,91$ → $\mathrm{Med}(x)=79$.</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad (sudé $n=8$):</b> Stejná data plus jeden výsledek navíc: $82,75,91,68,74,88,79,95$.</p>
+        <p class="text-sm">Seřazeno: $68,74,75,\underline{79,82},88,91,95$ → $\mathrm{Med}(x)=\frac{79+82}{2}=80{,}5$.</p>
+    </div>
+</section>
+
+<section id="sec-kvantily" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kvantily, kvartily a box plot</h2>
+    <p><b>Kvantily</b> zobecňují medián — rozdělují seřazený soubor na části v daném poměru. Nejpoužívanější jsou <b>kvartily</b> ($Q_1$, $Q_2$, $Q_3$, které dělí soubor na čtvrtiny) a <b>percentily</b> (dělí soubor na setiny). Medián je vlastně $Q_2$ (50. percentil).</p>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: 20 seřazených hodnot, posuvník = percentil $p$</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-percentil" min="0" max="100" value="50" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="percentil-val">50</span>. perc.</span>
+        </div>
+        <p class="text-sm">Hodnota na této pozici: <b><span id="percentil-hodnota">39,5</span></b></p>
+    </div>
+    <p>Rozdíl $Q_3-Q_1$ se nazývá <b>mezikvartilové rozpětí</b> (IQR) a používá se ke grafickému znázornění pomocí <b>box plotu</b> (krabicového grafu): krabice sahá od $Q_1$ do $Q_3$, čárou uvnitř je vyznačen medián, a „vousy" ukazují nejnižší a nejvyšší hodnotu (pokud nejsou příliš odlehlé).</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Vlastní příklad:</b> 20 hodnot: $11,13,17,20,25,25,26,32,33,39,40,43,49,51,51,54,57,57,59,60$.</p>
+        <svg viewBox="0 0 380 200" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="30.0" y1="175.0" x2="350.0" y2="175.0" stroke="#57534e" stroke-width="1.5"/><line x1="64.6" y1="175.0" x2="64.6" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="64.6" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">10</text><line x1="113.8" y1="175.0" x2="113.8" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="113.8" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">20</text><line x1="162.9" y1="175.0" x2="162.9" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="162.9" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">30</text><line x1="212.1" y1="175.0" x2="212.1" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="212.1" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">40</text><line x1="261.3" y1="175.0" x2="261.3" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="261.3" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">50</text><line x1="310.5" y1="175.0" x2="310.5" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="310.5" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">60</text><line x1="69.5" y1="100.0" x2="138.3" y2="100.0" stroke="#7c3aed" stroke-width="2"/><line x1="269.9" y1="100.0" x2="310.5" y2="100.0" stroke="#7c3aed" stroke-width="2"/><line x1="69.5" y1="88.0" x2="69.5" y2="112.0" stroke="#7c3aed" stroke-width="2"/><line x1="310.5" y1="88.0" x2="310.5" y2="112.0" stroke="#7c3aed" stroke-width="2"/><rect x="138.3" y="78.0" width="131.6" height="44.0" fill="rgba(124,58,237,0.18)" opacity="1.0" stroke="#7c3aed" stroke-width="1"/><line x1="209.7" y1="78.0" x2="209.7" y2="122.0" stroke="#b91c1c" stroke-width="2.5"/><text x="69.5" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">min=11</text><text x="138.3" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">Q1=25</text><text x="209.7" y="140.0" font-size="11" fill="#b91c1c" text-anchor="middle" font-weight="600">Q2=39.5</text><text x="269.9" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">Q3=51.75</text><text x="310.5" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">max=60</text></svg>
+        <p class="text-sm mt-2">$Q_1=25$, medián $Q_2=39{,}5$, $Q_3=51{,}75$, $\mathrm{IQR}=26{,}75$. Minimum ($11$) i maximum ($60$) leží v rozumné vzdálenosti od krabice, takže v datech nejsou žádné odlehlé hodnoty.</p>
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Charakteristika</th><th class="p-1 text-left">Kdy použít</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">aritmetický průměr</td><td class="p-1 text-left">obecné průměrování hodnot stejné povahy</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">geometrický průměr</td><td class="p-1 text-left">průměrování tempa růstu (indexů, koeficientů)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">harmonický průměr</td><td class="p-1 text-left">průměrování rychlostí/sazeb při stejné druhé veličině</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">modus</td><td class="p-1 text-left">nejčastější hodnota, i pro kvalitativní znaky</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">medián</td><td class="p-1 text-left">prostřední hodnota, odolný vůči odlehlým hodnotám</td></tr>
+                <tr><td class="p-1 text-left">kvartily, percentily</td><td class="p-1 text-left">rozdělení souboru, box plot</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Co bude dál:</b> V navazující kapitole <i>Statistika 3 — charakteristiky variability</i> se naučíme, jak vyjádřit, jak moc jsou si hodnoty souboru podobné, nebo naopak jak moc se od sebe liší (rozptyl, směrodatná odchylka).
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="hidden mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Comment résumer toute une population par un seul nombre ?</h2>
+    <p>Dans le chapitre précédent, nous avons appris à décrire une population statistique à l'aide d'effectifs et de graphiques. Mais souvent, nous devons aller plus loin — résumer toute la population par un <b>seul nombre représentatif</b>. Quand un professeur dit « la moyenne de la classe au semestre était de 2,3 », ou quand un site immobilier indique « le prix médian d'un appartement à Prague est de 6,8 millions de couronnes », on utilise justement un tel nombre — on l'appelle une <b>caractéristique de position</b>.</p>
+    <p>Dans ce chapitre, nous verrons trois types de moyennes (arithmétique, géométrique, harmonique), ainsi que le mode, la médiane et les quantiles — des nombres qui nous indiquent « où se trouve le centre » de la population.</p>
+</section>
+
+<section id="sec-aritmeticky-prumer" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Moyenne arithmétique</h2>
+    <p>La <b>moyenne arithmétique</b> $\bar x$ d'une population de valeurs $x_1,x_2,\dots,x_n$ est la somme de toutes les valeurs divisée par leur nombre :</p>
+    <div class="card text-center">
+        $$\bar x=\frac{1}{n}\sum_{i=1}^{n}x_i$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Températures relevées sur 5 jours consécutifs (°C) : $18,21,19,23,20$.</p>
+        <p>$$\bar x=\frac{18+21+19+23+20}{5}=\frac{101}{5}=20{,}2\ \text{°C}$$</p>
+    </div>
+</section>
+
+<section id="sec-vazeny-prumer" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Moyenne arithmétique pondérée</h2>
+    <p>Si les valeurs de la population se répètent (ou ont une importance différente — un <b>poids</b>), on calcule la <b>moyenne arithmétique pondérée</b> : on multiplie chaque valeur $x_i$ par son effectif (poids) $n_i$, on additionne, puis on divise par la somme des poids.</p>
+    <div class="card text-center">
+        $$\bar x=\frac{\sum_{i=1}^{k} n_i x_i}{\sum_{i=1}^{k} n_i}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Un élève a quatre notes différentes sur son bulletin (1, 2, 1, 3), chaque matière ayant un nombre de crédits différent (4, 6, 2, 3) — le crédit est ici le poids.</p>
+        <p>$$\bar x=\frac{1\cdot4+2\cdot6+1\cdot2+3\cdot3}{4+6+2+3}=\frac{4+12+2+9}{15}=\frac{27}{15}=1{,}8$$</p>
+    </div>
+    <div class="note-box note-link">
+        <b>Lien :</b> Nous avons déjà utilisé indirectement la moyenne pondérée dans le chapitre précédent lors du regroupement en classes — dans les calculs avec les centres de classe comme valeurs, le poids devient justement l'effectif de la classe.
+    </div>
+</section>
+
+<section id="sec-vlastnosti-prumeru" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Propriétés de la moyenne arithmétique</h2>
+    <p>La moyenne arithmétique a trois propriétés utiles :</p>
+    <div class="def-grid grid sm:grid-cols-1 gap-3">
+        <div class="card text-sm">
+            <ul class="list-disc list-inside space-y-1">
+                <li>Si l'on ajoute une constante $c$ à chaque valeur, la moyenne augmente de $c$.</li>
+                <li>Si l'on multiplie chaque valeur par une constante $k$, la moyenne est multipliée par $k$.</li>
+                <li>La somme des écarts de toutes les valeurs à la moyenne vaut toujours $0$ : $\sum_{i=1}^n(x_i-\bar x)=0$.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 À toi d'essayer : données $10,14,8,12,16$ (moyenne $\bar x=12$)</p>
+        <div class="flex items-center gap-3 mb-2">
+            <span class="text-sm w-32">ajouter la constante $c$ :</span>
+            <input type="range" id="slider-shift-fr" min="-10" max="10" value="0" class="flex-grow">
+            <span class="font-mono text-sm w-24 text-right"><span id="shift-val-fr">0</span></span>
+        </div>
+        <p class="text-sm mb-3">Nouvelle moyenne : <b><span id="shift-mean-fr">12</span></b> (attendu : $12+c$)</p>
+        <div class="flex items-center gap-3 mb-2">
+            <span class="text-sm w-32">multiplier par $k$ :</span>
+            <input type="range" id="slider-scale-fr" min="0.5" max="3" step="0.5" value="1" class="flex-grow">
+            <span class="font-mono text-sm w-24 text-right"><span id="scale-val-fr">1</span></span>
+        </div>
+        <p class="text-sm">Nouvelle moyenne : <b><span id="scale-mean-fr">12</span></b> (attendu : $12\cdot k$)</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Les deux propriétés découlent directement de la définition — pour le décalage, une seule ligne de calcul suffit : $\frac{1}{n}\sum(x_i+c)=\frac{1}{n}\sum x_i+\frac{1}{n}\cdot nc=\bar x+c$. De même pour la multiplication : $\frac{1}{n}\sum(k\cdot x_i)=k\cdot\frac{1}{n}\sum x_i=k\bar x$. Ce sont des démonstrations générales valables pour toutes les données — le curseur ci-dessus ne sert qu'à tester sur des nombres concrets, pas de démonstration en soi.
+    </div>
+</section>
+
+<section id="sec-geometricky-prumer" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Moyenne géométrique</h2>
+    <p>La <b>moyenne géométrique</b> $x_G$ d'une population de valeurs <b>positives</b> est la racine $n$-ième de leur produit. Elle s'utilise surtout lorsqu'on veut moyenner un <b>taux de croissance</b> — c'est-à-dire des coefficients (indices) par lesquels une grandeur est multipliée d'une période à l'autre.</p>
+    <div class="card text-center">
+        $$x_G=\sqrt[n]{x_1\cdot x_2\cdots x_n}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Chiffre d'affaires d'une entreprise sur 5 ans (en milliers de couronnes) :</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="255.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="255.0" x2="50.0" y2="255.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="259.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="255.0" x2="360.0" y2="255.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="222.1" x2="50.0" y2="222.1" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="226.1" font-size="11" fill="#57534e" text-anchor="end">200</text><line x1="50.0" y1="222.1" x2="360.0" y2="222.1" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="189.3" x2="50.0" y2="189.3" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="193.3" font-size="11" fill="#57534e" text-anchor="end">400</text><line x1="50.0" y1="189.3" x2="360.0" y2="189.3" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="156.4" x2="50.0" y2="156.4" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="160.4" font-size="11" fill="#57534e" text-anchor="end">600</text><line x1="50.0" y1="156.4" x2="360.0" y2="156.4" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="123.6" x2="50.0" y2="123.6" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="127.6" font-size="11" fill="#57534e" text-anchor="end">800</text><line x1="50.0" y1="123.6" x2="360.0" y2="123.6" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="90.7" x2="50.0" y2="90.7" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="94.7" font-size="11" fill="#57534e" text-anchor="end">1000</text><line x1="50.0" y1="90.7" x2="360.0" y2="90.7" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="57.9" x2="50.0" y2="57.9" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="61.9" font-size="11" fill="#57534e" text-anchor="end">1200</text><line x1="50.0" y1="57.9" x2="360.0" y2="57.9" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">1400</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="50.0" y1="255.0" x2="50.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2020</text><line x1="127.5" y1="255.0" x2="127.5" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="127.5" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2021</text><line x1="205.0" y1="255.0" x2="205.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="205.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2022</text><line x1="282.5" y1="255.0" x2="282.5" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="282.5" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2023</text><line x1="360.0" y1="255.0" x2="360.0" y2="260.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="273.0" font-size="11.5" fill="#57534e" text-anchor="middle">2024</text><line x1="50.0" y1="123.6" x2="127.5" y2="110.4" stroke="#0d9488" stroke-width="3"/><line x1="127.5" y1="110.4" x2="205.0" y2="98.9" stroke="#0d9488" stroke-width="3"/><line x1="205.0" y1="98.9" x2="282.5" y2="74.3" stroke="#0d9488" stroke-width="3"/><line x1="282.5" y1="74.3" x2="360.0" y2="49.6" stroke="#0d9488" stroke-width="3"/><circle cx="50.0" cy="123.6" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="50.0" y="112.6" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">800</text><circle cx="127.5" cy="110.4" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="127.5" y="99.4" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">880</text><circle cx="205.0" cy="98.9" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="205.0" y="87.9" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">950</text><circle cx="282.5" cy="74.3" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="282.5" y="63.3" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">1100</text><circle cx="360.0" cy="49.6" r="5" fill="#b91c1c" stroke="white" stroke-width="1.5"/><text x="360.0" y="38.6" font-size="11.5" fill="#b91c1c" text-anchor="middle" font-weight="600">1250</text></svg>
+        <p class="text-sm mt-2">Indices de croissance annuels : $\frac{880}{800}=1{,}100$, $\frac{950}{880}\approx1{,}080$, $\frac{1100}{950}\approx1{,}158$, $\frac{1250}{1100}\approx1{,}136$.</p>
+        <p class="text-sm">Taux de croissance moyen : $x_G=\sqrt[4]{1{,}100\cdot1{,}080\cdot1{,}158\cdot1{,}136}\approx1{,}118$, soit une croissance moyenne de $11{,}8\,\%$ par an.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention :</b> Si l'on calculait le taux de croissance avec une simple moyenne arithmétique des indices, on obtiendrait un résultat légèrement différent (incorrect) — pour les grandeurs multiplicatives, il faut toujours utiliser la moyenne géométrique, pas la moyenne arithmétique.
+    </div>
+</section>
+
+<section id="sec-harmonicky-prumer" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Moyenne harmonique</h2>
+    <p>La <b>moyenne harmonique</b> $x_H$ s'utilise lorsqu'on moyenne des <b>vitesses ou des taux</b> (grandeurs du type « quelque chose par unité de quelque chose »), et plus précisément lorsque la seconde grandeur (par ex. la distance) est <b>la même</b> pour toutes les valeurs.</p>
+    <div class="card text-center">
+        $$x_H=\frac{n}{\sum_{i=1}^n \frac{1}{x_i}}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Un cycliste parcourt trois tronçons de même longueur aux vitesses de $15$, $20$ et $12$ km/h. Quelle est sa vitesse moyenne sur tout le trajet ?</p>
+        <p>$$x_H=\frac{3}{\frac{1}{15}+\frac{1}{20}+\frac{1}{12}}=\frac{3}{0{,}2}=15\ \text{km/h}$$</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention :</b> La simple moyenne arithmétique des vitesses $\frac{15+20+12}{3}\approx15{,}67$ km/h serait <b>incorrecte</b> — car les tronçons ont duré des temps différents (sur le tronçon le plus lent, le cycliste a passé plus de temps), il faut donc utiliser la moyenne harmonique.
+    </div>
+</section>
+
+<section id="sec-vazeny-harmonicky" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Moyenne harmonique pondérée</h2>
+    <p>Une situation similaire se présente lorsqu'on achète à répétition pour un <b>même montant</b> (et non une même quantité) à des prix unitaires différents.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Un client achète à chaque fois pour $300$ Kč, le prix de la marchandise étant successivement de $15$, $25$ et $20$ Kč par pièce.</p>
+        <p class="text-sm mb-2">Nombre de pièces à chaque achat : $\frac{300}{15}=20$, $\frac{300}{25}=12$, $\frac{300}{20}=15$ pièces — soit $47$ pièces au total pour $900$ Kč.</p>
+        <p>$$\bar x=\frac{900}{47}\approx19{,}15\ \text{Kč par pièce}$$</p>
+    </div>
+</section>
+
+<section id="sec-vztah-prumeru" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Relation entre les moyennes</h2>
+    <p>Pour toute population de nombres positifs qui ne sont pas tous égaux, on a :</p>
+    <div class="card text-center">
+        $$x_H\leq x_G\leq x_A$$
+    </div>
+    <p class="text-sm">(Si toutes les valeurs sont égales, l'égalité a lieu dans les trois expressions.)</p>
+    <div class="card">
+        <p class="mb-2"><b>Vérification sur les données du cycliste</b> ($15,20,12$) :</p>
+        <p>$$x_H=15\ \lt\ x_G=\sqrt[3]{15\cdot20\cdot12}\approx15{,}33\ \lt\ x_A=\frac{15+20+12}{3}\approx15{,}67$$</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Cette inégalité est une généralisation de l'inégalité classique entre moyenne arithmétique et géométrique (dite inégalité AG), dont la démonstration générale rigoureuse (par ex. via la convexité ou par récurrence) dépasse le cadre de ce chapitre — nous l'utilisons ici comme un fait mathématique vérifié et valable en général.
+    </div>
+</section>
+
+<section id="sec-modus" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Mode</h2>
+    <p>Le <b>mode</b> $\mathrm{Mod}(x)$ est la valeur du caractère qui apparaît le <b>plus fréquemment</b> dans la population (celle dont l'effectif est le plus élevé). Une population peut avoir plusieurs modes (distribution bimodale), ou ne pas avoir de mode du tout.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple (caractère discret) :</b> Pointure de chaussures chez 20 personnes :</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="190.0" x2="50.0" y2="190.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="194.0" font-size="11" fill="#57534e" text-anchor="end">2</text><line x1="50.0" y1="190.0" x2="360.0" y2="190.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="135.0" x2="50.0" y2="135.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="139.0" font-size="11" fill="#57534e" text-anchor="end">4</text><line x1="50.0" y1="135.0" x2="360.0" y2="135.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="80.0" x2="50.0" y2="80.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="84.0" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="80.0" x2="360.0" y2="80.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="25.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="29.0" font-size="11" fill="#57534e" text-anchor="end">8</text><line x1="50.0" y1="25.0" x2="360.0" y2="25.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="56.2" y="217.5" width="31.9" height="27.5" fill="#7c3aed" opacity="0.85"/><text x="72.1" y="211.5" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">1</text><text x="72.1" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">38</text><rect x="100.5" y="190.0" width="31.9" height="55.0" fill="#7c3aed" opacity="0.85"/><text x="116.4" y="184.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="116.4" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">39</text><rect x="144.8" y="135.0" width="31.9" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="160.7" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="160.7" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">40</text><rect x="189.1" y="80.0" width="31.9" height="165.0" fill="#7c3aed" opacity="0.85"/><text x="205.0" y="74.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">6</text><text x="205.0" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">41</text><rect x="233.3" y="135.0" width="31.9" height="110.0" fill="#7c3aed" opacity="0.85"/><text x="249.3" y="129.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">4</text><text x="249.3" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">42</text><rect x="277.6" y="190.0" width="31.9" height="55.0" fill="#7c3aed" opacity="0.85"/><text x="293.6" y="184.0" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">2</text><text x="293.6" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">43</text><rect x="321.9" y="217.5" width="31.9" height="27.5" fill="#7c3aed" opacity="0.85"/><text x="337.9" y="211.5" font-size="12" fill="#7c3aed" text-anchor="middle" font-weight="600">1</text><text x="337.9" y="263.0" font-size="11.5" fill="#57534e" text-anchor="middle">44</text></svg>
+        <p class="text-sm mt-2">La pointure la plus fréquente est $41$ (six fois), donc $\mathrm{Mod}(x)=41$.</p>
+    </div>
+    <p>Pour des <b>données regroupées en classes</b>, on trouve d'abord la <b>classe modale</b> (celle à l'effectif le plus élevé), puis on calcule le mode par la formule d'interpolation :</p>
+    <div class="card text-center">
+        $$\mathrm{Mod}(x)=L+\frac{n_m-n_{-}}{(n_m-n_{-})+(n_m-n_{+})}\cdot h$$
+    </div>
+    <p class="text-sm">où $L$ est la borne inférieure de la classe modale, $h$ sa largeur, $n_m$ son effectif, et $n_{-}$, $n_{+}$ les effectifs des classes voisines.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple (données regroupées en classes) :</b> Temps d'attente en file (min) chez 40 clients :</p>
+        <svg viewBox="0 0 380 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><line x1="50.0" y1="245.0" x2="50.0" y2="25.0" stroke="#57534e" stroke-width="1.5"/><line x1="45.0" y1="245.0" x2="50.0" y2="245.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="249.0" font-size="11" fill="#57534e" text-anchor="end">0</text><line x1="50.0" y1="245.0" x2="360.0" y2="245.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="203.8" x2="50.0" y2="203.8" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="207.8" font-size="11" fill="#57534e" text-anchor="end">3</text><line x1="50.0" y1="203.8" x2="360.0" y2="203.8" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="162.5" x2="50.0" y2="162.5" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="166.5" font-size="11" fill="#57534e" text-anchor="end">6</text><line x1="50.0" y1="162.5" x2="360.0" y2="162.5" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="121.2" x2="50.0" y2="121.2" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="125.2" font-size="11" fill="#57534e" text-anchor="end">9</text><line x1="50.0" y1="121.2" x2="360.0" y2="121.2" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="80.0" x2="50.0" y2="80.0" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="84.0" font-size="11" fill="#57534e" text-anchor="end">12</text><line x1="50.0" y1="80.0" x2="360.0" y2="80.0" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><line x1="45.0" y1="38.8" x2="50.0" y2="38.8" stroke="#57534e" stroke-width="1.5"/><text x="41.0" y="42.8" font-size="11" fill="#57534e" text-anchor="end">15</text><line x1="50.0" y1="38.8" x2="360.0" y2="38.8" stroke="rgba(87,83,78,0.12)" stroke-width="1"/><rect x="50.0" y="190.0" width="62.0" height="55.0" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="81.0" y="184.0" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">4</text><rect x="112.0" y="121.2" width="62.0" height="123.8" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="143.0" y="115.2" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">9</text><rect x="174.0" y="38.8" width="62.0" height="206.2" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="205.0" y="32.8" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">15</text><rect x="236.0" y="135.0" width="62.0" height="110.0" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="267.0" y="129.0" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">8</text><rect x="298.0" y="190.0" width="62.0" height="55.0" fill="#0d9488" opacity="0.8" stroke="white" stroke-width="1"/><text x="329.0" y="184.0" font-size="12" fill="#0d9488" text-anchor="middle" font-weight="600">4</text><line x1="50.0" y1="245.0" x2="50.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="50.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">0</text><line x1="112.0" y1="245.0" x2="112.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="112.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">5</text><line x1="174.0" y1="245.0" x2="174.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="174.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">10</text><line x1="236.0" y1="245.0" x2="236.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="236.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">15</text><line x1="298.0" y1="245.0" x2="298.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="298.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">20</text><line x1="360.0" y1="245.0" x2="360.0" y2="250.0" stroke="#57534e" stroke-width="1.5"/><text x="360.0" y="263.0" font-size="10.5" fill="#57534e" text-anchor="middle">25</text><line x1="202.6" y1="25" x2="202.6" y2="245" stroke="#b91c1c" stroke-width="2" stroke-dasharray="5,4"/><text x="202.6" y="18" font-size="11" fill="#b91c1c" text-anchor="middle" font-weight="600">Mod≈12,3</text></svg>
+        <p class="text-sm mt-2">La classe modale est $\langle10;15)$ avec 15 clients ($n_{-}=9$, $n_{+}=8$) :</p>
+        <p>$$\mathrm{Mod}(x)=10+\frac{15-9}{(15-9)+(15-8)}\cdot5\approx12{,}3\ \text{min}$$</p>
+    </div>
+</section>
+
+<section id="sec-median" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Médiane</h2>
+    <p>La <b>médiane</b> $\mathrm{Med}(x)$ est la valeur du milieu de la population <b>triée</b> par ordre croissant. La moitié des valeurs est inférieure ou égale à la médiane, l'autre moitié est supérieure ou égale.</p>
+    <div class="def-grid grid sm:grid-cols-2 gap-3">
+        <div class="card text-sm">
+            <p class="font-semibold mb-1">$n$ impair</p>
+            <p>La médiane est exactement la valeur du milieu de la population triée.</p>
+        </div>
+        <div class="card text-sm">
+            <p class="font-semibold mb-1">$n$ pair</p>
+            <p>La médiane est la moyenne arithmétique des deux valeurs du milieu.</p>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple ($n=7$, impair) :</b> Résultats d'un contrôle : $82,75,91,68,74,88,79$.</p>
+        <p class="text-sm">Triés : $68,74,75,\underline{79},82,88,91$ → $\mathrm{Med}(x)=79$.</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple ($n=8$, pair) :</b> Mêmes données plus un résultat supplémentaire : $82,75,91,68,74,88,79,95$.</p>
+        <p class="text-sm">Triés : $68,74,75,\underline{79,82},88,91,95$ → $\mathrm{Med}(x)=\frac{79+82}{2}=80{,}5$.</p>
+    </div>
+</section>
+
+<section id="sec-kvantily" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Quantiles, quartiles et boîte à moustaches</h2>
+    <p>Les <b>quantiles</b> généralisent la médiane — ils partagent la population triée en parties selon un rapport donné. Les plus utilisés sont les <b>quartiles</b> ($Q_1$, $Q_2$, $Q_3$, qui partagent la population en quarts) et les <b>centiles</b> (qui la partagent en centièmes). La médiane est en fait $Q_2$ (le 50ᵉ centile).</p>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 À toi d'essayer : 20 valeurs triées, curseur = centile $p$</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-percentil-fr" min="0" max="100" value="50" class="flex-grow">
+            <span class="font-mono text-sm w-20 text-right"><span id="percentil-val-fr">50</span>ᵉ cent.</span>
+        </div>
+        <p class="text-sm">Valeur à cette position : <b><span id="percentil-hodnota-fr">39,5</span></b></p>
+    </div>
+    <p>La différence $Q_3-Q_1$ s'appelle l'<b>écart interquartile</b> (IQR) et sert à la représentation graphique par une <b>boîte à moustaches</b> : la boîte va de $Q_1$ à $Q_3$, une ligne à l'intérieur marque la médiane, et les « moustaches » indiquent la valeur la plus basse et la plus haute (si elles ne sont pas trop extrêmes).</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> 20 valeurs : $11,13,17,20,25,25,26,32,33,39,40,43,49,51,51,54,57,57,59,60$.</p>
+        <svg viewBox="0 0 380 200" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="30.0" y1="175.0" x2="350.0" y2="175.0" stroke="#57534e" stroke-width="1.5"/><line x1="64.6" y1="175.0" x2="64.6" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="64.6" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">10</text><line x1="113.8" y1="175.0" x2="113.8" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="113.8" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">20</text><line x1="162.9" y1="175.0" x2="162.9" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="162.9" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">30</text><line x1="212.1" y1="175.0" x2="212.1" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="212.1" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">40</text><line x1="261.3" y1="175.0" x2="261.3" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="261.3" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">50</text><line x1="310.5" y1="175.0" x2="310.5" y2="180.0" stroke="#57534e" stroke-width="1.5"/><text x="310.5" y="193.0" font-size="10.5" fill="#57534e" text-anchor="middle">60</text><line x1="69.5" y1="100.0" x2="138.3" y2="100.0" stroke="#7c3aed" stroke-width="2"/><line x1="269.9" y1="100.0" x2="310.5" y2="100.0" stroke="#7c3aed" stroke-width="2"/><line x1="69.5" y1="88.0" x2="69.5" y2="112.0" stroke="#7c3aed" stroke-width="2"/><line x1="310.5" y1="88.0" x2="310.5" y2="112.0" stroke="#7c3aed" stroke-width="2"/><rect x="138.3" y="78.0" width="131.6" height="44.0" fill="rgba(124,58,237,0.18)" opacity="1.0" stroke="#7c3aed" stroke-width="1"/><line x1="209.7" y1="78.0" x2="209.7" y2="122.0" stroke="#b91c1c" stroke-width="2.5"/><text x="69.5" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">min=11</text><text x="138.3" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">Q1=25</text><text x="209.7" y="140.0" font-size="11" fill="#b91c1c" text-anchor="middle" font-weight="600">Q2=39.5</text><text x="269.9" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">Q3=51.75</text><text x="310.5" y="70.0" font-size="11" fill="#57534e" text-anchor="middle" font-weight="600">max=60</text></svg>
+        <p class="text-sm mt-2">$Q_1=25$, médiane $Q_2=39{,}5$, $Q_3=51{,}75$, $\mathrm{IQR}=26{,}75$. Le minimum ($11$) et le maximum ($60$) sont à une distance raisonnable de la boîte, il n'y a donc pas de valeurs aberrantes dans ces données.</p>
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Caractéristique</th><th class="p-1 text-left">Quand l'utiliser</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">moyenne arithmétique</td><td class="p-1 text-left">moyenne générale de valeurs de même nature</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">moyenne géométrique</td><td class="p-1 text-left">moyenne de taux de croissance (indices, coefficients)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">moyenne harmonique</td><td class="p-1 text-left">moyenne de vitesses/taux à seconde grandeur constante</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">mode</td><td class="p-1 text-left">valeur la plus fréquente, même pour un caractère qualitatif</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">médiane</td><td class="p-1 text-left">valeur du milieu, résistante aux valeurs aberrantes</td></tr>
+                <tr><td class="p-1 text-left">quartiles, centiles</td><td class="p-1 text-left">répartition de la population, boîte à moustaches</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Et ensuite :</b> Dans le chapitre suivant <i>Statistique 3 — caractéristiques de variabilité</i>, nous apprendrons à exprimer à quel point les valeurs d'une population se ressemblent, ou au contraire diffèrent entre elles (variance, écart-type).
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+    document.getElementById('page-title').textContent = czVisible ? 'Statistique 2 — Caractéristiques de position' : 'Statistika 2 — Charakteristiky polohy';
+    document.title = czVisible ? 'Statistique 2 — Caractéristiques de position — Théorie' : 'Statistika 2 — Charakteristiky polohy — Teorie';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+function fmtNum(x){
+    const r = Math.round(x*100)/100;
+    return r.toString().replace('.', ',');
+}
+function fmtSigned(x){
+    return (x >= 0 ? '+' : '−') + Math.abs(x);
+}
+
+// ---- Interaktivni demo: vlastnosti aritmetickeho prumeru ----
+const BASE_MEAN = 12;
+function updateShift(suffix){
+    suffix = suffix || '';
+    const c = parseFloat(document.getElementById('slider-shift'+suffix).value);
+    document.getElementById('shift-val'+suffix).textContent = fmtSigned(c);
+    document.getElementById('shift-mean'+suffix).textContent = fmtNum(BASE_MEAN + c);
+}
+function updateScale(suffix){
+    suffix = suffix || '';
+    const k = parseFloat(document.getElementById('slider-scale'+suffix).value);
+    document.getElementById('scale-val'+suffix).textContent = fmtNum(k);
+    document.getElementById('scale-mean'+suffix).textContent = fmtNum(BASE_MEAN * k);
+}
+
+// ---- Interaktivni demo: percentil / kvantil ----
+const PCTDATA = [11,13,17,20,25,25,26,32,33,39,40,43,49,51,51,54,57,57,59,60];
+function percentileValue(p){
+    const n = PCTDATA.length;
+    const idx = p/100*(n-1);
+    const lo = Math.floor(idx), hi = Math.ceil(idx);
+    if (lo === hi) return PCTDATA[lo];
+    const frac = idx - lo;
+    return PCTDATA[lo] + frac*(PCTDATA[hi]-PCTDATA[lo]);
+}
+function updatePercentil(suffix){
+    suffix = suffix || '';
+    const p = parseInt(document.getElementById('slider-percentil'+suffix).value);
+    document.getElementById('percentil-val'+suffix).textContent = p;
+    document.getElementById('percentil-hodnota'+suffix).textContent = fmtNum(percentileValue(p));
+}
+
+updateShift('');
+updateShift('-fr');
+updateScale('');
+updateScale('-fr');
+updatePercentil('');
+updatePercentil('-fr');
+
+document.getElementById('slider-shift').addEventListener('input', () => updateShift(''));
+document.getElementById('slider-shift-fr').addEventListener('input', () => updateShift('-fr'));
+document.getElementById('slider-scale').addEventListener('input', () => updateScale(''));
+document.getElementById('slider-scale-fr').addEventListener('input', () => updateScale('-fr'));
+document.getElementById('slider-percentil').addEventListener('input', () => updatePercentil(''));
+document.getElementById('slider-percentil-fr').addEventListener('input', () => updatePercentil('-fr'));
+</script>
+
+</body>
+</html>

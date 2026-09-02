@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Statistika 2 — Charakteristiky polohy (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-statistika2.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Statistika 2</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (aritmetický, geometrický a harmonický průměr, modus, medián, kvartily).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    { id: 't1', type: 'concept',
+        cs: { q: "Jaký je vzorec pro aritmetický průměr?", a: "$\\bar x=\\frac{1}{n}\\sum x_i$", o: ["$\\bar x=\\frac{1}{n}\\sum x_i$", "$\\bar x=\\frac{1}{n}\\prod x_i$", "$\\bar x=n\\cdot\\sum x_i$", "$\\bar x=\\sum x_i$"], h: "Průměr je součet dělený počtem, ne součin.", e: "Aritmetický průměr je součet všech hodnot dělený jejich počtem: $\\bar x=\\frac{1}{n}\\sum_{i=1}^n x_i$." },
+        fr: { q: "Quelle est la formule de la moyenne arithmétique ?", a: "$\\bar x=\\frac{1}{n}\\sum x_i$", o: ["$\\bar x=\\frac{1}{n}\\sum x_i$", "$\\bar x=\\frac{1}{n}\\prod x_i$", "$\\bar x=n\\cdot\\sum x_i$", "$\\bar x=\\sum x_i$"], h: "La moyenne est une somme divisée par un nombre, pas un produit.", e: "La moyenne arithmétique est la somme de toutes les valeurs divisée par leur nombre : $\\bar x=\\frac{1}{n}\\sum_{i=1}^n x_i$." } },
+    { id: 't2', type: 'concept',
+        cs: { q: "Kdy použijeme vážený aritmetický průměr?", a: "když mají hodnoty různou váhu (četnost, důležitost)", o: ["když mají hodnoty různou váhu (četnost, důležitost)", "když chceme průměrovat tempo růstu", "když chceme průměrovat rychlosti při stejné vzdálenosti", "jen u kvalitativních znaků"], h: "Slovo „vážený“ odkazuje na váhu (důležitost) jednotlivých hodnot.", e: "Vážený aritmetický průměr používáme, když hodnoty mají různou váhu — např. různou četnost výskytu nebo různý počet kreditů." },
+        fr: { q: "Quand utilise-t-on la moyenne arithmétique pondérée ?", a: "quand les valeurs ont un poids différent (effectif, importance)", o: ["quand les valeurs ont un poids différent (effectif, importance)", "quand on veut moyenner un taux de croissance", "quand on veut moyenner des vitesses à distance constante", "seulement pour un caractère qualitatif"], h: "Le mot « pondérée » renvoie au poids (importance) de chaque valeur.", e: "On utilise la moyenne pondérée quand les valeurs ont un poids différent — par ex. un effectif différent ou un nombre de crédits différent." } },
+    { id: 't3', type: 'concept',
+        cs: { q: "Přičteme-li ke všem hodnotám souboru konstantu $c$, jak se změní aritmetický průměr?", a: "zvětší se o $c$", o: ["zvětší se o $c$", "zvětší se $c$-krát", "nezmění se", "zmenší se o $c$"], h: "Posun všech hodnot posune i průměr — o stejnou hodnotu.", e: "Přičtením konstanty $c$ ke každé hodnotě se aritmetický průměr zvětší přesně o $c$: $\\overline{x+c}=\\bar x+c$." },
+        fr: { q: "Si l'on ajoute une constante $c$ à toutes les valeurs d'une population, comment change la moyenne arithmétique ?", a: "elle augmente de $c$", o: ["elle augmente de $c$", "elle est multipliée par $c$", "elle ne change pas", "elle diminue de $c$"], h: "Décaler toutes les valeurs décale aussi la moyenne — de la même quantité.", e: "En ajoutant une constante $c$ à chaque valeur, la moyenne arithmétique augmente exactement de $c$ : $\\overline{x+c}=\\bar x+c$." } },
+    { id: 't4', type: 'concept',
+        cs: { q: "K čemu se používá geometrický průměr?", a: "k průměrování tempa růstu (indexů, koeficientů)", o: ["k průměrování tempa růstu (indexů, koeficientů)", "k průměrování rychlostí při stejné vzdálenosti", "k nalezení nejčetnější hodnoty souboru", "k rozdělení souboru na čtvrtiny"], h: "Souvisí s násobnými (multiplikativními) veličinami.", e: "Geometrický průměr se používá k průměrování tempa růstu — tedy koeficientů (indexů), kterými se veličina mezi obdobími násobí." },
+        fr: { q: "À quoi sert la moyenne géométrique ?", a: "à moyenner un taux de croissance (indices, coefficients)", o: ["à moyenner un taux de croissance (indices, coefficients)", "à moyenner des vitesses à distance constante", "à trouver la valeur la plus fréquente d'une population", "à partager la population en quarts"], h: "Cela concerne les grandeurs multiplicatives.", e: "La moyenne géométrique sert à moyenner un taux de croissance — c'est-à-dire des coefficients (indices) par lesquels une grandeur est multipliée d'une période à l'autre." } },
+    { id: 't5', type: 'concept',
+        cs: { q: "K čemu se používá harmonický průměr?", a: "k průměrování rychlostí/sazeb při stejné druhé veličině", o: ["k průměrování rychlostí/sazeb při stejné druhé veličině", "k průměrování tempa růstu", "k nalezení prostřední hodnoty souboru", "jen u kvalitativních znaků"], h: "Typický příklad je stejná vzdálenost, různá rychlost.", e: "Harmonický průměr se používá k průměrování rychlostí nebo sazeb tehdy, když je druhá veličina (např. vzdálenost) pro všechny hodnoty stejná." },
+        fr: { q: "À quoi sert la moyenne harmonique ?", a: "à moyenner des vitesses/taux à seconde grandeur constante", o: ["à moyenner des vitesses/taux à seconde grandeur constante", "à moyenner un taux de croissance", "à trouver la valeur du milieu d'une population", "seulement pour un caractère qualitatif"], h: "L'exemple typique est une distance constante, une vitesse variable.", e: "La moyenne harmonique sert à moyenner des vitesses ou des taux lorsque la seconde grandeur (par ex. la distance) est la même pour toutes les valeurs." } },
+    { id: 't6', type: 'concept',
+        cs: { q: "Jaký vztah platí mezi harmonickým ($x_H$), geometrickým ($x_G$) a aritmetickým ($x_A$) průměrem?", a: "$x_H\\leq x_G\\leq x_A$", o: ["$x_H\\leq x_G\\leq x_A$", "$x_A\\leq x_G\\leq x_H$", "$x_G\\leq x_H\\leq x_A$", "všechny tři jsou si vždy rovny"], h: "Harmonický průměr je vždy nejmenší z trojice.", e: "Pro kladná čísla, která nejsou všechna stejná, platí $x_H\\leq x_G\\leq x_A$, s rovností jen když jsou si všechny hodnoty rovny." },
+        fr: { q: "Quelle relation existe entre la moyenne harmonique ($x_H$), géométrique ($x_G$) et arithmétique ($x_A$) ?", a: "$x_H\\leq x_G\\leq x_A$", o: ["$x_H\\leq x_G\\leq x_A$", "$x_A\\leq x_G\\leq x_H$", "$x_G\\leq x_H\\leq x_A$", "les trois sont toujours égales"], h: "La moyenne harmonique est toujours la plus petite des trois.", e: "Pour des nombres positifs non tous égaux, on a $x_H\\leq x_G\\leq x_A$, avec égalité seulement si toutes les valeurs sont égales." } },
+    { id: 't7', type: 'concept',
+        cs: { q: "Co je modus?", a: "nejčetnější hodnota znaku v souboru", o: ["nejčetnější hodnota znaku v souboru", "prostřední hodnota seřazeného souboru", "součet všech hodnot dělený jejich počtem", "rozdíl mezi maximem a minimem"], h: "Modus souvisí s četností, ne s pořadím.", e: "Modus $\\mathrm{Mod}(x)$ je hodnota znaku, která se v souboru vyskytuje nejčastěji (má nejvyšší četnost)." },
+        fr: { q: "Qu'est-ce que le mode ?", a: "la valeur la plus fréquente du caractère dans la population", o: ["la valeur la plus fréquente du caractère dans la population", "la valeur du milieu de la population triée", "la somme de toutes les valeurs divisée par leur nombre", "la différence entre le maximum et le minimum"], h: "Le mode est lié à la fréquence, pas à l'ordre.", e: "Le mode $\\mathrm{Mod}(x)$ est la valeur du caractère qui apparaît le plus fréquemment dans la population (celle dont l'effectif est le plus élevé)." } },
+    { id: 't8', type: 'concept',
+        cs: { q: "Jak se počítá medián pro sudý počet hodnot $n$?", a: "jako aritmetický průměr dvou prostředních hodnot", o: ["jako aritmetický průměr dvou prostředních hodnot", "je to vždy jen jedna prostřední hodnota", "jako geometrický průměr všech hodnot", "jako modus souboru"], h: "U sudého počtu hodnot nemá seřazený soubor jedinou přesně prostřední hodnotu.", e: "Pro sudé $n$ je medián aritmetickým průměrem dvou prostředních hodnot seřazeného souboru." },
+        fr: { q: "Comment calcule-t-on la médiane pour un nombre pair de valeurs $n$ ?", a: "comme la moyenne arithmétique des deux valeurs du milieu", o: ["comme la moyenne arithmétique des deux valeurs du milieu", "c'est toujours une seule valeur du milieu", "comme la moyenne géométrique de toutes les valeurs", "comme le mode de la population"], h: "Pour un nombre pair de valeurs, la population triée n'a pas une seule valeur exactement au milieu.", e: "Pour $n$ pair, la médiane est la moyenne arithmétique des deux valeurs du milieu de la population triée." } }
+];
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Ve třídě má známku $x_1={x1}$ celkem $w_1={w1}$ žáků a známku $x_2={x2}$ celkem $w_2={w2}$ žáků. Jaký je vážený aritmetický průměr známek?", h: "Použij vzorec $\\bar x=\\frac{n_1x_1+n_2x_2}{n_1+n_2}$.", e: "$\\bar x=\\frac{ {x1}\\cdot{w1}+{x2}\\cdot{w2} }{ {w1}+{w2} }={res}$." },
+        fr: { q: "Dans une classe, $w_1={w1}$ élèves ont la note $x_1={x1}$ et $w_2={w2}$ élèves ont la note $x_2={x2}$. Quelle est la moyenne arithmétique pondérée des notes ?", h: "Utilise la formule $\\bar x=\\frac{n_1x_1+n_2x_2}{n_1+n_2}$.", e: "$\\bar x=\\frac{ {x1}\\cdot{w1}+{x2}\\cdot{w2} }{ {w1}+{w2} }={res}$." },
+        params: () => {
+            let x1 = randInt(1,5), x2 = randInt(1,5);
+            while (x2 === x1) x2 = randInt(1,5);
+            const w1 = randInt(2,9), w2 = randInt(2,9);
+            return { x1, x2, w1, w2 };
+        },
+        solve: (p) => { const res = Math.round((p.x1*p.w1+p.x2*p.w2)/(p.w1+p.w2)*100)/100; return { res, correct: fmt(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 2) },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Který typ průměru je nejvhodnější pro tuto situaci: {popisCs}?", h: "Rozliš, zda jde o obecné hodnoty, tempo růstu, nebo rychlosti při stejné vzdálenosti.", e: "{expl}" },
+        fr: { q: "Quel type de moyenne convient le mieux à cette situation : {popisFr} ?", h: "Distingue s'il s'agit de valeurs générales, d'un taux de croissance, ou de vitesses à distance constante.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { popisCs: "průměrování rychlostí tří úseků trasy stejné délky", popisFr: "moyenner les vitesses de trois tronçons de même longueur", answer: "harmonický průměr", answerFr: "moyenne harmonique" },
+                { popisCs: "průměrování ročního tempa růstu tržeb firmy", popisFr: "moyenner le taux de croissance annuel du chiffre d'affaires", answer: "geometrický průměr", answerFr: "moyenne géométrique" },
+                { popisCs: "průměrování výšky žáků ve třídě", popisFr: "moyenner la taille des élèves d'une classe", answer: "aritmetický průměr", answerFr: "moyenne arithmétique" }
+            ];
+            const idx = randInt(0,2);
+            return Object.assign({ idx }, scenarios[idx]);
+        },
+        solve: (p) => {
+            const explCsMap = [
+                "Jde o rychlosti při stejné vzdálenosti, proto je vhodný harmonický průměr.",
+                "Jde o tempo růstu (násobnou veličinu), proto je vhodný geometrický průměr.",
+                "Jde o obecné hodnoty stejné povahy bez zvláštní struktury, proto je vhodný aritmetický průměr."
+            ];
+            const explFrMap = [
+                "Il s'agit de vitesses à distance constante, la moyenne harmonique est donc appropriée.",
+                "Il s'agit d'un taux de croissance (grandeur multiplicative), la moyenne géométrique est donc appropriée.",
+                "Il s'agit de valeurs générales de même nature sans structure particulière, la moyenne arithmétique est donc appropriée."
+            ];
+            return { res: p.answer, resFr: p.answerFr, explCs: explCsMap[p.idx], explFr: explFrMap[p.idx] };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m2 */ },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Jaký je geometrický průměr čísel ${a}$ a ${b}$?", h: "Pro dvě hodnoty platí $x_G=\\sqrt{a\\cdot b}$.", e: "$x_G=\\sqrt{ {a}\\cdot{b} }=\\sqrt{ {ab} }={res}$." },
+        fr: { q: "Quelle est la moyenne géométrique des nombres ${a}$ et ${b}$ ?", h: "Pour deux valeurs, $x_G=\\sqrt{a\\cdot b}$.", e: "$x_G=\\sqrt{ {a}\\cdot{b} }=\\sqrt{ {ab} }={res}$." },
+        params: () => {
+            const pairs = [[2,8],[3,12],[4,9],[5,20],[6,24],[8,18],[2,18],[3,27],[4,16],[9,16]];
+            const [a,b] = randChoice(pairs);
+            return { a, b };
+        },
+        solve: (p) => { const ab = p.a*p.b; const res = Math.sqrt(ab); return { res, correct: fmt(res), ab }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 3) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Cyklista jede dva stejně dlouhé úseky trasy rychlostmi ${a}$ km/h a ${b}$ km/h. Jaká je jeho průměrná rychlost na celé trase?", h: "Pro dvě hodnoty platí $x_H=\\frac{2ab}{a+b}$.", e: "$x_H=\\frac{2\\cdot{a}\\cdot{b}}{ {a}+{b} }={res}$ km/h." },
+        fr: { q: "Un cycliste parcourt deux tronçons de même longueur aux vitesses ${a}$ km/h et ${b}$ km/h. Quelle est sa vitesse moyenne sur tout le trajet ?", h: "Pour deux valeurs, $x_H=\\frac{2ab}{a+b}$.", e: "$x_H=\\frac{2\\cdot{a}\\cdot{b}}{ {a}+{b} }={res}$ km/h." },
+        params: () => {
+            const pairs = [[10,15],[20,30],[6,3],[10,40],[20,5],[9,18],[8,24],[4,12],[14,35],[6,12]];
+            const [a,b] = randChoice(pairs);
+            return { a, b };
+        },
+        solve: (p) => { const res = 2*p.a*p.b/(p.a+p.b); return { res, correct: fmt(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 4) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Najdi medián souboru pěti hodnot: ${v0}, {v1}, {v2}, {v3}, {v4}$ (hodnoty nejsou seřazené).", h: "Nejdřív hodnoty seřaď podle velikosti, medián je pak prostřední z pěti.", e: "Seřazeno: {sortedStr} → medián $={res}$." },
+        fr: { q: "Trouve la médiane de ces cinq valeurs : ${v0}, {v1}, {v2}, {v3}, {v4}$ (non triées).", h: "Trie d'abord les valeurs par ordre croissant, la médiane est alors celle du milieu parmi les cinq.", e: "Triées : {sortedStr} → médiane $={res}$." },
+        params: () => {
+            const set = new Set();
+            while (set.size < 5) set.add(randInt(10,99));
+            const arr = shuffleArray([...set]);
+            return { v0: arr[0], v1: arr[1], v2: arr[2], v3: arr[3], v4: arr[4] };
+        },
+        solve: (p) => {
+            const sorted = [p.v0,p.v1,p.v2,p.v3,p.v4].sort((a,b)=>a-b);
+            const res = sorted[2];
+            return { res, correct: fmt(res), sortedStr: sorted.join(', ') };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 10) },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "{popisCs} Je pro tuto situaci vhodné použít harmonický průměr?", h: "Rozhoduje, zda je druhá veličina (např. vzdálenost) pro všechny hodnoty stejná.", e: "{expl}" },
+        fr: { q: "{popisFr} La moyenne harmonique convient-elle à cette situation ?", h: "Ce qui compte, c'est si la seconde grandeur (par ex. la distance) est la même pour toutes les valeurs.", e: "{expl}" },
+        params: () => {
+            const kind = randChoice(['harm_ok','harm_no']);
+            const popisCs = kind === 'harm_ok'
+                ? "Auto jede tři úseky trasy stejné délky různými rychlostmi."
+                : "Chceme zprůměrovat výšky pěti žáků ve třídě."
+            const popisFr = kind === 'harm_ok'
+                ? "Une voiture parcourt trois tronçons de même longueur à des vitesses différentes."
+                : "On veut moyenner la taille de cinq élèves d'une classe."
+            return { kind, popisCs, popisFr };
+        },
+        solve: (p) => {
+            const isYes = p.kind === 'harm_ok';
+            const explCs = isYes
+                ? "Vzdálenost (druhá veličina) je pro všechny úseky stejná, harmonický průměr je tedy vhodný."
+                : "Nejde o rychlosti při stejné vzdálenosti ani o žádnou podobnou strukturu, zde patří obyčejný aritmetický průměr, ne harmonický.";
+            const explFr = isYes
+                ? "La distance (seconde grandeur) est la même pour tous les tronçons, la moyenne harmonique est donc appropriée."
+                : "Il ne s'agit pas de vitesses à distance constante ni d'une structure similaire, c'est ici la moyenne arithmétique classique qui convient, pas la moyenne harmonique.";
+            return { res: isYes ? 'ano' : 'ne', resFr: isYes ? 'oui' : 'non', explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m6 */ }
+];
+
+const CATEGORIES_CS = ['aritmetický průměr', 'geometrický průměr', 'harmonický průměr'];
+const CATEGORIES_FR = ['moyenne arithmétique', 'moyenne géométrique', 'moyenne harmonique'];
+const DISTRACTOR_CS = 'modus';
+const DISTRACTOR_FR = 'mode';
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit', 'záleží na jednotkách'];
+const YESNO_DISTRACTORS_FR = ['impossible à déterminer', 'cela dépend des unités'];
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm2') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const catsOther = lang === 'cs' ? CATEGORIES_FR : CATEGORIES_CS;
+            const distractorOther = lang === 'cs' ? DISTRACTOR_FR : DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.innerHTML === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Charakteristiky polohy ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat rozdíl mezi aritmetickým, geometrickým a harmonickým průměrem."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na to, kdy použít který typ průměru, a na výpočet modu a mediánu."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako modus, medián či vztah mezi průměry.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definice jednotlivých typů průměrů, modu a mediánu.");
+            if (mathPercent >= 70) strengths.push("Výpočty (vážený, geometrický i harmonický průměr, medián) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si zejména to, kdy použít který typ průměru a jak spočítat medián ze seřazených dat.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Můžeš se posunout dál – zkus navazující kapitolu o charakteristikách variability (rozptyl, směrodatná odchylka).");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení vzorců pro jednotlivé typy průměrů.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>
