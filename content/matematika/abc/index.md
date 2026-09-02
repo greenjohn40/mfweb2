@@ -2,4 +2,4 @@ Zde je ke stažení/zobrazení slovníček nejzákladnějších matematických v
 Slovník si můžete vytisknout a používat v hodinách.
 Při studiu nových kapitol si vytvářejte vlastní slovníček v sešitu.
 
-[slovníček](../quartz/static/mat-slovnik/matematika_francouzsky_slovnik.md)
+[slovníček](matematika_francouzsky_slovnik.md)
