@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Logaritmy — Rovnice a nerovnice (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-logaritmy.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Logaritmy</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (logaritmické rovnice, substituce, logaritmování, nerovnice).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    {
+        "id": "t1",
+        "type": "concept",
+        "cs": {
+            "q": "Jaké je řešení rovnice $\\log_a x=v$?",
+            "a": "$x=a^v$",
+            "o": [
+                "$x=a^v$",
+                "$x=v^a$",
+                "$x=a\\cdot v$",
+                "$x=\\log_v a$"
+            ],
+            "h": "Vyjdi přímo z definice logaritmu.",
+            "e": "Z definice logaritmu přímo plyne, že řešením rovnice $\\log_a x=v$ je $x=a^v$."
+        },
+        "fr": {
+            "q": "Quelle est la solution de l'équation $\\log_a x=v$ ?",
+            "a": "$x=a^v$",
+            "o": [
+                "$x=a^v$",
+                "$x=v^a$",
+                "$x=a\\cdot v$",
+                "$x=\\log_v a$"
+            ],
+            "h": "Pars directement de la définition du logarithme.",
+            "e": "La définition du logarithme donne directement la solution de l'équation $\\log_a x=v$ : $x=a^v$."
+        }
+    },
+    {
+        "id": "t2",
+        "type": "concept",
+        "cs": {
+            "q": "Proč u rovnice $\\log_a x=v$ není nutné zvlášť ověřovat definiční obor?",
+            "a": "protože $a^v$ je vždy kladné číslo, ať je $v$ jakékoli",
+            "o": [
+                "protože $a^v$ je vždy kladné číslo, ať je $v$ jakékoli",
+                "protože $v$ musí být vždy kladné",
+                "protože základ $a$ nemůže být větší než $10$",
+                "definiční obor se u tohoto typu rovnice ověřovat musí vždy"
+            ],
+            "h": "Zamysli se, jaké hodnoty může nabývat mocnina kladného čísla.",
+            "e": "Mocnina $a^v$ kladného základu $a$ je vždy kladná bez ohledu na hodnotu exponentu $v$, řešení tedy automaticky vyhovuje podmínce $x\\gt0$."
+        },
+        "fr": {
+            "q": "Pourquoi n'est-il pas nécessaire de vérifier séparément le domaine de définition pour l'équation $\\log_a x=v$ ?",
+            "a": "parce que $a^v$ est toujours un nombre positif, quel que soit $v$",
+            "o": [
+                "parce que $a^v$ est toujours un nombre positif, quel que soit $v$",
+                "parce que $v$ doit toujours être positif",
+                "parce que la base $a$ ne peut pas dépasser $10$",
+                "le domaine de définition doit toujours être vérifié pour ce type d'équation"
+            ],
+            "h": "Réfléchis aux valeurs que peut prendre une puissance d'un nombre positif.",
+            "e": "La puissance $a^v$ d'une base positive $a$ est toujours positive, quelle que soit la valeur de l'exposant $v$, donc la solution satisfait automatiquement la condition $x\\gt0$."
+        }
+    },
+    {
+        "id": "t3",
+        "type": "concept",
+        "cs": {
+            "q": "Jak řešíme rovnici $\\log_a f(x)=\\log_a g(x)$ se stejným základem?",
+            "a": "porovnáme argumenty: $f(x)=g(x)$",
+            "o": [
+                "porovnáme argumenty: $f(x)=g(x)$",
+                "porovnáme základy logaritmů",
+                "sečteme obě strany rovnice",
+                "umocníme obě strany na druhou"
+            ],
+            "h": "Logaritmus je prostá funkce — stejné hodnoty logaritmu odpovídají stejným argumentům.",
+            "e": "Mají-li obě strany logaritmus o stejném základu, stačí porovnat argumenty: $f(x)=g(x)$."
+        },
+        "fr": {
+            "q": "Comment résout-on l'équation $\\log_a f(x)=\\log_a g(x)$ avec la même base ?",
+            "a": "on compare les arguments : $f(x)=g(x)$",
+            "o": [
+                "on compare les arguments : $f(x)=g(x)$",
+                "on compare les bases des logarithmes",
+                "on additionne les deux côtés de l'équation",
+                "on élève les deux côtés au carré"
+            ],
+            "h": "Le logarithme est une fonction injective — des valeurs égales du logarithme correspondent à des arguments égaux.",
+            "e": "Si les deux côtés ont un logarithme de même base, il suffit de comparer les arguments : $f(x)=g(x)$."
+        }
+    },
+    {
+        "id": "t4",
+        "type": "concept",
+        "cs": {
+            "q": "Proč je u rovnice $\\log_a f(x)=\\log_a g(x)$ nutná zkouška dosazením?",
+            "a": "protože algebraická úprava nezaručuje, že oba argumenty vyjdou kladné",
+            "o": [
+                "protože algebraická úprava nezaručuje, že oba argumenty vyjdou kladné",
+                "protože logaritmus není definován pro celá čísla",
+                "protože zkouška je nutná jen u kvadratických rovnic",
+                "není nutná, algebraická úprava sama stačí"
+            ],
+            "h": "Vzpomeň si na příklad, kde algebraicky vyšlo $x=4$, ale dosazením se ukázalo, že argument je záporný.",
+            "e": "Řešení rovnice bez logaritmů může dávat argumentu zápornou hodnotu, což definiční obor logaritmu nedovoluje — zkouška dosazením je proto nutná."
+        },
+        "fr": {
+            "q": "Pourquoi la vérification par substitution est-elle nécessaire pour l'équation $\\log_a f(x)=\\log_a g(x)$ ?",
+            "a": "parce que la manipulation algébrique ne garantit pas que les deux arguments soient positifs",
+            "o": [
+                "parce que la manipulation algébrique ne garantit pas que les deux arguments soient positifs",
+                "parce que le logarithme n'est pas défini pour les nombres entiers",
+                "parce que la vérification n'est nécessaire que pour les équations quadratiques",
+                "elle n'est pas nécessaire, la manipulation algébrique suffit seule"
+            ],
+            "h": "Rappelle-toi l'exemple où l'algèbre donnait $x=4$, mais où la substitution montrait un argument négatif.",
+            "e": "La solution de l'équation sans logarithmes peut donner une valeur négative à un argument, ce que le domaine de définition du logarithme interdit — la vérification par substitution est donc nécessaire."
+        }
+    },
+    {
+        "id": "t5",
+        "type": "concept",
+        "cs": {
+            "q": "K čemu slouží substituce $t=\\log_a x$?",
+            "a": "k převedení rovnice s $\\log_a^2 x$ i $\\log_a x$ na kvadratickou rovnici v $t$",
+            "o": [
+                "k převedení rovnice s $\\log_a^2 x$ i $\\log_a x$ na kvadratickou rovnici v $t$",
+                "k výpočtu definičního oboru logaritmu",
+                "ke zjednodušení rovnic s neznámou v základu logaritmu",
+                "k ověření, že řešení je kladné"
+            ],
+            "h": "Substituce se používá, když se v rovnici objevuje logaritmus na první i druhou mocninu.",
+            "e": "Substituce $t=\\log_a x$ převede rovnici obsahující $\\log_a^2 x$ i $\\log_a x$ na kvadratickou rovnici v proměnné $t$, kterou už umíme vyřešit."
+        },
+        "fr": {
+            "q": "À quoi sert la substitution $t=\\log_a x$ ?",
+            "a": "à transformer une équation avec $\\log_a^2 x$ et $\\log_a x$ en une équation quadratique en $t$",
+            "o": [
+                "à transformer une équation avec $\\log_a^2 x$ et $\\log_a x$ en une équation quadratique en $t$",
+                "à calculer le domaine de définition du logarithme",
+                "à simplifier les équations où l'inconnue est dans la base du logarithme",
+                "à vérifier que la solution est positive"
+            ],
+            "h": "La substitution s'utilise quand le logarithme apparaît au carré et à la puissance un dans la même équation.",
+            "e": "La substitution $t=\\log_a x$ transforme une équation contenant $\\log_a^2 x$ et $\\log_a x$ en une équation quadratique en $t$, que l'on sait déjà résoudre."
+        }
+    },
+    {
+        "id": "t6",
+        "type": "concept",
+        "cs": {
+            "q": "Jak řešíme rovnici s neznámou v exponentu, když nelze snadno sjednotit základy mocnin?",
+            "a": "zlogaritmováním obou stran rovnice stejným základem",
+            "o": [
+                "zlogaritmováním obou stran rovnice stejným základem",
+                "substitucí $t=\\log_a x$",
+                "umocněním obou stran na druhou",
+                "vydělením obou stran základem"
+            ],
+            "h": "Použij vzorec $\\log(a^x)=x\\cdot\\log a$.",
+            "e": "Zlogaritmováním obou stran rovnice (stejným základem) a použitím vzorce $\\log(a^x)=x\\cdot\\log a$ dostaneme neznámou z exponentu ven."
+        },
+        "fr": {
+            "q": "Comment résout-on une équation avec l'inconnue dans l'exposant, quand les bases des puissances ne peuvent pas être facilement unifiées ?",
+            "a": "en prenant le logarithme des deux côtés de l'équation avec la même base",
+            "o": [
+                "en prenant le logarithme des deux côtés de l'équation avec la même base",
+                "par la substitution $t=\\log_a x$",
+                "en élevant les deux côtés au carré",
+                "en divisant les deux côtés par la base"
+            ],
+            "h": "Utilise la formule $\\log(a^x)=x\\cdot\\log a$.",
+            "e": "En prenant le logarithme des deux côtés de l'équation (avec la même base) et en utilisant la formule $\\log(a^x)=x\\cdot\\log a$, on fait sortir l'inconnue de l'exposant."
+        }
+    },
+    {
+        "id": "t7",
+        "type": "concept",
+        "cs": {
+            "q": "Pro jaký základ $a$ se při řešení nerovnice $\\log_a x\\gtrless v$ směr nerovnosti obrací?",
+            "a": "pro $0\\lt a\\lt1$",
+            "o": [
+                "pro $0\\lt a\\lt1$",
+                "pro $a\\gt1$",
+                "pro $a=1$",
+                "směr se nikdy neobrací"
+            ],
+            "h": "Rozmysli si, kdy je logaritmická funkce klesající.",
+            "e": "Pro $0\\lt a\\lt1$ je logaritmická funkce klesající, a proto se při řešení nerovnice směr nerovnosti obrací."
+        },
+        "fr": {
+            "q": "Pour quelle base $a$ le sens de l'inégalité s'inverse-t-il lors de la résolution de l'inéquation $\\log_a x\\gtrless v$ ?",
+            "a": "pour $0\\lt a\\lt1$",
+            "o": [
+                "pour $0\\lt a\\lt1$",
+                "pour $a\\gt1$",
+                "pour $a=1$",
+                "le sens ne s'inverse jamais"
+            ],
+            "h": "Réfléchis à quand la fonction logarithmique est décroissante.",
+            "e": "Pour $0\\lt a\\lt1$, la fonction logarithmique est décroissante, donc le sens de l'inégalité s'inverse lors de la résolution."
+        }
+    },
+    {
+        "id": "t8",
+        "type": "concept",
+        "cs": {
+            "q": "Jaký je definiční obor výrazu $\\log_a x$ (pro $a\\gt0$, $a\\neq1$)?",
+            "a": "$x\\gt0$",
+            "o": [
+                "$x\\gt0$",
+                "$x\\geq0$",
+                "$x\\in\\mathbb{R}$",
+                "$x\\neq0$"
+            ],
+            "h": "Argument logaritmu musí být ostře kladný, nula ani záporná čísla nejsou přípustné.",
+            "e": "Logaritmus je definován jen pro kladné argumenty, definiční obor výrazu $\\log_a x$ je proto $x\\gt0$."
+        },
+        "fr": {
+            "q": "Quel est le domaine de définition de l'expression $\\log_a x$ (pour $a\\gt0$, $a\\neq1$) ?",
+            "a": "$x\\gt0$",
+            "o": [
+                "$x\\gt0$",
+                "$x\\geq0$",
+                "$x\\in\\mathbb{R}$",
+                "$x\\neq0$"
+            ],
+            "h": "L'argument du logarithme doit être strictement positif ; ni zéro ni les nombres négatifs ne sont admis.",
+            "e": "Le logarithme n'est défini que pour des arguments positifs, le domaine de définition de $\\log_a x$ est donc $x\\gt0$."
+        }
+    }
+];
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Vyřeš rovnici $\\log_{ {a} } x={v}$. Čemu se rovná $x$?", h: "Použij definici logaritmu: $x=a^v$.", e: "$x={a}^{ {v} }={res}$." },
+        fr: { q: "Résous l'équation $\\log_{ {a} } x={v}$. À quoi $x$ est-il égal ?", h: "Utilise la définition du logarithme : $x=a^v$.", e: "$x={a}^{ {v} }={res}$." },
+        params: () => {
+            const pairs = [[2,3],[2,4],[2,5],[3,2],[3,3],[3,4],[5,2],[4,2],[4,3],[2,6]];
+            const [a, v] = randChoice(pairs);
+            return { a, v };
+        },
+        solve: (p) => {
+            const res = Math.pow(p.a, p.v);
+            return { res, correct: fmt(res) };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], Math.max(4, Math.round(sol.res * 0.25))) },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Jakou metodu je nejvhodnější použít v této situaci: {popisCs}?", h: "Rozliš, zda jde o logaritmus na druhou, neznámou v exponentu, nebo logaritmy o stejném základu.", e: "{expl}" },
+        fr: { q: "Quelle méthode convient le mieux à cette situation : {popisFr} ?", h: "Distingue s'il s'agit d'un logarithme au carré, d'une inconnue dans l'exposant, ou de logarithmes de même base.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { popisCs: "rovnice obsahuje zároveň $\\log_2^2 x$ i $\\log_2 x$", popisFr: "l'équation contient à la fois $\\log_2^2 x$ et $\\log_2 x$", answer: "substituce", answerFr: "substitution" },
+                { popisCs: "neznámá je v exponentu a základy mocnin nelze sjednotit", popisFr: "l'inconnue est dans l'exposant et les bases des puissances ne peuvent pas être unifiées", answer: "zlogaritmování", answerFr: "passage au logarithme" },
+                { popisCs: "obě strany rovnice mají logaritmus o stejném základu", popisFr: "les deux côtés de l'équation ont un logarithme de même base", answer: "porovnání argumentů", answerFr: "comparaison des arguments" }
+            ];
+            const idx = randInt(0,2);
+            return Object.assign({ idx }, scenarios[idx]);
+        },
+        solve: (p) => {
+            const explCsMap = [
+                "Rovnice obsahuje logaritmus na první i druhou mocninu, proto je vhodná substituce $t=\\log_2 x$.",
+                "Neznámá je v exponentu a základy nelze sjednotit, proto zlogaritmujeme obě strany rovnice.",
+                "Obě strany mají logaritmus o stejném základu, proto stačí porovnat argumenty."
+            ];
+            const explFrMap = [
+                "L'équation contient le logarithme au premier et au second degré, la substitution $t=\\log_2 x$ est donc appropriée.",
+                "L'inconnue est dans l'exposant et les bases ne peuvent pas être unifiées, on prend donc le logarithme des deux côtés.",
+                "Les deux côtés ont un logarithme de même base, il suffit donc de comparer les arguments."
+            ];
+            return { res: p.answer, resFr: p.answerFr, explCs: explCsMap[p.idx], explFr: explFrMap[p.idx] };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m2 */ },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Vyřeš rovnici ${a}^x={c}$ pomocí logaritmu. Čemu se přibližně rovná $x$ (na 2 desetinná místa)?", h: "Zlogaritmuj obě strany: $x=\\log_a c=\\dfrac{\\log c}{\\log a}$.", e: "$x=\\log_{ {a} }{c}\\approx{res}$." },
+        fr: { q: "Résous l'équation ${a}^x={c}$ à l'aide du logarithme. À combien $x$ est-il approximativement égal (à 2 décimales) ?", h: "Prends le logarithme des deux côtés : $x=\\log_a c=\\dfrac{\\log c}{\\log a}$.", e: "$x=\\log_{ {a} }{c}\\approx{res}$." },
+        params: () => {
+            const pairs = [[3,20],[5,12],[2,10],[4,50],[7,100],[6,40],[3,50],[2,25]];
+            const [a, c] = randChoice(pairs);
+            return { a, c };
+        },
+        solve: (p) => {
+            const res = Math.log(p.c) / Math.log(p.a);
+            return { res, correct: fmt(res) };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 2) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Uvažuj nerovnici $\\log_{ {a} } x\\gtrless {v}$. Jaká je hraniční hodnota $x_0=a^v$?", h: "Hraniční hodnota je vždy $x_0=a^v$, bez ohledu na směr nerovnosti.", e: "$x_0={a}^{ {v} }={res}$." },
+        fr: { q: "Considère l'inéquation $\\log_{ {a} } x\\gtrless {v}$. Quelle est la valeur limite $x_0=a^v$ ?", h: "La valeur limite est toujours $x_0=a^v$, quel que soit le sens de l'inégalité.", e: "$x_0={a}^{ {v} }={res}$." },
+        params: () => {
+            const pairs = [[2,-1],[2,-2],[5,-1],[5,-2],[10,-1],[10,-2],[0.5,1],[0.5,2]];
+            const [a, v] = randChoice(pairs);
+            return { a, v };
+        },
+        solve: (p) => {
+            const res = Math.pow(p.a, p.v);
+            return { res, correct: fmt(res) };
+        },
+        wrongOptions: (p, sol) => {
+            const extras = [Math.pow(p.a, p.v+1), Math.pow(p.a, p.v-1), Math.pow(p.a, -p.v)];
+            return buildOptions(sol.res, extras, 5);
+        } },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Vklad ${P}$ Kč se úročí ${rate}\\,\\%$ ročně. Za kolik let (zaokrouhleno na 1 desetinné místo) vzroste na ${C}$ Kč?", h: "Vyjdi z rovnice $P\\cdot(1+r)^t=C$ (kde $r$ je úroková míra v desetinném tvaru) a vyjádři $t$ pomocí logaritmu.", e: "${rbase}^t={ratio}$, tedy $t=\\log_{ {rbase} }{ratio}\\approx{res}$ let." },
+        fr: { q: "Un dépôt de ${P}$ Kč est rémunéré à ${rate}\\,\\%$ par an. En combien d'années (arrondi à 1 décimale) atteindra-t-il ${C}$ Kč ?", h: "Pars de l'équation $P\\cdot(1+r)^t=C$ (où $r$ est le taux d'intérêt sous forme décimale) et exprime $t$ à l'aide du logarithme.", e: "${rbase}^t={ratio}$, donc $t=\\log_{ {rbase} }{ratio}\\approx{res}$ ans." },
+        params: () => {
+            const triples = [[5000,4,8000],[20000,2,25000],[10000,5,20000],[8000,6,10000],[15000,3,18000],[10000,3,15000]];
+            const [P, rate, C] = randChoice(triples);
+            return { P, rate, C };
+        },
+        solve: (p) => {
+            const rbase = 1 + p.rate/100;
+            const ratio = p.C / p.P;
+            const res = Math.log(ratio) / Math.log(rbase);
+            return { res, correct: fmt(res), ratio, rbase };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 3) },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "{descCs}. Je toto řešení platné (dávají oba argumenty logaritmu kladnou hodnotu)?", h: "Dosaď $x$ zpět do obou argumentů a ověř, zda jsou kladné.", e: "{expl}" },
+        fr: { q: "{descFr}. Cette solution est-elle valide (les deux arguments du logarithme sont-ils positifs) ?", h: "Substitue $x$ dans les deux arguments et vérifie qu'ils sont positifs.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { descCs: "Řešením rovnice $\\log_2(x+3)=\\log_2(2x-1)$ vyšlo $x=4$", descFr: "La solution de l'équation $\\log_2(x+3)=\\log_2(2x-1)$ a donné $x=4$", valid: true, checkCs: "$x+3=7\\gt0$", checkFr: "$x+3=7\\gt0$" },
+                { descCs: "Řešením rovnice $\\log_2(x-5)=\\log_2(3-x)$ vyšlo $x=4$", descFr: "La solution de l'équation $\\log_2(x-5)=\\log_2(3-x)$ a donné $x=4$", valid: false, checkCs: "$x-5=-1\\lt0$", checkFr: "$x-5=-1\\lt0$" },
+                { descCs: "Řešením rovnice $\\log_3(2x-3)=\\log_3(x+2)$ vyšlo $x=5$", descFr: "La solution de l'équation $\\log_3(2x-3)=\\log_3(x+2)$ a donné $x=5$", valid: true, checkCs: "$2x-3=7\\gt0$", checkFr: "$2x-3=7\\gt0$" },
+                { descCs: "Řešením rovnice $\\log_5(x-8)=\\log_5(2-x)$ vyšlo $x=5$", descFr: "La solution de l'équation $\\log_5(x-8)=\\log_5(2-x)$ a donné $x=5$", valid: false, checkCs: "$x-8=-3\\lt0$", checkFr: "$x-8=-3\\lt0$" }
+            ];
+            return randChoice(scenarios);
+        },
+        solve: (p) => {
+            const explCs = p.valid
+                ? `${p.checkCs} — argument je kladný, řešení je tedy platné.`
+                : `${p.checkCs} — podmínka je porušena, řešení tedy není platné.`;
+            const explFr = p.valid
+                ? `${p.checkFr} — l'argument est positif, la solution est donc valide.`
+                : `${p.checkFr} — la condition n'est pas respectée, la solution n'est donc pas valide.`;
+            return { res: p.valid ? 'ano' : 'ne', resFr: p.valid ? 'oui' : 'non', explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m6 */ }
+];
+
+const CATEGORIES_CS = ['substituce', 'zlogaritmování', 'porovnání argumentů'];
+const CATEGORIES_FR = ['substitution', 'passage au logarithme', 'comparaison des arguments'];
+const DISTRACTOR_CS = 'derivace';
+const DISTRACTOR_FR = 'dérivée';
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit', 'záleží na základu logaritmu'];
+const YESNO_DISTRACTORS_FR = ['impossible à déterminer', 'cela dépend de la base'];
+
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm2') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const catsOther = lang === 'cs' ? CATEGORIES_FR : CATEGORIES_CS;
+            const distractorOther = lang === 'cs' ? DISTRACTOR_FR : DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.optText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Logaritmické rovnice i nerovnice ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat rozdíl mezi substitucí, zlogaritmováním a porovnáním argumentů."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na základní rovnice $\log_a x=v$ a na to, kdy je nutná zkouška definičního oboru."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako substituce, zlogaritmování či definiční obor logaritmu.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si jednotlivé postupy řešení logaritmických rovnic a nerovnic.");
+            if (mathPercent >= 70) strengths.push("Výpočty (rovnice, substituce, logaritmování) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si zejména řešení základních rovnic a ověřování definičního oboru.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Skvělá práce! Zvládl/a jsi kapitolu o logaritmických rovnicích a nerovnicích – můžeš si otestovat své znalosti znovu s jinými čísly.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení jednotlivých postupů a vzorců.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>

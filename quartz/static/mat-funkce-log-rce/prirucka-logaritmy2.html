@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logaritmy — Rovnice a nerovnice — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-logaritmy.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Logaritmy — Rovnice a nerovnice · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Logaritmy — Rovnice a nerovnice</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Základní logaritmické rovnice</h2>
+<p class="mb-3">Rovnice ve tvaru $\log_a x=v$ (kde $a\gt0$, $a\neq1$) řešíme přímo z definice logaritmu: $x=a^v$. Protože $a^v$ je vždy kladné, definiční obor se u tohoto typu nemusí zvlášť ověřovat.</p>
+<p class="mb-3"><b>Příklad:</b> $\log_3 x=4 \Rightarrow x=3^4=81$. Se záporným $v$: $\log_2 x=-3 \Rightarrow x=2^{-3}=\dfrac18$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Rovnice se stejným základem logaritmu</h2>
+<p class="mb-3">Rovnici $\log_a f(x)=\log_a g(x)$ řešíme porovnáním argumentů: $f(x)=g(x)$. Řešení musí dávat oběma argumentům kladnou hodnotu.</p>
+<p class="mb-3"><b>Příklad:</b> $\log_5(x+3)=\log_5(2x-1) \Rightarrow x+3=2x-1 \Rightarrow x=4$ (ověření: $x+3=7\gt0$ ✓).</p>
+<div class="warn-box mb-3">
+    <p>Algebraická úprava nezaručuje, že řešení splňuje definiční obor. Např. $\log_2(x-5)=\log_2(3-x)$ dá algebraicky $x=4$, ale $x-5=-1\lt0$ — řešení neexistuje. Zkouška dosazením je proto u tohoto typu rovnic nutná.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Substituce</h2>
+<p class="mb-3">Obsahuje-li rovnice zároveň $\log_a^2 x$ i $\log_a x$, zavedeme substituci $t=\log_a x$ a řešíme jako kvadratickou rovnici v proměnné $t$.</p>
+<p class="mb-3"><b>Příklad:</b> $\log_2^2 x-3\log_2 x+2=0$. Substituce $t=\log_2 x$: $t^2-3t+2=0 \Rightarrow t_1=1,\;t_2=2$. Zpětně: $x_1=2$, $x_2=4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Logaritmování rovnice</h2>
+<p class="mb-3">Má-li rovnice neznámou v exponentu a základy nelze snadno sjednotit, zlogaritmujeme obě strany stejným základem: $\log(a^x)=x\cdot\log a$.</p>
+<p class="mb-3"><b>Příklad:</b> $5^x=12 \Rightarrow x\cdot\log5=\log12 \Rightarrow x=\log_5 12\approx1{,}544$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Exponenciální rovnice z praxe</h2>
+<p class="mb-3">Logaritmus se hodí, hledáme-li počet „kroků" (let, období), za který veličina rostoucí exponenciálně dosáhne určité hodnoty.</p>
+<p class="mb-3"><b>Příklad:</b> Vklad $10\,000$ Kč se úročí $3\,\%$ ročně. Za kolik let vzroste na $15\,000$ Kč? $1{,}03^t=1{,}5 \Rightarrow t=\log_{1{,}03}1{,}5\approx13{,}7$ roku.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Logaritmické nerovnice — základní tvar</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Pro $a\gt1$ (funkce rostoucí): $\log_a x\gt v \Leftrightarrow x\gt a^v$ (směr se zachovává)</li>
+        <li>Pro $0\lt a\lt1$ (funkce klesající): $\log_a x\lt v \Leftrightarrow x\gt a^v$ (směr se obrací)</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad ($a\gt1$):</b> $\log_2 x\gt3 \Rightarrow x\gt2^3=8$, s podmínkou $x\gt0$: $x\in(8;\infty)$.</p>
+<p class="mb-3"><b>Příklad ($0\lt a\lt1$):</b> $\log_{0{,}5} x\lt-1 \Rightarrow x\gt0{,}5^{-1}=2$, tedy $x\in(2;\infty)$.</p>
+<div class="warn-box mb-3">
+    <p>Směr nerovnosti se obrací jen tehdy, je-li základ logaritmu menší než $1$ (a zároveň kladný) — snadno se na to zapomíná.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Nerovnice s logaritmy na obou stranách</h2>
+<p class="mb-3">Nerovnici $\log_a f(x)\gtrless\log_a g(x)$ řešíme porovnáním argumentů (se zachováním nebo obrácením směru podle $a$), navíc musíme zohlednit definiční obor obou výrazů.</p>
+<p class="mb-3"><b>Příklad ($a=2\gt1$):</b> $\log_2(x-1)\leq\log_2(5-x)$. Definiční obor: $x\gt1$ a $x\lt5$. Nerovnost argumentů: $x\leq3$. Průnik: $x\in(1;3\rangle$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Typ úlohy</th>
+            <th class="text-left py-1">Postup</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\log_a x=v$</td><td class="py-1">rovnou $x=a^v$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\log_a f(x)=\log_a g(x)$</td><td class="py-1">$f(x)=g(x)$, nutná zkouška definičního oboru</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\log_a^2 x$ a $\log_a x$ zároveň</td><td class="py-1">substituce $t=\log_a x$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">neznámá v exponentu</td><td class="py-1">zlogaritmování obou stran</td></tr>
+        <tr><td class="py-1 pr-2">$\log_a x\gtrless v$</td><td class="py-1">pro $a\gt1$ směr zachován, pro $0\lt a\lt1$ obrácen</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Logarithmes — Équations et inéquations</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Équations logarithmiques de base</h2>
+<p class="mb-3">On résout l'équation $\log_a x=v$ (où $a\gt0$, $a\neq1$) directement à partir de la définition du logarithme : $x=a^v$. Comme $a^v$ est toujours positif, il n'est pas nécessaire de vérifier séparément le domaine de définition pour ce type d'équation.</p>
+<p class="mb-3"><b>Exemple :</b> $\log_3 x=4 \Rightarrow x=3^4=81$. Avec un $v$ négatif : $\log_2 x=-3 \Rightarrow x=2^{-3}=\dfrac18$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Équations avec la même base de logarithme</h2>
+<p class="mb-3">On résout l'équation $\log_a f(x)=\log_a g(x)$ en comparant les arguments : $f(x)=g(x)$. La solution doit donner une valeur positive aux deux arguments.</p>
+<p class="mb-3"><b>Exemple :</b> $\log_5(x+3)=\log_5(2x-1) \Rightarrow x+3=2x-1 \Rightarrow x=4$ (vérification : $x+3=7\gt0$ ✓).</p>
+<div class="warn-box mb-3">
+    <p>Une manipulation algébrique ne garantit pas que la solution respecte le domaine de définition. Par exemple, $\log_2(x-5)=\log_2(3-x)$ donne algébriquement $x=4$, mais $x-5=-1\lt0$ — cette équation n'a pas de solution. La vérification par substitution est donc nécessaire pour ce type d'équation.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Substitution</h2>
+<p class="mb-3">Si une équation contient à la fois $\log_a^2 x$ et $\log_a x$, on introduit la substitution $t=\log_a x$ et on résout comme une équation quadratique en $t$.</p>
+<p class="mb-3"><b>Exemple :</b> $\log_2^2 x-3\log_2 x+2=0$. Substitution $t=\log_2 x$ : $t^2-3t+2=0 \Rightarrow t_1=1,\;t_2=2$. Retour : $x_1=2$, $x_2=4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Passage au logarithme</h2>
+<p class="mb-3">Si l'équation a l'inconnue dans l'exposant et que les bases ne peuvent pas être facilement unifiées, on prend le logarithme des deux côtés avec la même base : $\log(a^x)=x\cdot\log a$.</p>
+<p class="mb-3"><b>Exemple :</b> $5^x=12 \Rightarrow x\cdot\log5=\log12 \Rightarrow x=\log_5 12\approx1{,}544$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Équations exponentielles issues de la pratique</h2>
+<p class="mb-3">Le logarithme est utile quand on cherche le nombre d'« étapes » (années, périodes) nécessaires pour qu'une grandeur en croissance exponentielle atteigne une certaine valeur.</p>
+<p class="mb-3"><b>Exemple :</b> Un dépôt de $10\,000$ Kč est rémunéré à $3\,\%$ par an. En combien d'années atteindra-t-il $15\,000$ Kč ? $1{,}03^t=1{,}5 \Rightarrow t=\log_{1{,}03}1{,}5\approx13{,}7$ ans.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Inéquations logarithmiques — forme de base</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Pour $a\gt1$ (fonction croissante) : $\log_a x\gt v \Leftrightarrow x\gt a^v$ (le sens est conservé)</li>
+        <li>Pour $0\lt a\lt1$ (fonction décroissante) : $\log_a x\lt v \Leftrightarrow x\gt a^v$ (le sens s'inverse)</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple ($a\gt1$) :</b> $\log_2 x\gt3 \Rightarrow x\gt2^3=8$, avec la condition $x\gt0$ : $x\in(8;\infty)$.</p>
+<p class="mb-3"><b>Exemple ($0\lt a\lt1$) :</b> $\log_{0{,}5} x\lt-1 \Rightarrow x\gt0{,}5^{-1}=2$, donc $x\in(2;\infty)$.</p>
+<div class="warn-box mb-3">
+    <p>Le sens de l'inégalité s'inverse uniquement lorsque la base du logarithme est inférieure à $1$ (et positive) — il est facile d'oublier ce détail.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Inéquations avec des logarithmes des deux côtés</h2>
+<p class="mb-3">On résout l'inéquation $\log_a f(x)\gtrless\log_a g(x)$ en comparant les arguments (en conservant ou en inversant le sens selon $a$), en tenant compte en plus du domaine de définition des deux expressions.</p>
+<p class="mb-3"><b>Exemple ($a=2\gt1$) :</b> $\log_2(x-1)\leq\log_2(5-x)$. Domaine de définition : $x\gt1$ et $x\lt5$. Inégalité des arguments : $x\leq3$. Intersection : $x\in(1;3\rangle$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Type de problème</th>
+            <th class="text-left py-1">Démarche</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\log_a x=v$</td><td class="py-1">directement $x=a^v$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\log_a f(x)=\log_a g(x)$</td><td class="py-1">$f(x)=g(x)$, vérification du domaine nécessaire</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\log_a^2 x$ et $\log_a x$ à la fois</td><td class="py-1">substitution $t=\log_a x$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">inconnue dans l'exposant</td><td class="py-1">passage au logarithme des deux côtés</td></tr>
+        <tr><td class="py-1 pr-2">$\log_a x\gtrless v$</td><td class="py-1">pour $a\gt1$ sens conservé, pour $0\lt a\lt1$ inversé</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Logarithmes — Équations et inéquations · Manuel' : 'Logaritmy — Rovnice a nerovnice · Příručka';
+    document.title = czVisible ? 'Logarithmes — Équations et inéquations — Manuel' : 'Logaritmy — Rovnice a nerovnice — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

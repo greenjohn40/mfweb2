@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Logaritmy — Rovnice a nerovnice / Logarithmes — Équations et inéquations</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-logaritmy.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Logaritmy</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Logarithmes — Équations et inéquations
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+                "q": "Co je řešením rovnice $\\log_a x=v$?",
+                "a": "$x=a^v$"
+        },
+        {
+                "q": "Proč u rovnice $\\log_a x=v$ nemusíme zvlášť ověřovat definiční obor?",
+                "a": "protože $a^v$ je vždy kladné číslo"
+        },
+        {
+                "q": "Vyřeš rovnici $\\log_3 x=4$.",
+                "a": "$x=3^4=81$"
+        },
+        {
+                "q": "Vyřeš rovnici $\\log_2 x=-3$.",
+                "a": "$x=2^{-3}=\\frac18$"
+        },
+        {
+                "q": "Jaká podmínka platí pro základ $a$ logaritmu?",
+                "a": "$a\\gt0$ a zároveň $a\\neq1$"
+        },
+        {
+                "q": "Jaký je definiční obor výrazu $\\log_a x$?",
+                "a": "$x\\gt0$"
+        },
+        {
+                "q": "Jak řešíme rovnici $\\log_a f(x)=\\log_a g(x)$ se stejným základem?",
+                "a": "porovnáním argumentů: $f(x)=g(x)$"
+        },
+        {
+                "q": "Vyřeš rovnici $\\log_5(x+3)=\\log_5(2x-1)$.",
+                "a": "$x=4$"
+        },
+        {
+                "q": "Proč je u rovnice $\\log_a f(x)=\\log_a g(x)$ nutná zkouška dosazením?",
+                "a": "algebraická úprava nezaručuje kladnost obou argumentů"
+        },
+        {
+                "q": "Rovnice $\\log_2(x-5)=\\log_2(3-x)$ dá algebraicky $x=4$. Je to platné řešení?",
+                "a": "ne, protože $x-5=-1\\lt0$"
+        },
+        {
+                "q": "Kolik argumentů stačí u konzistentní rovnice $\\log_a f(x)=\\log_a g(x)$ ověřit?",
+                "a": "stačí jeden — jsou-li si argumenty rovny, mají stejné znaménko"
+        },
+        {
+                "q": "Co znamená, že definiční obor rovnice $\\log_2(x-5)=\\log_2(3-x)$ je prázdný?",
+                "a": "podmínky $x\\gt5$ a $x\\lt3$ se vzájemně vylučují"
+        },
+        {
+                "q": "K čemu se používá substituce $t=\\log_a x$?",
+                "a": "k řešení rovnic obsahujících zároveň $\\log_a^2 x$ i $\\log_a x$"
+        },
+        {
+                "q": "Vyřeš substitucí rovnici $\\log_2^2 x-3\\log_2 x+2=0$.",
+                "a": "$x_1=2,\\ x_2=4$"
+        },
+        {
+                "q": "Jakou substituci zvolíme u rovnice s $\\log_a^2 x$?",
+                "a": "$t=\\log_a x$"
+        },
+        {
+                "q": "Proč u rovnice řešené substitucí $t=\\log_a x$ nemusíme dělat zkoušku definičního oboru?",
+                "a": "protože $x=a^t$ je vždy kladné"
+        },
+        {
+                "q": "Na jaký typ rovnice převede substituce $t=\\log_a x$ rovnici s $\\log_a^2 x$?",
+                "a": "na kvadratickou rovnici v proměnné $t$"
+        },
+        {
+                "q": "Jak řešíme rovnici s neznámou v exponentu, když nelze snadno sjednotit základy?",
+                "a": "zlogaritmováním obou stran rovnice stejným základem"
+        },
+        {
+                "q": "Jaký vzorec použijeme při logaritmování mocniny?",
+                "a": "$\\log(a^x)=x\\cdot\\log a$"
+        },
+        {
+                "q": "Vyřeš rovnici $5^x=12$ pomocí logaritmu.",
+                "a": "$x=\\log_5 12\\approx1{,}544$"
+        },
+        {
+                "q": "Proč výsledek typu $\\log_5 12$ obvykle není celé číslo?",
+                "a": "exponenciální rovnice s libovolně zvolenými čísly obvykle nemá celočíselné řešení"
+        },
+        {
+                "q": "Jaký je přesný (nezaokrouhlený) tvar řešení rovnice $5^x=12$?",
+                "a": "$x=\\log_5 12$"
+        },
+        {
+                "q": "K čemu se logaritmus hodí u exponenciálního růstu?",
+                "a": "k nalezení počtu kroků (let, období), za který veličina dosáhne určité hodnoty"
+        },
+        {
+                "q": "Vklad $10\\,000$ Kč se úročí $3\\,\\%$ ročně. Za kolik let vzroste na $15\\,000$ Kč?",
+                "a": "přibližně $13{,}7$ (tedy zaokrouhleně $14$) let"
+        },
+        {
+                "q": "Jaká rovnice popisuje úročení vkladu $P$ na částku $C$ po $t$ letech se sazbou $r$?",
+                "a": "$P\\cdot(1+r)^t=C$"
+        },
+        {
+                "q": "Jak z rovnice $1{,}03^t=1{,}5$ vyjádříme neznámou $t$?",
+                "a": "$t=\\log_{1{,}03}1{,}5$"
+        },
+        {
+                "q": "Proč u úročení zaokrouhlujeme výsledný počet let nahoru?",
+                "a": "protože úrok se připisuje jednou ročně, ne průběžně"
+        },
+        {
+                "q": "Kdy se při řešení nerovnice $\\log_a x\\gtrless v$ směr nerovnosti zachovává?",
+                "a": "pro $a\\gt1$"
+        },
+        {
+                "q": "Kdy se při řešení nerovnice $\\log_a x\\gtrless v$ směr nerovnosti obrací?",
+                "a": "pro $0\\lt a\\lt1$"
+        },
+        {
+                "q": "Vyřeš nerovnici $\\log_2 x\\gt3$.",
+                "a": "$x\\gt8$, tedy $x\\in(8;\\infty)$"
+        },
+        {
+                "q": "Vyřeš nerovnici $\\log_{0{,}5} x\\lt-1$.",
+                "a": "$x\\gt2$, tedy $x\\in(2;\\infty)$"
+        },
+        {
+                "q": "Proč je logaritmická funkce pro $a\\gt1$ rostoucí?",
+                "a": "protože s rostoucím argumentem roste i hodnota logaritmu"
+        },
+        {
+                "q": "Proč je logaritmická funkce pro $0\\lt a\\lt1$ klesající?",
+                "a": "protože s rostoucím argumentem hodnota logaritmu klesá"
+        },
+        {
+                "q": "Jaká je hraniční hodnota řešení nerovnice $\\log_a x\\gtrless v$?",
+                "a": "$x_0=a^v$"
+        },
+        {
+                "q": "Jak řešíme nerovnici $\\log_a f(x)\\gtrless\\log_a g(x)$?",
+                "a": "porovnáním argumentů (se zachováním nebo obrácením směru podle $a$) a zohledněním definičního oboru obou výrazů"
+        },
+        {
+                "q": "Jaký je definiční obor nerovnice $\\log_2(x-1)\\leq\\log_2(5-x)$?",
+                "a": "$x\\in(1;5)$"
+        },
+        {
+                "q": "Vyřeš nerovnost argumentů $x-1\\leq5-x$.",
+                "a": "$x\\leq3$"
+        },
+        {
+                "q": "Jaké je celkové řešení nerovnice $\\log_2(x-1)\\leq\\log_2(5-x)$?",
+                "a": "$x\\in(1;3\\rangle$"
+        },
+        {
+                "q": "Proč musíme u nerovnice $\\log_a f(x)\\gtrless\\log_a g(x)$ zohlednit definiční obor obou výrazů?",
+                "a": "aby výsledné řešení vyhovovalo oběma logaritmům současně"
+        },
+        {
+                "q": "Jaká funkce je inverzní k exponenciální funkci?",
+                "a": "logaritmická funkce"
+        },
+        {
+                "q": "Jaké dvě podmínky musí splňovat základ logaritmu $a$?",
+                "a": "musí být kladný a různý od $1$"
+        },
+        {
+                "q": "Proč základ logaritmu nemůže být roven $1$?",
+                "a": "protože $1^v=1$ pro každé $v$, funkce by nebyla prostá"
+        },
+        {
+                "q": "Čemu se rovná $\\log_a(a^x)$?",
+                "a": "$\\log_a(a^x)=x$"
+        },
+        {
+                "q": "Čemu se rovná $a^{\\log_a x}$?",
+                "a": "$a^{\\log_a x}=x$"
+        },
+        {
+                "q": "Jaký je definiční obor logaritmické funkce $y=\\log_a x$?",
+                "a": "$x\\gt0$, tedy $(0;\\infty)$"
+        },
+        {
+                "q": "Jaký je obor hodnot logaritmické funkce $y=\\log_a x$?",
+                "a": "všechna reálná čísla, $\\mathbb{R}$"
+        },
+        {
+                "q": "Kterým bodem vždy prochází graf funkce $y=\\log_a x$?",
+                "a": "bodem $[1;0]$"
+        },
+        {
+                "q": "Co se děje s $\\log_a x$, když se $x$ blíží k $0$ zprava (pro $a\\gt1$)?",
+                "a": "hodnota jde k $-\\infty$"
+        },
+        {
+                "q": "Jak spolu souvisí zápisy $\\log_a x=v$ a $a^v=x$?",
+                "a": "jsou to dva ekvivalentní zápisy téhož vztahu"
+        },
+        {
+                "q": "Co je nutné vždy udělat po vyřešení logaritmické rovnice se složitějším argumentem?",
+                "a": "zkoušku dosazením do definičního oboru původních logaritmů"
+        }
+],
+    "fr": [
+        {
+                "q": "Quelle est la solution de l'équation $\\log_a x=v$ ?",
+                "a": "$x=a^v$"
+        },
+        {
+                "q": "Pourquoi n'est-il pas nécessaire de vérifier séparément le domaine de définition pour $\\log_a x=v$ ?",
+                "a": "parce que $a^v$ est toujours un nombre positif"
+        },
+        {
+                "q": "Résous l'équation $\\log_3 x=4$.",
+                "a": "$x=3^4=81$"
+        },
+        {
+                "q": "Résous l'équation $\\log_2 x=-3$.",
+                "a": "$x=2^{-3}=\\frac18$"
+        },
+        {
+                "q": "Quelle condition doit vérifier la base $a$ du logarithme ?",
+                "a": "$a\\gt0$ et $a\\neq1$"
+        },
+        {
+                "q": "Quel est le domaine de définition de l'expression $\\log_a x$ ?",
+                "a": "$x\\gt0$"
+        },
+        {
+                "q": "Comment résout-on l'équation $\\log_a f(x)=\\log_a g(x)$ de même base ?",
+                "a": "en comparant les arguments : $f(x)=g(x)$"
+        },
+        {
+                "q": "Résous l'équation $\\log_5(x+3)=\\log_5(2x-1)$.",
+                "a": "$x=4$"
+        },
+        {
+                "q": "Pourquoi la vérification par substitution est-elle nécessaire pour $\\log_a f(x)=\\log_a g(x)$ ?",
+                "a": "la manipulation algébrique ne garantit pas que les deux arguments soient positifs"
+        },
+        {
+                "q": "L'équation $\\log_2(x-5)=\\log_2(3-x)$ donne algébriquement $x=4$. Est-ce une solution valide ?",
+                "a": "non, car $x-5=-1\\lt0$"
+        },
+        {
+                "q": "Combien d'arguments suffit-il de vérifier pour une équation cohérente $\\log_a f(x)=\\log_a g(x)$ ?",
+                "a": "un seul — s'ils sont égaux, ils ont le même signe"
+        },
+        {
+                "q": "Que signifie un domaine de définition vide pour l'équation $\\log_2(x-5)=\\log_2(3-x)$ ?",
+                "a": "les conditions $x\\gt5$ et $x\\lt3$ s'excluent mutuellement"
+        },
+        {
+                "q": "À quoi sert la substitution $t=\\log_a x$ ?",
+                "a": "à résoudre les équations contenant à la fois $\\log_a^2 x$ et $\\log_a x$"
+        },
+        {
+                "q": "Résous par substitution l'équation $\\log_2^2 x-3\\log_2 x+2=0$.",
+                "a": "$x_1=2,\\ x_2=4$"
+        },
+        {
+                "q": "Quelle substitution choisit-on pour une équation avec $\\log_a^2 x$ ?",
+                "a": "$t=\\log_a x$"
+        },
+        {
+                "q": "Pourquoi n'est-il pas nécessaire de vérifier le domaine de définition pour une équation résolue par $t=\\log_a x$ ?",
+                "a": "parce que $x=a^t$ est toujours positif"
+        },
+        {
+                "q": "En quel type d'équation la substitution $t=\\log_a x$ transforme-t-elle une équation avec $\\log_a^2 x$ ?",
+                "a": "en une équation quadratique en $t$"
+        },
+        {
+                "q": "Comment résout-on une équation avec l'inconnue dans l'exposant, si les bases ne peuvent pas être unifiées ?",
+                "a": "en prenant le logarithme des deux côtés de l'équation avec la même base"
+        },
+        {
+                "q": "Quelle formule utilise-t-on pour prendre le logarithme d'une puissance ?",
+                "a": "$\\log(a^x)=x\\cdot\\log a$"
+        },
+        {
+                "q": "Résous l'équation $5^x=12$ à l'aide du logarithme.",
+                "a": "$x=\\log_5 12\\approx1{,}544$"
+        },
+        {
+                "q": "Pourquoi un résultat comme $\\log_5 12$ n'est-il généralement pas un nombre entier ?",
+                "a": "une équation exponentielle avec des nombres choisis librement n'a généralement pas de solution entière"
+        },
+        {
+                "q": "Quelle est la forme exacte (non arrondie) de la solution de $5^x=12$ ?",
+                "a": "$x=\\log_5 12$"
+        },
+        {
+                "q": "À quoi sert le logarithme pour une croissance exponentielle ?",
+                "a": "à trouver le nombre d'étapes (années, périodes) nécessaires pour atteindre une certaine valeur"
+        },
+        {
+                "q": "Un dépôt de $10\\,000$ Kč est rémunéré à $3\\,\\%$ par an. En combien d'années atteindra-t-il $15\\,000$ Kč ?",
+                "a": "environ $13{,}7$ (soit $14$) ans"
+        },
+        {
+                "q": "Quelle équation décrit la croissance d'un dépôt $P$ vers un montant $C$ après $t$ années au taux $r$ ?",
+                "a": "$P\\cdot(1+r)^t=C$"
+        },
+        {
+                "q": "Comment exprime-t-on $t$ à partir de l'équation $1{,}03^t=1{,}5$ ?",
+                "a": "$t=\\log_{1{,}03}1{,}5$"
+        },
+        {
+                "q": "Pourquoi arrondit-on le nombre d'années à l'entier supérieur dans les problèmes d'intérêts ?",
+                "a": "parce que les intérêts sont versés une fois par an, pas en continu"
+        },
+        {
+                "q": "Quand le sens de l'inégalité $\\log_a x\\gtrless v$ est-il conservé ?",
+                "a": "pour $a\\gt1$"
+        },
+        {
+                "q": "Quand le sens de l'inégalité $\\log_a x\\gtrless v$ s'inverse-t-il ?",
+                "a": "pour $0\\lt a\\lt1$"
+        },
+        {
+                "q": "Résous l'inéquation $\\log_2 x\\gt3$.",
+                "a": "$x\\gt8$, donc $x\\in(8;\\infty)$"
+        },
+        {
+                "q": "Résous l'inéquation $\\log_{0{,}5} x\\lt-1$.",
+                "a": "$x\\gt2$, donc $x\\in(2;\\infty)$"
+        },
+        {
+                "q": "Pourquoi la fonction logarithmique est-elle croissante pour $a\\gt1$ ?",
+                "a": "parce que la valeur du logarithme augmente avec l'argument"
+        },
+        {
+                "q": "Pourquoi la fonction logarithmique est-elle décroissante pour $0\\lt a\\lt1$ ?",
+                "a": "parce que la valeur du logarithme diminue quand l'argument augmente"
+        },
+        {
+                "q": "Quelle est la valeur limite de la solution de l'inéquation $\\log_a x\\gtrless v$ ?",
+                "a": "$x_0=a^v$"
+        },
+        {
+                "q": "Comment résout-on l'inéquation $\\log_a f(x)\\gtrless\\log_a g(x)$ ?",
+                "a": "en comparant les arguments (en conservant ou inversant le sens selon $a$) et en tenant compte du domaine de définition des deux expressions"
+        },
+        {
+                "q": "Quel est le domaine de définition de l'inéquation $\\log_2(x-1)\\leq\\log_2(5-x)$ ?",
+                "a": "$x\\in(1;5)$"
+        },
+        {
+                "q": "Résous l'inégalité des arguments $x-1\\leq5-x$.",
+                "a": "$x\\leq3$"
+        },
+        {
+                "q": "Quelle est la solution complète de l'inéquation $\\log_2(x-1)\\leq\\log_2(5-x)$ ?",
+                "a": "$x\\in(1;3\\rangle$"
+        },
+        {
+                "q": "Pourquoi faut-il tenir compte du domaine de définition des deux expressions pour $\\log_a f(x)\\gtrless\\log_a g(x)$ ?",
+                "a": "pour que la solution obtenue respecte les deux logarithmes à la fois"
+        },
+        {
+                "q": "Quelle fonction est réciproque de la fonction exponentielle ?",
+                "a": "la fonction logarithmique"
+        },
+        {
+                "q": "Quelles deux conditions doit vérifier la base $a$ d'un logarithme ?",
+                "a": "elle doit être positive et différente de $1$"
+        },
+        {
+                "q": "Pourquoi la base d'un logarithme ne peut-elle pas être égale à $1$ ?",
+                "a": "parce que $1^v=1$ pour tout $v$, la fonction ne serait pas injective"
+        },
+        {
+                "q": "À quoi est égal $\\log_a(a^x)$ ?",
+                "a": "$\\log_a(a^x)=x$"
+        },
+        {
+                "q": "À quoi est égal $a^{\\log_a x}$ ?",
+                "a": "$a^{\\log_a x}=x$"
+        },
+        {
+                "q": "Quel est le domaine de définition de la fonction logarithmique $y=\\log_a x$ ?",
+                "a": "$x\\gt0$, soit $(0;\\infty)$"
+        },
+        {
+                "q": "Quel est l'ensemble image de la fonction logarithmique $y=\\log_a x$ ?",
+                "a": "tous les nombres réels, $\\mathbb{R}$"
+        },
+        {
+                "q": "Par quel point le graphe de $y=\\log_a x$ passe-t-il toujours ?",
+                "a": "le point $[1;0]$"
+        },
+        {
+                "q": "Que se passe-t-il pour $\\log_a x$ quand $x$ tend vers $0$ par la droite (pour $a\\gt1$) ?",
+                "a": "la valeur tend vers $-\\infty$"
+        },
+        {
+                "q": "Comment sont liées les écritures $\\log_a x=v$ et $a^v=x$ ?",
+                "a": "ce sont deux écritures équivalentes de la même relation"
+        },
+        {
+                "q": "Que faut-il toujours faire après avoir résolu une équation logarithmique à l'argument complexe ?",
+                "a": "vérifier par substitution dans le domaine de définition des logarithmes d'origine"
+        }
+]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>
