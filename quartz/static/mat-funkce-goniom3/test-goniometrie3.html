@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Goniometrie 3 — Tangens a kotangens (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-goniometrie3.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Goniometrie 3</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (tangens a kotangens, redukční vzorce, periodicita, sklon).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    {
+        "id": "t1",
+        "type": "concept",
+        "cs": {
+            "q": "Jak je definována funkce tangens pomocí sinu a kosinu?",
+            "a": "$\\operatorname{tg}x=\\frac{\\sin x}{\\cos x}$",
+            "o": [
+                "$\\operatorname{tg}x=\\frac{\\sin x}{\\cos x}$",
+                "$\\operatorname{tg}x=\\frac{\\cos x}{\\sin x}$",
+                "$\\operatorname{tg}x=\\sin x\\cdot\\cos x$",
+                "$\\operatorname{tg}x=\\sin x+\\cos x$"
+            ],
+            "h": "Nezaměň s definicí kotangens.",
+            "e": "Tangens je definován jako podíl sinu a kosinu: $\\operatorname{tg}x=\\frac{\\sin x}{\\cos x}$."
+        },
+        "fr": {
+            "q": "Comment la fonction tangente est-elle définie à l'aide du sinus et du cosinus ?",
+            "a": "$\\operatorname{tg}x=\\frac{\\sin x}{\\cos x}$",
+            "o": [
+                "$\\operatorname{tg}x=\\frac{\\sin x}{\\cos x}$",
+                "$\\operatorname{tg}x=\\frac{\\cos x}{\\sin x}$",
+                "$\\operatorname{tg}x=\\sin x\\cdot\\cos x$",
+                "$\\operatorname{tg}x=\\sin x+\\cos x$"
+            ],
+            "h": "Ne confonds pas avec la définition de la cotangente.",
+            "e": "La tangente est définie comme le quotient du sinus et du cosinus : $\\operatorname{tg}x=\\frac{\\sin x}{\\cos x}$."
+        }
+    },
+    {
+        "id": "t2",
+        "type": "concept",
+        "cs": {
+            "q": "Pro jaké hodnoty $x$ není funkce tangens definována?",
+            "a": "$x=(2k+1)\\cdot\\frac{\\pi}{2}$",
+            "o": [
+                "$x=(2k+1)\\cdot\\frac{\\pi}{2}$",
+                "$x=k\\pi$",
+                "$x=2k\\pi$",
+                "tangens je definován pro všechna $x$"
+            ],
+            "h": "Kde je jmenovatel zlomku $\\frac{\\sin x}{\\cos x}$ nulový?",
+            "e": "Tangens není definován tam, kde $\\cos x=0$, tedy pro liché násobky $\\frac{\\pi}{2}$."
+        },
+        "fr": {
+            "q": "Pour quelles valeurs de $x$ la fonction tangente n'est-elle pas définie ?",
+            "a": "$x=(2k+1)\\cdot\\frac{\\pi}{2}$",
+            "o": [
+                "$x=(2k+1)\\cdot\\frac{\\pi}{2}$",
+                "$x=k\\pi$",
+                "$x=2k\\pi$",
+                "la tangente est définie pour tout $x$"
+            ],
+            "h": "Où le dénominateur de la fraction $\\frac{\\sin x}{\\cos x}$ est-il nul ?",
+            "e": "La tangente n'est pas définie là où $\\cos x=0$, c'est-à-dire pour les multiples impairs de $\\frac{\\pi}{2}$."
+        }
+    },
+    {
+        "id": "t3",
+        "type": "concept",
+        "cs": {
+            "q": "Ve kterých kvadrantech je funkce tangens kladná?",
+            "a": "v I. a III. kvadrantu",
+            "o": [
+                "v I. a III. kvadrantu",
+                "v II. a IV. kvadrantu",
+                "pouze v I. kvadrantu",
+                "ve všech čtyřech kvadrantech"
+            ],
+            "h": "Tangens je podíl sinu a kosinu — kdy mají oba stejné znaménko?",
+            "e": "Tangens je kladný tam, kde mají sinus a kosinus stejné znaménko — v I. a III. kvadrantu."
+        },
+        "fr": {
+            "q": "Dans quels quadrants la fonction tangente est-elle positive ?",
+            "a": "dans les I. et III. quadrants",
+            "o": [
+                "dans les I. et III. quadrants",
+                "dans les II. et IV. quadrants",
+                "seulement dans le I. quadrant",
+                "dans les quatre quadrants"
+            ],
+            "h": "La tangente est le quotient du sinus et du cosinus — quand ont-ils le même signe ?",
+            "e": "La tangente est positive là où le sinus et le cosinus ont le même signe — dans les I. et III. quadrants."
+        }
+    },
+    {
+        "id": "t4",
+        "type": "concept",
+        "cs": {
+            "q": "Jak vyjádříme $\\operatorname{tg}\\alpha$ pro úhel $\\alpha=\\pi+\\alpha_1$ z III. kvadrantu?",
+            "a": "$\\operatorname{tg}\\alpha=\\operatorname{tg}\\alpha_1$",
+            "o": [
+                "$\\operatorname{tg}\\alpha=\\operatorname{tg}\\alpha_1$",
+                "$\\operatorname{tg}\\alpha=-\\operatorname{tg}\\alpha_1$",
+                "$\\operatorname{tg}\\alpha=\\operatorname{cotg}\\alpha_1$",
+                "$\\operatorname{tg}\\alpha=-\\operatorname{cotg}\\alpha_1$"
+            ],
+            "h": "Ve III. kvadrantu je tangens kladný, stejně jako referenční úhel.",
+            "e": "Pro úhel z III. kvadrantu platí $\\operatorname{tg}\\alpha=\\operatorname{tg}\\alpha_1$, protože tangens je kladný v I. i III. kvadrantu."
+        },
+        "fr": {
+            "q": "Comment exprime-t-on $\\operatorname{tg}\\alpha$ pour un angle $\\alpha=\\pi+\\alpha_1$ du III. quadrant ?",
+            "a": "$\\operatorname{tg}\\alpha=\\operatorname{tg}\\alpha_1$",
+            "o": [
+                "$\\operatorname{tg}\\alpha=\\operatorname{tg}\\alpha_1$",
+                "$\\operatorname{tg}\\alpha=-\\operatorname{tg}\\alpha_1$",
+                "$\\operatorname{tg}\\alpha=\\operatorname{cotg}\\alpha_1$",
+                "$\\operatorname{tg}\\alpha=-\\operatorname{cotg}\\alpha_1$"
+            ],
+            "h": "Dans le III. quadrant, la tangente est positive, tout comme l'angle de référence.",
+            "e": "Pour un angle du III. quadrant, on a $\\operatorname{tg}\\alpha=\\operatorname{tg}\\alpha_1$, car la tangente est positive dans les I. et III. quadrants."
+        }
+    },
+    {
+        "id": "t5",
+        "type": "concept",
+        "cs": {
+            "q": "Jakou periodu mají funkce tangens a kotangens?",
+            "a": "$\\pi$",
+            "o": [
+                "$\\pi$",
+                "$2\\pi$",
+                "$\\frac{\\pi}{2}$",
+                "$4\\pi$"
+            ],
+            "h": "Perioda tangens a kotangens je poloviční oproti sinu a kosinu.",
+            "e": "Tangens i kotangens jsou periodické s periodou $\\pi$ — poloviční oproti sinu a kosinu."
+        },
+        "fr": {
+            "q": "Quelle est la période des fonctions tangente et cotangente ?",
+            "a": "$\\pi$",
+            "o": [
+                "$\\pi$",
+                "$2\\pi$",
+                "$\\frac{\\pi}{2}$",
+                "$4\\pi$"
+            ],
+            "h": "La période de la tangente et de la cotangente est deux fois plus petite que celle du sinus et du cosinus.",
+            "e": "La tangente et la cotangente sont périodiques de période $\\pi$ — deux fois plus petite que le sinus et le cosinus."
+        }
+    },
+    {
+        "id": "t6",
+        "type": "concept",
+        "cs": {
+            "q": "Jaký je obor hodnot funkcí tangens a kotangens?",
+            "a": "$\\mathbb{R}$",
+            "o": [
+                "$\\mathbb{R}$",
+                "$\\langle-1;1\\rangle$",
+                "$\\langle0;\\infty)$",
+                "$\\mathbb{R}-\\{0\\}$"
+            ],
+            "h": "Na rozdíl od sinu a kosinu není obor hodnot omezený.",
+            "e": "Obor hodnot funkcí tangens i kotangens je celé $\\mathbb{R}$ — na rozdíl od sinu a kosinu, jejichž obor hodnot je $\\langle-1;1\\rangle$."
+        },
+        "fr": {
+            "q": "Quelle est l'image des fonctions tangente et cotangente ?",
+            "a": "$\\mathbb{R}$",
+            "o": [
+                "$\\mathbb{R}$",
+                "$\\langle-1;1\\rangle$",
+                "$\\langle0;\\infty)$",
+                "$\\mathbb{R}-\\{0\\}$"
+            ],
+            "h": "Contrairement au sinus et au cosinus, l'image n'est pas bornée.",
+            "e": "L'image des fonctions tangente et cotangente est tout $\\mathbb{R}$ — contrairement au sinus et au cosinus, dont l'image est $\\langle-1;1\\rangle$."
+        }
+    },
+    {
+        "id": "t7",
+        "type": "concept",
+        "cs": {
+            "q": "Co znamená svislá asymptota v grafu funkce tangens?",
+            "a": "přímku, ke které se graf blíží v bodě, kde funkce není definovaná",
+            "o": [
+                "přímku, ke které se graf blíží v bodě, kde funkce není definovaná",
+                "bod, ve kterém graf protíná osu $x$",
+                "maximum funkce",
+                "periodu funkce"
+            ],
+            "h": "Asymptoty souvisí s definičním oborem funkce.",
+            "e": "Svislá asymptota je přímka, ke které se graf funkce přibližuje v bodě, kde funkce není definovaná (u tangens tedy v bodech $(2k+1)\\frac{\\pi}{2}$)."
+        },
+        "fr": {
+            "q": "Que signifie une asymptote verticale dans la courbe de la tangente ?",
+            "a": "une droite dont la courbe se rapproche au point où la fonction n'est pas définie",
+            "o": [
+                "une droite dont la courbe se rapproche au point où la fonction n'est pas définie",
+                "un point où la courbe coupe l'axe $x$",
+                "le maximum de la fonction",
+                "la période de la fonction"
+            ],
+            "h": "Les asymptotes sont liées au domaine de définition de la fonction.",
+            "e": "Une asymptote verticale est une droite dont la courbe se rapproche au point où la fonction n'est pas définie (pour la tangente, aux points $(2k+1)\\frac{\\pi}{2}$)."
+        }
+    },
+    {
+        "id": "t8",
+        "type": "concept",
+        "cs": {
+            "q": "Jak koeficienty $m,n$ v $y=\\operatorname{tg}(x-m)+n$ ovlivňují asymptoty grafu?",
+            "a": "asymptoty se posouvají o $m$ jednotek ve směru osy $x$, koeficient $n$ je neovlivňuje",
+            "o": [
+                "asymptoty se posouvají o $m$ jednotek ve směru osy $x$, koeficient $n$ je neovlivňuje",
+                "asymptoty se posouvají o $n$ jednotek ve směru osy $y$",
+                "asymptoty zůstávají vždy stejné",
+                "asymptoty úplně zmizí"
+            ],
+            "h": "Posun ve směru osy $y$ nemění svislé polohy asymptot.",
+            "e": "Protože se jedná o svislé asymptoty, posouvají se pouze s vodorovným posunem $m$; svislý posun $n$ jejich vodorovnou polohu neovlivňuje."
+        },
+        "fr": {
+            "q": "Comment les coefficients $m,n$ dans $y=\\operatorname{tg}(x-m)+n$ influencent-ils les asymptotes de la courbe ?",
+            "a": "les asymptotes se décalent de $m$ unités selon l'axe $x$, le coefficient $n$ ne les influence pas",
+            "o": [
+                "les asymptotes se décalent de $m$ unités selon l'axe $x$, le coefficient $n$ ne les influence pas",
+                "les asymptotes se décalent de $n$ unités selon l'axe $y$",
+                "les asymptotes restent toujours les mêmes",
+                "les asymptotes disparaissent complètement"
+            ],
+            "h": "Un décalage selon l'axe $y$ ne change pas la position horizontale des asymptotes verticales.",
+            "e": "Comme il s'agit d'asymptotes verticales, elles ne se décalent qu'avec le décalage horizontal $m$ ; le décalage vertical $n$ n'influence pas leur position horizontale."
+        }
+    }
+];
+
+function quadrantOf(deg){
+    const b = ((deg % 360) + 360) % 360;
+    if (b > 0 && b < 90) return 1;
+    if (b > 90 && b < 180) return 2;
+    if (b > 180 && b < 270) return 3;
+    if (b > 270 && b < 360) return 4;
+    return 0;
+}
+function refAngleOf(deg){
+    const b = ((deg % 360) + 360) % 360;
+    const q = quadrantOf(b);
+    if (q === 1) return b;
+    if (q === 2) return 180 - b;
+    if (q === 3) return b - 180;
+    if (q === 4) return 360 - b;
+    return b;
+}
+const REF_TG = { 30: '\\frac{\\sqrt3}{3}', 45: '1', 60: '\\sqrt3' };
+const REF_COTG = { 30: '\\sqrt3', 45: '1', 60: '\\frac{\\sqrt3}{3}' };
+function signedLatex(sign, latex){
+    return sign < 0 ? ('-' + latex) : latex;
+}
+function tgCotgSign(q){
+    // tg and cotg share the same sign rule: + in I and III, - in II and IV
+    return (q === 1 || q === 3) ? 1 : -1;
+}
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Urči hodnotu $ \\operatorname{ {fnName} }{deg}° $.", h: "Nejprve urči kvadrant a referenční úhel, poté použij tabulku hodnot pro $30°,45°,60°$ a doplň znaménko (tg i cotg jsou kladné v I. a III. kvadrantu).", e: "$ {deg}° $ leží v {quadWordCs} kvadrantu, referenční úhel je $ {ref}° $: $ \\operatorname{ {fnName} }{deg}°={sign}\\operatorname{ {fnName} }{ref}°={correctPlain} $." },
+        fr: { q: "Détermine la valeur de $ \\operatorname{ {fnName} }{deg}° $.", h: "Détermine d'abord le quadrant et l'angle de référence, puis utilise le tableau des valeurs pour $30°,45°,60°$ et ajoute le signe (tg et cotg sont positives dans les I. et III. quadrants).", e: "$ {deg}° $ est dans le {quadWordFr} quadrant, l'angle de référence est $ {ref}° $ : $ \\operatorname{ {fnName} }{deg}°={sign}\\operatorname{ {fnName} }{ref}°={correctPlain} $." },
+        params: () => {
+            const degs = [135,120,150,210,240,225,330,300,315];
+            const deg = randChoice(degs);
+            const fnName = randChoice(['tg','cotg']);
+            return { deg, fnName };
+        },
+        solve: (p) => {
+            const q = quadrantOf(p.deg);
+            const ref = refAngleOf(p.deg);
+            const sign = tgCotgSign(q);
+            const table = p.fnName === 'tg' ? REF_TG : REF_COTG;
+            const baseLatex = table[ref];
+            const correct = '$' + signedLatex(sign, baseLatex) + '$';
+            const quadWordsCs = {2:'II.', 3:'III.', 4:'IV.'};
+            const quadWordsFr = {2:'deuxième', 3:'troisième', 4:'quatrième'};
+            return {
+                ref, sign: sign < 0 ? '-' : '',
+                quadWordCs: quadWordsCs[q] || 'I.', quadWordFr: quadWordsFr[q] || 'premier',
+                correctPlain: signedLatex(sign, baseLatex),
+                correct
+            };
+        },
+        wrongOptions: (p, sol) => {
+            const table = p.fnName === 'tg' ? REF_TG : REF_COTG;
+            const opts = new Set([sol.correct]);
+            const refs = [30,45,60];
+            const signs = [1,-1];
+            let guard = 0;
+            while (opts.size < 4 && guard < 100) {
+                const r = randChoice(refs);
+                const s = randChoice(signs);
+                const cand = '$' + signedLatex(s, table[r]) + '$';
+                opts.add(cand);
+                guard++;
+            }
+            return shuffleArray([...opts].slice(0,4));
+        } },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Urči přibližnou hodnotu $ \\operatorname{ {fnName} }{deg}° $ pomocí referenčního úhlu (na 3 desetinná místa).", h: "Nejprve urči kvadrant a referenční úhel, hodnotu funkce pro referenční úhel odhadni nebo použij kalkulačku, a doplň znaménko podle kvadrantu.", e: "$ {deg}° $ leží v {quadWordCs} kvadrantu, referenční úhel je $ {ref}° $: $ \\operatorname{ {fnName} }{deg}°\\approx{correct} $." },
+        fr: { q: "Détermine la valeur approchée de $ \\operatorname{ {fnName} }{deg}° $ à l'aide de l'angle de référence (à 3 décimales).", h: "Détermine d'abord le quadrant et l'angle de référence, calcule la valeur pour l'angle de référence, puis ajoute le signe selon le quadrant.", e: "$ {deg}° $ est dans le {quadWordFr} quadrant, l'angle de référence est $ {ref}° $ : $ \\operatorname{ {fnName} }{deg}°\\approx{correct} $." },
+        params: () => {
+            const degs = [160,250,290,200,340,110,170];
+            const deg = randChoice(degs);
+            const fnName = randChoice(['tg','cotg']);
+            return { deg, fnName };
+        },
+        solve: (p) => {
+            const rad = p.deg * Math.PI / 180;
+            const val = p.fnName === 'tg' ? Math.tan(rad) : 1/Math.tan(rad);
+            const res = Math.round(val*1000)/1000;
+            const q = quadrantOf(p.deg);
+            const ref = refAngleOf(p.deg);
+            const quadWordsCs = {2:'II.', 3:'III.', 4:'IV.'};
+            const quadWordsFr = {2:'deuxième', 3:'troisième', 4:'quatrième'};
+            return { res, ref, quadWordCs: quadWordsCs[q] || 'I.', quadWordFr: quadWordsFr[q] || 'premier', correct: fmt3(res) };
+        },
+        wrongOptions: (p, sol) => buildOptions3(sol.res, [], 0.3) },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Urči hodnotu ${tgOp}{deg}°$ bez použití kalkulačky (perioda tangens je $180°$).", h: "Zredukuj úhel modulo $180°$, poté použij tabulku hodnot pro referenční úhel.", e: "${deg}°\\bmod180°={basic}°$, tedy ${tgOp}{deg}°={tgOp}{basic}°={correctPlain}$." },
+        fr: { q: "Détermine la valeur de ${tgOp}{deg}°$ sans calculatrice (la période de la tangente est $180°$).", h: "Réduis l'angle modulo $180°$, puis utilise le tableau des valeurs pour l'angle de référence.", e: "${deg}°\\bmod180°={basic}°$, donc ${tgOp}{deg}°={tgOp}{basic}°={correctPlain}$." },
+        params: () => {
+            const degs = [1380,1290,1470,-1290,-1470,1200,-1020,1560,-1740,1650];
+            return { deg: randChoice(degs) };
+        },
+        solve: (p) => {
+            let basic = p.deg % 180;
+            if (basic < 0) basic += 180;
+            const ref = basic < 90 ? basic : 180 - basic;
+            const tgSign = (basic < 90) ? 1 : -1;
+            const baseLatex = REF_TG[ref];
+            const correctPlain = signedLatex(tgSign, baseLatex);
+            return { basic, tgOp: '\\operatorname{tg}', correctPlain, correct: '$' + correctPlain + '$' };
+        },
+        wrongOptions: (p, sol) => {
+            const opts = new Set([sol.correct]);
+            const refs = [30,45,60];
+            const signs = [1,-1];
+            let guard = 0;
+            while (opts.size < 4 && guard < 100) {
+                const r = randChoice(refs);
+                const s = randChoice(signs);
+                const cand = '$' + signedLatex(s, REF_TG[r]) + '$';
+                opts.add(cand);
+                guard++;
+            }
+            return shuffleArray([...opts].slice(0,4));
+        } },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Silnice má sklon $ {pct}\\,\\% $. Urči úhel sklonu (ve stupních, na 2 desetinná místa).", h: "Sklon v procentech je hodnota tangens úhlu sklonu; úhel získáš jako arkustangens podílu sklonu a $100$.", e: "${tgOp}\\alpha={pctDec}\\Rightarrow\\alpha={arctgOp}({pctDec})\\approx{correct}°$." },
+        fr: { q: "Une route a une pente de $ {pct}\\,\\% $. Détermine l'angle de la pente (en degrés, à 2 décimales).", h: "La pente en pourcentage est la valeur de la tangente de l'angle ; l'angle s'obtient par l'arctangente du rapport de la pente sur $100$.", e: "${tgOp}\\alpha={pctDec}\\Rightarrow\\alpha={arctgOp}({pctDec})\\approx{correct}°$." },
+        params: () => {
+            const pcts = [5,6,7,9,11,13,14,18,20,25];
+            return { pct: randChoice(pcts) };
+        },
+        solve: (p) => {
+            const pctDec = p.pct/100;
+            const angle = Math.atan(pctDec)*180/Math.PI;
+            const res = Math.round(angle*100)/100;
+            return { pctDec: fmt(pctDec).replace(',','.'), res, correct: fmt3(res), tgOp: '\\operatorname{tg}', arctgOp: '\\operatorname{arctg}' };
+        },
+        wrongOptions: (p, sol) => buildOptions3(sol.res, [], 2) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Úhel $\\alpha$ leží ve {quadWordCs} kvadrantu. Jaké znaménko mají ${tgOp}\\alpha$ a ${cotgOp}\\alpha$ ve srovnání s referenčním úhlem $\\alpha_1$?", h: "Rozmysli si, ve kterých kvadrantech jsou tg a cotg kladné a ve kterých záporné.", e: "{expl}" },
+        fr: { q: "L'angle $\\alpha$ est dans le {quadWordFr} quadrant. Quel est le signe de ${tgOp}\\alpha$ et ${cotgOp}\\alpha$ par rapport à l'angle de référence $\\alpha_1$ ?", h: "Réfléchis aux quadrants où tg et cotg sont positives ou négatives.", e: "{expl}" },
+        params: () => {
+            const quads = [2,3,4];
+            const q = randChoice(quads);
+            const quadWordsCs = {2:'II.', 3:'III.', 4:'IV.'};
+            const quadWordsFr = {2:'deuxième', 3:'troisième', 4:'quatrième'};
+            return { q, quadWordCs: quadWordsCs[q], quadWordFr: quadWordsFr[q], tgOp: '\\operatorname{tg}', cotgOp: '\\operatorname{cotg}' };
+        },
+        solve: (p) => {
+            const sameSign = (p.q === 3);
+            const catCs = sameSign ? CATEGORIES_CS[1] : CATEGORIES_CS[0];
+            const catFr = sameSign ? CATEGORIES_FR[1] : CATEGORIES_FR[0];
+            const explCs = `Ve ${p.quadWordCs} kvadrantu je tangens i kotangens ${sameSign ? 'kladný' : 'záporný'}, referenční úhel je vždy kladný, takže ${catCs.toLowerCase()}.`;
+            const explFr = `Dans le ${p.quadWordFr} quadrant, la tangente et la cotangente sont ${sameSign ? 'positives' : 'négatives'}, l'angle de référence est toujours positif, donc ${catFr.toLowerCase()}.`;
+            return { res: catCs, resFr: catFr, explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m5 */ },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "Platí ${tgOp}{a}°={tgOp}{b}°$?", h: "Využij periodicitu $\\operatorname{tg}x=\\operatorname{tg}(x+180°)$.", e: "{expl}" },
+        fr: { q: "A-t-on ${tgOp}{a}°={tgOp}{b}°$ ?", h: "Utilise la périodicité $\\operatorname{tg}x=\\operatorname{tg}(x+180°)$.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { a: 40, b: 220, valid: true },
+                { a: 65, b: 245, valid: true },
+                { a: 110, b: 290, valid: true },
+                { a: 40, b: 200, valid: false },
+                { a: 65, b: 200, valid: false },
+                { a: 110, b: 250, valid: false }
+            ];
+            const s = randChoice(scenarios);
+            return Object.assign({}, s, { tgOp: '\\operatorname{tg}' });
+        },
+        solve: (p) => {
+            const diff = p.b - p.a;
+            const explCs = p.valid
+                ? `Ano, protože ${p.b}°-${p.a}°=${diff}°$, což je násobek periody $180°$.`
+                : `Ne, protože ${p.b}°-${p.a}°=${diff}°$ není násobek periody $180°$.`;
+            const explFr = p.valid
+                ? `Oui, car ${p.b}°-${p.a}°=${diff}°$, ce qui est un multiple de la période $180°$.`
+                : `Non, car ${p.b}°-${p.a}°=${diff}°$ n'est pas un multiple de la période $180°$.`;
+            return { res: p.valid ? 'ano' : 'ne', resFr: p.valid ? 'oui' : 'non', explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m6 */ }
+];
+
+const CATEGORIES_CS = ['obě funkce mají opačné znaménko než $\\alpha_1$ (tj. jsou záporné)', 'obě funkce mají stejné znaménko jako $\\alpha_1$ (tj. jsou kladné)'];
+const CATEGORIES_FR = ['les deux fonctions ont un signe opposé à $\\alpha_1$ (donc négatives)', 'les deux fonctions ont le même signe que $\\alpha_1$ (donc positives)'];
+const DISTRACTOR_CS = ['pouze $\\operatorname{tg}\\alpha$ mění znaménko, $\\operatorname{cotg}\\alpha$ ne', 'znaménko závisí na tom, zda jde o stupně, nebo radiány'];
+const DISTRACTOR_FR = ['seule $\\operatorname{tg}\\alpha$ change de signe, $\\operatorname{cotg}\\alpha$ non', 'le signe dépend du fait qu\'il s\'agisse de degrés ou de radians'];
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit bez kalkulačky', 'záleží na tom, zda jde o tangens, nebo kotangens'];
+const YESNO_DISTRACTORS_FR = ['impossible à déterminer sans calculatrice', 'cela dépend du fait qu\'il s\'agisse de la tangente ou de la cotangente'];
+
+function fmt3(x){
+    if (Number.isInteger(x)) return x.toString();
+    let s = x.toFixed(3);
+    s = s.replace(/0+$/,'').replace(/\.$/,'');
+    if (s === '' || s === '-') s = '0';
+    return s.replace('.', ',');
+}
+function buildOptions3(correct, extras, spread){
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = (randInt(1,100)/100) * spread * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = Math.round((correct + delta)*1000)/1000;
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0,4).map(fmt3));
+}
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm5') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, ...distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const catsOther = lang === 'cs' ? CATEGORIES_FR : CATEGORIES_CS;
+            const distractorOther = lang === 'cs' ? DISTRACTOR_FR : DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, ...distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.optText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Tangens i kotangens ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat redukční vzorce a znaménka v jednotlivých kvadrantech."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na definici tangens a kotangens a na periodicitu s periodou π."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš definici tangens a kotangens, jejich definičnímu oboru i periodicitě.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definiční obor a periodicitu tangens a kotangens.");
+            if (mathPercent >= 70) strengths.push("Výpočty (redukční vzorce, hodnoty pro libovolný úhel) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si zejména určování referenčního úhlu a redukci modulo 180°.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Skvělá práce! Zvládl/a jsi kapitolu o tangens a kotangens – můžeš si otestovat své znalosti znovu s jinými čísly.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení jednotlivých vzorců a postupů.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>

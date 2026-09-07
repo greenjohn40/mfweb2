@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goniométrie 4 — Équations et inéquations trigonométriques — Exercices</title>
+    <script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #7c3aed;
+        --secondary: #5b21b6;
+        --bg: #fafaf9;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #f5f3ff;
+        --translation: #64748b;
+    }
+    body {
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    .back-link { display: block; text-align: center; margin-bottom: 1rem; color: var(--translation); font-size: 0.9rem; text-decoration: none; }
+    .back-link:hover { color: var(--primary); }
+    h1 { text-align: center; color: var(--primary); font-size: 2.5rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 2.5rem; }
+    .exercise-card {
+        background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;
+    }
+    .exercise-body { margin-bottom: 18px; font-size: 1.05rem; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .btn { border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+    .btn-translation { background: transparent; color: var(--translation); border: 1px solid var(--translation); }
+    .btn-translation:hover { background: var(--translation); color: #fff; }
+    .btn-solution { background: var(--primary); color: #fff; }
+    .btn-solution:hover { background: var(--secondary); }
+    .content-box { display: none; margin-top: 14px; padding: 15px; border-radius: 6px; font-size: 0.95rem; animation: fadeIn 0.3s ease-in; }
+    .translation-box { background: #f1f5f9; color: #475569; border-left: 4px solid var(--translation); font-style: italic; }
+    .solution-box { background: var(--accent); border-left: 4px solid var(--primary); }
+    .active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    footer { text-align: center; margin-top: 40px; padding: 20px; color: #94a3b8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="rozcestnik-goniometrie4.html" class="back-link">← Rozcestník</a>
+        <h1>Goniométrie 4</h1>
+        <p class="subtitle">Série de 10 exercices avec solutions et traductions — Équations et inéquations trigonométriques</p>
+
+                <!-- 1 -->
+        <div class="exercise-card">
+            <div class="exercise-header">1. Équation de base — quadrant III/IV</div>
+            <div class="exercise-body">
+                Résolvez l'équation $\sin x=-\dfrac{\sqrt3}{2}$ (trouvez la solution de base).
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr1',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol1',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr1" class="content-box translation-box">
+                Vyřešte rovnici $\sin x=-\dfrac{\sqrt3}{2}$ (najděte základní řešení).
+            </div>
+            <div id="sol1" class="content-box solution-box">
+                Le sinus est négatif dans les III. et IV. quadrants, angle de référence $60°$ : $\overline x_1=180°+60°=240°$, $\overline x_2=360°-60°=300°$.
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="exercise-card">
+            <div class="exercise-header">2. Équation sur un intervalle donné</div>
+            <div class="exercise-body">
+                Résolvez $\cos x=0{,}5$ sur l'intervalle $\langle-360°;360°\rangle$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr2',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol2',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr2" class="content-box translation-box">
+                Vyřešte $\cos x=0{,}5$ na intervalu $\langle-360°;360°\rangle$.
+            </div>
+            <div id="sol2" class="content-box solution-box">
+                Solutions de base : $\overline x_1=60°$, $\overline x_2=300°$, période $360°$. En substituant $k=-1$ et $k=0$, on obtient toutes les solutions dans l'intervalle donné : $K=\{-300°;\,-60°;\,60°;\,300°\}$.
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="exercise-card">
+            <div class="exercise-header">3. Équation sans solution</div>
+            <div class="exercise-body">
+                Montrez que l'équation $2\cos x-5=0$ n'a aucune solution dans $\mathbb{R}$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr3',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol3',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr3" class="content-box translation-box">
+                Ukažte, že rovnice $2\cos x-5=0$ nemá v $\mathbb{R}$ žádné řešení.
+            </div>
+            <div id="sol3" class="content-box solution-box">
+                $\cos x=\dfrac52=2{,}5$. Comme l'ensemble des valeurs du cosinus est $\langle-1;1\rangle$ et $2{,}5\gt1$, l'équation n'a aucune solution : $K=\emptyset$.
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="exercise-card">
+            <div class="exercise-header">4. Valeur non tabulée — calculatrice</div>
+            <div class="exercise-body">
+                Résolvez $\operatorname{tg}x=7$ à l'aide de la calculatrice (donnez la solution de base arrondie au degré et à la minute près, puis en radians à 4 décimales).
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr4',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol4',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr4" class="content-box translation-box">
+                Vyřešte $\operatorname{tg}x=7$ pomocí kalkulačky (základní řešení zaokrouhlete na stupně a minuty, poté v radiánech na 4 desetinná místa).
+            </div>
+            <div id="sol4" class="content-box solution-box">
+                $\overline x_1=\operatorname{arctg}7\doteq81°52'\doteq1{,}4289\ \text{rad}$ (I. quadrant) ; deuxième solution de base $\overline x_2\doteq261°52'$ (période $180°$).
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="exercise-card">
+            <div class="exercise-header">5. Domaine de définition</div>
+            <div class="exercise-body">
+                Déterminez le domaine de définition de l'expression $\dfrac{1}{2\sin x-1}$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr5',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol5',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr5" class="content-box translation-box">
+                Určete definiční obor výrazu $\dfrac{1}{2\sin x-1}$.
+            </div>
+            <div id="sol5" class="content-box solution-box">
+                Condition : $2\sin x-1\neq0\Rightarrow\sin x\neq\dfrac12$. L'équation limite $\sin x=\dfrac12$ a pour solutions de base $\dfrac{\pi}{6}$, $\dfrac{5\pi}{6}$, donc $D=\mathbb{R}\setminus\bigcup_{k\in\mathbb{Z}}\left\{\dfrac{\pi}{6}+k\cdot2\pi;\,\dfrac{5\pi}{6}+k\cdot2\pi\right\}$.
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="exercise-card">
+            <div class="exercise-header">6. Substitution — argument linéaire</div>
+            <div class="exercise-body">
+                Résolvez $\sin(3x-15°)=\dfrac12$ (trouvez deux solutions).
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr6',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol6',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr6" class="content-box translation-box">
+                Vyřešte $\sin(3x-15°)=\dfrac12$ (najděte dvě řešení).
+            </div>
+            <div id="sol6" class="content-box solution-box">
+                Substitution $u=3x-15°$ : $\sin u=\dfrac12\Rightarrow\overline u_1=30°,\overline u_2=150°$. Retour : $x=\dfrac{u+15°}{3}\Rightarrow x_1=\dfrac{45°}{3}=15°$, $x_2=\dfrac{165°}{3}=55°$.
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="exercise-card">
+            <div class="exercise-header">7. Substitution — coefficient négatif</div>
+            <div class="exercise-body">
+                Résolvez $-\cos(2x)=1$ (donnez la solution de base pour $x$, puis l'ensemble complet des solutions).
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr7',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol7',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr7" class="content-box translation-box">
+                Vyřešte $-\cos(2x)=1$ (uveďte základní řešení pro $x$, poté celou množinu řešení).
+            </div>
+            <div id="sol7" class="content-box solution-box">
+                $\cos(2x)=-1\Rightarrow2x=180°+k\cdot360°\Rightarrow x=90°+k\cdot180°$. Solution de base : $\overline x=90°$. $K=\bigcup_{k\in\mathbb{Z}}\{90°+k\cdot180°\}$.
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="exercise-card">
+            <div class="exercise-header">8. Forme de produit — simplification</div>
+            <div class="exercise-body">
+                Résolvez $\cos x\cdot\sin(2x)=0$, puis simplifiez le résultat en une seule expression.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr8',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol8',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr8" class="content-box translation-box">
+                Vyřešte $\cos x\cdot\sin(2x)=0$ a poté výsledek zjednodušte do jediného vyjádření.
+            </div>
+            <div id="sol8" class="content-box solution-box">
+                $\cos x=0\Rightarrow x=90°+k\cdot180°$ ; $\sin(2x)=0\Rightarrow x=k\cdot90°$. Les solutions du premier facteur ($90°,270°,\dots$) sont déjà comprises dans celles du second (tous les multiples de $90°$), donc $K=\bigcup_{k\in\mathbb{Z}}\{k\cdot90°\}$.
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="exercise-card">
+            <div class="exercise-header">9. Inéquation — cosinus</div>
+            <div class="exercise-body">
+                Résolvez l'inéquation $\cos x\ge-\dfrac12$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr9',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol9',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr9" class="content-box translation-box">
+                Řešte nerovnici $\cos x\ge-\dfrac12$.
+            </div>
+            <div id="sol9" class="content-box solution-box">
+                L'équation $\cos x=-\dfrac12$ donne $\overline x_1=120°$, $\overline x_2=240°$. Le cosinus est $\ge-\dfrac12$ sur l'arc « autour de $0°$ », entre $-120°$ et $120°$, points limites inclus : $K=\bigcup_{k\in\mathbb{Z}}\left\langle-120°+k\cdot360°;\,120°+k\cdot360°\right\rangle$.
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="exercise-card">
+            <div class="exercise-header">10. Inéquation — tangente</div>
+            <div class="exercise-body">
+                Résolvez l'inéquation $\operatorname{tg}x\le-1$ (en radians).
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr10',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol10',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr10" class="content-box translation-box">
+                Řešte nerovnici $\operatorname{tg}x\le-1$ (v radiánech).
+            </div>
+            <div id="sol10" class="content-box solution-box">
+                L'équation $\operatorname{tg}x=-1$ a pour solution de base $\overline x=-\dfrac{\pi}{4}$ (période $\pi$). La tangente étant croissante entre deux asymptotes voisines, $\operatorname{tg}x\le-1$ est vérifié depuis l'asymptote précédente jusqu'à $\overline x$ inclus : $K=\bigcup_{k\in\mathbb{Z}}\left(-\dfrac{\pi}{2}+k\pi;\,-\dfrac{\pi}{4}+k\pi\right]$.
+            </div>
+        </div>
+
+<footer>
+            © 2026 – Mathématiques en Français – Exercices sur les équations et inéquations trigonométriques
+        </footer>
+    </div>
+
+    <script>
+        function toggle(id, btn, openLabel, closeLabel) {
+            const el = document.getElementById(id);
+            const active = el.classList.toggle('active');
+            btn.textContent = active ? closeLabel : openLabel;
+        }
+    </script>
+
+</body>
+</html>

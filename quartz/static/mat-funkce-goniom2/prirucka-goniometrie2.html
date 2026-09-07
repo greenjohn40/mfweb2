@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 2 — Sinus a kosinus — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-goniometrie2.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Goniometrie 2 — Sinus a kosinus · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniometrie 2 — Sinus a kosinus</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Definice na jednotkové kružnici</h2>
+<p class="mb-3">Na jednotkové kružnici (střed $S$, poloměr $1$) vyznačíme orientovaný úhel $\alpha$ tak, že jeho počáteční rameno splývá s kladnou částí osy $x$. Koncové rameno protne kružnici v bodě $K$.</p>
+<div class="def-box mb-3">
+    <p><b>Funkce sinus:</b> $\sin\alpha=y_K$ ($y$-ová souřadnice bodu $K$). <b>Funkce kosinus:</b> $\cos\alpha=x_K$ ($x$-ová souřadnice bodu $K$).</p>
+</div>
+<p class="mb-3">Pro ostré úhly tato definice dává stejné hodnoty jako definice z pravoúhlého trojúhelníku. Hodnoty pro ostré úhly: $\sin30°=\frac12$, $\sin45°=\frac{\sqrt2}{2}$, $\sin60°=\frac{\sqrt3}{2}$ (a analogicky pro kosinus, se zaměněnými hodnotami $30°$ a $60°$). Hraniční úhly: $\sin90°=1$, $\cos180°=-1$, $\sin270°=-1$, $\cos360°=1$ atd.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Znaménka v kvadrantech a výpočet přes referenční úhel</h2>
+<p class="mb-3">Znaménko $\sin\alpha$ je dané znaménkem $y_K$, znaménko $\cos\alpha$ znaménkem $x_K$: v I. kvadrantu jsou obě kladné, ve II. je kladný jen sinus, ve III. jsou obě záporné, ve IV. je kladný jen kosinus.</p>
+<p class="mb-3"><b>Příklady:</b> $\sin150°=\sin30°=\frac12$, $\cos150°=-\cos30°=-\frac{\sqrt3}{2}$ (ref. úhel $30°$, II. kv.); $\sin210°=-\sin30°=-\frac12$ (III. kv.); $\sin315°=-\sin45°=-\frac{\sqrt2}{2}$ (IV. kv.).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Redukční vzorce</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>II. kvadrant ($\alpha=\pi-\alpha_1$): $\sin\alpha=\sin\alpha_1$, $\cos\alpha=-\cos\alpha_1$</li>
+        <li>III. kvadrant ($\alpha=\pi+\alpha_1$): $\sin\alpha=-\sin\alpha_1$, $\cos\alpha=-\cos\alpha_1$</li>
+        <li>IV. kvadrant ($\alpha=2\pi-\alpha_1$): $\sin\alpha=-\sin\alpha_1$, $\cos\alpha=\cos\alpha_1$</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad s obecným referenčním úhlem:</b> $\sin160°=\sin20°\approx0{,}342$ (II. kv.); $\sin250°=-\sin70°\approx-0{,}940$ (III. kv.); $\cos290°=\cos70°\approx0{,}342$ (IV. kv.).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Periodicita a hodnoty pro $x\in\mathbb{R}$</h2>
+<p class="mb-3">Funkce sinus a kosinus jsou periodické s periodou $2\pi$: $\sin x=\sin(x+k\cdot2\pi)$, $\cos x=\cos(x+k\cdot2\pi)$ pro $k\in\mathbb{Z}$. Hodnotu pro libovolný úhel určíme tak, že jej nejprve zredukujeme na základní velikost, a poté (je-li potřeba) použijeme redukční vzorce.</p>
+<p class="mb-3"><b>Příklad:</b> $\sin1290°$: základní velikost $1290°-3\cdot360°=210°$ (III. kv., ref. úhel $30°$) $\Rightarrow\sin1290°=-\sin30°=-\frac12$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Grafy a vlastnosti</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2"></th>
+            <th class="text-left py-1">$f:y=\sin x$</th>
+            <th class="text-left py-1">$g:y=\cos x$</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">definiční obor</td><td class="py-1">$\mathbb{R}$</td><td class="py-1">$\mathbb{R}$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">obor hodnot</td><td class="py-1">$\langle-1;1\rangle$</td><td class="py-1">$\langle-1;1\rangle$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">perioda</td><td class="py-1">$2\pi$</td><td class="py-1">$2\pi$</td></tr>
+        <tr><td class="py-1 pr-2">parita</td><td class="py-1">lichá</td><td class="py-1">sudá</td></tr>
+    </tbody>
+</table>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Vliv koeficientů $a$, $q$, $m$, $n$</h2>
+<p class="mb-3">V $y=a\cdot\sin(qx-m)+n$ (a analogicky pro kosinus): koeficient $a$ mění obor hodnot na $\langle-|a|;|a|\rangle$ (amplituda); koeficient $q\gt0$ mění periodu na $\frac{2\pi}{q}$; koeficienty $m,n$ posouvají graf ve směru os $x$, resp. $y$.</p>
+<p class="mb-3"><b>Příklady:</b> $y=2\sin x$ má obor hodnot $\langle-2;2\rangle$; $y=\sin(2x)$ má periodu $\pi$; $y=\sin\left(x-\frac{\pi}{3}\right)+2$ je graf posunutý o $\frac{\pi}{3}$ doprava a o $2$ nahoru.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Postup sestrojování grafu</h2>
+<p class="mb-3">Stanovíme periodu a obor hodnot, periodu rozdělíme na čtvrtiny, určíme funkční hodnoty v těchto bodech, a graf na jedné periodě pak periodicky opakujeme.</p>
+<p class="mb-3"><b>Příklad:</b> $f:y=2\cos\frac{x}{2}$ má periodu $4\pi$; hodnoty v bodech $0,\pi,2\pi,3\pi,4\pi$ jsou postupně $2$, $0$, $-2$, $0$, $2$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Pojem</th>
+            <th class="text-left py-1">Klíčová myšlenka</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\sin\alpha$, $\cos\alpha$</td><td class="py-1">$y$-ová, resp. $x$-ová souřadnice bodu na jednotkové kružnici</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">redukční vzorce</td><td class="py-1">vyjádření hodnot II.–IV. kvadrantu pomocí referenčního úhlu</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">periodicita</td><td class="py-1">perioda $2\pi$</td></tr>
+        <tr><td class="py-1 pr-2">koeficienty $a,q,m,n$</td><td class="py-1">amplituda, perioda, posuny grafu</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniométrie 2 — Sinus et cosinus</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Définition sur le cercle trigonométrique</h2>
+<p class="mb-3">Sur le cercle trigonométrique (centre $S$, rayon $1$), on construit un angle orienté $\alpha$ dont la demi-droite initiale coïncide avec la partie positive de l'axe $x$. La demi-droite finale coupe le cercle en un point $K$.</p>
+<div class="def-box mb-3">
+    <p><b>Fonction sinus :</b> $\sin\alpha=y_K$ (ordonnée du point $K$). <b>Fonction cosinus :</b> $\cos\alpha=x_K$ (abscisse du point $K$).</p>
+</div>
+<p class="mb-3">Pour les angles aigus, cette définition donne les mêmes valeurs que celle du triangle rectangle. Valeurs pour les angles aigus : $\sin30°=\frac12$, $\sin45°=\frac{\sqrt2}{2}$, $\sin60°=\frac{\sqrt3}{2}$ (et de même pour le cosinus, avec les valeurs de $30°$ et $60°$ échangées). Angles limites : $\sin90°=1$, $\cos180°=-1$, $\sin270°=-1$, $\cos360°=1$, etc.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Signes dans les quadrants et calcul par l'angle de référence</h2>
+<p class="mb-3">Le signe de $\sin\alpha$ dépend du signe de $y_K$, celui de $\cos\alpha$ du signe de $x_K$ : dans le I. quadrant les deux sont positifs, dans le II. seul le sinus est positif, dans le III. les deux sont négatifs, dans le IV. seul le cosinus est positif.</p>
+<p class="mb-3"><b>Exemples :</b> $\sin150°=\sin30°=\frac12$, $\cos150°=-\cos30°=-\frac{\sqrt3}{2}$ (angle de référence $30°$, II. quad.) ; $\sin210°=-\sin30°=-\frac12$ (III. quad.) ; $\sin315°=-\sin45°=-\frac{\sqrt2}{2}$ (IV. quad.).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Formules de réduction</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>II. quadrant ($\alpha=\pi-\alpha_1$) : $\sin\alpha=\sin\alpha_1$, $\cos\alpha=-\cos\alpha_1$</li>
+        <li>III. quadrant ($\alpha=\pi+\alpha_1$) : $\sin\alpha=-\sin\alpha_1$, $\cos\alpha=-\cos\alpha_1$</li>
+        <li>IV. quadrant ($\alpha=2\pi-\alpha_1$) : $\sin\alpha=-\sin\alpha_1$, $\cos\alpha=\cos\alpha_1$</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple avec un angle de référence général :</b> $\sin160°=\sin20°\approx0{,}342$ (II. quad.) ; $\sin250°=-\sin70°\approx-0{,}940$ (III. quad.) ; $\cos290°=\cos70°\approx0{,}342$ (IV. quad.).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Périodicité et valeurs pour $x\in\mathbb{R}$</h2>
+<p class="mb-3">Les fonctions sinus et cosinus sont périodiques de période $2\pi$ : $\sin x=\sin(x+k\cdot2\pi)$, $\cos x=\cos(x+k\cdot2\pi)$ pour $k\in\mathbb{Z}$. On détermine la valeur pour un angle quelconque en le réduisant d'abord à sa mesure principale, puis (si nécessaire) en appliquant les formules de réduction.</p>
+<p class="mb-3"><b>Exemple :</b> $\sin1290°$ : mesure principale $1290°-3\cdot360°=210°$ (III. quad., angle de référence $30°$) $\Rightarrow\sin1290°=-\sin30°=-\frac12$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Courbes et propriétés</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2"></th>
+            <th class="text-left py-1">$f:y=\sin x$</th>
+            <th class="text-left py-1">$g:y=\cos x$</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">domaine de définition</td><td class="py-1">$\mathbb{R}$</td><td class="py-1">$\mathbb{R}$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">image</td><td class="py-1">$\langle-1;1\rangle$</td><td class="py-1">$\langle-1;1\rangle$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">période</td><td class="py-1">$2\pi$</td><td class="py-1">$2\pi$</td></tr>
+        <tr><td class="py-1 pr-2">parité</td><td class="py-1">impaire</td><td class="py-1">paire</td></tr>
+    </tbody>
+</table>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Influence des coefficients $a$, $q$, $m$, $n$</h2>
+<p class="mb-3">Dans $y=a\cdot\sin(qx-m)+n$ (et de même pour le cosinus) : le coefficient $a$ change l'image en $\langle-|a|;|a|\rangle$ (amplitude) ; le coefficient $q\gt0$ change la période en $\frac{2\pi}{q}$ ; les coefficients $m,n$ décalent la courbe selon les axes $x$, resp. $y$.</p>
+<p class="mb-3"><b>Exemples :</b> $y=2\sin x$ a pour image $\langle-2;2\rangle$ ; $y=\sin(2x)$ a pour période $\pi$ ; $y=\sin\left(x-\frac{\pi}{3}\right)+2$ est la courbe décalée de $\frac{\pi}{3}$ vers la droite et de $2$ vers le haut.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Méthode de construction de la courbe</h2>
+<p class="mb-3">On détermine la période et l'image, on divise la période en quarts, on détermine les valeurs de la fonction en ces points, puis on répète périodiquement la courbe obtenue sur une période.</p>
+<p class="mb-3"><b>Exemple :</b> $f:y=2\cos\frac{x}{2}$ a pour période $4\pi$ ; les valeurs aux points $0,\pi,2\pi,3\pi,4\pi$ sont respectivement $2$, $0$, $-2$, $0$, $2$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Notion</th>
+            <th class="text-left py-1">Idée clé</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\sin\alpha$, $\cos\alpha$</td><td class="py-1">ordonnée, resp. abscisse, du point sur le cercle trigonométrique</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">formules de réduction</td><td class="py-1">expression des valeurs des II.–IV. quadrants à l'aide de l'angle de référence</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">périodicité</td><td class="py-1">période $2\pi$</td></tr>
+        <tr><td class="py-1 pr-2">coefficients $a,q,m,n$</td><td class="py-1">amplitude, période, décalages de la courbe</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 2 — Sinus et cosinus · Manuel' : 'Goniometrie 2 — Sinus a kosinus · Příručka';
+    document.title = czVisible ? 'Goniométrie 2 — Sinus et cosinus — Manuel' : 'Goniometrie 2 — Sinus a kosinus — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

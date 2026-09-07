@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 4 — Goniometrické rovnice a nerovnice — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-goniometrie4.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Goniometrie 4 — Goniometrické rovnice a nerovnice · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniometrie 4 — Goniometrické rovnice a nerovnice</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Základní goniometrická rovnice a základní řešení</h2>
+<div class="def-box mb-3">
+    <p>Goniometrická rovnice s jednou neznámou obsahuje neznámou v argumentu goniometrické funkce. <b>Základní goniometrická rovnice</b> má tvar $\sin x=a$, $\cos x=a$, $\operatorname{tg}x=a$, $\operatorname{cotg}x=a$, $a\in\mathbb{R}$.</p>
+</div>
+<p class="mb-3"><b>Základní řešení</b> jsou všechna řešení ležící v intervalu $\langle0;2\pi)$ (zprava otevřený, aby se $0$ a $2\pi$ nepočítaly jako dvě různá řešení stejného bodu).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Řešení pomocí jednotkové kružnice a grafu</h2>
+<p class="mb-3">Postup: (1) vyznačíme hodnotu $a$ na příslušné ose; (2) najdeme průsečíky s kružnicí; (3) určíme základní řešení $\overline x_1$, $\overline x_2$ pomocí ostrého úhlu z I. kvadrantu; (4) s uvážením periody zapíšeme množinu všech řešení.</p>
+<p class="mb-3"><b>Příklad:</b> $\cos x=\frac{\sqrt2}{2}\Rightarrow\overline x_1=\frac{\pi}{4}$, $\overline x_2=\frac{7\pi}{4}$, perioda $2\pi$: $K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{4}+k\cdot2\pi;\frac{7\pi}{4}+k\cdot2\pi\right\}$.</p>
+<p class="mb-3">Alternativně lze řešit graficky: základní řešení jsou $x$-ové souřadnice průsečíků grafu $y=f(x)$ s přímkou $y=a$ na $\langle0;2\pi)$ — metoda je názorná, ale nepřesná, proto slouží spíš k ověření.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Řešení na jiném intervalu</h2>
+<p class="mb-3">Nejprve najdeme <b>všechna</b> řešení (základní řešení + perioda), pak postupným dosazováním celých čísel za $k$ vybereme ta, která padnou do zadaného intervalu.</p>
+<p class="mb-3"><b>Příklad:</b> $\sin x=-\frac12$ na $\langle-360°;360°\rangle$: základní řešení $210°,330°$, perioda $360°$ $\Rightarrow K=\{-150°;-30°;210°;330°\}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Rovnice bez řešení a s netabulkovou hodnotou</h2>
+<p class="mb-3">Protože obor hodnot sinu i kosinu je $\langle-1;1\rangle$, rovnice $\sin x=a$ nebo $\cos x=a$ nemá řešení, je-li $|a|\gt1$ (např. $\cos x=-\frac43\Rightarrow K=\emptyset$).</p>
+<p class="mb-3">Tangens a kotangens mají obor hodnot $\mathbb{R}$, takže mají řešení pro libovolné $a$ — u netabulkových hodnot použijeme kalkulačku (arkusfunkce). <b>Příklad:</b> $\operatorname{tg}x=4\Rightarrow\overline x_1\doteq75°58'$, perioda $180°$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Definiční obor výrazu s goniometrickou funkcí</h2>
+<p class="mb-3">Pokud je goniometrická funkce ve jmenovateli, vyloučíme z definičního oboru řešení „hraniční" rovnice.</p>
+<p class="mb-3"><b>Příklad:</b> $\frac{\cos x}{1-2\sin x}$: podmínka $\sin x\neq\frac12$, vyloučíme $x=\frac{\pi}{6}+k\cdot2\pi$ a $x=\frac{5\pi}{6}+k\cdot2\pi$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Rovnice s lineárním výrazem v argumentu (substituce)</h2>
+<div class="warn-box mb-3">
+    <p>Argument $qx+m$ řešíme substitucí $u=qx+m$: vyřešíme rovnici pro $u$ i s periodou, teprve pak z $qx+m=u$ vyjádříme $x$. Periodu vydělíme koeficientem $q$ až při návratu k $x$.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $\sin(2x+30°)=\frac{\sqrt3}{2}$: $u=2x+30°\Rightarrow\overline u_1=60°,\overline u_2=120°$, perioda $360°$ $\Rightarrow x_1=15°+k\cdot180°$, $x_2=45°+k\cdot180°$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Rovnice v součinovém tvaru</h2>
+<p class="mb-3">Součin je roven nule, právě když je nule roven aspoň jeden z činitelů — řešíme každou dílčí rovnici zvlášť a řešení sjednotíme.</p>
+<p class="mb-3"><b>Příklad:</b> $\sin(2x)\cdot\operatorname{tg}(x-20°)=0\Rightarrow K=\bigcup_{k\in\mathbb{Z}}\{k\cdot90°\}\cup\bigcup_{k\in\mathbb{Z}}\{20°+k\cdot180°\}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Goniometrické nerovnice</h2>
+<p class="mb-3">Základní tvar $f(x)\ge a$, $f(x)\le a$, $f(x)\gt a$, $f(x)\lt a$. Postup: vyřešíme rovnici $f(x)=a$ (dá dva body dělící kružnici na dva oblouky), určíme, na kterém oblouku nerovnost platí, a zapíšeme interval (krajní body podle ostrosti nerovnosti).</p>
+<p class="mb-3"><b>Příklady:</b> $\cos x\lt\frac12\Rightarrow K=\bigcup_{k\in\mathbb{Z}}(60°+k\cdot360°;300°+k\cdot360°)$; $\operatorname{tg}x\ge1\Rightarrow K=\bigcup_{k\in\mathbb{Z}}\left\langle\frac{\pi}{4}+k\cdot\pi;\frac{\pi}{2}+k\cdot\pi\right)$ (u tg/cotg musí zůstat interval otevřený u hodnot mimo definiční obor).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Pojem</th>
+            <th class="text-left py-1">Klíčová myšlenka</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">základní řešení</td><td class="py-1">všechna řešení v $\langle0;2\pi)$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">substituce $u=qx+m$</td><td class="py-1">periodu připojujeme k $u$, ne až k $x$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">součinový tvar</td><td class="py-1">řešit každý činitel zvlášť, řešení sjednotit</td></tr>
+        <tr><td class="py-1 pr-2">nerovnice</td><td class="py-1">místo bodů hledáme celý oblouk/interval</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniométrie 4 — Équations et inéquations trigonométriques</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Équation trigonométrique de base et solution de base</h2>
+<div class="def-box mb-3">
+    <p>Une équation trigonométrique à une inconnue contient l'inconnue dans l'argument d'une fonction trigonométrique. Une <b>équation trigonométrique de base</b> a la forme $\sin x=a$, $\cos x=a$, $\operatorname{tg}x=a$, $\operatorname{cotg}x=a$, $a\in\mathbb{R}$.</p>
+</div>
+<p class="mb-3">La <b>solution de base</b> regroupe toutes les solutions situées dans l'intervalle $\langle0;2\pi)$ (ouvert à droite, pour que $0$ et $2\pi$ ne comptent pas comme deux solutions distinctes du même point).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Résolution à l'aide du cercle trigonométrique et du graphe</h2>
+<p class="mb-3">Méthode : (1) on marque la valeur $a$ sur l'axe correspondant ; (2) on trouve les points d'intersection avec le cercle ; (3) on détermine les solutions de base $\overline x_1$, $\overline x_2$ à l'aide de l'angle aigu du I. quadrant ; (4) en tenant compte de la période, on écrit l'ensemble de toutes les solutions.</p>
+<p class="mb-3"><b>Exemple :</b> $\cos x=\frac{\sqrt2}{2}\Rightarrow\overline x_1=\frac{\pi}{4}$, $\overline x_2=\frac{7\pi}{4}$, période $2\pi$ : $K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{4}+k\cdot2\pi;\frac{7\pi}{4}+k\cdot2\pi\right\}$.</p>
+<p class="mb-3">On peut aussi résoudre graphiquement : les solutions de base sont les abscisses des points d'intersection du graphe $y=f(x)$ avec la droite $y=a$ sur $\langle0;2\pi)$ — méthode parlante mais imprécise, donc plutôt utilisée pour vérifier.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Résolution sur un autre intervalle</h2>
+<p class="mb-3">On trouve d'abord <b>toutes</b> les solutions (solution de base + période), puis, en substituant successivement des entiers à $k$, on sélectionne celles qui tombent dans l'intervalle donné.</p>
+<p class="mb-3"><b>Exemple :</b> $\sin x=-\frac12$ sur $\langle-360°;360°\rangle$ : solutions de base $210°,330°$, période $360°$ $\Rightarrow K=\{-150°;-30°;210°;330°\}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Équations sans solution et à valeur non tabulée</h2>
+<p class="mb-3">Comme l'ensemble des valeurs du sinus et du cosinus est $\langle-1;1\rangle$, l'équation $\sin x=a$ ou $\cos x=a$ n'a pas de solution si $|a|\gt1$ (p. ex. $\cos x=-\frac43\Rightarrow K=\emptyset$).</p>
+<p class="mb-3">La tangente et la cotangente ont pour ensemble de valeurs $\mathbb{R}$, donc une solution existe pour tout $a$ — pour une valeur non tabulée, on utilise la calculatrice (fonctions réciproques). <b>Exemple :</b> $\operatorname{tg}x=4\Rightarrow\overline x_1\doteq75°58'$, période $180°$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Domaine de définition d'une expression trigonométrique</h2>
+<p class="mb-3">Si une fonction trigonométrique figure au dénominateur, on exclut du domaine de définition les solutions de l'équation « limite ».</p>
+<p class="mb-3"><b>Exemple :</b> $\frac{\cos x}{1-2\sin x}$ : condition $\sin x\neq\frac12$, on exclut $x=\frac{\pi}{6}+k\cdot2\pi$ et $x=\frac{5\pi}{6}+k\cdot2\pi$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Équations avec expression linéaire dans l'argument (substitution)</h2>
+<div class="warn-box mb-3">
+    <p>L'argument $qx+m$ se traite par la substitution $u=qx+m$ : on résout l'équation pour $u$ avec la période, puis seulement on tire $x$ de $qx+m=u$. On ne divise la période par le coefficient $q$ qu'au moment du retour à $x$.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $\sin(2x+30°)=\frac{\sqrt3}{2}$ : $u=2x+30°\Rightarrow\overline u_1=60°,\overline u_2=120°$, période $360°$ $\Rightarrow x_1=15°+k\cdot180°$, $x_2=45°+k\cdot180°$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Équations sous forme de produit</h2>
+<p class="mb-3">Un produit est nul si et seulement si au moins un des facteurs est nul — on résout chaque équation séparément et on réunit les solutions.</p>
+<p class="mb-3"><b>Exemple :</b> $\sin(2x)\cdot\operatorname{tg}(x-20°)=0\Rightarrow K=\bigcup_{k\in\mathbb{Z}}\{k\cdot90°\}\cup\bigcup_{k\in\mathbb{Z}}\{20°+k\cdot180°\}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Inéquations trigonométriques</h2>
+<p class="mb-3">Forme de base $f(x)\ge a$, $f(x)\le a$, $f(x)\gt a$, $f(x)\lt a$. Méthode : on résout l'équation $f(x)=a$ (donne deux points partageant le cercle en deux arcs), on détermine sur quel arc l'inégalité est vérifiée, puis on écrit l'intervalle (points limites selon que l'inégalité est stricte ou large).</p>
+<p class="mb-3"><b>Exemples :</b> $\cos x\lt\frac12\Rightarrow K=\bigcup_{k\in\mathbb{Z}}(60°+k\cdot360°;300°+k\cdot360°)$ ; $\operatorname{tg}x\ge1\Rightarrow K=\bigcup_{k\in\mathbb{Z}}\left\langle\frac{\pi}{4}+k\cdot\pi;\frac{\pi}{2}+k\cdot\pi\right)$ (pour tg/cotg, l'intervalle doit rester ouvert aux valeurs hors du domaine de définition).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Notion</th>
+            <th class="text-left py-1">Idée clé</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">solution de base</td><td class="py-1">toutes les solutions dans $\langle0;2\pi)$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">substitution $u=qx+m$</td><td class="py-1">on ajoute la période à $u$, pas seulement à $x$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">forme de produit</td><td class="py-1">résoudre chaque facteur séparément, réunir</td></tr>
+        <tr><td class="py-1 pr-2">inéquations</td><td class="py-1">chercher tout un arc/intervalle, pas des points</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 4 — Équations et inéquations trigonométriques · Manuel' : 'Goniometrie 4 — Goniometrické rovnice a nerovnice · Příručka';
+    document.title = czVisible ? 'Goniométrie 4 — Équations et inéquations trigonométriques — Manuel' : 'Goniometrie 4 — Goniometrické rovnice a nerovnice — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Goniometrie 2 — Sinus a kosinus (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-goniometrie2.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Goniometrie 2</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (sinus a kosinus pro libovolný úhel, redukční vzorce, periodicita, grafy).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    {
+        "id": "t1",
+        "type": "concept",
+        "cs": {
+            "q": "Jak je na jednotkové kružnici definována funkce sinus?",
+            "a": "jako $y$-ová souřadnice bodu $K$, kde koncové rameno úhlu protíná kružnici",
+            "o": [
+                "jako $y$-ová souřadnice bodu $K$, kde koncové rameno úhlu protíná kružnici",
+                "jako $x$-ová souřadnice bodu $K$, kde koncové rameno úhlu protíná kružnici",
+                "jako poloměr jednotkové kružnice",
+                "jako délka oblouku mezi počátečním a koncovým ramenem"
+            ],
+            "h": "Rozliš, která souřadnice patří sinu a která kosinu.",
+            "e": "Funkce sinus přiřazuje úhlu $\\alpha$ $y$-ovou souřadnici bodu $K$, ve kterém koncové rameno protíná jednotkovou kružnici."
+        },
+        "fr": {
+            "q": "Comment la fonction sinus est-elle définie sur le cercle trigonométrique ?",
+            "a": "comme l'ordonnée du point $K$ où le côté final de l'angle coupe le cercle",
+            "o": [
+                "comme l'ordonnée du point $K$ où le côté final de l'angle coupe le cercle",
+                "comme l'abscisse du point $K$ où le côté final de l'angle coupe le cercle",
+                "comme le rayon du cercle trigonométrique",
+                "comme la longueur de l'arc entre le côté initial et le côté final"
+            ],
+            "h": "Distingue quelle coordonnée correspond au sinus et laquelle au cosinus.",
+            "e": "La fonction sinus associe à l'angle $\\alpha$ l'ordonnée du point $K$ où le côté final coupe le cercle trigonométrique."
+        }
+    },
+    {
+        "id": "t2",
+        "type": "concept",
+        "cs": {
+            "q": "Jaké je znaménko $\\sin\\alpha$ a $\\cos\\alpha$ ve III. kvadrantu?",
+            "a": "obě hodnoty jsou záporné",
+            "o": [
+                "obě hodnoty jsou záporné",
+                "obě hodnoty jsou kladné",
+                "$\\sin\\alpha$ kladný, $\\cos\\alpha$ záporný",
+                "$\\sin\\alpha$ záporný, $\\cos\\alpha$ kladný"
+            ],
+            "h": "Ve III. kvadrantu jsou záporné obě souřadnice bodu $K$.",
+            "e": "Ve III. kvadrantu má bod $K$ zápornou $x$-ovou i $y$-ovou souřadnici, proto jsou obě hodnoty $\\sin\\alpha$ i $\\cos\\alpha$ záporné."
+        },
+        "fr": {
+            "q": "Quel est le signe de $\\sin\\alpha$ et $\\cos\\alpha$ dans le III. quadrant ?",
+            "a": "les deux valeurs sont négatives",
+            "o": [
+                "les deux valeurs sont négatives",
+                "les deux valeurs sont positives",
+                "$\\sin\\alpha$ positif, $\\cos\\alpha$ négatif",
+                "$\\sin\\alpha$ négatif, $\\cos\\alpha$ positif"
+            ],
+            "h": "Dans le III. quadrant, les deux coordonnées du point $K$ sont négatives.",
+            "e": "Dans le III. quadrant, le point $K$ a une abscisse et une ordonnée négatives, donc $\\sin\\alpha$ et $\\cos\\alpha$ sont tous deux négatifs."
+        }
+    },
+    {
+        "id": "t3",
+        "type": "concept",
+        "cs": {
+            "q": "Co je referenční úhel $\\alpha_1$?",
+            "a": "ostrý úhel z I. kvadrantu, pomocí kterého vyjadřujeme hodnoty pro ostatní kvadranty",
+            "o": [
+                "ostrý úhel z I. kvadrantu, pomocí kterého vyjadřujeme hodnoty pro ostatní kvadranty",
+                "úhel, který je vždy roven $90°$",
+                "koncové rameno orientovaného úhlu",
+                "základní velikost orientovaného úhlu"
+            ],
+            "h": "Vzpomeň si, jak jsme počítali sin150° pomocí sin30°.",
+            "e": "Referenční úhel $\\alpha_1$ je ostrý úhel z I. kvadrantu, který nám umožňuje vyjádřit hodnoty sinu a kosinu pro úhel z libovolného kvadrantu."
+        },
+        "fr": {
+            "q": "Qu'est-ce que l'angle de référence $\\alpha_1$ ?",
+            "a": "un angle aigu du I. quadrant à l'aide duquel on exprime les valeurs des autres quadrants",
+            "o": [
+                "un angle aigu du I. quadrant à l'aide duquel on exprime les valeurs des autres quadrants",
+                "un angle toujours égal à $90°$",
+                "le côté final de l'angle orienté",
+                "la mesure principale de l'angle orienté"
+            ],
+            "h": "Rappelle-toi comment nous avons calculé sin150° à l'aide de sin30°.",
+            "e": "L'angle de référence $\\alpha_1$ est un angle aigu du I. quadrant qui permet d'exprimer les valeurs du sinus et du cosinus pour un angle d'un quadrant quelconque."
+        }
+    },
+    {
+        "id": "t4",
+        "type": "concept",
+        "cs": {
+            "q": "Jak vyjádříme $\\cos\\alpha$ pro úhel $\\alpha$ z II. kvadrantu pomocí referenčního úhlu $\\alpha_1$?",
+            "a": "$\\cos\\alpha=-\\cos\\alpha_1$",
+            "o": [
+                "$\\cos\\alpha=-\\cos\\alpha_1$",
+                "$\\cos\\alpha=\\cos\\alpha_1$",
+                "$\\cos\\alpha=-\\sin\\alpha_1$",
+                "$\\cos\\alpha=\\sin\\alpha_1$"
+            ],
+            "h": "V II. kvadrantu je kosinus záporný.",
+            "e": "Pro úhel $\\alpha=\\pi-\\alpha_1$ z II. kvadrantu platí $\\cos\\alpha=-\\cos\\alpha_1$ (znaménko minus, protože kosinus je ve II. kvadrantu záporný)."
+        },
+        "fr": {
+            "q": "Comment exprime-t-on $\\cos\\alpha$ pour un angle $\\alpha$ du II. quadrant à l'aide de l'angle de référence $\\alpha_1$ ?",
+            "a": "$\\cos\\alpha=-\\cos\\alpha_1$",
+            "o": [
+                "$\\cos\\alpha=-\\cos\\alpha_1$",
+                "$\\cos\\alpha=\\cos\\alpha_1$",
+                "$\\cos\\alpha=-\\sin\\alpha_1$",
+                "$\\cos\\alpha=\\sin\\alpha_1$"
+            ],
+            "h": "Dans le II. quadrant, le cosinus est négatif.",
+            "e": "Pour un angle $\\alpha=\\pi-\\alpha_1$ du II. quadrant, on a $\\cos\\alpha=-\\cos\\alpha_1$ (signe moins, car le cosinus est négatif dans le II. quadrant)."
+        }
+    },
+    {
+        "id": "t5",
+        "type": "concept",
+        "cs": {
+            "q": "Jakou periodu mají funkce sinus a kosinus?",
+            "a": "$2\\pi$",
+            "o": [
+                "$2\\pi$",
+                "$\\pi$",
+                "$\\frac{\\pi}{2}$",
+                "$4\\pi$"
+            ],
+            "h": "Bod $K$ na jednotkové kružnici se vrátí do stejné polohy po jedné celé otočce.",
+            "e": "Funkce sinus i kosinus jsou periodické s periodou $2\\pi$, protože bod $K$ zaujme stejnou polohu po jedné celé otočce."
+        },
+        "fr": {
+            "q": "Quelle est la période des fonctions sinus et cosinus ?",
+            "a": "$2\\pi$",
+            "o": [
+                "$2\\pi$",
+                "$\\pi$",
+                "$\\frac{\\pi}{2}$",
+                "$4\\pi$"
+            ],
+            "h": "Le point $K$ sur le cercle trigonométrique retrouve la même position après un tour complet.",
+            "e": "Les fonctions sinus et cosinus sont périodiques de période $2\\pi$, car le point $K$ retrouve la même position après un tour complet."
+        }
+    },
+    {
+        "id": "t6",
+        "type": "concept",
+        "cs": {
+            "q": "Je funkce kosinus sudá, nebo lichá?",
+            "a": "sudá",
+            "o": [
+                "sudá",
+                "lichá",
+                "ani sudá, ani lichá",
+                "sudá i lichá zároveň"
+            ],
+            "h": "Porovnej grafy funkce kosinus vlevo a vpravo od osy $y$.",
+            "e": "Funkce kosinus je sudá, protože její graf je souměrný podle osy $y$ (na rozdíl od funkce sinus, která je lichá)."
+        },
+        "fr": {
+            "q": "La fonction cosinus est-elle paire ou impaire ?",
+            "a": "paire",
+            "o": [
+                "paire",
+                "impaire",
+                "ni paire ni impaire",
+                "paire et impaire à la fois"
+            ],
+            "h": "Compare la courbe de la fonction cosinus à gauche et à droite de l'axe $y$.",
+            "e": "La fonction cosinus est paire, car sa courbe est symétrique par rapport à l'axe $y$ (contrairement à la fonction sinus, qui est impaire)."
+        }
+    },
+    {
+        "id": "t7",
+        "type": "concept",
+        "cs": {
+            "q": "Jak koeficient $a$ v $y=a\\cdot\\sin x$ ovlivňuje graf funkce?",
+            "a": "mění obor hodnot na $\\langle-|a|;|a|\\rangle$, periodu neovlivňuje",
+            "o": [
+                "mění obor hodnot na $\\langle-|a|;|a|\\rangle$, periodu neovlivňuje",
+                "mění periodu na $\\frac{2\\pi}{a}$, obor hodnot neovlivňuje",
+                "posouvá graf ve směru osy $x$",
+                "posouvá graf ve směru osy $y$"
+            ],
+            "h": "Porovnej grafy $y=\\sin x$ a $y=2\\sin x$.",
+            "e": "Koeficient $a$ mění amplitudu (obor hodnot na $\\langle-|a|;|a|\\rangle$), periodu funkce ale neovlivňuje."
+        },
+        "fr": {
+            "q": "Comment le coefficient $a$ dans $y=a\\cdot\\sin x$ influence-t-il la courbe ?",
+            "a": "il change l'image en $\\langle-|a|;|a|\\rangle$, sans influencer la période",
+            "o": [
+                "il change l'image en $\\langle-|a|;|a|\\rangle$, sans influencer la période",
+                "il change la période en $\\frac{2\\pi}{a}$, sans influencer l'image",
+                "il décale la courbe selon l'axe $x$",
+                "il décale la courbe selon l'axe $y$"
+            ],
+            "h": "Compare les courbes de $y=\\sin x$ et $y=2\\sin x$.",
+            "e": "Le coefficient $a$ change l'amplitude (l'image devient $\\langle-|a|;|a|\\rangle$), mais n'influence pas la période de la fonction."
+        }
+    },
+    {
+        "id": "t8",
+        "type": "concept",
+        "cs": {
+            "q": "Jakou periodu má funkce $y=\\sin(2x)$?",
+            "a": "$\\pi$",
+            "o": [
+                "$\\pi$",
+                "$2\\pi$",
+                "$4\\pi$",
+                "$\\frac{\\pi}{2}$"
+            ],
+            "h": "Použij vzorec $p=\\frac{2\\pi}{q}$ s $q=2$.",
+            "e": "Perioda funkce $y=\\sin(qx)$ je $p=\\frac{2\\pi}{q}$; pro $q=2$ dostáváme $p=\\frac{2\\pi}{2}=\\pi$."
+        },
+        "fr": {
+            "q": "Quelle est la période de la fonction $y=\\sin(2x)$ ?",
+            "a": "$\\pi$",
+            "o": [
+                "$\\pi$",
+                "$2\\pi$",
+                "$4\\pi$",
+                "$\\frac{\\pi}{2}$"
+            ],
+            "h": "Utilise la formule $p=\\frac{2\\pi}{q}$ avec $q=2$.",
+            "e": "La période de la fonction $y=\\sin(qx)$ est $p=\\frac{2\\pi}{q}$ ; pour $q=2$, on obtient $p=\\frac{2\\pi}{2}=\\pi$."
+        }
+    }
+];
+
+function quadrantOf(deg){
+    const b = ((deg % 360) + 360) % 360;
+    if (b > 0 && b < 90) return 1;
+    if (b > 90 && b < 180) return 2;
+    if (b > 180 && b < 270) return 3;
+    if (b > 270 && b < 360) return 4;
+    return 0;
+}
+function refAngleOf(deg){
+    const b = ((deg % 360) + 360) % 360;
+    const q = quadrantOf(b);
+    if (q === 1) return b;
+    if (q === 2) return 180 - b;
+    if (q === 3) return b - 180;
+    if (q === 4) return 360 - b;
+    return b;
+}
+const REF_VALUES = {
+    30: { sin: '\\frac{1}{2}', cos: '\\frac{\\sqrt3}{2}' },
+    45: { sin: '\\frac{\\sqrt2}{2}', cos: '\\frac{\\sqrt2}{2}' },
+    60: { sin: '\\frac{\\sqrt3}{2}', cos: '\\frac{1}{2}' }
+};
+function signedLatex(sign, latex){
+    return sign < 0 ? ('-' + latex) : latex;
+}
+function quadrantSign(q, fn){
+    if (q === 1) return 1;
+    if (q === 2) return fn === 'sin' ? 1 : -1;
+    if (q === 3) return -1;
+    if (q === 4) return fn === 'sin' ? -1 : 1;
+    return 1;
+}
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Urči hodnotu $ {fn}{deg}° $.", h: "Nejprve urči kvadrant a referenční úhel, poté použij tabulku hodnot pro $30°,45°,60°$ a doplň znaménko.", e: "$ {deg}° $ leží v {quadWordCs} kvadrantu, referenční úhel je $ {ref}° $: $ {fn}{deg}°={sign}{fn}{ref}°={correctPlain} $." },
+        fr: { q: "Détermine la valeur de $ {fn}{deg}° $.", h: "Détermine d'abord le quadrant et l'angle de référence, puis utilise le tableau des valeurs pour $30°,45°,60°$ et ajoute le signe.", e: "$ {deg}° $ est dans le {quadWordFr} quadrant, l'angle de référence est $ {ref}° $ : $ {fn}{deg}°={sign}{fn}{ref}°={correctPlain} $." },
+        params: () => {
+            const degs = [150,120,135,210,240,225,330,300,315];
+            const deg = randChoice(degs);
+            const fn = randChoice(['\\sin','\\cos']);
+            const fnKey = fn === '\\sin' ? 'sin' : 'cos';
+            return { deg, fn, fnKey };
+        },
+        solve: (p) => {
+            const q = quadrantOf(p.deg);
+            const ref = refAngleOf(p.deg);
+            const sign = quadrantSign(q, p.fnKey);
+            const baseLatex = REF_VALUES[ref][p.fnKey];
+            const correct = '$' + signedLatex(sign, baseLatex) + '$';
+            const quadWordsCs = {2:'II.', 3:'III.', 4:'IV.'};
+            const quadWordsFr = {2:'deuxième', 3:'troisième', 4:'quatrième'};
+            return {
+                q, ref, sign: sign < 0 ? '-' : '',
+                quadWordCs: quadWordsCs[q], quadWordFr: quadWordsFr[q],
+                correctPlain: signedLatex(sign, baseLatex),
+                correct, refLatex: baseLatex
+            };
+        },
+        wrongOptions: (p, sol) => {
+            const opts = new Set([sol.correct]);
+            const refs = [30,45,60];
+            const signs = [1,-1];
+            let guard = 0;
+            while (opts.size < 4 && guard < 100) {
+                const r = randChoice(refs);
+                const s = randChoice(signs);
+                const cand = '$' + signedLatex(s, REF_VALUES[r][p.fnKey]) + '$';
+                opts.add(cand);
+                guard++;
+            }
+            return shuffleArray([...opts].slice(0,4));
+        } },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Urči přibližnou hodnotu $ {fn}{deg}° $ pomocí referenčního úhlu (na 3 desetinná místa).", h: "Nejprve urči kvadrant a referenční úhel, hodnotu funkce pro referenční úhel odhadni, nebo použij kalkulačku, a doplň znaménko podle kvadrantu.", e: "$ {deg}° $ leží v {quadWordCs} kvadrantu, referenční úhel je $ {ref}° $: $ {fn}{deg}°\\approx{correct} $." },
+        fr: { q: "Détermine la valeur approchée de $ {fn}{deg}° $ à l'aide de l'angle de référence (à 3 décimales).", h: "Détermine d'abord le quadrant et l'angle de référence, calcule la valeur pour l'angle de référence, puis ajoute le signe selon le quadrant.", e: "$ {deg}° $ est dans le {quadWordFr} quadrant, l'angle de référence est $ {ref}° $ : $ {fn}{deg}°\\approx{correct} $." },
+        params: () => {
+            const degs = [160,250,290,200,340,110,170];
+            const deg = randChoice(degs);
+            const fn = randChoice(['\\sin','\\cos']);
+            const fnKey = fn === '\\sin' ? 'sin' : 'cos';
+            return { deg, fn, fnKey };
+        },
+        solve: (p) => {
+            const rad = p.deg * Math.PI / 180;
+            const val = p.fnKey === 'sin' ? Math.sin(rad) : Math.cos(rad);
+            const res = Math.round(val*1000)/1000;
+            const q = quadrantOf(p.deg);
+            const ref = refAngleOf(p.deg);
+            const quadWordsCs = {2:'II.', 3:'III.', 4:'IV.'};
+            const quadWordsFr = {2:'deuxième', 3:'troisième', 4:'quatrième'};
+            return { res, ref, quadWordCs: quadWordsCs[q], quadWordFr: quadWordsFr[q], correct: fmt3(res) };
+        },
+        wrongOptions: (p, sol) => buildOptions3(sol.res, [], 0.15) },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Urči přibližnou hodnotu $\\sin{deg}°$ (na 3 desetinná místa) bez použití kalkulačky.", h: "Nejprve zredukuj úhel na základní velikost (přičítáním/odečítáním $360°$), poté použij redukční vzorce.", e: "Základní velikost úhlu ${deg}°$ je ${basic}°$, tedy $\\sin{deg}°=\\sin{basic}°\\approx{correct}$." },
+        fr: { q: "Détermine la valeur approchée de $\\sin{deg}°$ (à 3 décimales) sans calculatrice.", h: "Réduis d'abord l'angle à sa mesure principale (en ajoutant/retranchant $360°$), puis applique les formules de réduction.", e: "La mesure principale de l'angle ${deg}°$ est ${basic}°$, donc $\\sin{deg}°=\\sin{basic}°\\approx{correct}$." },
+        params: () => {
+            const degs = [970,-1280,1460,-1550,850,-1750,1180,-2020,1600,-1370];
+            return { deg: randChoice(degs) };
+        },
+        solve: (p) => {
+            const rad = p.deg * Math.PI / 180;
+            const val = Math.sin(rad);
+            const res = Math.round(val*1000)/1000;
+            const k = Math.floor(p.deg/360);
+            const basic = p.deg - k*360;
+            return { res, basic, correct: fmt3(res) };
+        },
+        wrongOptions: (p, sol) => buildOptions3(sol.res, [], 0.2) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Jaká je horní hranice oboru hodnot funkce $y={a}\\cdot{fn}x$?", h: "Obor hodnot funkce $y=a\\cdot\\sin x$ (i kosinus) je $\\langle-|a|;|a|\\rangle$.", e: "Horní hranice oboru hodnot je $|{a}|={correct}$." },
+        fr: { q: "Quelle est la borne supérieure de l'image de la fonction $y={a}\\cdot{fn}x$ ?", h: "L'image de la fonction $y=a\\cdot\\sin x$ (et de même pour cosinus) est $\\langle-|a|;|a|\\rangle$.", e: "La borne supérieure de l'image est $|{a}|={correct}$." },
+        params: () => {
+            const avals = [2,3,4,5,-2,-3,-4,-5];
+            const a = randChoice(avals);
+            const fn = randChoice(['\\sin','\\cos']);
+            return { a, fn };
+        },
+        solve: (p) => {
+            const res = Math.abs(p.a);
+            return { res, correct: fmt(res) };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 2) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Úhel $\\alpha$ leží ve {quadWordCs} kvadrantu. Který pár redukčních vzorců pro něj platí?", h: "Rozmysli si, jak se referenční úhel $\\alpha_1$ vztahuje k úhlu $\\alpha$ v daném kvadrantu.", e: "{expl}" },
+        fr: { q: "L'angle $\\alpha$ est dans le {quadWordFr} quadrant. Quel couple de formules de réduction s'applique ?", h: "Réfléchis à la relation entre l'angle de référence $\\alpha_1$ et l'angle $\\alpha$ dans ce quadrant.", e: "{expl}" },
+        params: () => {
+            const quads = [2,3,4];
+            const q = randChoice(quads);
+            const quadWordsCs = {2:'II.', 3:'III.', 4:'IV.'};
+            const quadWordsFr = {2:'deuxième', 3:'troisième', 4:'quatrième'};
+            return { q, quadWordCs: quadWordsCs[q], quadWordFr: quadWordsFr[q] };
+        },
+        solve: (p) => {
+            const catsCs = CATEGORIES_CS;
+            const catsFr = CATEGORIES_FR;
+            const idx = p.q - 2;
+            const explCs = `Ve ${p.quadWordCs} kvadrantu platí: ${catsCs[idx]}.`;
+            const explFr = `Dans le ${p.quadWordFr} quadrant : ${catsFr[idx]}.`;
+            return {
+                res: catsCs[idx], resFr: catsFr[idx],
+                explCs, explFr
+            };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m5 */ },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "Platí $\\sin{a}°=\\sin{b}°$?", h: "Využij vztah $\\sin(180°-\\alpha)=\\sin\\alpha$.", e: "{expl}" },
+        fr: { q: "A-t-on $\\sin{a}°=\\sin{b}°$ ?", h: "Utilise la relation $\\sin(180°-\\alpha)=\\sin\\alpha$.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { a: 50, b: 130, valid: true },
+                { a: 35, b: 145, valid: true },
+                { a: 65, b: 115, valid: true },
+                { a: 50, b: 140, valid: false },
+                { a: 35, b: 150, valid: false },
+                { a: 65, b: 100, valid: false }
+            ];
+            return randChoice(scenarios);
+        },
+        solve: (p) => {
+            const explCs = p.valid
+                ? `Ano, protože ${p.a}°+${p.b}°=180°$, tedy $\\sin${p.b}°=\\sin(180°-${p.a}°)=\\sin${p.a}°$.`
+                : `Ne, protože ${p.a}°+${p.b}°\\neq180°$, úhly nejsou navzájem „doplňkové" do $180°$.`;
+            const explFr = p.valid
+                ? `Oui, car ${p.a}°+${p.b}°=180°$, donc $\\sin${p.b}°=\\sin(180°-${p.a}°)=\\sin${p.a}°$.`
+                : `Non, car ${p.a}°+${p.b}°\\neq180°$, les angles ne sont pas complémentaires à $180°$.`;
+            return { res: p.valid ? 'ano' : 'ne', resFr: p.valid ? 'oui' : 'non', explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m6 */ }
+];
+
+const CATEGORIES_CS = ['$\\sin\\alpha=\\sin\\alpha_1,\\ \\cos\\alpha=-\\cos\\alpha_1$', '$\\sin\\alpha=-\\sin\\alpha_1,\\ \\cos\\alpha=-\\cos\\alpha_1$', '$\\sin\\alpha=-\\sin\\alpha_1,\\ \\cos\\alpha=\\cos\\alpha_1$'];
+const CATEGORIES_FR = ['$\\sin\\alpha=\\sin\\alpha_1,\\ \\cos\\alpha=-\\cos\\alpha_1$', '$\\sin\\alpha=-\\sin\\alpha_1,\\ \\cos\\alpha=-\\cos\\alpha_1$', '$\\sin\\alpha=-\\sin\\alpha_1,\\ \\cos\\alpha=\\cos\\alpha_1$'];
+const DISTRACTOR_CS = '$\\sin\\alpha=\\sin\\alpha_1,\\ \\cos\\alpha=\\cos\\alpha_1$ (žádná úprava, I. kvadrant)';
+const DISTRACTOR_FR = '$\\sin\\alpha=\\sin\\alpha_1,\\ \\cos\\alpha=\\cos\\alpha_1$ (aucune modification, I. quadrant)';
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit bez kalkulačky', 'záleží na tom, zda jde o sinus, nebo kosinus'];
+const YESNO_DISTRACTORS_FR = ['impossible à déterminer sans calculatrice', 'cela dépend du fait qu\'il s\'agisse du sinus ou du cosinus'];
+
+function fmt3(x){
+    if (Number.isInteger(x)) return x.toString();
+    let s = x.toFixed(3);
+    s = s.replace(/0+$/,'').replace(/\.$/,'');
+    if (s === '' || s === '-') s = '0';
+    return s.replace('.', ',');
+}
+function buildOptions3(correct, extras, spread){
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = (randInt(1,100)/100) * spread * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = Math.round((correct + delta)*1000)/1000;
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0,4).map(fmt3));
+}
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm5') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const catsOther = lang === 'cs' ? CATEGORIES_FR : CATEGORIES_CS;
+            const distractorOther = lang === 'cs' ? DISTRACTOR_FR : DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.optText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Sinus i kosinus pro libovolný úhel ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat redukční vzorce a znaménka v jednotlivých kvadrantech."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na definici sinu a kosinu na jednotkové kružnici a na výpočet přes referenční úhel."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš definici sinu a kosinu, periodicitě i vlastnostem grafů.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definici sinu a kosinu na jednotkové kružnici a jejich vlastnosti.");
+            if (mathPercent >= 70) strengths.push("Výpočty (redukční vzorce, hodnoty pro libovolný úhel) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si zejména určování referenčního úhlu a znaménka podle kvadrantu.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Skvělá práce! Zvládl/a jsi kapitolu o sinu a kosinu – můžeš si otestovat své znalosti znovu s jinými čísly.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení jednotlivých vzorců a postupů.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>

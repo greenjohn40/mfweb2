@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Goniometrie 4 — Goniometrické rovnice a nerovnice / Goniométrie 4 — Équations et inéquations trigonométriques</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-goniometrie4.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Goniometrie 4</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Goniométrie 4 — Équations et inéquations trigonométriques
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Co je goniometrická rovnice s jednou neznámou?",
+            "a": "Rovnice, ve které se neznámá vyskytuje v argumentu goniometrické funkce."
+        },
+        {
+            "q": "Jaký má tvar základní goniometrická rovnice?",
+            "a": "$\\sin x=a$, $\\cos x=a$, $\\operatorname{tg}x=a$ nebo $\\operatorname{cotg}x=a$, $a\\in\\mathbb{R}$."
+        },
+        {
+            "q": "Co nazýváme základním řešením goniometrické rovnice?",
+            "a": "Všechna řešení ležící v intervalu $\\langle0;2\\pi)$."
+        },
+        {
+            "q": "Proč je interval $\\langle0;2\\pi)$ pro základní řešení zprava otevřený?",
+            "a": "Protože $0$ a $2\\pi$ odpovídají témuž bodu na jednotkové kružnici — jinak by se stejné řešení počítalo dvakrát."
+        },
+        {
+            "q": "Jaký je první krok při řešení základní goniometrické rovnice pomocí jednotkové kružnice?",
+            "a": "Vyznačit hodnotu $a$ na příslušné ose (pro sinus na ose $y$, pro kosinus na ose $x$)."
+        },
+        {
+            "q": "Jak určíme základní řešení z bodů na jednotkové kružnici?",
+            "a": "Pomocí velikosti ostrého úhlu z I. kvadrantu."
+        },
+        {
+            "q": "Co musíme udělat po nalezení základního řešení, abychom získali všechna řešení?",
+            "a": "Připočítat k němu celočíselné násobky periody funkce."
+        },
+        {
+            "q": "Jak se řeší základní goniometrická rovnice graficky?",
+            "a": "Najdeme $x$-ové souřadnice průsečíků grafu funkce $y=f(x)$ s přímkou $y=a$ na intervalu $\\langle0;2\\pi)$."
+        },
+        {
+            "q": "Proč se grafická metoda v praxi používá spíš k ověření než k výpočtu?",
+            "a": "Protože přesné souřadnice průsečíků z grafu obvykle nelze přesně vyčíst."
+        },
+        {
+            "q": "Jak postupujeme, když máme najít řešení rovnice jen na jiném intervalu než $\\langle0;2\\pi)$?",
+            "a": "Nejprve najdeme všechna řešení pomocí základního řešení a periody, pak vybereme ta, která padnou do zadaného intervalu."
+        },
+        {
+            "q": "Kdy nemá rovnice $\\sin x=a$ (ani $\\cos x=a$) žádné řešení?",
+            "a": "Když $|a|\\gt1$, protože obor hodnot sinu i kosinu je $\\langle-1;1\\rangle$."
+        },
+        {
+            "q": "Proč mají rovnice $\\operatorname{tg}x=a$ a $\\operatorname{cotg}x=a$ řešení pro libovolné reálné $a$?",
+            "a": "Protože obor hodnot tangens i kotangens je celé $\\mathbb{R}$."
+        },
+        {
+            "q": "Co uděláme, když hodnota $a$ neodpovídá žádnému úhlu z tabulky?",
+            "a": "Použijeme kalkulačku (arkusfunkce) k přibližnému výpočtu základního řešení."
+        },
+        {
+            "q": "Na co je potřeba dát pozor při výpočtu na kalkulačce?",
+            "a": "V jakém režimu (DEG, RAD, GRA) kalkulačka počítá úhly."
+        },
+        {
+            "q": "K čemu využíváme postup řešení základní goniometrické rovnice mimo řešení rovnic?",
+            "a": "Ke stanovení definičního oboru výrazu, který goniometrickou funkci obsahuje ve jmenovateli."
+        },
+        {
+            "q": "Jakou substituci zavádíme u rovnice s výrazem $qx+m$ v argumentu?",
+            "a": "$u=qx+m$."
+        },
+        {
+            "q": "V jakém kroku substitučního postupu připojujeme periodu?",
+            "a": "Hned k řešení pro $u$, ne až u výsledné neznámé $x$."
+        },
+        {
+            "q": "Kdy periodu vydělíme koeficientem $q$?",
+            "a": "Až při návratu k původní neznámé $x$."
+        },
+        {
+            "q": "Co znamená vyřešit goniometrickou rovnici v součinovém tvaru?",
+            "a": "Vyřešit samostatně dvě (či více) jednodušších rovnic a jejich řešení sjednotit."
+        },
+        {
+            "q": "Kdy je součin dvou goniometrických výrazů roven nule?",
+            "a": "Právě tehdy, když je nule roven aspoň jeden z činitelů."
+        },
+        {
+            "q": "Jaký je základní tvar goniometrické nerovnice?",
+            "a": "$f(x)\\ge a$, $f(x)\\le a$, $f(x)\\gt a$ nebo $f(x)\\lt a$."
+        },
+        {
+            "q": "Na kolik oblouků rozdělí základní řešení příslušné rovnice jednotkovou kružnici při řešení nerovnice?",
+            "a": "Na dva oblouky."
+        },
+        {
+            "q": "Co rozhoduje o tom, zda krajní body oblouku patří do řešení nerovnice?",
+            "a": "Zda je nerovnost ostrá, nebo neostrá."
+        },
+        {
+            "q": "Na co si dát zvláštní pozor u nerovnic s tangens nebo kotangens?",
+            "a": "Zda krajní bod intervalu neleží mimo definiční obor — tam musí interval zůstat otevřený."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\sin x=\\dfrac12$.",
+            "a": "$\\overline x_1=30°$, $\\overline x_2=150°$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\cos x=\\dfrac12$.",
+            "a": "$\\overline x_1=60°$, $\\overline x_2=300°$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\sin x=-\\dfrac{\\sqrt2}{2}$.",
+            "a": "$\\overline x_1=225°$, $\\overline x_2=315°$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\cos x=-\\dfrac12$.",
+            "a": "$\\overline x_1=120°$, $\\overline x_2=240°$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\sin x=\\dfrac{\\sqrt3}{2}$.",
+            "a": "$\\overline x_1=60°$, $\\overline x_2=120°$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\cos x=-\\dfrac{\\sqrt3}{2}$.",
+            "a": "$\\overline x_1=150°$, $\\overline x_2=210°$."
+        },
+        {
+            "q": "Kolik základních řešení má rovnice $\\sin x=-1$?",
+            "a": "Jediné: $\\overline x=270°$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\cos x=0$.",
+            "a": "$\\overline x_1=90°$, $\\overline x_2=270°$."
+        },
+        {
+            "q": "Zapište množinu všech řešení rovnice $\\sin x=\\dfrac12$.",
+            "a": "$K=\\bigcup_{k\\in\\mathbb{Z}}\\{30°+k\\cdot360°;\\,150°+k\\cdot360°\\}$."
+        },
+        {
+            "q": "Zapište množinu všech řešení rovnice $\\cos x=-\\dfrac12$.",
+            "a": "$K=\\bigcup_{k\\in\\mathbb{Z}}\\{120°+k\\cdot360°;\\,240°+k\\cdot360°\\}$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\operatorname{tg}x=1$.",
+            "a": "$\\overline x_1=45°$, $\\overline x_2=225°$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\operatorname{tg}x=\\sqrt3$.",
+            "a": "$\\overline x_1=60°$, $\\overline x_2=240°$."
+        },
+        {
+            "q": "Najděte základní řešení rovnice $\\operatorname{cotg}x=1$.",
+            "a": "$\\overline x_1=45°$, $\\overline x_2=225°$."
+        },
+        {
+            "q": "Jakou periodu mají funkce tangens a kotangens?",
+            "a": "$\\pi$ (resp. $180°$) — poloviční oproti sinu a kosinu."
+        },
+        {
+            "q": "Zapište množinu všech řešení rovnice $\\operatorname{tg}x=1$ pomocí stručného zápisu.",
+            "a": "$K=\\bigcup_{k\\in\\mathbb{Z}}\\{45°+k\\cdot180°\\}$."
+        },
+        {
+            "q": "Vyřešte $\\sin(2x)=\\dfrac12$ (najděte základní řešení pro $x$).",
+            "a": "Substituce $u=2x$: $\\overline u_1=30°,\\overline u_2=150°\\Rightarrow x_1=15°,\\,x_2=75°$."
+        },
+        {
+            "q": "Vyřešte $\\cos(3x-60°)=\\dfrac12$ (najděte dvě řešení).",
+            "a": "Substituce $u=3x-60°$: $\\overline u_1=60°,\\overline u_2=300°\\Rightarrow x_1=40°,\\,x_2=120°$."
+        },
+        {
+            "q": "Vyřešte $-\\sin(2x)=1$ (základní řešení).",
+            "a": "$\\sin(2x)=-1\\Rightarrow2x=270°+k\\cdot360°\\Rightarrow x=135°+k\\cdot180°$."
+        },
+        {
+            "q": "Vyřešte $\\operatorname{tg}(x+45°)=1$.",
+            "a": "$x+45°=45°+k\\cdot180°\\Rightarrow x=k\\cdot180°$."
+        },
+        {
+            "q": "Vyřešte rovnici v součinovém tvaru $\\sin x\\cdot\\cos x=0$.",
+            "a": "$\\sin x=0\\lor\\cos x=0\\Rightarrow K=\\bigcup_{k\\in\\mathbb{Z}}\\{k\\cdot90°\\}$."
+        },
+        {
+            "q": "Proč u rovnice $\\sin x\\cdot\\cos x=0$ stačí zapsat výsledek jako násobky $90°$?",
+            "a": "Protože řešení obou dílčích rovnic ($0°,180°,\\dots$ a $90°,270°,\\dots$) dohromady tvoří právě všechny násobky $90°$."
+        },
+        {
+            "q": "Řešte nerovnici $\\sin x\\gt\\dfrac12$ (základní řešení).",
+            "a": "$x\\in(30°;150°)$."
+        },
+        {
+            "q": "Řešte nerovnici $\\cos x\\le-\\dfrac12$ (základní řešení).",
+            "a": "$x\\in\\langle120°;240°\\rangle$."
+        },
+        {
+            "q": "Řešte nerovnici $\\operatorname{tg}x\\lt1$ (v radiánech, základní řešení).",
+            "a": "$x\\in\\left(-\\dfrac{\\pi}{2}+k\\pi;\\dfrac{\\pi}{4}+k\\pi\\right)$."
+        },
+        {
+            "q": "Určete definiční obor výrazu $\\dfrac{1}{\\sin x}$.",
+            "a": "$D=\\mathbb{R}\\setminus\\{k\\pi\\}$, $k\\in\\mathbb{Z}$."
+        },
+        {
+            "q": "Určete definiční obor výrazu $\\dfrac{\\operatorname{tg}x}{1-\\cos x}$.",
+            "a": "$D=\\mathbb{R}\\setminus\\left(\\{(2k+1)\\frac{\\pi}{2}\\}\\cup\\{2k\\pi\\}\\right)$, $k\\in\\mathbb{Z}$ (tangens vyžaduje $\\cos x\\neq0$, jmenovatel vyžaduje $\\cos x\\neq1$)."
+        }
+    ],
+    "fr": [
+        {
+            "q": "Qu'est-ce qu'une équation trigonométrique à une inconnue ?",
+            "a": "Une équation dans laquelle l'inconnue apparaît dans l'argument d'une fonction trigonométrique."
+        },
+        {
+            "q": "Quelle est la forme d'une équation trigonométrique de base ?",
+            "a": "$\\sin x=a$, $\\cos x=a$, $\\operatorname{tg}x=a$ ou $\\operatorname{cotg}x=a$, $a\\in\\mathbb{R}$."
+        },
+        {
+            "q": "Qu'appelle-t-on solution de base d'une équation trigonométrique ?",
+            "a": "Toutes les solutions situées dans l'intervalle $\\langle0;2\\pi)$."
+        },
+        {
+            "q": "Pourquoi l'intervalle $\\langle0;2\\pi)$ pour la solution de base est-il ouvert à droite ?",
+            "a": "Parce que $0$ et $2\\pi$ correspondent au même point sur le cercle trigonométrique — sinon la même solution serait comptée deux fois."
+        },
+        {
+            "q": "Quelle est la première étape pour résoudre une équation trigonométrique de base à l'aide du cercle trigonométrique ?",
+            "a": "Marquer la valeur $a$ sur l'axe correspondant (l'axe $y$ pour le sinus, l'axe $x$ pour le cosinus)."
+        },
+        {
+            "q": "Comment détermine-t-on la solution de base à partir des points sur le cercle trigonométrique ?",
+            "a": "À l'aide de la taille de l'angle aigu du I. quadrant."
+        },
+        {
+            "q": "Que faut-il faire après avoir trouvé la solution de base pour obtenir toutes les solutions ?",
+            "a": "Ajouter des multiples entiers de la période de la fonction."
+        },
+        {
+            "q": "Comment résout-on une équation trigonométrique de base graphiquement ?",
+            "a": "On trouve les abscisses des points d'intersection du graphe de $y=f(x)$ avec la droite $y=a$ sur l'intervalle $\\langle0;2\\pi)$."
+        },
+        {
+            "q": "Pourquoi la méthode graphique est-elle plutôt utilisée pour vérifier que pour calculer ?",
+            "a": "Parce qu'on ne peut généralement pas lire précisément les coordonnées des points d'intersection sur un graphe."
+        },
+        {
+            "q": "Comment procède-t-on pour trouver les solutions d'une équation seulement sur un intervalle autre que $\\langle0;2\\pi)$ ?",
+            "a": "On trouve d'abord toutes les solutions à l'aide de la solution de base et de la période, puis on sélectionne celles qui tombent dans l'intervalle donné."
+        },
+        {
+            "q": "Quand l'équation $\\sin x=a$ (ou $\\cos x=a$) n'a-t-elle aucune solution ?",
+            "a": "Quand $|a|\\gt1$, car l'ensemble des valeurs du sinus et du cosinus est $\\langle-1;1\\rangle$."
+        },
+        {
+            "q": "Pourquoi les équations $\\operatorname{tg}x=a$ et $\\operatorname{cotg}x=a$ ont-elles une solution pour tout $a$ réel ?",
+            "a": "Parce que l'ensemble des valeurs de la tangente et de la cotangente est $\\mathbb{R}$ tout entier."
+        },
+        {
+            "q": "Que fait-on quand la valeur $a$ ne correspond à aucun angle de la table ?",
+            "a": "On utilise la calculatrice (fonctions réciproques) pour calculer approximativement la solution de base."
+        },
+        {
+            "q": "À quoi faut-il faire attention lors d'un calcul à la calculatrice ?",
+            "a": "Dans quel mode (DEG, RAD, GRA) la calculatrice calcule les angles."
+        },
+        {
+            "q": "À quoi sert la méthode de résolution d'une équation trigonométrique de base, en dehors de la résolution d'équations ?",
+            "a": "À déterminer le domaine de définition d'une expression contenant une fonction trigonométrique au dénominateur."
+        },
+        {
+            "q": "Quelle substitution introduit-on pour une équation avec une expression $qx+m$ dans l'argument ?",
+            "a": "$u=qx+m$."
+        },
+        {
+            "q": "À quelle étape de la méthode de substitution ajoute-t-on la période ?",
+            "a": "Déjà à la solution pour $u$, pas seulement à la fin pour l'inconnue $x$."
+        },
+        {
+            "q": "Quand divise-t-on la période par le coefficient $q$ ?",
+            "a": "Seulement au moment du retour à l'inconnue d'origine $x$."
+        },
+        {
+            "q": "Que signifie résoudre une équation trigonométrique sous forme de produit ?",
+            "a": "Résoudre séparément deux (ou plusieurs) équations plus simples et réunir leurs solutions."
+        },
+        {
+            "q": "Quand un produit de deux expressions trigonométriques est-il nul ?",
+            "a": "Si et seulement si au moins un des facteurs est nul."
+        },
+        {
+            "q": "Quelle est la forme de base d'une inéquation trigonométrique ?",
+            "a": "$f(x)\\ge a$, $f(x)\\le a$, $f(x)\\gt a$ ou $f(x)\\lt a$."
+        },
+        {
+            "q": "En combien d'arcs la solution de base de l'équation correspondante partage-t-elle le cercle trigonométrique lors de la résolution d'une inéquation ?",
+            "a": "En deux arcs."
+        },
+        {
+            "q": "Qu'est-ce qui détermine si les points limites d'un arc appartiennent à la solution d'une inéquation ?",
+            "a": "Si l'inégalité est stricte ou large."
+        },
+        {
+            "q": "À quoi faut-il faire particulièrement attention pour les inéquations avec tangente ou cotangente ?",
+            "a": "Vérifier que le point limite de l'intervalle ne se situe pas en dehors du domaine de définition — l'intervalle doit alors y rester ouvert."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\sin x=\\dfrac12$.",
+            "a": "$\\overline x_1=30°$, $\\overline x_2=150°$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\cos x=\\dfrac12$.",
+            "a": "$\\overline x_1=60°$, $\\overline x_2=300°$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\sin x=-\\dfrac{\\sqrt2}{2}$.",
+            "a": "$\\overline x_1=225°$, $\\overline x_2=315°$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\cos x=-\\dfrac12$.",
+            "a": "$\\overline x_1=120°$, $\\overline x_2=240°$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\sin x=\\dfrac{\\sqrt3}{2}$.",
+            "a": "$\\overline x_1=60°$, $\\overline x_2=120°$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\cos x=-\\dfrac{\\sqrt3}{2}$.",
+            "a": "$\\overline x_1=150°$, $\\overline x_2=210°$."
+        },
+        {
+            "q": "Combien de solutions de base a l'équation $\\sin x=-1$ ?",
+            "a": "Une seule : $\\overline x=270°$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\cos x=0$.",
+            "a": "$\\overline x_1=90°$, $\\overline x_2=270°$."
+        },
+        {
+            "q": "Écrivez l'ensemble de toutes les solutions de l'équation $\\sin x=\\dfrac12$.",
+            "a": "$K=\\bigcup_{k\\in\\mathbb{Z}}\\{30°+k\\cdot360°;\\,150°+k\\cdot360°\\}$."
+        },
+        {
+            "q": "Écrivez l'ensemble de toutes les solutions de l'équation $\\cos x=-\\dfrac12$.",
+            "a": "$K=\\bigcup_{k\\in\\mathbb{Z}}\\{120°+k\\cdot360°;\\,240°+k\\cdot360°\\}$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\operatorname{tg}x=1$.",
+            "a": "$\\overline x_1=45°$, $\\overline x_2=225°$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\operatorname{tg}x=\\sqrt3$.",
+            "a": "$\\overline x_1=60°$, $\\overline x_2=240°$."
+        },
+        {
+            "q": "Trouvez la solution de base de l'équation $\\operatorname{cotg}x=1$.",
+            "a": "$\\overline x_1=45°$, $\\overline x_2=225°$."
+        },
+        {
+            "q": "Quelle est la période de la tangente et de la cotangente ?",
+            "a": "$\\pi$ (soit $180°$) — la moitié de celle du sinus et du cosinus."
+        },
+        {
+            "q": "Écrivez l'ensemble de toutes les solutions de l'équation $\\operatorname{tg}x=1$ sous forme condensée.",
+            "a": "$K=\\bigcup_{k\\in\\mathbb{Z}}\\{45°+k\\cdot180°\\}$."
+        },
+        {
+            "q": "Résolvez $\\sin(2x)=\\dfrac12$ (trouvez la solution de base pour $x$).",
+            "a": "Substitution $u=2x$ : $\\overline u_1=30°,\\overline u_2=150°\\Rightarrow x_1=15°,\\,x_2=75°$."
+        },
+        {
+            "q": "Résolvez $\\cos(3x-60°)=\\dfrac12$ (trouvez deux solutions).",
+            "a": "Substitution $u=3x-60°$ : $\\overline u_1=60°,\\overline u_2=300°\\Rightarrow x_1=40°,\\,x_2=120°$."
+        },
+        {
+            "q": "Résolvez $-\\sin(2x)=1$ (solution de base).",
+            "a": "$\\sin(2x)=-1\\Rightarrow2x=270°+k\\cdot360°\\Rightarrow x=135°+k\\cdot180°$."
+        },
+        {
+            "q": "Résolvez $\\operatorname{tg}(x+45°)=1$.",
+            "a": "$x+45°=45°+k\\cdot180°\\Rightarrow x=k\\cdot180°$."
+        },
+        {
+            "q": "Résolvez l'équation sous forme de produit $\\sin x\\cdot\\cos x=0$.",
+            "a": "$\\sin x=0\\lor\\cos x=0\\Rightarrow K=\\bigcup_{k\\in\\mathbb{Z}}\\{k\\cdot90°\\}$."
+        },
+        {
+            "q": "Pourquoi, pour l'équation $\\sin x\\cdot\\cos x=0$, suffit-il d'écrire le résultat comme les multiples de $90°$ ?",
+            "a": "Parce que les solutions des deux équations partielles ($0°,180°,\\dots$ et $90°,270°,\\dots$) forment ensemble exactement tous les multiples de $90°$."
+        },
+        {
+            "q": "Résolvez l'inéquation $\\sin x\\gt\\dfrac12$ (solution de base).",
+            "a": "$x\\in(30°;150°)$."
+        },
+        {
+            "q": "Résolvez l'inéquation $\\cos x\\le-\\dfrac12$ (solution de base).",
+            "a": "$x\\in\\langle120°;240°\\rangle$."
+        },
+        {
+            "q": "Résolvez l'inéquation $\\operatorname{tg}x\\lt1$ (en radians, solution de base).",
+            "a": "$x\\in\\left(-\\dfrac{\\pi}{2}+k\\pi;\\dfrac{\\pi}{4}+k\\pi\\right)$."
+        },
+        {
+            "q": "Déterminez le domaine de définition de l'expression $\\dfrac{1}{\\sin x}$.",
+            "a": "$D=\\mathbb{R}\\setminus\\{k\\pi\\}$, $k\\in\\mathbb{Z}$."
+        },
+        {
+            "q": "Déterminez le domaine de définition de l'expression $\\dfrac{\\operatorname{tg}x}{1-\\cos x}$.",
+            "a": "$D=\\mathbb{R}\\setminus\\left(\\{(2k+1)\\frac{\\pi}{2}\\}\\cup\\{2k\\pi\\}\\right)$, $k\\in\\mathbb{Z}$ (la tangente exige $\\cos x\\neq0$, le dénominateur exige $\\cos x\\neq1$)."
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

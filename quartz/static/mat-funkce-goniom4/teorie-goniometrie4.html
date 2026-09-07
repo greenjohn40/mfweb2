@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 4 — Goniometrické rovnice a nerovnice — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f8fafc; border-left: 4px solid #64748b; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+    .verdict-ok { background: #ecfdf5; border: 1px solid #6ee7b7; }
+    .verdict-no { background: #fef2f2; border: 1px solid #fca5a5; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Goniometrie 4 — Goniometrické rovnice a nerovnice</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-goniometrie4.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Od hodnot k rovnicím</h2>
+    <p>V předchozích dvou kapitolách jsme se naučili vyčíslit sinus, kosinus, tangens i kotangens pro libovolný úhel — ať už pomocí jednotkové kružnice, redukčních vzorců, nebo kalkulačky. Nyní se naučíme opačnou úlohu: <b>máme zadanou hodnotu goniometrické funkce a hledáme, pro které úhly jí funkce nabývá.</b> Tomu se říká řešit goniometrickou rovnici. Podobně se naučíme řešit i goniometrické nerovnice, kde budeme hledat všechny úhly, pro které je hodnota funkce větší, menší (případně větší/menší nebo rovna) danému číslu.</p>
+</section>
+
+<section id="sec-a-zaklad" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Základní goniometrické rovnice</h2>
+    <p><b>Goniometrická rovnice s jednou neznámou</b> je každá rovnice, ve které se neznámá vyskytuje v argumentu goniometrické funkce. Příklady: $\sin(2x+1)=0{,}3$; $\cos^2x-\sin x=0$; $\operatorname{tg}x\cdot\sin x=-1$.</p>
+    <div class="card text-center">
+        <p><b>Základní goniometrická rovnice</b> má tvar</p>
+        $$\sin x=a,\quad \cos x=a,\quad \operatorname{tg}x=a,\quad \operatorname{cotg}x=a,\qquad a\in\mathbb{R}.$$
+        <p class="text-sm mt-1">Příklady: $\sin x=-0{,}4$;&ensp; $\cos x=\dfrac{\sqrt3}{2}$;&ensp; $\operatorname{tg}x=3$;&ensp; $\operatorname{cotg}x=-5$.</p>
+    </div>
+    <p>Pokud nemáme v zadání řečeno jinak, hledáme řešení goniometrické rovnice v celém $\mathbb{R}$. Protože jsou ale sinus a kosinus periodické s periodou $2\pi$ (tangens a kotangens s periodou $\pi$), stačí najít řešení na jedné periodě a zbytek dopočítat. Proto zavádíme pojem <b>základní řešení</b>:</p>
+    <div class="note-box note-curious">
+        <b>Základním řešením</b> goniometrické rovnice nazýváme všechna její řešení, která leží v intervalu $\langle0;2\pi)$. Interval je zprava otevřený schválně — hodnoty $0$ a $2\pi$ odpovídají témuž bodu na jednotkové kružnici, takže by se jinak stejné řešení počítalo dvakrát.
+    </div>
+</section>
+
+<section id="sec-a-kruznice" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Postup řešení pomocí jednotkové kružnice</h2>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+        <li>Na jednotkové kružnici vyznačíme hodnotu $a$ na příslušné ose (pro sinus na ose $y$, pro kosinus na ose $x$).</li>
+        <li>Najdeme všechny průsečíky s kružnicí, kterými prochází koncové rameno hledaného úhlu — obvykle dva body.</li>
+        <li>Určíme velikost obou úhlů pomocí ostrého úhlu z I. kvadrantu — to jsou <b>základní řešení</b> $\overline x_1$, $\overline x_2$.</li>
+        <li>S uvážením periody funkce zapíšeme <b>množinu všech řešení</b>.</li>
+    </ol>
+    <p>Vyzkoušejte si krok 1–3 na posuvníku: měňte hodnotu $a$ a sledujte, jak se mění dvojice základních řešení rovnice $\sin x=a$.</p>
+    <div class="card">
+        <svg viewBox="0 0 240 240" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="15" y1="120" x2="225" y2="120" stroke="#57534e" stroke-width="1.5"/>
+<line x1="120" y1="225" x2="120" y2="15" stroke="#57534e" stroke-width="1.5"/>
+<circle cx="120" cy="120" r="90" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<text x="214" y="133" font-size="9.5" fill="#57534e" text-anchor="middle">1</text>
+<text x="26" y="133" font-size="9.5" fill="#57534e" text-anchor="middle">-1</text>
+<text x="133" y="26" font-size="9.5" fill="#57534e" text-anchor="middle">1</text>
+<text x="133" y="215" font-size="9.5" fill="#57534e" text-anchor="middle">-1</text>
+<line id="eq-hline" x1="15" y1="75" x2="225" y2="75" stroke="#b91c1c" stroke-width="1.3" stroke-dasharray="4,3"/>
+<line id="eq-ray1" x1="120" y1="120" x2="180" y2="54" stroke="#57534e" stroke-width="1.4"/>
+<line id="eq-ray2" x1="120" y1="120" x2="60" y2="54" stroke="#57534e" stroke-width="1.4"/>
+<circle id="eq-point1" cx="180" cy="54" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1.2"/>
+<circle id="eq-point2" cx="60" cy="54" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1.2"/>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">a =</span>
+            <input type="range" id="slider-a" min="-1" max="1" value="0.5" step="0.05" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right" id="a-val">0,5</span>
+        </div>
+        <p class="text-sm text-center font-semibold mt-1"><span id="eq-solutions">$\sin x=0{,}5\ \Rightarrow\ \overline{x}_1\approx30°,\ \overline{x}_2\approx150°$</span></p>
+    </div>
+    <p>Konkrétní vypočtený příklad — rovnice $\cos x=\dfrac{\sqrt2}{2}$: na ose $x$ vyznačíme hodnotu $\dfrac{\sqrt2}{2}\doteq0{,}71$, najdeme dva průsečíky s kružnicí a určíme základní řešení $\overline x_1=\dfrac{\pi}{4}$, $\overline x_2=2\pi-\dfrac{\pi}{4}=\dfrac{7\pi}{4}$. Funkce kosinus má periodu $2\pi$, takže:</p>
+    $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{4}+k\cdot2\pi;\ \frac{7\pi}{4}+k\cdot2\pi\right\}$$
+</section>
+
+<section id="sec-a-graf" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Postup řešení pomocí grafu</h2>
+    <p>Základní goniometrickou rovnici $f(x)=a$ lze řešit i graficky — nakreslíme graf funkce $y=f(x)$ a vodorovnou přímku $y=a$; základní řešení jsou $x$-ové souřadnice jejich průsečíků na intervalu $\langle0;2\pi)$.</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> $\cos x=\dfrac12$.</p>
+        <svg viewBox="0 0 300 220" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="45.0" y1="107.5" x2="280.0" y2="107.5" stroke="#57534e" stroke-width="1.5"/><line x1="50.4" y1="195.0" x2="50.4" y2="20.0" stroke="#57534e" stroke-width="1.5"/><text x="290.0" y="111.5" font-size="12" fill="#57534e" font-style="italic">x</text><text x="46.4" y="12.0" font-size="12" fill="#57534e" font-style="italic" text-anchor="middle">y</text><line x1="50.4" y1="104.5" x2="50.4" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="50.4" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">0</text><line x1="106.4" y1="104.5" x2="106.4" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="106.4" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">π/2</text><line x1="162.5" y1="104.5" x2="162.5" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="162.5" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">π</text><line x1="218.5" y1="104.5" x2="218.5" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="218.5" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">3π/2</text><line x1="274.6" y1="104.5" x2="274.6" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="274.6" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">2π</text><line x1="47.4" y1="170.0" x2="53.4" y2="170.0" stroke="#57534e" stroke-width="1"/><text x="44.4" y="173.5" font-size="9.5" fill="#57534e" text-anchor="end">-1</text><line x1="47.4" y1="45.0" x2="53.4" y2="45.0" stroke="#57534e" stroke-width="1"/><text x="44.4" y="48.5" font-size="9.5" fill="#57534e" text-anchor="end">1</text><line x1="50.4" y1="76.2" x2="274.6" y2="76.2" stroke="#b91c1c" stroke-width="1.3" stroke-dasharray="4,3"/><text x="256" y="72.2" font-size="10.5" fill="#b91c1c" font-weight="600">y=1/2</text><polyline points="50.4,45.0 51.4,45.0 52.4,45.1 53.5,45.2 54.5,45.4 55.5,45.6 56.5,45.9 57.5,46.2 58.6,46.6 59.6,47.1 60.6,47.5 61.6,48.1 62.6,48.6 63.6,49.3 64.7,49.9 65.7,50.6 66.7,51.4 67.7,52.2 68.7,53.1 69.8,54.0 70.8,54.9 71.8,55.9 72.8,56.9 73.8,58.0 74.9,59.1 75.9,60.3 76.9,61.5 77.9,62.7 78.9,63.9 80.0,65.2 81.0,66.6 82.0,67.9 83.0,69.3 84.0,70.8 85.0,72.2 86.1,73.7 87.1,75.2 88.1,76.8 89.1,78.3 90.1,79.9 91.2,81.5 92.2,83.2 93.2,84.8 94.2,86.5 95.2,88.2 96.3,89.9 97.3,91.6 98.3,93.3 99.3,95.1 100.3,96.8 101.4,98.6 102.4,100.4 103.4,102.2 104.4,103.9 105.4,105.7 106.4,107.5 107.5,109.3 108.5,111.1 109.5,112.8 110.5,114.6 111.5,116.4 112.6,118.2 113.6,119.9 114.6,121.7 115.6,123.4 116.6,125.1 117.7,126.8 118.7,128.5 119.7,130.2 120.7,131.8 121.7,133.5 122.8,135.1 123.8,136.7 124.8,138.2 125.8,139.8 126.8,141.3 127.9,142.8 128.9,144.2 129.9,145.7 130.9,147.1 131.9,148.4 132.9,149.8 134.0,151.1 135.0,152.3 136.0,153.5 137.0,154.7 138.0,155.9 139.1,157.0 140.1,158.1 141.1,159.1 142.1,160.1 143.1,161.0 144.2,161.9 145.2,162.8 146.2,163.6 147.2,164.4 148.2,165.1 149.3,165.7 150.3,166.4 151.3,166.9 152.3,167.5 153.3,167.9 154.3,168.4 155.4,168.8 156.4,169.1 157.4,169.4 158.4,169.6 159.4,169.8 160.5,169.9 161.5,170.0 162.5,170.0 163.5,170.0 164.5,169.9 165.6,169.8 166.6,169.6 167.6,169.4 168.6,169.1 169.6,168.8 170.7,168.4 171.7,167.9 172.7,167.5 173.7,166.9 174.7,166.4 175.7,165.7 176.8,165.1 177.8,164.4 178.8,163.6 179.8,162.8 180.8,161.9 181.9,161.0 182.9,160.1 183.9,159.1 184.9,158.1 185.9,157.0 187.0,155.9 188.0,154.7 189.0,153.5 190.0,152.3 191.0,151.1 192.1,149.8 193.1,148.4 194.1,147.1 195.1,145.7 196.1,144.2 197.1,142.8 198.2,141.3 199.2,139.8 200.2,138.2 201.2,136.7 202.2,135.1 203.3,133.5 204.3,131.8 205.3,130.2 206.3,128.5 207.3,126.8 208.4,125.1 209.4,123.4 210.4,121.7 211.4,119.9 212.4,118.2 213.5,116.4 214.5,114.6 215.5,112.8 216.5,111.1 217.5,109.3 218.5,107.5 219.6,105.7 220.6,103.9 221.6,102.2 222.6,100.4 223.6,98.6 224.7,96.8 225.7,95.1 226.7,93.3 227.7,91.6 228.7,89.9 229.8,88.2 230.8,86.5 231.8,84.8 232.8,83.2 233.8,81.5 234.9,79.9 235.9,78.3 236.9,76.8 237.9,75.2 238.9,73.7 240.0,72.2 241.0,70.8 242.0,69.3 243.0,67.9 244.0,66.6 245.0,65.2 246.1,63.9 247.1,62.7 248.1,61.5 249.1,60.3 250.1,59.1 251.2,58.0 252.2,56.9 253.2,55.9 254.2,54.9 255.2,54.0 256.3,53.1 257.3,52.2 258.3,51.4 259.3,50.6 260.3,49.9 261.4,49.3 262.4,48.6 263.4,48.1 264.4,47.5 265.4,47.1 266.4,46.6 267.5,46.2 268.5,45.9 269.5,45.6 270.5,45.4 271.5,45.2 272.6,45.1 273.6,45.0 274.6,45.0" fill="none" stroke="#7c3aed" stroke-width="2.5"/><circle cx="87.8" cy="76.2" r="3.5" fill="#7c3aed"/><circle cx="237.2" cy="76.2" r="3.5" fill="#7c3aed"/><text x="67.8" y="70.2" font-size="11" fill="#7c3aed" font-weight="600">x<tspan font-size="8" baseline-shift="sub">1</tspan></text><text x="241.2" y="70.2" font-size="11" fill="#7c3aed" font-weight="600">x<tspan font-size="8" baseline-shift="sub">2</tspan></text></svg>
+        <p class="text-sm text-center mt-1">Grafy funkcí $f:y=\cos x$ a $g:y=\dfrac12$ se protínají v bodech $\overline x_1=\dfrac{\pi}{3}$ a $\overline x_2=\dfrac{5\pi}{3}$. Funkce kosinus má periodu $2\pi$, proto:</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{3}+k\cdot2\pi;\ \frac{5\pi}{3}+k\cdot2\pi\right\}$$
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Grafická metoda je názorná, ale přesné souřadnice průsečíků z grafu obvykle nevyčteme — proto ji v praxi používáme spíš pro ověření, zatímco výpočet provádíme pomocí jednotkové kružnice.
+    </div>
+</section>
+
+<section id="sec-a-interval" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Řešení na jiném intervalu než $\langle0;2\pi)$</h2>
+    <p>Někdy je úkolem najít všechna řešení jen na zadaném intervalu, který nemusí odpovídat $\langle0;2\pi)$ ani jedné periodě. Postup: nejdřív najdeme <b>všechna</b> řešení pomocí základního řešení a periody, a teprve pak z nich vybereme ta, která padnou do zadaného intervalu (postupným dosazováním celých čísel za $k$).</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Řešte $\sin x=-\dfrac12$ na intervalu $\langle-360°;360°\rangle$ (ve stupňové míře).</p>
+        <p class="text-sm">Základní řešení: $\overline x_1=210°$, $\overline x_2=330°$ (sinus je záporný ve III. a IV. kvadrantu). Perioda $360°$, tedy $x_1=210°+k\cdot360°$, $x_2=330°+k\cdot360°$, $k\in\mathbb{Z}$.</p>
+        <p class="text-sm mt-1">Postupným dosazováním $k=-1$ a $k=0$ dostáváme hodnoty ležící v zadaném intervalu:</p>
+        <div class="overflow-x-auto my-2">
+            <table class="w-full text-sm text-center">
+                <thead><tr class="border-b-2 border-violet-200"><th class="p-1">$k$</th><th class="p-1">$x_1=210°+k\cdot360°$</th><th class="p-1">$x_2=330°+k\cdot360°$</th></tr></thead>
+                <tbody>
+                    <tr class="border-b border-violet-100"><td class="p-1">$-1$</td><td class="p-1">$-150°$</td><td class="p-1">$-30°$</td></tr>
+                    <tr><td class="p-1">$0$</td><td class="p-1">$210°$</td><td class="p-1">$330°$</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-sm">Hodnoty pro $k=1$ ($570°$, $690°$) i pro $k=-2$ ($-510°$, $-390°$) už leží mimo zadaný interval, proto je nepočítáme. Rovnice má na intervalu $\langle-360°;360°\rangle$ právě čtyři řešení:</p>
+        $$K=\{-150°;\ -30°;\ 210°;\ 330°\}$$
+    </div>
+</section>
+
+<section id="sec-a-specialni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Rovnice bez řešení a rovnice s netabulkovou hodnotou</h2>
+    <p>Protože obor hodnot sinu i kosinu je $\langle-1;1\rangle$, může se snadno stát, že rovnice $\sin x=a$ nebo $\cos x=a$ <b>nemá žádné řešení</b> — stačí, aby $|a|\gt1$.</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> $3\cos x+4=0$.</p>
+        <p class="text-sm">$\cos x=-\dfrac43$, a protože $\left|-\dfrac43\right|\gt1$, rovnice nemá v $\mathbb{R}$ žádné řešení: $K=\emptyset$.</p>
+    </div>
+    <p>Obor hodnot tangens a kotangens je naopak celé $\mathbb{R}$, takže rovnice $\operatorname{tg}x=a$ i $\operatorname{cotg}x=a$ mají řešení pro <b>libovolné</b> reálné $a$ — jen občas nevyjde „hezký" úhel z tabulky a musíme použít kalkulačku (arkusfunkce).</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> $\operatorname{tg}x=4$.</p>
+        <p class="text-sm">Hodnota $4$ neodpovídá žádnému úhlu z tabulky, proto použijeme kalkulačku: $\overline x_1\doteq75°58'\doteq1{,}326\ \text{rad}$ (základní řešení z I. kvadrantu). Tangens má periodu $180°$ (resp. $\pi$), takže:</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\{75°58'+k\cdot180°\}\qquad\text{přibližně}\qquad K=\bigcup_{k\in\mathbb{Z}}\{1{,}326+k\cdot\pi\}$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Na kalkulačce si vždy zkontrolujte, v jakém režimu počítáte úhly (DEG, RAD, GRA) — jinak dostanete číselně správný, ale jednotkově zcela nesmyslný výsledek.
+    </div>
+</section>
+
+<section id="sec-a-obor" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Definiční obor výrazu s goniometrickou funkcí</h2>
+    <p>Postup řešení základní goniometrické rovnice využíváme i tehdy, když nemáme přímo za úkol vyřešit rovnici, ale <b>stanovit definiční obor</b> nějakého výrazu, který goniometrickou funkci obsahuje ve jmenovateli.</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Určete definiční obor výrazu $\dfrac{\cos x}{1-2\sin x}$.</p>
+        <p class="text-sm">Zlomek nesmí mít nulový jmenovatel: $1-2\sin x\neq0\ \Rightarrow\ \sin x\neq\dfrac12$.</p>
+        <p class="text-sm mt-1">Nejprve vyřešíme „hraniční" rovnici $\sin x=\dfrac12$: základní řešení $\overline x_1=\dfrac{\pi}{6}$, $\overline x_2=\dfrac{5\pi}{6}$. Tyto hodnoty (a jim odpovídající s periodou $2\pi$) z definičního oboru vyloučíme:</p>
+        $$D=\mathbb{R}\setminus\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{6}+k\cdot2\pi;\ \frac{5\pi}{6}+k\cdot2\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-b-substituce" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Rovnice s lineárním výrazem v argumentu — substituce</h2>
+    <p>Argumentem goniometrické funkce může být i lineární výraz $qx+m$ (kde $q,m\in\mathbb{R}$), např. $\sin(2x+30°)=\dfrac{\sqrt3}{2}$. Takovou rovnici převedeme na základní tvar pomocí <b>substituce</b> $u=qx+m$.</p>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+        <li>Zavedeme substituci $u=qx+m$ a rovnici vyřešíme pro neznámou $u$ (postup jako u základní rovnice).</li>
+        <li>Všechna řešení pro $u$ zapíšeme i s periodou — <b>násobek periody připojujeme už zde</b>, ne až u výsledné neznámé $x$.</li>
+        <li>Z rovnice $qx+m=u$ vyjádříme $x$ a dosazením získáme všechna řešení pro původní neznámou.</li>
+    </ol>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> $\sin(2x+30°)=\dfrac{\sqrt3}{2}$.</p>
+        <p class="text-sm">Substituce: $u=2x+30°$. Rovnice $\sin u=\dfrac{\sqrt3}{2}$ má základní řešení $\overline u_1=60°$, $\overline u_2=120°$; s periodou $360°$:</p>
+        $$u=60°+k\cdot360°\qquad\text{nebo}\qquad u=120°+k\cdot360°,\quad k\in\mathbb{Z}$$
+        <p class="text-sm mt-1">Návrat k $x$: z $2x+30°=u$ plyne $x=\dfrac{u-30°}{2}$. Dosazením:</p>
+        $$x_1=\frac{60°-30°}{2}+k\cdot180°=15°+k\cdot180°\qquad x_2=\frac{120°-30°}{2}+k\cdot180°=45°+k\cdot180°$$
+        $$K=\bigcup_{k\in\mathbb{Z}}\{15°+k\cdot180°;\ 45°+k\cdot180°\}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Druhý příklad</b> (záporný koeficient): $-\cos(3x)=\dfrac12$.</p>
+        <p class="text-sm">Úpravou $\cos(3x)=-\dfrac12$; substituce $u=3x$ dá základní řešení $\overline u_1=120°$, $\overline u_2=240°$, perioda $360°$. Návrat: $x=\dfrac{u}{3}$, perioda pro $x$ se také vydělí koeficientem $q=3$, tedy $120°$:</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\{40°+k\cdot120°;\ 80°+k\cdot120°\}$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Periodu vydělujeme koeficientem $q$ až při návratu k $x$ — a dělíme jí <i>celou</i> periodu, ne jen jedno z čísel v základním řešení pro $u$.
+    </div>
+</section>
+
+<section id="sec-b-soucin" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Rovnice v součinovém tvaru</h2>
+    <p>Goniometrická rovnice v <b>součinovém tvaru</b> má na jedné straně součin dvou (či více) výrazů a na druhé nulu. Platí zde stejný princip jako u algebraických rovnic: <b>součin je roven nule právě tehdy, když je nule roven aspoň jeden z činitelů</b>. Řešit takovou rovnici tedy znamená vyřešit samostatně dvě (či více) jednodušších rovnic a jejich řešení sjednotit.</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> $\sin(2x)\cdot\operatorname{tg}(x-20°)=0$.</p>
+        <p class="text-sm">$\sin(2x)=0\ \lor\ \operatorname{tg}(x-20°)=0$.</p>
+        <p class="text-sm mt-1"><b>První rovnice:</b> substituce $u=2x$, $\sin u=0\Rightarrow u=k\cdot180°$, tedy $x=k\cdot90°$.</p>
+        <p class="text-sm"><b>Druhá rovnice:</b> substituce $v=x-20°$, $\operatorname{tg}v=0\Rightarrow v=k\cdot180°$, tedy $x=20°+k\cdot180°$.</p>
+        <p class="text-sm mt-1">Množina všech řešení je sjednocením obou dílčích výsledků:</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\{k\cdot90°\}\ \cup\ \bigcup_{k\in\mathbb{Z}}\{20°+k\cdot180°\}$$
+    </div>
+</section>
+
+<section id="sec-c-nerovnice" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Goniometrické nerovnice</h2>
+    <div class="card text-center">
+        <p><b>Základní goniometrická nerovnice</b> má tvar</p>
+        $$f(x)\ge a,\quad f(x)\le a,\quad f(x)\gt a,\quad f(x)\lt a,\qquad a\in\mathbb{R},$$
+        <p class="text-sm mt-1">kde $f(x)$ je $\sin x$, $\cos x$, $\operatorname{tg}x$ nebo $\operatorname{cotg}x$. Příklady: $\sin x\le-\dfrac12$;&ensp;$\cos x\gt0{,}5$;&ensp;$\operatorname{tg}x\lt2$;&ensp;$\operatorname{cotg}x\ge-3$.</p>
+    </div>
+    <p><b>Postup řešení pomocí jednotkové kružnice</b> (obdobný jako u rovnic, jen v posledním kroku místo bodů určujeme celý oblouk):</p>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+        <li>Vyřešíme příslušnou goniometrickou <i>rovnici</i> $f(x)=a$ — dostaneme dvě základní řešení, která kružnici rozdělí na dva oblouky.</li>
+        <li>Podle typu nerovnice určíme, na kterém oblouku nerovnost platí (a zda krajní body do řešení patří, nebo ne — podle ostré/neostré nerovnosti).</li>
+        <li>Odpovídající interval úhlů zapíšeme jako základní řešení nerovnice.</li>
+        <li>S uvážením periody zapíšeme množinu všech řešení.</li>
+    </ol>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> $\cos x\lt\dfrac12$ (ve stupňové míře).</p>
+        <p class="text-sm">Nejprve vyřešíme rovnici $\cos x=\dfrac12$: $\overline x_1=60°$, $\overline x_2=300°$. Kosinus je $x$-ová souřadnice bodu na kružnici, takže $\cos x\lt\dfrac12$ platí na oblouku „vlevo" od svislé přímky $x=\dfrac12$ — tedy mezi $60°$ a $300°$:</p>
+        <svg viewBox="0 0 240 240" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="15" y1="120" x2="225" y2="120" stroke="#57534e" stroke-width="1.5"/><line x1="120" y1="225" x2="120" y2="15" stroke="#57534e" stroke-width="1.5"/><circle cx="120" cy="120" r="90" fill="none" stroke="#c4b5fd" stroke-width="1.5"/><text x="214" y="133" font-size="9.5" fill="#57534e" text-anchor="middle">1</text><text x="26" y="133" font-size="9.5" fill="#57534e" text-anchor="middle">-1</text><text x="133" y="26" font-size="9.5" fill="#57534e" text-anchor="middle">1</text><text x="133" y="215" font-size="9.5" fill="#57534e" text-anchor="middle">-1</text><line x1="165.0" y1="15" x2="165.0" y2="225" stroke="#0d9488" stroke-width="1.3" stroke-dasharray="4,3"/><text x="165.0" y="12" font-size="10" fill="#0d9488" font-weight="600" text-anchor="middle">x=1/2</text><polyline points="165.0,42.1 160.9,39.8 156.6,37.8 152.3,36.0 147.8,34.4 143.3,33.1 138.7,32.0 134.1,31.1 129.4,30.5 124.7,30.1 120.0,30.0 115.3,30.1 110.6,30.5 105.9,31.1 101.3,32.0 96.7,33.1 92.2,34.4 87.7,36.0 83.4,37.8 79.1,39.8 75.0,42.1 71.0,44.5 67.1,47.2 63.4,50.1 59.8,53.1 56.4,56.4 53.1,59.8 50.1,63.4 47.2,67.1 44.5,71.0 42.1,75.0 39.8,79.1 37.8,83.4 36.0,87.7 34.4,92.2 33.1,96.7 32.0,101.3 31.1,105.9 30.5,110.6 30.1,115.3 30.0,120.0 30.1,124.7 30.5,129.4 31.1,134.1 32.0,138.7 33.1,143.3 34.4,147.8 36.0,152.3 37.8,156.6 39.8,160.9 42.1,165.0 44.5,169.0 47.2,172.9 50.1,176.6 53.1,180.2 56.4,183.6 59.8,186.9 63.4,189.9 67.1,192.8 71.0,195.5 75.0,197.9 79.1,200.2 83.4,202.2 87.7,204.0 92.2,205.6 96.7,206.9 101.3,208.0 105.9,208.9 110.6,209.5 115.3,209.9 120.0,210.0 124.7,209.9 129.4,209.5 134.1,208.9 138.7,208.0 143.3,206.9 147.8,205.6 152.3,204.0 156.6,202.2 160.9,200.2 165.0,197.9" fill="none" stroke="#b91c1c" stroke-width="4"/><line x1="120" y1="120" x2="165.0" y2="42.1" stroke="#57534e" stroke-width="1.2" stroke-dasharray="2,2"/><line x1="120" y1="120" x2="165.0" y2="197.9" stroke="#57534e" stroke-width="1.2" stroke-dasharray="2,2"/><circle cx="165.0" cy="42.1" r="3.5" fill="#7c3aed"/><circle cx="165.0" cy="197.9" r="3.5" fill="#7c3aed"/><text x="171.0" y="36.1" font-size="10.5" fill="#7c3aed" font-weight="600">x<tspan font-size="8" baseline-shift="sub">1</tspan>=60°</text><text x="171.0" y="209.9" font-size="10.5" fill="#7c3aed" font-weight="600">x<tspan font-size="8" baseline-shift="sub">2</tspan>=300°</text></svg>
+        <p class="text-sm text-center mt-1">Krajní body do řešení nepatří (nerovnost je ostrá), proto zapisujeme otevřený interval:</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}(60°+k\cdot360°;\ 300°+k\cdot360°)$$
+    </div>
+    <p>Vyzkoušejte si totéž na posuvníku: měňte úhel $x$ a sledujte, zda pro danou hodnotu nerovnost $\cos x\lt\dfrac12$ platí.</p>
+    <div class="card">
+        <svg viewBox="0 0 240 240" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="15" y1="120" x2="225" y2="120" stroke="#57534e" stroke-width="1.5"/>
+<line x1="120" y1="225" x2="120" y2="15" stroke="#57534e" stroke-width="1.5"/>
+<circle cx="120" cy="120" r="90" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<line x1="165" y1="15" x2="165" y2="225" stroke="#0d9488" stroke-width="1.3" stroke-dasharray="4,3"/>
+<text x="165" y="12" font-size="10" fill="#0d9488" font-weight="600" text-anchor="middle">x=1/2</text>
+<line id="ineq-ray" x1="120" y1="120" x2="210" y2="120" stroke="#57534e" stroke-width="1.6"/>
+<circle id="ineq-point" cx="210" cy="120" r="5" fill="#7c3aed" stroke="white" stroke-width="1.5"/>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <input type="range" id="slider-x" min="0" max="360" value="0" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="ineq-deg">0</span>°</span>
+        </div>
+        <div id="ineq-box" class="mt-2 p-3 rounded-lg text-center text-sm font-semibold verdict-no">
+            <span id="ineq-verdict">$\cos x\approx1{,}00\ \ge\ \dfrac12$</span>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Druhý příklad</b> (obloukově): $\sin x\ge\dfrac{\sqrt2}{2}$.</p>
+        <p class="text-sm">Rovnice $\sin x=\dfrac{\sqrt2}{2}$ dá $\overline x_1=\dfrac{\pi}{4}$, $\overline x_2=\dfrac{3\pi}{4}$. Sinus je $y$-ová souřadnice, takže nerovnost $\ge$ platí na „horním" oblouku mezi těmito body, včetně krajních bodů (nerovnost je neostrá):</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\langle\frac{\pi}{4}+k\cdot2\pi;\ \frac{3\pi}{4}+k\cdot2\pi\right\rangle$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Třetí příklad</b> (tangens — pozor na definiční obor): $\operatorname{tg}x\ge1$.</p>
+        <p class="text-sm">Rovnice $\operatorname{tg}x=1$ má základní řešení $\overline x=\dfrac{\pi}{4}$; tangens má periodu $\pi$. Protože tangens roste od $-\infty$ do $+\infty$ mezi dvěma sousedními asymptotami, nerovnost $\operatorname{tg}x\ge1$ platí od $\overline x$ až těsně pod následující asymptotu $x=\dfrac{\pi}{2}+k\pi$ (kde tangens není definován, proto tam interval musí zůstat otevřený):</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\langle\frac{\pi}{4}+k\cdot\pi;\ \frac{\pi}{2}+k\cdot\pi\right)$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> U nerovnic s tangens či kotangens vždy zkontrolujte, zda krajní bod intervalu náhodou neleží mimo definiční obor — tam musí zůstat závorka otevřená, i kdyby byla nerovnost jinak neostrá.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Pojem</th><th class="p-1 text-left">Klíčová myšlenka</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">základní řešení</td><td class="p-1 text-left">všechna řešení ležící v $\langle0;2\pi)$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">postup (kružnice/graf)</td><td class="p-1 text-left">najít základní řešení, pak připojit periodu</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">substituce $u=qx+m$</td><td class="p-1 text-left">periodu připojujeme k $u$, ne až k $x$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">součinový tvar</td><td class="p-1 text-left">řešit každého činitele zvlášť, řešení sjednotit</td></tr>
+                <tr><td class="p-1 text-left">nerovnice</td><td class="p-1 text-left">místo bodů hledáme celý oblouk/interval na kružnici</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Co bude dál:</b> Nyní, když umíme goniometrické rovnice a nerovnice řešit, se v navazující kapitole <i>Goniometrie 5 — Goniometrické vzorce</i> naučíme, jak výrazy s goniometrickými funkcemi dále upravovat (součtové vzorce, vzorce pro dvojnásobný úhel a další) — což nám umožní řešit i složitější rovnice, které na základní tvar převedeme až pomocí těchto vzorců.
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="mt-4 space-y-10 hidden">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Des valeurs aux équations</h2>
+    <p>Dans les deux chapitres précédents, nous avons appris à calculer le sinus, le cosinus, la tangente et la cotangente pour un angle quelconque — à l'aide du cercle trigonométrique, des formules de réduction ou de la calculatrice. Nous allons maintenant apprendre le problème inverse : <b>une valeur de la fonction trigonométrique est donnée, et nous cherchons pour quels angles la fonction prend cette valeur.</b> C'est ce qu'on appelle résoudre une équation trigonométrique. De la même façon, nous apprendrons à résoudre des inéquations trigonométriques, où nous chercherons tous les angles pour lesquels la valeur de la fonction est plus grande, plus petite (ou plus grande/plus petite ou égale) qu'un nombre donné.</p>
+</section>
+
+<section id="sec-a-zaklad" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Équations trigonométriques de base</h2>
+    <p>Une <b>équation trigonométrique à une inconnue</b> est toute équation dans laquelle l'inconnue apparaît dans l'argument d'une fonction trigonométrique. Exemples : $\sin(2x+1)=0{,}3$ ; $\cos^2x-\sin x=0$ ; $\operatorname{tg}x\cdot\sin x=-1$.</p>
+    <div class="card text-center">
+        <p>Une <b>équation trigonométrique de base</b> a la forme</p>
+        $$\sin x=a,\quad \cos x=a,\quad \operatorname{tg}x=a,\quad \operatorname{cotg}x=a,\qquad a\in\mathbb{R}.$$
+        <p class="text-sm mt-1">Exemples : $\sin x=-0{,}4$ ;&ensp; $\cos x=\dfrac{\sqrt3}{2}$ ;&ensp; $\operatorname{tg}x=3$ ;&ensp; $\operatorname{cotg}x=-5$.</p>
+    </div>
+    <p>Sauf indication contraire dans l'énoncé, nous cherchons les solutions d'une équation trigonométrique dans $\mathbb{R}$ tout entier. Comme le sinus et le cosinus sont périodiques de période $2\pi$ (la tangente et la cotangente de période $\pi$), il suffit de trouver les solutions sur une période et de calculer le reste ensuite. C'est pourquoi nous introduisons la notion de <b>solution de base</b> :</p>
+    <div class="note-box note-curious">
+        On appelle <b>solution de base</b> d'une équation trigonométrique toutes ses solutions situées dans l'intervalle $\langle0;2\pi)$. L'intervalle est volontairement ouvert à droite — les valeurs $0$ et $2\pi$ correspondent au même point sur le cercle trigonométrique, donc la même solution serait sinon comptée deux fois.
+    </div>
+</section>
+
+<section id="sec-a-kruznice" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résolution à l'aide du cercle trigonométrique</h2>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+        <li>Sur le cercle trigonométrique, on marque la valeur $a$ sur l'axe correspondant (l'axe $y$ pour le sinus, l'axe $x$ pour le cosinus).</li>
+        <li>On trouve tous les points d'intersection avec le cercle par lesquels passe la demi-droite finale de l'angle cherché — en général deux points.</li>
+        <li>On détermine la taille des deux angles à l'aide de l'angle aigu du I. quadrant — ce sont les <b>solutions de base</b> $\overline x_1$, $\overline x_2$.</li>
+        <li>En tenant compte de la période de la fonction, on écrit <b>l'ensemble de toutes les solutions</b>.</li>
+    </ol>
+    <p>Essayez les étapes 1 à 3 avec le curseur : faites varier la valeur de $a$ et observez comment change la paire de solutions de base de l'équation $\sin x=a$.</p>
+    <div class="card">
+        <svg viewBox="0 0 240 240" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="15" y1="120" x2="225" y2="120" stroke="#57534e" stroke-width="1.5"/>
+<line x1="120" y1="225" x2="120" y2="15" stroke="#57534e" stroke-width="1.5"/>
+<circle cx="120" cy="120" r="90" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<text x="214" y="133" font-size="9.5" fill="#57534e" text-anchor="middle">1</text>
+<text x="26" y="133" font-size="9.5" fill="#57534e" text-anchor="middle">-1</text>
+<text x="133" y="26" font-size="9.5" fill="#57534e" text-anchor="middle">1</text>
+<text x="133" y="215" font-size="9.5" fill="#57534e" text-anchor="middle">-1</text>
+<line id="eq-hline-fr" x1="15" y1="75" x2="225" y2="75" stroke="#b91c1c" stroke-width="1.3" stroke-dasharray="4,3"/>
+<line id="eq-ray1-fr" x1="120" y1="120" x2="180" y2="54" stroke="#57534e" stroke-width="1.4"/>
+<line id="eq-ray2-fr" x1="120" y1="120" x2="60" y2="54" stroke="#57534e" stroke-width="1.4"/>
+<circle id="eq-point1-fr" cx="180" cy="54" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1.2"/>
+<circle id="eq-point2-fr" cx="60" cy="54" r="4.5" fill="#7c3aed" stroke="white" stroke-width="1.2"/>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">a =</span>
+            <input type="range" id="slider-a-fr" min="-1" max="1" value="0.5" step="0.05" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right" id="a-val-fr">0,5</span>
+        </div>
+        <p class="text-sm text-center font-semibold mt-1"><span id="eq-solutions-fr">$\sin x=0{,}5\ \Rightarrow\ \overline{x}_1\approx30°,\ \overline{x}_2\approx150°$</span></p>
+    </div>
+    <p>Exemple chiffré concret — équation $\cos x=\dfrac{\sqrt2}{2}$ : sur l'axe $x$, on marque la valeur $\dfrac{\sqrt2}{2}\doteq0{,}71$, on trouve deux points d'intersection avec le cercle et on détermine les solutions de base $\overline x_1=\dfrac{\pi}{4}$, $\overline x_2=2\pi-\dfrac{\pi}{4}=\dfrac{7\pi}{4}$. La fonction cosinus a une période de $2\pi$, donc :</p>
+    $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{4}+k\cdot2\pi;\ \frac{7\pi}{4}+k\cdot2\pi\right\}$$
+</section>
+
+<section id="sec-a-graf" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résolution graphique</h2>
+    <p>Une équation trigonométrique de base $f(x)=a$ peut aussi se résoudre graphiquement — on trace le graphe de la fonction $y=f(x)$ et la droite horizontale $y=a$ ; les solutions de base sont les abscisses de leurs points d'intersection sur l'intervalle $\langle0;2\pi)$.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> $\cos x=\dfrac12$.</p>
+        <svg viewBox="0 0 300 220" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="45.0" y1="107.5" x2="280.0" y2="107.5" stroke="#57534e" stroke-width="1.5"/><line x1="50.4" y1="195.0" x2="50.4" y2="20.0" stroke="#57534e" stroke-width="1.5"/><text x="290.0" y="111.5" font-size="12" fill="#57534e" font-style="italic">x</text><text x="46.4" y="12.0" font-size="12" fill="#57534e" font-style="italic" text-anchor="middle">y</text><line x1="50.4" y1="104.5" x2="50.4" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="50.4" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">0</text><line x1="106.4" y1="104.5" x2="106.4" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="106.4" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">π/2</text><line x1="162.5" y1="104.5" x2="162.5" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="162.5" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">π</text><line x1="218.5" y1="104.5" x2="218.5" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="218.5" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">3π/2</text><line x1="274.6" y1="104.5" x2="274.6" y2="110.5" stroke="#57534e" stroke-width="1"/><text x="274.6" y="122.5" font-size="9.5" fill="#57534e" text-anchor="middle">2π</text><line x1="47.4" y1="170.0" x2="53.4" y2="170.0" stroke="#57534e" stroke-width="1"/><text x="44.4" y="173.5" font-size="9.5" fill="#57534e" text-anchor="end">-1</text><line x1="47.4" y1="45.0" x2="53.4" y2="45.0" stroke="#57534e" stroke-width="1"/><text x="44.4" y="48.5" font-size="9.5" fill="#57534e" text-anchor="end">1</text><line x1="50.4" y1="76.2" x2="274.6" y2="76.2" stroke="#b91c1c" stroke-width="1.3" stroke-dasharray="4,3"/><text x="256" y="72.2" font-size="10.5" fill="#b91c1c" font-weight="600">y=1/2</text><polyline points="50.4,45.0 51.4,45.0 52.4,45.1 53.5,45.2 54.5,45.4 55.5,45.6 56.5,45.9 57.5,46.2 58.6,46.6 59.6,47.1 60.6,47.5 61.6,48.1 62.6,48.6 63.6,49.3 64.7,49.9 65.7,50.6 66.7,51.4 67.7,52.2 68.7,53.1 69.8,54.0 70.8,54.9 71.8,55.9 72.8,56.9 73.8,58.0 74.9,59.1 75.9,60.3 76.9,61.5 77.9,62.7 78.9,63.9 80.0,65.2 81.0,66.6 82.0,67.9 83.0,69.3 84.0,70.8 85.0,72.2 86.1,73.7 87.1,75.2 88.1,76.8 89.1,78.3 90.1,79.9 91.2,81.5 92.2,83.2 93.2,84.8 94.2,86.5 95.2,88.2 96.3,89.9 97.3,91.6 98.3,93.3 99.3,95.1 100.3,96.8 101.4,98.6 102.4,100.4 103.4,102.2 104.4,103.9 105.4,105.7 106.4,107.5 107.5,109.3 108.5,111.1 109.5,112.8 110.5,114.6 111.5,116.4 112.6,118.2 113.6,119.9 114.6,121.7 115.6,123.4 116.6,125.1 117.7,126.8 118.7,128.5 119.7,130.2 120.7,131.8 121.7,133.5 122.8,135.1 123.8,136.7 124.8,138.2 125.8,139.8 126.8,141.3 127.9,142.8 128.9,144.2 129.9,145.7 130.9,147.1 131.9,148.4 132.9,149.8 134.0,151.1 135.0,152.3 136.0,153.5 137.0,154.7 138.0,155.9 139.1,157.0 140.1,158.1 141.1,159.1 142.1,160.1 143.1,161.0 144.2,161.9 145.2,162.8 146.2,163.6 147.2,164.4 148.2,165.1 149.3,165.7 150.3,166.4 151.3,166.9 152.3,167.5 153.3,167.9 154.3,168.4 155.4,168.8 156.4,169.1 157.4,169.4 158.4,169.6 159.4,169.8 160.5,169.9 161.5,170.0 162.5,170.0 163.5,170.0 164.5,169.9 165.6,169.8 166.6,169.6 167.6,169.4 168.6,169.1 169.6,168.8 170.7,168.4 171.7,167.9 172.7,167.5 173.7,166.9 174.7,166.4 175.7,165.7 176.8,165.1 177.8,164.4 178.8,163.6 179.8,162.8 180.8,161.9 181.9,161.0 182.9,160.1 183.9,159.1 184.9,158.1 185.9,157.0 187.0,155.9 188.0,154.7 189.0,153.5 190.0,152.3 191.0,151.1 192.1,149.8 193.1,148.4 194.1,147.1 195.1,145.7 196.1,144.2 197.1,142.8 198.2,141.3 199.2,139.8 200.2,138.2 201.2,136.7 202.2,135.1 203.3,133.5 204.3,131.8 205.3,130.2 206.3,128.5 207.3,126.8 208.4,125.1 209.4,123.4 210.4,121.7 211.4,119.9 212.4,118.2 213.5,116.4 214.5,114.6 215.5,112.8 216.5,111.1 217.5,109.3 218.5,107.5 219.6,105.7 220.6,103.9 221.6,102.2 222.6,100.4 223.6,98.6 224.7,96.8 225.7,95.1 226.7,93.3 227.7,91.6 228.7,89.9 229.8,88.2 230.8,86.5 231.8,84.8 232.8,83.2 233.8,81.5 234.9,79.9 235.9,78.3 236.9,76.8 237.9,75.2 238.9,73.7 240.0,72.2 241.0,70.8 242.0,69.3 243.0,67.9 244.0,66.6 245.0,65.2 246.1,63.9 247.1,62.7 248.1,61.5 249.1,60.3 250.1,59.1 251.2,58.0 252.2,56.9 253.2,55.9 254.2,54.9 255.2,54.0 256.3,53.1 257.3,52.2 258.3,51.4 259.3,50.6 260.3,49.9 261.4,49.3 262.4,48.6 263.4,48.1 264.4,47.5 265.4,47.1 266.4,46.6 267.5,46.2 268.5,45.9 269.5,45.6 270.5,45.4 271.5,45.2 272.6,45.1 273.6,45.0 274.6,45.0" fill="none" stroke="#7c3aed" stroke-width="2.5"/><circle cx="87.8" cy="76.2" r="3.5" fill="#7c3aed"/><circle cx="237.2" cy="76.2" r="3.5" fill="#7c3aed"/><text x="67.8" y="70.2" font-size="11" fill="#7c3aed" font-weight="600">x<tspan font-size="8" baseline-shift="sub">1</tspan></text><text x="241.2" y="70.2" font-size="11" fill="#7c3aed" font-weight="600">x<tspan font-size="8" baseline-shift="sub">2</tspan></text></svg>
+        <p class="text-sm text-center mt-1">Les graphes des fonctions $f:y=\cos x$ et $g:y=\dfrac12$ se coupent aux points $\overline x_1=\dfrac{\pi}{3}$ et $\overline x_2=\dfrac{5\pi}{3}$. La fonction cosinus a une période de $2\pi$, donc :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{3}+k\cdot2\pi;\ \frac{5\pi}{3}+k\cdot2\pi\right\}$$
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> La méthode graphique est parlante, mais on ne peut généralement pas lire les coordonnées exactes des points d'intersection sur un graphe — c'est pourquoi, en pratique, on l'utilise plutôt pour vérifier, tandis que le calcul se fait à l'aide du cercle trigonométrique.
+    </div>
+</section>
+
+<section id="sec-a-interval" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résolution sur un intervalle autre que $\langle0;2\pi)$</h2>
+    <p>Parfois, il s'agit de trouver toutes les solutions seulement sur un intervalle donné, qui ne correspond pas nécessairement à $\langle0;2\pi)$ ni à une seule période. Méthode : on trouve d'abord <b>toutes</b> les solutions à l'aide de la solution de base et de la période, puis on sélectionne parmi elles celles qui tombent dans l'intervalle donné (en substituant successivement des entiers à $k$).</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Résoudre $\sin x=-\dfrac12$ sur l'intervalle $\langle-360°;360°\rangle$ (en degrés).</p>
+        <p class="text-sm">Solutions de base : $\overline x_1=210°$, $\overline x_2=330°$ (le sinus est négatif dans les III. et IV. quadrants). Période $360°$, donc $x_1=210°+k\cdot360°$, $x_2=330°+k\cdot360°$, $k\in\mathbb{Z}$.</p>
+        <p class="text-sm mt-1">En substituant $k=-1$ et $k=0$, on obtient les valeurs situées dans l'intervalle donné :</p>
+        <div class="overflow-x-auto my-2">
+            <table class="w-full text-sm text-center">
+                <thead><tr class="border-b-2 border-violet-200"><th class="p-1">$k$</th><th class="p-1">$x_1=210°+k\cdot360°$</th><th class="p-1">$x_2=330°+k\cdot360°$</th></tr></thead>
+                <tbody>
+                    <tr class="border-b border-violet-100"><td class="p-1">$-1$</td><td class="p-1">$-150°$</td><td class="p-1">$-30°$</td></tr>
+                    <tr><td class="p-1">$0$</td><td class="p-1">$210°$</td><td class="p-1">$330°$</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-sm">Les valeurs pour $k=1$ ($570°$, $690°$) et pour $k=-2$ ($-510°$, $-390°$) sont déjà en dehors de l'intervalle donné, on ne les calcule donc pas. L'équation a exactement quatre solutions sur l'intervalle $\langle-360°;360°\rangle$ :</p>
+        $$K=\{-150°;\ -30°;\ 210°;\ 330°\}$$
+    </div>
+</section>
+
+<section id="sec-a-specialni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Équations sans solution et équations à valeur non tabulée</h2>
+    <p>Comme l'ensemble des valeurs du sinus et du cosinus est $\langle-1;1\rangle$, il peut facilement arriver qu'une équation $\sin x=a$ ou $\cos x=a$ <b>n'ait aucune solution</b> — il suffit que $|a|\gt1$.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> $3\cos x+4=0$.</p>
+        <p class="text-sm">$\cos x=-\dfrac43$, et comme $\left|-\dfrac43\right|\gt1$, l'équation n'a aucune solution dans $\mathbb{R}$ : $K=\emptyset$.</p>
+    </div>
+    <p>L'ensemble des valeurs de la tangente et de la cotangente est en revanche $\mathbb{R}$ tout entier, donc les équations $\operatorname{tg}x=a$ et $\operatorname{cotg}x=a$ ont une solution pour <b>n'importe quel</b> $a$ réel — seulement, parfois, on n'obtient pas un angle « agréable » de la table et il faut utiliser la calculatrice (fonctions réciproques).</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> $\operatorname{tg}x=4$.</p>
+        <p class="text-sm">La valeur $4$ ne correspond à aucun angle de la table, on utilise donc la calculatrice : $\overline x_1\doteq75°58'\doteq1{,}326\ \text{rad}$ (solution de base du I. quadrant). La tangente a une période de $180°$ (soit $\pi$), donc :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\{75°58'+k\cdot180°\}\qquad\text{soit environ}\qquad K=\bigcup_{k\in\mathbb{Z}}\{1{,}326+k\cdot\pi\}$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Vérifiez toujours dans quel mode d'angle votre calculatrice fonctionne (DEG, RAD, GRA) — sinon vous obtiendrez un résultat numériquement correct, mais dont l'unité n'a aucun sens.
+    </div>
+</section>
+
+<section id="sec-a-obor" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Domaine de définition d'une expression avec une fonction trigonométrique</h2>
+    <p>La méthode de résolution d'une équation trigonométrique de base sert aussi lorsqu'il ne s'agit pas directement de résoudre une équation, mais de <b>déterminer le domaine de définition</b> d'une expression contenant une fonction trigonométrique au dénominateur.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Déterminez le domaine de définition de l'expression $\dfrac{\cos x}{1-2\sin x}$.</p>
+        <p class="text-sm">Le dénominateur ne doit pas être nul : $1-2\sin x\neq0\ \Rightarrow\ \sin x\neq\dfrac12$.</p>
+        <p class="text-sm mt-1">On résout d'abord l'équation « limite » $\sin x=\dfrac12$ : solutions de base $\overline x_1=\dfrac{\pi}{6}$, $\overline x_2=\dfrac{5\pi}{6}$. On exclut ces valeurs (et celles qui leur correspondent avec la période $2\pi$) du domaine de définition :</p>
+        $$D=\mathbb{R}\setminus\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{6}+k\cdot2\pi;\ \frac{5\pi}{6}+k\cdot2\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-b-substituce" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Équations avec expression linéaire dans l'argument — substitution</h2>
+    <p>L'argument d'une fonction trigonométrique peut aussi être une expression linéaire $qx+m$ (où $q,m\in\mathbb{R}$), par exemple $\sin(2x+30°)=\dfrac{\sqrt3}{2}$. On ramène une telle équation à la forme de base à l'aide d'une <b>substitution</b> $u=qx+m$.</p>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+        <li>On introduit la substitution $u=qx+m$ et on résout l'équation pour l'inconnue $u$ (comme pour une équation de base).</li>
+        <li>On écrit toutes les solutions pour $u$ avec la période — <b>le multiple de la période s'ajoute déjà ici</b>, pas seulement à la fin pour l'inconnue $x$.</li>
+        <li>De la relation $qx+m=u$, on exprime $x$ et, en substituant, on obtient toutes les solutions pour l'inconnue d'origine.</li>
+    </ol>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> $\sin(2x+30°)=\dfrac{\sqrt3}{2}$.</p>
+        <p class="text-sm">Substitution : $u=2x+30°$. L'équation $\sin u=\dfrac{\sqrt3}{2}$ a pour solutions de base $\overline u_1=60°$, $\overline u_2=120°$ ; avec la période $360°$ :</p>
+        $$u=60°+k\cdot360°\qquad\text{ou}\qquad u=120°+k\cdot360°,\quad k\in\mathbb{Z}$$
+        <p class="text-sm mt-1">Retour à $x$ : de $2x+30°=u$ on tire $x=\dfrac{u-30°}{2}$. En substituant :</p>
+        $$x_1=\frac{60°-30°}{2}+k\cdot180°=15°+k\cdot180°\qquad x_2=\frac{120°-30°}{2}+k\cdot180°=45°+k\cdot180°$$
+        $$K=\bigcup_{k\in\mathbb{Z}}\{15°+k\cdot180°;\ 45°+k\cdot180°\}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Deuxième exemple</b> (coefficient négatif) : $-\cos(3x)=\dfrac12$.</p>
+        <p class="text-sm">En transformant : $\cos(3x)=-\dfrac12$ ; la substitution $u=3x$ donne les solutions de base $\overline u_1=120°$, $\overline u_2=240°$, période $360°$. Retour : $x=\dfrac{u}{3}$, la période pour $x$ se divise aussi par le coefficient $q=3$, soit $120°$ :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\{40°+k\cdot120°;\ 80°+k\cdot120°\}$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> On ne divise la période par le coefficient $q$ qu'au moment du retour à $x$ — et on divise la période <i>entière</i>, pas seulement l'un des nombres de la solution de base pour $u$.
+    </div>
+</section>
+
+<section id="sec-b-soucin" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Équations sous forme de produit</h2>
+    <p>Une équation trigonométrique sous <b>forme de produit</b> a d'un côté un produit de deux (ou plusieurs) expressions et de l'autre zéro. Le même principe s'applique ici que pour les équations algébriques : <b>un produit est nul si et seulement si au moins un des facteurs est nul</b>. Résoudre une telle équation revient donc à résoudre séparément deux (ou plusieurs) équations plus simples et à réunir leurs solutions.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> $\sin(2x)\cdot\operatorname{tg}(x-20°)=0$.</p>
+        <p class="text-sm">$\sin(2x)=0\ \lor\ \operatorname{tg}(x-20°)=0$.</p>
+        <p class="text-sm mt-1"><b>Première équation :</b> substitution $u=2x$, $\sin u=0\Rightarrow u=k\cdot180°$, donc $x=k\cdot90°$.</p>
+        <p class="text-sm"><b>Deuxième équation :</b> substitution $v=x-20°$, $\operatorname{tg}v=0\Rightarrow v=k\cdot180°$, donc $x=20°+k\cdot180°$.</p>
+        <p class="text-sm mt-1">L'ensemble de toutes les solutions est la réunion des deux résultats partiels :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\{k\cdot90°\}\ \cup\ \bigcup_{k\in\mathbb{Z}}\{20°+k\cdot180°\}$$
+    </div>
+</section>
+
+<section id="sec-c-nerovnice" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Inéquations trigonométriques</h2>
+    <div class="card text-center">
+        <p>Une <b>inéquation trigonométrique de base</b> a la forme</p>
+        $$f(x)\ge a,\quad f(x)\le a,\quad f(x)\gt a,\quad f(x)\lt a,\qquad a\in\mathbb{R},$$
+        <p class="text-sm mt-1">où $f(x)$ est $\sin x$, $\cos x$, $\operatorname{tg}x$ ou $\operatorname{cotg}x$. Exemples : $\sin x\le-\dfrac12$ ;&ensp;$\cos x\gt0{,}5$ ;&ensp;$\operatorname{tg}x\lt2$ ;&ensp;$\operatorname{cotg}x\ge-3$.</p>
+    </div>
+    <p><b>Résolution à l'aide du cercle trigonométrique</b> (semblable à celle des équations, sauf qu'à la dernière étape on détermine tout un arc au lieu de points) :</p>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+        <li>On résout l'<i>équation</i> trigonométrique correspondante $f(x)=a$ — on obtient deux solutions de base, qui partagent le cercle en deux arcs.</li>
+        <li>Selon le type d'inéquation, on détermine sur quel arc l'inégalité est vérifiée (et si les points limites appartiennent à la solution ou non, selon que l'inégalité est stricte ou large).</li>
+        <li>L'intervalle d'angles correspondant est écrit comme solution de base de l'inéquation.</li>
+        <li>En tenant compte de la période, on écrit l'ensemble de toutes les solutions.</li>
+    </ol>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> $\cos x\lt\dfrac12$ (en degrés).</p>
+        <p class="text-sm">On résout d'abord l'équation $\cos x=\dfrac12$ : $\overline x_1=60°$, $\overline x_2=300°$. Le cosinus étant l'abscisse du point sur le cercle, $\cos x\lt\dfrac12$ est vérifié sur l'arc « à gauche » de la droite verticale $x=\dfrac12$ — donc entre $60°$ et $300°$ :</p>
+        <svg viewBox="0 0 240 240" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><line x1="15" y1="120" x2="225" y2="120" stroke="#57534e" stroke-width="1.5"/><line x1="120" y1="225" x2="120" y2="15" stroke="#57534e" stroke-width="1.5"/><circle cx="120" cy="120" r="90" fill="none" stroke="#c4b5fd" stroke-width="1.5"/><text x="214" y="133" font-size="9.5" fill="#57534e" text-anchor="middle">1</text><text x="26" y="133" font-size="9.5" fill="#57534e" text-anchor="middle">-1</text><text x="133" y="26" font-size="9.5" fill="#57534e" text-anchor="middle">1</text><text x="133" y="215" font-size="9.5" fill="#57534e" text-anchor="middle">-1</text><line x1="165.0" y1="15" x2="165.0" y2="225" stroke="#0d9488" stroke-width="1.3" stroke-dasharray="4,3"/><text x="165.0" y="12" font-size="10" fill="#0d9488" font-weight="600" text-anchor="middle">x=1/2</text><polyline points="165.0,42.1 160.9,39.8 156.6,37.8 152.3,36.0 147.8,34.4 143.3,33.1 138.7,32.0 134.1,31.1 129.4,30.5 124.7,30.1 120.0,30.0 115.3,30.1 110.6,30.5 105.9,31.1 101.3,32.0 96.7,33.1 92.2,34.4 87.7,36.0 83.4,37.8 79.1,39.8 75.0,42.1 71.0,44.5 67.1,47.2 63.4,50.1 59.8,53.1 56.4,56.4 53.1,59.8 50.1,63.4 47.2,67.1 44.5,71.0 42.1,75.0 39.8,79.1 37.8,83.4 36.0,87.7 34.4,92.2 33.1,96.7 32.0,101.3 31.1,105.9 30.5,110.6 30.1,115.3 30.0,120.0 30.1,124.7 30.5,129.4 31.1,134.1 32.0,138.7 33.1,143.3 34.4,147.8 36.0,152.3 37.8,156.6 39.8,160.9 42.1,165.0 44.5,169.0 47.2,172.9 50.1,176.6 53.1,180.2 56.4,183.6 59.8,186.9 63.4,189.9 67.1,192.8 71.0,195.5 75.0,197.9 79.1,200.2 83.4,202.2 87.7,204.0 92.2,205.6 96.7,206.9 101.3,208.0 105.9,208.9 110.6,209.5 115.3,209.9 120.0,210.0 124.7,209.9 129.4,209.5 134.1,208.9 138.7,208.0 143.3,206.9 147.8,205.6 152.3,204.0 156.6,202.2 160.9,200.2 165.0,197.9" fill="none" stroke="#b91c1c" stroke-width="4"/><line x1="120" y1="120" x2="165.0" y2="42.1" stroke="#57534e" stroke-width="1.2" stroke-dasharray="2,2"/><line x1="120" y1="120" x2="165.0" y2="197.9" stroke="#57534e" stroke-width="1.2" stroke-dasharray="2,2"/><circle cx="165.0" cy="42.1" r="3.5" fill="#7c3aed"/><circle cx="165.0" cy="197.9" r="3.5" fill="#7c3aed"/><text x="171.0" y="36.1" font-size="10.5" fill="#7c3aed" font-weight="600">x<tspan font-size="8" baseline-shift="sub">1</tspan>=60°</text><text x="171.0" y="209.9" font-size="10.5" fill="#7c3aed" font-weight="600">x<tspan font-size="8" baseline-shift="sub">2</tspan>=300°</text></svg>
+        <p class="text-sm text-center mt-1">Les points limites n'appartiennent pas à la solution (l'inégalité est stricte), on écrit donc un intervalle ouvert :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}(60°+k\cdot360°;\ 300°+k\cdot360°)$$
+    </div>
+    <p>Essayez la même chose avec le curseur : faites varier l'angle $x$ et observez si l'inégalité $\cos x\lt\dfrac12$ est vérifiée pour la valeur donnée.</p>
+    <div class="card">
+        <svg viewBox="0 0 240 240" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="15" y1="120" x2="225" y2="120" stroke="#57534e" stroke-width="1.5"/>
+<line x1="120" y1="225" x2="120" y2="15" stroke="#57534e" stroke-width="1.5"/>
+<circle cx="120" cy="120" r="90" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<line x1="165" y1="15" x2="165" y2="225" stroke="#0d9488" stroke-width="1.3" stroke-dasharray="4,3"/>
+<text x="165" y="12" font-size="10" fill="#0d9488" font-weight="600" text-anchor="middle">x=1/2</text>
+<line id="ineq-ray-fr" x1="120" y1="120" x2="210" y2="120" stroke="#57534e" stroke-width="1.6"/>
+<circle id="ineq-point-fr" cx="210" cy="120" r="5" fill="#7c3aed" stroke="white" stroke-width="1.5"/>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <input type="range" id="slider-x-fr" min="0" max="360" value="0" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="ineq-deg-fr">0</span>°</span>
+        </div>
+        <div id="ineq-box-fr" class="mt-2 p-3 rounded-lg text-center text-sm font-semibold verdict-no">
+            <span id="ineq-verdict-fr">$\cos x\approx1{,}00\ \ge\ \dfrac12$</span>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Deuxième exemple</b> (par arc) : $\sin x\ge\dfrac{\sqrt2}{2}$.</p>
+        <p class="text-sm">L'équation $\sin x=\dfrac{\sqrt2}{2}$ donne $\overline x_1=\dfrac{\pi}{4}$, $\overline x_2=\dfrac{3\pi}{4}$. Le sinus étant l'ordonnée, l'inégalité $\ge$ est vérifiée sur l'arc « du haut » entre ces points, points limites inclus (l'inégalité est large) :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\langle\frac{\pi}{4}+k\cdot2\pi;\ \frac{3\pi}{4}+k\cdot2\pi\right\rangle$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Troisième exemple</b> (tangente — attention au domaine de définition) : $\operatorname{tg}x\ge1$.</p>
+        <p class="text-sm">L'équation $\operatorname{tg}x=1$ a pour solution de base $\overline x=\dfrac{\pi}{4}$ ; la tangente a une période de $\pi$. Comme la tangente croît de $-\infty$ à $+\infty$ entre deux asymptotes voisines, l'inégalité $\operatorname{tg}x\ge1$ est vérifiée depuis $\overline x$ jusqu'à juste avant l'asymptote suivante $x=\dfrac{\pi}{2}+k\pi$ (où la tangente n'est pas définie, donc l'intervalle doit y rester ouvert) :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\langle\frac{\pi}{4}+k\cdot\pi;\ \frac{\pi}{2}+k\cdot\pi\right)$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Pour les inéquations avec tangente ou cotangente, vérifiez toujours que le point limite de l'intervalle ne se situe pas en dehors du domaine de définition — la parenthèse doit alors y rester ouverte, même si l'inégalité était par ailleurs large.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Notion</th><th class="p-1 text-left">Idée clé</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">solution de base</td><td class="p-1 text-left">toutes les solutions situées dans $\langle0;2\pi)$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">méthode (cercle/graphe)</td><td class="p-1 text-left">trouver la solution de base, puis ajouter la période</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">substitution $u=qx+m$</td><td class="p-1 text-left">on ajoute la période à $u$, pas seulement à $x$ à la fin</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">forme de produit</td><td class="p-1 text-left">résoudre chaque facteur séparément, réunir les solutions</td></tr>
+                <tr><td class="p-1 text-left">inéquations</td><td class="p-1 text-left">au lieu de points, on cherche tout un arc/intervalle sur le cercle</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Et ensuite :</b> Maintenant que nous savons résoudre les équations et inéquations trigonométriques, le chapitre suivant, <i>Goniométrie 5 — Formules trigonométriques</i>, nous apprendra à transformer davantage les expressions trigonométriques (formules d'addition, formules de l'angle double, etc.) — ce qui nous permettra de résoudre aussi des équations plus complexes, ramenées à la forme de base justement grâce à ces formules.
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 4 — Équations et inéquations trigonométriques' : 'Goniometrie 4 — Goniometrické rovnice a nerovnice';
+    document.title = czVisible ? 'Goniométrie 4 — Équations et inéquations trigonométriques — Théorie' : 'Goniometrie 4 — Goniometrické rovnice a nerovnice — Teorie';
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+function fmtNum(x){
+    const r = Math.round(x*100)/100;
+    let s = r.toString().replace('.', ',');
+    if (s === '-0') s = '0';
+    return s;
+}
+
+// ---- interaktivni jednotkova kruznice: sin x = a ----
+function updateSinEq(suffix){
+    suffix = suffix || '';
+    const a = parseFloat(document.getElementById('slider-a'+suffix).value);
+    document.getElementById('a-val'+suffix).textContent = fmtNum(a);
+
+    const yA = 120 - 90*a;
+    document.getElementById('eq-hline'+suffix).setAttribute('y1', yA.toFixed(1));
+    document.getElementById('eq-hline'+suffix).setAttribute('y2', yA.toFixed(1));
+
+    let x1 = Math.asin(a)*180/Math.PI;
+    if (x1 < 0) x1 += 360;
+    let x2 = 180 - Math.asin(a)*180/Math.PI;
+    if (x2 < 0) x2 += 360;
+    if (x2 >= 360) x2 -= 360;
+
+    const r1 = x1*Math.PI/180, r2 = x2*Math.PI/180;
+    const p1x = 120+90*Math.cos(r1), p1y = 120-90*Math.sin(r1);
+    const p2x = 120+90*Math.cos(r2), p2y = 120-90*Math.sin(r2);
+
+    const pt1 = document.getElementById('eq-point1'+suffix);
+    pt1.setAttribute('cx', p1x.toFixed(1));
+    pt1.setAttribute('cy', p1y.toFixed(1));
+    const pt2 = document.getElementById('eq-point2'+suffix);
+    pt2.setAttribute('cx', p2x.toFixed(1));
+    pt2.setAttribute('cy', p2y.toFixed(1));
+
+    const ray1 = document.getElementById('eq-ray1'+suffix);
+    ray1.setAttribute('x2', p1x.toFixed(1));
+    ray1.setAttribute('y2', p1y.toFixed(1));
+    const ray2 = document.getElementById('eq-ray2'+suffix);
+    ray2.setAttribute('x2', p2x.toFixed(1));
+    ray2.setAttribute('y2', p2y.toFixed(1));
+
+    const solEl = document.getElementById('eq-solutions'+suffix);
+    solEl.textContent = '$\\sin x=' + fmtNum(a) + '\\ \\Rightarrow\\ \\overline{x}_1\\approx' + fmtNum(x1) + '°,\\ \\overline{x}_2\\approx' + fmtNum(x2) + '°$';
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([solEl]);
+}
+
+// ---- interaktivni jednotkova kruznice: cos x < 1/2 (overeni nerovnosti) ----
+function updateIneq(suffix){
+    suffix = suffix || '';
+    const deg = parseFloat(document.getElementById('slider-x'+suffix).value);
+    document.getElementById('ineq-deg'+suffix).textContent = deg;
+    const rad = deg*Math.PI/180;
+    const cx = 120+90*Math.cos(rad);
+    const cy = 120-90*Math.sin(rad);
+
+    const ray = document.getElementById('ineq-ray'+suffix);
+    ray.setAttribute('x2', cx.toFixed(1));
+    ray.setAttribute('y2', cy.toFixed(1));
+    const pt = document.getElementById('ineq-point'+suffix);
+    pt.setAttribute('cx', cx.toFixed(1));
+    pt.setAttribute('cy', cy.toFixed(1));
+
+    const cosVal = Math.cos(rad);
+    const holds = cosVal < 0.5;
+    const relation = holds ? '\\lt' : '\\ge';
+    const verdictEl = document.getElementById('ineq-verdict'+suffix);
+    verdictEl.textContent = (holds ? '\u2705 ' : '\u274c ') + '$\\cos x\\approx' + fmtNum(cosVal) + '\\ ' + relation + '\\ \\dfrac12$';
+    const boxEl = document.getElementById('ineq-box'+suffix);
+    boxEl.className = 'mt-2 p-3 rounded-lg text-center text-sm font-semibold ' + (holds ? 'verdict-ok' : 'verdict-no');
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([verdictEl]);
+}
+
+// ---- Inicializace ----
+updateSinEq(''); updateSinEq('-fr');
+updateIneq(''); updateIneq('-fr');
+
+document.getElementById('slider-a').addEventListener('input', () => updateSinEq(''));
+document.getElementById('slider-a-fr').addEventListener('input', () => updateSinEq('-fr'));
+document.getElementById('slider-x').addEventListener('input', () => updateIneq(''));
+document.getElementById('slider-x-fr').addEventListener('input', () => updateIneq('-fr'));
+
+
+</script>
+</body>
+</html>

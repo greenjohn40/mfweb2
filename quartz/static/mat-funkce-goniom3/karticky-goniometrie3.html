@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Goniometrie 3 — Tangens a kotangens / Goniométrie 3 — Tangente et cotangente</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-goniometrie3.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Goniometrie 3</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Goniométrie 3 — Tangente et cotangente
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Jak je definována funkce tangens pomocí sinu a kosinu?",
+            "a": "$\\operatorname{tg}x=\\frac{\\sin x}{\\cos x}$"
+        },
+        {
+            "q": "Jak je definována funkce kotangens pomocí sinu a kosinu?",
+            "a": "$\\operatorname{cotg}x=\\frac{\\cos x}{\\sin x}$"
+        },
+        {
+            "q": "Pro jaké hodnoty $x$ není funkce tangens definována?",
+            "a": "Pro liché násobky $\\frac{\\pi}{2}$, tj. $x=(2k+1)\\cdot\\frac{\\pi}{2}$."
+        },
+        {
+            "q": "Pro jaké hodnoty $x$ není funkce kotangens definována?",
+            "a": "Pro celé násobky $\\pi$, tj. $x=k\\pi$."
+        },
+        {
+            "q": "Proč není tangens definovaný tam, kde $\\cos x=0$?",
+            "a": "Protože by měl zlomek $\\frac{\\sin x}{\\cos x}$ nulový jmenovatel."
+        },
+        {
+            "q": "Proč není kotangens definovaný tam, kde $\\sin x=0$?",
+            "a": "Protože by měl zlomek $\\frac{\\cos x}{\\sin x}$ nulový jmenovatel."
+        },
+        {
+            "q": "Jak se na jednotkové kružnici nazývá pomocná tečna pro určení hodnoty tangens?",
+            "a": "$t_y$ — svislá tečna v bodě $[1;0]$."
+        },
+        {
+            "q": "Jak se na jednotkové kružnici nazývá pomocná tečna pro určení hodnoty kotangens?",
+            "a": "$t_x$ — vodorovná tečna v bodě $[0;1]$."
+        },
+        {
+            "q": "Čemu se rovná $\\operatorname{tg}30°$?",
+            "a": "$\\frac{\\sqrt3}{3}$"
+        },
+        {
+            "q": "Čemu se rovná $\\operatorname{tg}45°$?",
+            "a": "$1$"
+        },
+        {
+            "q": "Čemu se rovná $\\operatorname{tg}60°$?",
+            "a": "$\\sqrt3$"
+        },
+        {
+            "q": "Čemu se rovná $\\operatorname{cotg}30°$?",
+            "a": "$\\sqrt3$"
+        },
+        {
+            "q": "Čemu se rovná $\\operatorname{cotg}45°$?",
+            "a": "$1$"
+        },
+        {
+            "q": "Čemu se rovná $\\operatorname{cotg}60°$?",
+            "a": "$\\frac{\\sqrt3}{3}$"
+        },
+        {
+            "q": "Co ve skutečnosti udává sklon silnice v procentech?",
+            "a": "Hodnotu $\\operatorname{tg}\\alpha$, kde $\\alpha$ je úhel sklonu vůči vodorovné rovině."
+        },
+        {
+            "q": "Jaký úhel odpovídá sklonu $15\\,\\%$?",
+            "a": "$\\alpha=\\operatorname{arctg}(0{,}15)\\approx8{,}53°$"
+        },
+        {
+            "q": "Jaký sklon (v %) odpovídá úhlu $10°$?",
+            "a": "$\\operatorname{tg}10°\\approx0{,}1763$, tedy přibližně $17{,}63\\,\\%$"
+        },
+        {
+            "q": "Ve kterých kvadrantech je funkce tangens kladná?",
+            "a": "V I. a III. kvadrantu."
+        },
+        {
+            "q": "Ve kterých kvadrantech je funkce tangens záporná?",
+            "a": "Ve II. a IV. kvadrantu."
+        },
+        {
+            "q": "Ve kterých kvadrantech je funkce kotangens kladná?",
+            "a": "V I. a III. kvadrantu."
+        },
+        {
+            "q": "Proč jsou tangens i kotangens kladné ve stejných kvadrantech jako záporné?",
+            "a": "Protože jejich znaménko závisí na podílu znamének sinu a kosinu, který je stejný v I. i III. kvadrantu (obě záporné nebo obě kladné)."
+        },
+        {
+            "q": "Jak vyjádříme $\\operatorname{tg}\\alpha$ pro úhel $\\alpha=\\pi-\\alpha_1$ z II. kvadrantu?",
+            "a": "$\\operatorname{tg}\\alpha=-\\operatorname{tg}\\alpha_1$"
+        },
+        {
+            "q": "Jak vyjádříme $\\operatorname{tg}\\alpha$ pro úhel $\\alpha=\\pi+\\alpha_1$ z III. kvadrantu?",
+            "a": "$\\operatorname{tg}\\alpha=\\operatorname{tg}\\alpha_1$"
+        },
+        {
+            "q": "Jak vyjádříme $\\operatorname{cotg}\\alpha$ pro úhel $\\alpha=2\\pi-\\alpha_1$ z IV. kvadrantu?",
+            "a": "$\\operatorname{cotg}\\alpha=-\\operatorname{cotg}\\alpha_1$"
+        },
+        {
+            "q": "Vypočti přibližně $\\operatorname{tg}200°$ (ref. úhel $20°$).",
+            "a": "$\\operatorname{tg}200°=\\operatorname{tg}20°\\approx0{,}364$"
+        },
+        {
+            "q": "Vypočti přibližně $\\operatorname{tg}320°$ (ref. úhel $40°$).",
+            "a": "$\\operatorname{tg}320°=-\\operatorname{tg}40°\\approx-0{,}839$"
+        },
+        {
+            "q": "Vypočti přibližně $\\operatorname{cotg}150°$ (ref. úhel $30°$).",
+            "a": "$\\operatorname{cotg}150°=-\\operatorname{cotg}30°\\approx-1{,}732$"
+        },
+        {
+            "q": "Jakou periodu mají funkce tangens a kotangens?",
+            "a": "$\\pi$"
+        },
+        {
+            "q": "Proč mají tangens a kotangens poloviční periodu oproti sinu a kosinu?",
+            "a": "Protože po otočení o $\\pi$ (půl kruhu) vyjde průsečík s tečnou $t_y$ (resp. $t_x$) stejný, i když je koncové rameno na opačné straně kružnice."
+        },
+        {
+            "q": "Jak zapíšeme periodicitu funkce tangens?",
+            "a": "$\\operatorname{tg}x=\\operatorname{tg}(x+k\\pi),\\ k\\in\\mathbb Z$"
+        },
+        {
+            "q": "Urči základní krok při výpočtu $\\operatorname{tg}1410°$.",
+            "a": "Zredukovat úhel modulo $180°$ (perioda tangens je $180°$, ne $360°$)."
+        },
+        {
+            "q": "Urči $\\operatorname{tg}1410°$.",
+            "a": "$1410°\\bmod180°=150°$ (II. kv., ref. $30°$) $\\Rightarrow\\operatorname{tg}1410°=-\\frac{\\sqrt3}{3}$"
+        },
+        {
+            "q": "Jaký je definiční obor funkce tangens?",
+            "a": "$\\mathbb{R}-\\{(2k+1)\\frac{\\pi}{2}\\}$"
+        },
+        {
+            "q": "Jaký je definiční obor funkce kotangens?",
+            "a": "$\\mathbb{R}-\\{k\\pi\\}$"
+        },
+        {
+            "q": "Jaký je obor hodnot funkcí tangens a kotangens?",
+            "a": "$\\mathbb{R}$ (na rozdíl od sinu a kosinu, kde je obor hodnot omezený)."
+        },
+        {
+            "q": "Je funkce tangens sudá, nebo lichá?",
+            "a": "Lichá."
+        },
+        {
+            "q": "Je funkce kotangens sudá, nebo lichá?",
+            "a": "Lichá."
+        },
+        {
+            "q": "Co znamená přítomnost asymptoty v grafu funkce tangens?",
+            "a": "Svislou přímku, ke které se graf přibližuje v bodě, kde funkce není definovaná."
+        },
+        {
+            "q": "Kde má graf funkce $y=\\operatorname{tg}x$ asymptoty?",
+            "a": "V bodech $x=(2k+1)\\cdot\\frac{\\pi}{2}$."
+        },
+        {
+            "q": "Kde má graf funkce $y=\\operatorname{cotg}x$ asymptoty?",
+            "a": "V bodech $x=k\\pi$."
+        },
+        {
+            "q": "Jak koeficienty $m,n$ v $y=\\operatorname{tg}(x-m)+n$ ovlivňují graf?",
+            "a": "Posouvají graf o $m$ jednotek ve směru osy $x$ a o $n$ jednotek ve směru osy $y$."
+        },
+        {
+            "q": "Co se stane s asymptotami při posunu grafu funkce tangens o $m$ jednotek ve směru osy $x$?",
+            "a": "Posunou se spolu s grafem o stejnou hodnotu $m$."
+        },
+        {
+            "q": "Kde má graf funkce $y=\\operatorname{tg}\\left(x-\\frac{\\pi}{6}\\right)$ nejbližší asymptotu vpravo od nuly?",
+            "a": "V bodě $x=\\frac{\\pi}{2}+\\frac{\\pi}{6}=\\frac{2\\pi}{3}$."
+        },
+        {
+            "q": "Jaký je obor hodnot funkce $y=\\operatorname{cotg}x+2$?",
+            "a": "$\\mathbb{R}$ (posun nahoru o $2$ nemění obor hodnot, protože ten je celé $\\mathbb R$)."
+        },
+        {
+            "q": "Kolikrát menší je perioda tangens oproti periodě sinu?",
+            "a": "Dvakrát menší ($\\pi$ oproti $2\\pi$)."
+        },
+        {
+            "q": "Je definiční obor funkce tangens stejný jako definiční obor funkce kotangens?",
+            "a": "Ne, liší se — tangens vynechává liché násobky $\\frac{\\pi}{2}$, kotangens celé násobky $\\pi$."
+        },
+        {
+            "q": "Platí, že $\\operatorname{tg}\\alpha\\cdot\\operatorname{cotg}\\alpha=1$ (tam, kde jsou obě funkce definované)?",
+            "a": "Ano, protože $\\operatorname{cotg}\\alpha=\\frac{1}{\\operatorname{tg}\\alpha}$."
+        },
+        {
+            "q": "Jaký vztah platí mezi $\\operatorname{tg}\\alpha$ a $\\operatorname{cotg}\\alpha$?",
+            "a": "$\\operatorname{cotg}\\alpha=\\frac{1}{\\operatorname{tg}\\alpha}$ (jsou to převrácené hodnoty, tam kde obě existují)."
+        },
+        {
+            "q": "Existuje hodnota $\\operatorname{tg}90°$?",
+            "a": "Ne, protože $\\cos90°=0$, tangens tam není definovaný."
+        },
+        {
+            "q": "Existuje hodnota $\\operatorname{cotg}180°$?",
+            "a": "Ne, protože $\\sin180°=0$, kotangens tam není definovaný."
+        }
+    ],
+    "fr": [
+        {
+            "q": "Comment la fonction tangente est-elle définie à l'aide du sinus et du cosinus ?",
+            "a": "$\\operatorname{tg}x=\\frac{\\sin x}{\\cos x}$"
+        },
+        {
+            "q": "Comment la fonction cotangente est-elle définie à l'aide du sinus et du cosinus ?",
+            "a": "$\\operatorname{cotg}x=\\frac{\\cos x}{\\sin x}$"
+        },
+        {
+            "q": "Pour quelles valeurs de $x$ la fonction tangente n'est-elle pas définie ?",
+            "a": "Pour les multiples impairs de $\\frac{\\pi}{2}$, soit $x=(2k+1)\\cdot\\frac{\\pi}{2}$."
+        },
+        {
+            "q": "Pour quelles valeurs de $x$ la fonction cotangente n'est-elle pas définie ?",
+            "a": "Pour les multiples entiers de $\\pi$, soit $x=k\\pi$."
+        },
+        {
+            "q": "Pourquoi la tangente n'est-elle pas définie là où $\\cos x=0$ ?",
+            "a": "Parce que la fraction $\\frac{\\sin x}{\\cos x}$ aurait un dénominateur nul."
+        },
+        {
+            "q": "Pourquoi la cotangente n'est-elle pas définie là où $\\sin x=0$ ?",
+            "a": "Parce que la fraction $\\frac{\\cos x}{\\sin x}$ aurait un dénominateur nul."
+        },
+        {
+            "q": "Comment appelle-t-on la tangente auxiliaire sur le cercle trigonométrique pour déterminer la tangente ?",
+            "a": "$t_y$ — tangente verticale au point $[1;0]$."
+        },
+        {
+            "q": "Comment appelle-t-on la tangente auxiliaire sur le cercle trigonométrique pour déterminer la cotangente ?",
+            "a": "$t_x$ — tangente horizontale au point $[0;1]$."
+        },
+        {
+            "q": "À quoi est égal $\\operatorname{tg}30°$ ?",
+            "a": "$\\frac{\\sqrt3}{3}$"
+        },
+        {
+            "q": "À quoi est égal $\\operatorname{tg}45°$ ?",
+            "a": "$1$"
+        },
+        {
+            "q": "À quoi est égal $\\operatorname{tg}60°$ ?",
+            "a": "$\\sqrt3$"
+        },
+        {
+            "q": "À quoi est égal $\\operatorname{cotg}30°$ ?",
+            "a": "$\\sqrt3$"
+        },
+        {
+            "q": "À quoi est égal $\\operatorname{cotg}45°$ ?",
+            "a": "$1$"
+        },
+        {
+            "q": "À quoi est égal $\\operatorname{cotg}60°$ ?",
+            "a": "$\\frac{\\sqrt3}{3}$"
+        },
+        {
+            "q": "Qu'indique en réalité la pente d'une route exprimée en pourcentage ?",
+            "a": "La valeur de $\\operatorname{tg}\\alpha$, où $\\alpha$ est l'angle de la pente par rapport à l'horizontale."
+        },
+        {
+            "q": "Quel angle correspond à une pente de $15\\,\\%$ ?",
+            "a": "$\\alpha=\\operatorname{arctg}(0{,}15)\\approx8{,}53°$"
+        },
+        {
+            "q": "Quelle pente (en %) correspond à un angle de $10°$ ?",
+            "a": "$\\operatorname{tg}10°\\approx0{,}1763$, soit environ $17{,}63\\,\\%$"
+        },
+        {
+            "q": "Dans quels quadrants la fonction tangente est-elle positive ?",
+            "a": "Dans les I. et III. quadrants."
+        },
+        {
+            "q": "Dans quels quadrants la fonction tangente est-elle négative ?",
+            "a": "Dans les II. et IV. quadrants."
+        },
+        {
+            "q": "Dans quels quadrants la fonction cotangente est-elle positive ?",
+            "a": "Dans les I. et III. quadrants."
+        },
+        {
+            "q": "Pourquoi la tangente et la cotangente sont-elles positives dans les mêmes quadrants ?",
+            "a": "Parce que leur signe dépend du rapport des signes du sinus et du cosinus, qui est identique dans les I. et III. quadrants (tous deux négatifs ou tous deux positifs)."
+        },
+        {
+            "q": "Comment exprime-t-on $\\operatorname{tg}\\alpha$ pour un angle $\\alpha=\\pi-\\alpha_1$ du II. quadrant ?",
+            "a": "$\\operatorname{tg}\\alpha=-\\operatorname{tg}\\alpha_1$"
+        },
+        {
+            "q": "Comment exprime-t-on $\\operatorname{tg}\\alpha$ pour un angle $\\alpha=\\pi+\\alpha_1$ du III. quadrant ?",
+            "a": "$\\operatorname{tg}\\alpha=\\operatorname{tg}\\alpha_1$"
+        },
+        {
+            "q": "Comment exprime-t-on $\\operatorname{cotg}\\alpha$ pour un angle $\\alpha=2\\pi-\\alpha_1$ du IV. quadrant ?",
+            "a": "$\\operatorname{cotg}\\alpha=-\\operatorname{cotg}\\alpha_1$"
+        },
+        {
+            "q": "Calcule approximativement $\\operatorname{tg}200°$ (angle de référence $20°$).",
+            "a": "$\\operatorname{tg}200°=\\operatorname{tg}20°\\approx0{,}364$"
+        },
+        {
+            "q": "Calcule approximativement $\\operatorname{tg}320°$ (angle de référence $40°$).",
+            "a": "$\\operatorname{tg}320°=-\\operatorname{tg}40°\\approx-0{,}839$"
+        },
+        {
+            "q": "Calcule approximativement $\\operatorname{cotg}150°$ (angle de référence $30°$).",
+            "a": "$\\operatorname{cotg}150°=-\\operatorname{cotg}30°\\approx-1{,}732$"
+        },
+        {
+            "q": "Quelle est la période des fonctions tangente et cotangente ?",
+            "a": "$\\pi$"
+        },
+        {
+            "q": "Pourquoi la tangente et la cotangente ont-elles une période deux fois plus petite que le sinus et le cosinus ?",
+            "a": "Parce qu'après une rotation de $\\pi$ (demi-tour), l'intersection avec la tangente $t_y$ (resp. $t_x$) reste la même, même si le côté final est de l'autre côté du cercle."
+        },
+        {
+            "q": "Comment écrit-on la périodicité de la fonction tangente ?",
+            "a": "$\\operatorname{tg}x=\\operatorname{tg}(x+k\\pi),\\ k\\in\\mathbb Z$"
+        },
+        {
+            "q": "Quelle est la première étape pour calculer $\\operatorname{tg}1410°$ ?",
+            "a": "Réduire l'angle modulo $180°$ (la période de la tangente est $180°$, pas $360°$)."
+        },
+        {
+            "q": "Détermine $\\operatorname{tg}1410°$.",
+            "a": "$1410°\\bmod180°=150°$ (II. quad., réf. $30°$) $\\Rightarrow\\operatorname{tg}1410°=-\\frac{\\sqrt3}{3}$"
+        },
+        {
+            "q": "Quel est le domaine de définition de la fonction tangente ?",
+            "a": "$\\mathbb{R}-\\{(2k+1)\\frac{\\pi}{2}\\}$"
+        },
+        {
+            "q": "Quel est le domaine de définition de la fonction cotangente ?",
+            "a": "$\\mathbb{R}-\\{k\\pi\\}$"
+        },
+        {
+            "q": "Quelle est l'image des fonctions tangente et cotangente ?",
+            "a": "$\\mathbb{R}$ (contrairement au sinus et au cosinus, dont l'image est bornée)."
+        },
+        {
+            "q": "La fonction tangente est-elle paire ou impaire ?",
+            "a": "Impaire."
+        },
+        {
+            "q": "La fonction cotangente est-elle paire ou impaire ?",
+            "a": "Impaire."
+        },
+        {
+            "q": "Que signifie la présence d'une asymptote dans la courbe de la tangente ?",
+            "a": "Une droite verticale dont la courbe se rapproche au point où la fonction n'est pas définie."
+        },
+        {
+            "q": "Où la courbe de $y=\\operatorname{tg}x$ a-t-elle des asymptotes ?",
+            "a": "Aux points $x=(2k+1)\\cdot\\frac{\\pi}{2}$."
+        },
+        {
+            "q": "Où la courbe de $y=\\operatorname{cotg}x$ a-t-elle des asymptotes ?",
+            "a": "Aux points $x=k\\pi$."
+        },
+        {
+            "q": "Comment les coefficients $m,n$ dans $y=\\operatorname{tg}(x-m)+n$ influencent-ils la courbe ?",
+            "a": "Ils décalent la courbe de $m$ unités selon l'axe $x$ et de $n$ unités selon l'axe $y$."
+        },
+        {
+            "q": "Que deviennent les asymptotes lors d'un décalage de la courbe de la tangente de $m$ unités selon l'axe $x$ ?",
+            "a": "Elles se décalent avec la courbe de la même valeur $m$."
+        },
+        {
+            "q": "Où se trouve l'asymptote la plus proche à droite de zéro pour $y=\\operatorname{tg}\\left(x-\\frac{\\pi}{6}\\right)$ ?",
+            "a": "Au point $x=\\frac{\\pi}{2}+\\frac{\\pi}{6}=\\frac{2\\pi}{3}$."
+        },
+        {
+            "q": "Quelle est l'image de la fonction $y=\\operatorname{cotg}x+2$ ?",
+            "a": "$\\mathbb{R}$ (le décalage vers le haut de $2$ ne change pas l'image, puisque celle-ci est déjà tout $\\mathbb R$)."
+        },
+        {
+            "q": "Combien de fois la période de la tangente est-elle plus petite que celle du sinus ?",
+            "a": "Deux fois ($\\pi$ contre $2\\pi$)."
+        },
+        {
+            "q": "Le domaine de définition de la tangente est-il le même que celui de la cotangente ?",
+            "a": "Non, ils diffèrent — la tangente exclut les multiples impairs de $\\frac{\\pi}{2}$, la cotangente les multiples entiers de $\\pi$."
+        },
+        {
+            "q": "A-t-on $\\operatorname{tg}\\alpha\\cdot\\operatorname{cotg}\\alpha=1$ (là où les deux fonctions sont définies) ?",
+            "a": "Oui, car $\\operatorname{cotg}\\alpha=\\frac{1}{\\operatorname{tg}\\alpha}$."
+        },
+        {
+            "q": "Quelle relation existe entre $\\operatorname{tg}\\alpha$ et $\\operatorname{cotg}\\alpha$ ?",
+            "a": "$\\operatorname{cotg}\\alpha=\\frac{1}{\\operatorname{tg}\\alpha}$ (ce sont des valeurs inverses, là où les deux existent)."
+        },
+        {
+            "q": "La valeur $\\operatorname{tg}90°$ existe-t-elle ?",
+            "a": "Non, car $\\cos90°=0$, la tangente n'y est pas définie."
+        },
+        {
+            "q": "La valeur $\\operatorname{cotg}180°$ existe-t-elle ?",
+            "a": "Non, car $\\sin180°=0$, la cotangente n'y est pas définie."
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

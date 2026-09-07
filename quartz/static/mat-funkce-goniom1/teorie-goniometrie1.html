@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 1 — Oblouková míra a orientovaný úhel — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f8fafc; border-left: 4px solid #64748b; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Goniometrie 1 — Oblouková míra a orientovaný úhel</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-goniometrie1.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Jiný způsob, jak měřit úhel</h2>
+    <p>Velikost úhlu obvykle udáváme ve stupních. Ve fyzice, geodézii i v samotné matematice se ale často setkáme s jinou jednotkou — <b>radiánem</b>. Navíc, chceme-li goniometrické funkce (sinus, kosinus, tangens, kotangens) používat i pro úhly větší než $90°$ nebo záporné, potřebujeme nový pojem — <b>orientovaný úhel</b>.</p>
+    <p>V této kapitole si oba pojmy zavedeme: ukážeme si, jak úhel měřit v radiánech pomocí tzv. <b>jednotkové kružnice</b>, jak mezi stupni a radiány převádět, a jak pracovat s orientovaným úhlem a jeho <b>základní velikostí</b>. Na těchto základech pak v navazujících kapitolách postavíme goniometrické funkce pro libovolný úhel.</p>
+</section>
+
+
+<section id="sec-radian-def" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Jednotková kružnice a radián</h2>
+    <p>Kružnici s poloměrem rovným jedné délkové jednotce nazýváme <b>jednotková kružnice</b>. Zvolme na ní její střed $S$ a bod $A$. Uvažujme úhel s vrcholem $S$, jehož jedno rameno prochází bodem $A$ a druhé bodem $B$, který také leží na kružnici.</p>
+    <div class="card">
+        <svg viewBox="0 0 220 220" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<circle cx="110" cy="115" r="80" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<line x1="110" y1="115" x2="190.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="110" y1="115" x2="153.2" y2="47.7" stroke="#57534e" stroke-width="1.5"/>
+<path d="M 190.0 115.0 A 80 80 0 0 0 153.2 47.7" fill="none" stroke="#7c3aed" stroke-width="3.5"/>
+<circle cx="110" cy="115" r="2.5" fill="#57534e"/>
+<text x="160.0" y="129.0" font-size="11" fill="#57534e">r</text>
+<text x="125.6" y="73.3" font-size="11" fill="#57534e">r</text>
+<text x="179.6" y="67.3" font-size="12" fill="#7c3aed" font-weight="600">s = r</text>
+<text x="96.0" y="109.0" font-size="12" fill="#7c3aed" font-weight="600">1 rad</text>
+</svg>
+        <p class="text-sm text-center mt-1">Velikostí úhlu v <b>obloukové míře</b> rozumíme délku oblouku $AB$, který úhel na jednotkové kružnici vytíná. Jednotkou je <b>radián</b>: $1\ \text{rad}$ je velikost úhlu, který na jednotkové kružnici vytíná oblouk o délce $1$.</p>
+    </div>
+    <p>Protože obvod celé jednotkové kružnice je $2\pi\cdot1=2\pi$, odpovídá plný úhel (jedna celá otočka) velikosti $2\pi\ \text{rad}$. Následující tabulka shrnuje velikosti nejdůležitějších úhlů v obloukové míře:</p>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">plný úhel</th><th class="p-1">přímý úhel</th><th class="p-1">pravý úhel</th></tr></thead>
+            <tbody><tr><td class="p-1">$2\pi\ \text{rad}$</td><td class="p-1">$\pi\ \text{rad}$</td><td class="p-1">$\frac{\pi}{2}\ \text{rad}$</td></tr></tbody>
+        </table>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Radián je tzv. odvozená jednotka SI pro rovinný úhel, ale na rozdíl od stupně je <b>bezrozměrná</b> — jde vlastně o poměr dvou délek (oblouku a poloměru). Proto se v matematických zápisech jednotka „rad" často vynechává a píše se jen samotné číslo, např. $\alpha=\frac{\pi}{4}$.
+    </div>
+</section>
+
+
+<section id="sec-prevod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Převod mezi stupni a radiány</h2>
+    <p>Ze vztahu $2\pi\ \text{rad}=360°$, tedy $\pi\ \text{rad}=180°$, odvodíme převod oběma směry:</p>
+    <div class="card text-center">
+        $$1°=\frac{\pi}{180}\ \text{rad} \qquad\qquad 1\ \text{rad}=\left(\frac{180}{\pi}\right)°$$
+    </div>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">stupně</th><th class="p-1">$0°$</th><th class="p-1">$30°$</th><th class="p-1">$45°$</th><th class="p-1">$60°$</th><th class="p-1">$90°$</th><th class="p-1">$180°$</th><th class="p-1">$270°$</th><th class="p-1">$360°$</th></tr></thead>
+            <tbody><tr><td class="p-1 font-semibold">radiány</td><td class="p-1">$0$</td><td class="p-1">$\frac{\pi}{6}$</td><td class="p-1">$\frac{\pi}{4}$</td><td class="p-1">$\frac{\pi}{3}$</td><td class="p-1">$\frac{\pi}{2}$</td><td class="p-1">$\pi$</td><td class="p-1">$\frac{3\pi}{2}$</td><td class="p-1">$2\pi$</td></tr></tbody>
+        </table>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklady (radiány &rarr; stupně):</b></p>
+        <p class="text-sm">$2\ \text{rad}=\left(2\cdot\frac{180}{\pi}\right)°\approx114{,}6°$</p>
+        <p class="text-sm">$\frac{7\pi}{5}\ \text{rad}=\left(\frac{7\pi}{5}\cdot\frac{180}{\pi}\right)°=252°$</p>
+        <p class="text-sm">$0{,}3\ \text{rad}\approx17{,}19°$</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklady (stupně &rarr; radiány):</b></p>
+        <p class="text-sm">$3°=3\cdot\frac{\pi}{180}\ \text{rad}=\frac{\pi}{60}\ \text{rad}\approx0{,}0524\ \text{rad}$</p>
+        <p class="text-sm">$162°=\frac{9\pi}{10}\ \text{rad}\approx2{,}827\ \text{rad}$</p>
+        <p class="text-sm">$305°=\frac{61\pi}{36}\ \text{rad}\approx5{,}323\ \text{rad}$</p>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: zadej úhel ve stupních, uvidíš převod na radiány</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-deg" min="0" max="360" value="105" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="deg-val">105</span>°</span>
+        </div>
+        <p class="text-sm">Hodnota v radiánech: <span id="deg-to-rad">$105°\approx1{,}83\ \text{rad}$</span></p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Je-li v zápisu velikosti úhlu přítomen symbol $\pi$, jednotka „rad" se běžně vynechává — píšeme $\alpha=2\pi$, ne $\alpha=2\pi\ \text{rad}$. Bez symbolu $\pi$ ale jednotku vynechat nelze: zápis $\alpha=2$ je nejednoznačný (mohly by to být i stupně), zatímco $\alpha=2\ \text{rad}$ je jednoznačné.
+    </div>
+    <div class="note-box note-curious">
+        <b>Víte, že?</b> Vedle stupňů a radiánů existuje ještě jednotka <b>grad</b> (též gon): $1$ grad je $\frac{1}{400}$ plného úhlu. Používá se hlavně v geodézii, protože pravý úhel má v gradech pěkné kulaté číslo $100$ gradů.
+    </div>
+</section>
+
+
+<section id="sec-orientovany-uhel" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Orientovaný úhel</h2>
+    <p><b>Orientovaný úhel</b> je uspořádaná dvojice polopřímek se společným počátkem $S$ (vrcholem). U orientovaného úhlu $SP\to SQ$ rozlišujeme, která polopřímka je <b>počáteční</b> ($SP$) a která <b>koncová</b> ($SQ$), a navíc záleží na tom, kterým směrem a kolikrát se od počáteční polopřímky ke koncové otočíme:</p>
+    <ul class="list-disc list-inside space-y-1 text-sm">
+        <li><b>kladný smysl</b> otáčení — proti směru hodinových ručiček,</li>
+        <li><b>záporný smysl</b> otáčení — po směru hodinových ručiček.</li>
+    </ul>
+    <div class="card">
+        <svg viewBox="0 0 290 190" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<circle cx="70" cy="100" r="2" fill="#57534e"/>
+<line x1="70" y1="100" x2="130.0" y2="100.0" stroke="#57534e" stroke-width="1.6"/>
+<line x1="70" y1="100" x2="108.6" y2="54.0" stroke="#57534e" stroke-width="1.6"/>
+<polyline points="103.0,100.0 103.0,98.8 102.9,97.7 102.8,96.6 102.7,95.4 102.5,94.3 102.3,93.1 102.0,92.0 101.7,90.9 101.4,89.8 101.0,88.7 100.6,87.6 100.1,86.6 99.7,85.5 99.1,84.5 98.6,83.5 98.0,82.5 97.4,81.5 96.7,80.6 96.0,79.7 95.3,78.8 94.5,77.9 93.7,77.1 92.9,76.3 92.1,75.5 91.2,74.7" fill="none" stroke="#0d9488" stroke-width="2.5"/>
+<text x="136.0" y="104.0" font-size="10" fill="#57534e">P</text>
+<text x="114.6" y="50.0" font-size="10" fill="#57534e">Q</text>
+<text x="62.0" y="116.0" font-size="10" fill="#57534e">S</text>
+<text x="52.0" y="32.0" font-size="12" fill="#0d9488" font-weight="600" text-anchor="middle">+50°</text>
+<circle cx="220" cy="100" r="2" fill="#57534e"/>
+<line x1="220" y1="100" x2="280.0" y2="100.0" stroke="#57534e" stroke-width="1.6"/>
+<line x1="220" y1="100" x2="258.6" y2="54.0" stroke="#57534e" stroke-width="1.6"/>
+<polyline points="253.0,100.0 253.0,101.2 252.9,102.3 252.8,103.4 252.7,104.6 252.5,105.7 252.3,106.9 252.0,108.0 251.7,109.1 251.4,110.2 251.0,111.3 250.6,112.4 250.1,113.4 249.7,114.5 249.1,115.5 248.6,116.5 248.0,117.5 247.4,118.5 246.7,119.4 246.0,120.3 245.3,121.2 244.5,122.1 243.7,122.9 242.9,123.7 242.1,124.5 241.2,125.3 240.3,126.0 239.4,126.7 238.5,127.4 237.5,128.0 236.5,128.6 235.5,129.1 234.5,129.7 233.4,130.1 232.4,130.6 231.3,131.0 230.2,131.4 229.1,131.7 228.0,132.0 226.9,132.3 225.7,132.5 224.6,132.7 223.4,132.8 222.3,132.9 221.2,133.0 220.0,133.0 218.8,133.0 217.7,132.9 216.6,132.8 215.4,132.7 214.3,132.5 213.1,132.3 212.0,132.0 210.9,131.7 209.8,131.4 208.7,131.0 207.6,130.6 206.6,130.1 205.5,129.7 204.5,129.1 203.5,128.6 202.5,128.0 201.5,127.4 200.6,126.7 199.7,126.0 198.8,125.3 197.9,124.5 197.1,123.7 196.3,122.9 195.5,122.1 194.7,121.2 194.0,120.3 193.3,119.4 192.6,118.5 192.0,117.5 191.4,116.5 190.9,115.5 190.3,114.5 189.9,113.4 189.4,112.4 189.0,111.3 188.6,110.2 188.3,109.1 188.0,108.0 187.7,106.9 187.5,105.7 187.3,104.6 187.2,103.4 187.1,102.3 187.0,101.2 187.0,100.0 187.0,98.8 187.1,97.7 187.2,96.6 187.3,95.4 187.5,94.3 187.7,93.1 188.0,92.0 188.3,90.9 188.6,89.8 189.0,88.7 189.4,87.6 189.9,86.6 190.3,85.5 190.9,84.5 191.4,83.5 192.0,82.5 192.6,81.5 193.3,80.6 194.0,79.7 194.7,78.8 195.5,77.9 196.3,77.1 197.1,76.3 197.9,75.5 198.8,74.7 199.7,74.0 200.6,73.3 201.5,72.6 202.5,72.0 203.5,71.4 204.5,70.9 205.5,70.3 206.6,69.9 207.6,69.4 208.7,69.0 209.8,68.6 210.9,68.3 212.0,68.0 213.1,67.7 214.3,67.5 215.4,67.3 216.6,67.2 217.7,67.1 218.8,67.0 220.0,67.0 221.2,67.0 222.3,67.1 223.4,67.2 224.6,67.3 225.7,67.5 226.9,67.7 228.0,68.0 229.1,68.3 230.2,68.6 231.3,69.0 232.4,69.4 233.4,69.9 234.5,70.3 235.5,70.9 236.5,71.4 237.5,72.0 238.5,72.6 239.4,73.3 240.3,74.0 241.2,74.7" fill="none" stroke="#b91c1c" stroke-width="2.5"/>
+<text x="286.0" y="104.0" font-size="10" fill="#57534e">P</text>
+<text x="264.6" y="50.0" font-size="10" fill="#57534e">Q</text>
+<text x="212.0" y="116.0" font-size="10" fill="#57534e">S</text>
+<text x="202.0" y="32.0" font-size="12" fill="#b91c1c" font-weight="600" text-anchor="middle">-310°</text>
+</svg>
+        <p class="text-sm text-center mt-1">Stejná dvojice polopřímek $SP$, $SQ$ může odpovídat otočení o $+50°$ (kladný smysl, přímou cestou), nebo o $-310°$ (záporný smysl, „dlouhou cestou" opačným směrem) — cíl je stejný, ale ušlá dráha jiná.</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Vrtule dronu s červenou značkou na jednom listu se roztočí v záporném smyslu (po směru hodinových ručiček při pohledu shora) o $3$ celé otáčky a ještě o čtvrt otáčky navíc.</p>
+        <p class="text-sm">Celkový orientovaný úhel: $3{,}25$ otáčky v záporném smyslu, tj. $-3{,}25\cdot360°=-1170°$, v radiánech $-3{,}25\cdot2\pi=-6{,}5\pi\ \text{rad}$.</p>
+    </div>
+</section>
+
+
+<section id="sec-velikost-nekonecno" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Velikost orientovaného úhlu</h2>
+    <p>Otočíme-li polopřímku $SP$ do polohy $SQ$ o $50°$, dostaneme se do stejné polohy i po otočení o $50°+360°=410°$, po dalších $360°$ na $770°$, ale také „zpět" o $50°-360°=-310°$ atd. Všechny tyto hodnoty popisují <b>stejnou</b> polohu koncového ramene, liší se jen počtem celých otoček navíc:</p>
+    <div class="card">
+        <svg viewBox="0 0 320 110" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0d9488"/></marker></defs><line x1="30" y1="60" x2="290" y2="60" stroke="#c4b5fd" stroke-width="1.5"/><circle cx="30.0" cy="60" r="3.5" fill="#57534e"/><text x="30.0" y="82" font-size="11" fill="#57534e" text-anchor="middle" font-weight="400">-670°</text><path d="M 38.0 54 Q 62.5 36 87.0 54" fill="none" stroke="#0d9488" stroke-width="1.3" marker-end="url(#arrow)"/><text x="62.5" y="32" font-size="9.5" fill="#0d9488" text-anchor="middle">+360°</text><circle cx="95.0" cy="60" r="3.5" fill="#57534e"/><text x="95.0" y="82" font-size="11" fill="#57534e" text-anchor="middle" font-weight="400">-310°</text><path d="M 103.0 54 Q 127.5 36 152.0 54" fill="none" stroke="#0d9488" stroke-width="1.3" marker-end="url(#arrow)"/><text x="127.5" y="32" font-size="9.5" fill="#0d9488" text-anchor="middle">+360°</text><circle cx="160.0" cy="60" r="5" fill="#7c3aed"/><text x="160.0" y="82" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="600">50°</text><path d="M 168.0 54 Q 192.5 36 217.0 54" fill="none" stroke="#0d9488" stroke-width="1.3" marker-end="url(#arrow)"/><text x="192.5" y="32" font-size="9.5" fill="#0d9488" text-anchor="middle">+360°</text><circle cx="225.0" cy="60" r="3.5" fill="#57534e"/><text x="225.0" y="82" font-size="11" fill="#57534e" text-anchor="middle" font-weight="400">410°</text><path d="M 233.0 54 Q 257.5 36 282.0 54" fill="none" stroke="#0d9488" stroke-width="1.3" marker-end="url(#arrow)"/><text x="257.5" y="32" font-size="9.5" fill="#0d9488" text-anchor="middle">+360°</text><circle cx="290.0" cy="60" r="3.5" fill="#57534e"/><text x="290.0" y="82" font-size="11" fill="#57534e" text-anchor="middle" font-weight="400">770°</text></svg>
+    </div>
+    <div class="card text-center">
+        $$\alpha=\alpha_0+k\cdot360°,\quad k\in\mathbb{Z} \qquad\text{resp.}\qquad \alpha=\alpha_0+k\cdot2\pi,\quad k\in\mathbb{Z}$$
+    </div>
+    <p>Orientovaný úhel má tedy nekonečně mnoho možných velikostí. Ze všech těchto hodnot vybíráme jednu jako referenční — <b>základní velikost</b> $\alpha_0$, která podle dohody leží v intervalu $\langle0°;360°)$, resp. $\langle0;2\pi)$.</p>
+</section>
+
+
+<section id="sec-algoritmus" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Určení základní velikosti</h2>
+    <p>Základní velikost najdeme tak, že k zadanému úhlu postupně přičítáme, nebo od něj odečítáme $360°$ (resp. $2\pi$), dokud výsledek nepadne do intervalu $\langle0°;360°)$:</p>
+    <ul class="list-disc list-inside space-y-1 text-sm">
+        <li>je-li úhel <b>záporný</b>, postupně přičítáme $360°$ (resp. $2\pi$),</li>
+        <li>je-li úhel <b>větší nebo roven $360°$</b> (resp. $2\pi$), postupně odečítáme $360°$ (resp. $2\pi$).</li>
+    </ul>
+    <p>U velkých čísel by bylo postupné přičítání/odečítání zdlouhavé — proto úhel $\alpha$ vydělíme $360°$ (resp. $2\pi$) a získaný podíl <b>zaokrouhlíme dolů</b> na celé číslo $k$ (na nejbližší celé číslo, které je menší nebo rovno podílu). Základní velikost pak spočítáme jako $\alpha_0=\alpha-k\cdot360°$.</p>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> „Zaokrouhlit dolů" neznamená zaokrouhlit k nule, ale k nejbližšímu <b>menšímu</b> celému číslu — na číselné ose vlevo. Např. $5{,}2\to5$, ale $-3{,}6\to-4$ (ne $-3$)! Tahle záměna je nejčastější chybou při výpočtu $k$ pro záporné úhly.
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Vrtule dronu z minulé sekce se otočila o $-1150°$. Určete základní velikost.</p>
+        <p class="text-sm">$-1150°:360°=-3{,}19\overline{4}\to k=-4$ (zaokrouhleno dolů)</p>
+        <p>$$\alpha_0=-1150°-(-4)\cdot360°=-1150°+1440°=290°$$</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Kolo štěstí se roztočí o $3$ a čtvrt otáčky v kladném smyslu. Určete základní velikost výsledného úhlu.</p>
+        <p class="text-sm">$3{,}25\cdot360°=1170°$; $\quad1170°:360°=3{,}25\to k=3$</p>
+        <p>$$\alpha_0=1170°-3\cdot360°=1170°-1080°=90°=\frac{\pi}{2}\ \text{rad}$$</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklady (v radiánech):</b></p>
+        <p class="text-sm">$\frac{29\pi}{4}:2\pi=3{,}625\to k=3\ \Rightarrow\ \alpha_0=\frac{29\pi}{4}-3\cdot2\pi=\frac{29\pi}{4}-\frac{24\pi}{4}=\frac{5\pi}{4}$</p>
+        <p class="text-sm mt-2">$-\frac{17\pi}{3}:2\pi=-2{,}8\overline{3}\to k=-3\ \Rightarrow\ \alpha_0=-\frac{17\pi}{3}-(-3)\cdot2\pi=-\frac{17\pi}{3}+\frac{18\pi}{3}=\frac{\pi}{3}$</p>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: zadej libovolný úhel ve stupních (i záporný, i přes $360°$)</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-basic" min="-1500" max="1500" value="-1150" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-20 text-right"><span id="basic-val">-1150</span>°</span>
+        </div>
+        <p class="text-sm">Základní velikost: <span id="basic-result">$\alpha_0=290°$</span></p>
+    </div>
+</section>
+
+
+<section id="sec-hodiny" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Reálná aplikace: ručičky hodin</h2>
+    <p>Pěkným příkladem orientovaného úhlu je pohyb ručiček hodin — obě ručičky se totiž otáčejí v <b>záporném</b> smyslu (po směru hodinových ručiček).</p>
+    <div class="card">
+        <p class="mb-2"><b>Vlastní příklad:</b> Od $8.00$ do $10.20$ (tedy za $2$ hodiny $20$ minut, čili $\frac{7}{3}$ hodiny) se otočí minutová i hodinová ručička. Určete velikost orientovaného úhlu, který každá urazí, i jeho základní velikost.</p>
+        <p class="text-sm">Minutová ručička urazí za $1$ hodinu celou otáčku, tedy: $-\frac{7}{3}\cdot360°=-840°=-\frac{14\pi}{3}\ \text{rad}$.</p>
+        <p class="text-sm">Základní velikost: $-840°:360°=-2{,}3\overline{3}\to k=-3\ \Rightarrow\ \alpha_0=-840°+1080°=240°$.</p>
+        <p class="text-sm mt-2">Hodinová ručička urazí za $1$ hodinu $\frac{1}{12}$ plného úhlu, tedy: $-\frac{7}{3}\cdot30°=-70°=-\frac{7\pi}{18}\ \text{rad}$.</p>
+        <p class="text-sm">Základní velikost: $\alpha_0=-70°+360°=290°$.</p>
+    </div>
+</section>
+
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Pojem</th><th class="p-1 text-left">Klíčová myšlenka</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">jednotková kružnice</td><td class="p-1 text-left">kružnice o poloměru $1$, na které měříme úhly v obloukové míře</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">radián</td><td class="p-1 text-left">úhel vytínající na jednotkové kružnici oblouk délky $1$; $2\pi\ \text{rad}=360°$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">orientovaný úhel</td><td class="p-1 text-left">nese informaci o směru a počtu otoček; nekonečně mnoho velikostí $\alpha_0+k\cdot360°$</td></tr>
+                <tr><td class="p-1 text-left">základní velikost</td><td class="p-1 text-left">jediná hodnota z intervalu $\langle0°;360°)$, hledáme ji přičítáním/odečítáním $360°$ (resp. $2\pi$)</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Co bude dál:</b> V navazující kapitole <i>Goniometrie 2</i> využijeme jednotkovou kružnici a orientovaný úhel k tomu, abychom <b>rozšířili definici funkcí sinus a kosinus</b> na libovolný úhel — nejen na ostré úhly z pravoúhlého trojúhelníku, jak jsme je znali dosud.
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="mt-4 space-y-10 hidden">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Une autre façon de mesurer un angle</h2>
+    <p>On exprime généralement la mesure d'un angle en degrés. Pourtant, en physique, en géodésie et en mathématiques elles-mêmes, on rencontre souvent une autre unité — <b>le radian</b>. De plus, pour pouvoir utiliser les fonctions trigonométriques (sinus, cosinus, tangente, cotangente) pour des angles supérieurs à $90°$ ou négatifs, il nous faut une nouvelle notion — <b>l'angle orienté</b>.</p>
+    <p>Dans ce chapitre, nous introduisons ces deux notions : nous verrons comment mesurer un angle en radians à l'aide du <b>cercle trigonométrique</b>, comment convertir entre degrés et radians, et comment travailler avec un angle orienté et sa <b>mesure principale</b>. Ces bases nous serviront, dans les chapitres suivants, à construire les fonctions trigonométriques pour un angle quelconque.</p>
+</section>
+
+
+<section id="sec-radian-def" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Le cercle trigonométrique et le radian</h2>
+    <p>Un cercle de rayon égal à une unité de longueur est appelé <b>cercle trigonométrique</b>. Choisissons son centre $S$ et un point $A$ sur ce cercle. Considérons un angle de sommet $S$ dont l'un des côtés passe par $A$ et l'autre par un point $B$, également situé sur le cercle.</p>
+    <div class="card">
+        <svg viewBox="0 0 220 220" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<circle cx="110" cy="115" r="80" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<line x1="110" y1="115" x2="190.0" y2="115.0" stroke="#57534e" stroke-width="1.5"/>
+<line x1="110" y1="115" x2="153.2" y2="47.7" stroke="#57534e" stroke-width="1.5"/>
+<path d="M 190.0 115.0 A 80 80 0 0 0 153.2 47.7" fill="none" stroke="#7c3aed" stroke-width="3.5"/>
+<circle cx="110" cy="115" r="2.5" fill="#57534e"/>
+<text x="160.0" y="129.0" font-size="11" fill="#57534e">r</text>
+<text x="125.6" y="73.3" font-size="11" fill="#57534e">r</text>
+<text x="179.6" y="67.3" font-size="12" fill="#7c3aed" font-weight="600">s = r</text>
+<text x="96.0" y="109.0" font-size="12" fill="#7c3aed" font-weight="600">1 rad</text>
+</svg>
+        <p class="text-sm text-center mt-1">La mesure de cet angle <b>en radians</b> est la longueur de l'arc $AB$ qu'il découpe sur le cercle trigonométrique. L'unité est <b>le radian</b> : $1\ \text{rad}$ est la mesure d'un angle qui découpe sur le cercle trigonométrique un arc de longueur $1$.</p>
+    </div>
+    <p>Le périmètre du cercle trigonométrique entier valant $2\pi\cdot1=2\pi$, l'angle plein (un tour complet) mesure $2\pi\ \text{rad}$. Le tableau suivant résume les mesures des angles les plus importants en radians :</p>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">angle plein</th><th class="p-1">angle plat</th><th class="p-1">angle droit</th></tr></thead>
+            <tbody><tr><td class="p-1">$2\pi\ \text{rad}$</td><td class="p-1">$\pi\ \text{rad}$</td><td class="p-1">$\frac{\pi}{2}\ \text{rad}$</td></tr></tbody>
+        </table>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Le radian est une unité SI dérivée pour l'angle plan, mais contrairement au degré, il est <b>sans dimension</b> — c'est en réalité le rapport de deux longueurs (l'arc et le rayon). C'est pourquoi, en notation mathématique, l'unité « rad » est souvent omise et l'on écrit simplement le nombre, par exemple $\alpha=\frac{\pi}{4}$.
+    </div>
+</section>
+
+
+<section id="sec-prevod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Conversion entre degrés et radians</h2>
+    <p>De la relation $2\pi\ \text{rad}=360°$, soit $\pi\ \text{rad}=180°$, on déduit la conversion dans les deux sens :</p>
+    <div class="card text-center">
+        $$1°=\frac{\pi}{180}\ \text{rad} \qquad\qquad 1\ \text{rad}=\left(\frac{180}{\pi}\right)°$$
+    </div>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1">degrés</th><th class="p-1">$0°$</th><th class="p-1">$30°$</th><th class="p-1">$45°$</th><th class="p-1">$60°$</th><th class="p-1">$90°$</th><th class="p-1">$180°$</th><th class="p-1">$270°$</th><th class="p-1">$360°$</th></tr></thead>
+            <tbody><tr><td class="p-1 font-semibold">radians</td><td class="p-1">$0$</td><td class="p-1">$\frac{\pi}{6}$</td><td class="p-1">$\frac{\pi}{4}$</td><td class="p-1">$\frac{\pi}{3}$</td><td class="p-1">$\frac{\pi}{2}$</td><td class="p-1">$\pi$</td><td class="p-1">$\frac{3\pi}{2}$</td><td class="p-1">$2\pi$</td></tr></tbody>
+        </table>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemples (radians &rarr; degrés) :</b></p>
+        <p class="text-sm">$2\ \text{rad}=\left(2\cdot\frac{180}{\pi}\right)°\approx114{,}6°$</p>
+        <p class="text-sm">$\frac{7\pi}{5}\ \text{rad}=\left(\frac{7\pi}{5}\cdot\frac{180}{\pi}\right)°=252°$</p>
+        <p class="text-sm">$0{,}3\ \text{rad}\approx17{,}19°$</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemples (degrés &rarr; radians) :</b></p>
+        <p class="text-sm">$3°=3\cdot\frac{\pi}{180}\ \text{rad}=\frac{\pi}{60}\ \text{rad}\approx0{,}0524\ \text{rad}$</p>
+        <p class="text-sm">$162°=\frac{9\pi}{10}\ \text{rad}\approx2{,}827\ \text{rad}$</p>
+        <p class="text-sm">$305°=\frac{61\pi}{36}\ \text{rad}\approx5{,}323\ \text{rad}$</p>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Essaie : donne un angle en degrés, observe sa conversion en radians</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-deg-fr" min="0" max="360" value="105" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="deg-val-fr">105</span>°</span>
+        </div>
+        <p class="text-sm">Valeur en radians : <span id="deg-to-rad-fr">$105°\approx1{,}83\ \text{rad}$</span></p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Lorsque le symbole $\pi$ figure dans l'écriture de la mesure d'un angle, l'unité « rad » est généralement omise — on écrit $\alpha=2\pi$, et non $\alpha=2\pi\ \text{rad}$. Mais sans le symbole $\pi$, on ne peut pas omettre l'unité : l'écriture $\alpha=2$ est ambiguë (il pourrait aussi s'agir de degrés), alors que $\alpha=2\ \text{rad}$ est sans ambiguïté.
+    </div>
+    <div class="note-box note-curious">
+        <b>Le saviez-vous ?</b> Outre les degrés et les radians, il existe aussi l'unité <b>grade</b> (ou gon) : $1$ grade vaut $\frac{1}{400}$ de l'angle plein. Elle est surtout utilisée en géodésie, car l'angle droit y vaut un nombre rond : $100$ grades.
+    </div>
+</section>
+
+
+<section id="sec-orientovany-uhel" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. L'angle orienté</h2>
+    <p><b>L'angle orienté</b> est un couple ordonné de demi-droites de même origine $S$ (le sommet). Pour l'angle orienté $SP\to SQ$, on distingue la demi-droite <b>initiale</b> ($SP$) et la demi-droite <b>finale</b> ($SQ$), et l'on précise en plus dans quel sens et combien de fois on tourne de l'une à l'autre :</p>
+    <ul class="list-disc list-inside space-y-1 text-sm">
+        <li><b>sens positif</b> de rotation — sens contraire des aiguilles d'une montre,</li>
+        <li><b>sens négatif</b> de rotation — sens des aiguilles d'une montre.</li>
+    </ul>
+    <div class="card">
+        <svg viewBox="0 0 290 190" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<circle cx="70" cy="100" r="2" fill="#57534e"/>
+<line x1="70" y1="100" x2="130.0" y2="100.0" stroke="#57534e" stroke-width="1.6"/>
+<line x1="70" y1="100" x2="108.6" y2="54.0" stroke="#57534e" stroke-width="1.6"/>
+<polyline points="103.0,100.0 103.0,98.8 102.9,97.7 102.8,96.6 102.7,95.4 102.5,94.3 102.3,93.1 102.0,92.0 101.7,90.9 101.4,89.8 101.0,88.7 100.6,87.6 100.1,86.6 99.7,85.5 99.1,84.5 98.6,83.5 98.0,82.5 97.4,81.5 96.7,80.6 96.0,79.7 95.3,78.8 94.5,77.9 93.7,77.1 92.9,76.3 92.1,75.5 91.2,74.7" fill="none" stroke="#0d9488" stroke-width="2.5"/>
+<text x="136.0" y="104.0" font-size="10" fill="#57534e">P</text>
+<text x="114.6" y="50.0" font-size="10" fill="#57534e">Q</text>
+<text x="62.0" y="116.0" font-size="10" fill="#57534e">S</text>
+<text x="52.0" y="32.0" font-size="12" fill="#0d9488" font-weight="600" text-anchor="middle">+50°</text>
+<circle cx="220" cy="100" r="2" fill="#57534e"/>
+<line x1="220" y1="100" x2="280.0" y2="100.0" stroke="#57534e" stroke-width="1.6"/>
+<line x1="220" y1="100" x2="258.6" y2="54.0" stroke="#57534e" stroke-width="1.6"/>
+<polyline points="253.0,100.0 253.0,101.2 252.9,102.3 252.8,103.4 252.7,104.6 252.5,105.7 252.3,106.9 252.0,108.0 251.7,109.1 251.4,110.2 251.0,111.3 250.6,112.4 250.1,113.4 249.7,114.5 249.1,115.5 248.6,116.5 248.0,117.5 247.4,118.5 246.7,119.4 246.0,120.3 245.3,121.2 244.5,122.1 243.7,122.9 242.9,123.7 242.1,124.5 241.2,125.3 240.3,126.0 239.4,126.7 238.5,127.4 237.5,128.0 236.5,128.6 235.5,129.1 234.5,129.7 233.4,130.1 232.4,130.6 231.3,131.0 230.2,131.4 229.1,131.7 228.0,132.0 226.9,132.3 225.7,132.5 224.6,132.7 223.4,132.8 222.3,132.9 221.2,133.0 220.0,133.0 218.8,133.0 217.7,132.9 216.6,132.8 215.4,132.7 214.3,132.5 213.1,132.3 212.0,132.0 210.9,131.7 209.8,131.4 208.7,131.0 207.6,130.6 206.6,130.1 205.5,129.7 204.5,129.1 203.5,128.6 202.5,128.0 201.5,127.4 200.6,126.7 199.7,126.0 198.8,125.3 197.9,124.5 197.1,123.7 196.3,122.9 195.5,122.1 194.7,121.2 194.0,120.3 193.3,119.4 192.6,118.5 192.0,117.5 191.4,116.5 190.9,115.5 190.3,114.5 189.9,113.4 189.4,112.4 189.0,111.3 188.6,110.2 188.3,109.1 188.0,108.0 187.7,106.9 187.5,105.7 187.3,104.6 187.2,103.4 187.1,102.3 187.0,101.2 187.0,100.0 187.0,98.8 187.1,97.7 187.2,96.6 187.3,95.4 187.5,94.3 187.7,93.1 188.0,92.0 188.3,90.9 188.6,89.8 189.0,88.7 189.4,87.6 189.9,86.6 190.3,85.5 190.9,84.5 191.4,83.5 192.0,82.5 192.6,81.5 193.3,80.6 194.0,79.7 194.7,78.8 195.5,77.9 196.3,77.1 197.1,76.3 197.9,75.5 198.8,74.7 199.7,74.0 200.6,73.3 201.5,72.6 202.5,72.0 203.5,71.4 204.5,70.9 205.5,70.3 206.6,69.9 207.6,69.4 208.7,69.0 209.8,68.6 210.9,68.3 212.0,68.0 213.1,67.7 214.3,67.5 215.4,67.3 216.6,67.2 217.7,67.1 218.8,67.0 220.0,67.0 221.2,67.0 222.3,67.1 223.4,67.2 224.6,67.3 225.7,67.5 226.9,67.7 228.0,68.0 229.1,68.3 230.2,68.6 231.3,69.0 232.4,69.4 233.4,69.9 234.5,70.3 235.5,70.9 236.5,71.4 237.5,72.0 238.5,72.6 239.4,73.3 240.3,74.0 241.2,74.7" fill="none" stroke="#b91c1c" stroke-width="2.5"/>
+<text x="286.0" y="104.0" font-size="10" fill="#57534e">P</text>
+<text x="264.6" y="50.0" font-size="10" fill="#57534e">Q</text>
+<text x="212.0" y="116.0" font-size="10" fill="#57534e">S</text>
+<text x="202.0" y="32.0" font-size="12" fill="#b91c1c" font-weight="600" text-anchor="middle">-310°</text>
+</svg>
+        <p class="text-sm text-center mt-1">Le même couple de demi-droites $SP$, $SQ$ peut correspondre à une rotation de $+50°$ (sens positif, chemin direct), ou de $-310°$ (sens négatif, « long chemin » dans l'autre sens) — la destination est la même, mais le trajet parcouru diffère.</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> L'hélice d'un drone, marquée d'un point rouge sur l'une de ses pales, tourne dans le sens négatif (sens horaire, vue de dessus) de $3$ tours complets, plus un quart de tour supplémentaire.</p>
+        <p class="text-sm">Angle orienté total : $3{,}25$ tours dans le sens négatif, soit $-3{,}25\cdot360°=-1170°$, en radians $-3{,}25\cdot2\pi=-6{,}5\pi\ \text{rad}$.</p>
+    </div>
+</section>
+
+
+<section id="sec-velikost-nekonecno" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Mesure d'un angle orienté</h2>
+    <p>Si l'on fait tourner la demi-droite $SP$ jusqu'à la position $SQ$ de $50°$, on obtient la même position finale après une rotation de $50°+360°=410°$, puis $770°$ après un tour de plus, mais aussi en « revenant » de $50°-360°=-310°$, etc. Toutes ces valeurs décrivent la <b>même</b> position de la demi-droite finale ; elles ne diffèrent que par le nombre de tours complets effectués en plus :</p>
+    <div class="card">
+        <svg viewBox="0 0 320 110" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg"><defs><marker id="arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#0d9488"/></marker></defs><line x1="30" y1="60" x2="290" y2="60" stroke="#c4b5fd" stroke-width="1.5"/><circle cx="30.0" cy="60" r="3.5" fill="#57534e"/><text x="30.0" y="82" font-size="11" fill="#57534e" text-anchor="middle" font-weight="400">-670°</text><path d="M 38.0 54 Q 62.5 36 87.0 54" fill="none" stroke="#0d9488" stroke-width="1.3" marker-end="url(#arrow)"/><text x="62.5" y="32" font-size="9.5" fill="#0d9488" text-anchor="middle">+360°</text><circle cx="95.0" cy="60" r="3.5" fill="#57534e"/><text x="95.0" y="82" font-size="11" fill="#57534e" text-anchor="middle" font-weight="400">-310°</text><path d="M 103.0 54 Q 127.5 36 152.0 54" fill="none" stroke="#0d9488" stroke-width="1.3" marker-end="url(#arrow)"/><text x="127.5" y="32" font-size="9.5" fill="#0d9488" text-anchor="middle">+360°</text><circle cx="160.0" cy="60" r="5" fill="#7c3aed"/><text x="160.0" y="82" font-size="11" fill="#7c3aed" text-anchor="middle" font-weight="600">50°</text><path d="M 168.0 54 Q 192.5 36 217.0 54" fill="none" stroke="#0d9488" stroke-width="1.3" marker-end="url(#arrow)"/><text x="192.5" y="32" font-size="9.5" fill="#0d9488" text-anchor="middle">+360°</text><circle cx="225.0" cy="60" r="3.5" fill="#57534e"/><text x="225.0" y="82" font-size="11" fill="#57534e" text-anchor="middle" font-weight="400">410°</text><path d="M 233.0 54 Q 257.5 36 282.0 54" fill="none" stroke="#0d9488" stroke-width="1.3" marker-end="url(#arrow)"/><text x="257.5" y="32" font-size="9.5" fill="#0d9488" text-anchor="middle">+360°</text><circle cx="290.0" cy="60" r="3.5" fill="#57534e"/><text x="290.0" y="82" font-size="11" fill="#57534e" text-anchor="middle" font-weight="400">770°</text></svg>
+    </div>
+    <div class="card text-center">
+        $$\alpha=\alpha_0+k\cdot360°,\quad k\in\mathbb{Z} \qquad\text{resp.}\qquad \alpha=\alpha_0+k\cdot2\pi,\quad k\in\mathbb{Z}$$
+    </div>
+    <p>Un angle orienté possède donc une infinité de mesures possibles. Parmi toutes ces valeurs, on en choisit une comme référence — <b>la mesure principale</b> $\alpha_0$, qui par convention appartient à l'intervalle $\langle0°;360°)$, resp. $\langle0;2\pi)$.</p>
+</section>
+
+
+<section id="sec-algoritmus" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Détermination de la mesure principale</h2>
+    <p>On trouve la mesure principale en ajoutant, ou en retranchant, successivement $360°$ (resp. $2\pi$) à l'angle donné, jusqu'à obtenir un résultat dans l'intervalle $\langle0°;360°)$ :</p>
+    <ul class="list-disc list-inside space-y-1 text-sm">
+        <li>si l'angle est <b>négatif</b>, on ajoute successivement $360°$ (resp. $2\pi$),</li>
+        <li>si l'angle est <b>supérieur ou égal à $360°$</b> (resp. $2\pi$), on retranche successivement $360°$ (resp. $2\pi$).</li>
+    </ul>
+    <p>Pour de grands nombres, ajouter/retrancher successivement serait fastidieux — on divise donc l'angle $\alpha$ par $360°$ (resp. $2\pi$) et l'on <b>arrondit le quotient à l'entier inférieur</b> $k$ (l'entier le plus proche inférieur ou égal au quotient). La mesure principale est alors $\alpha_0=\alpha-k\cdot360°$.</p>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> « Arrondir à l'entier inférieur » ne signifie pas arrondir vers zéro, mais vers l'entier <b>immédiatement inférieur</b> — plus à gauche sur l'axe des nombres. Par exemple $5{,}2\to5$, mais $-3{,}6\to-4$ (et non $-3$) ! Cette confusion est l'erreur la plus fréquente dans le calcul de $k$ pour un angle négatif.
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> L'hélice du drone de la section précédente a tourné de $-1150°$. Déterminez sa mesure principale.</p>
+        <p class="text-sm">$-1150°:360°=-3{,}19\overline{4}\to k=-4$ (arrondi à l'entier inférieur)</p>
+        <p>$$\alpha_0=-1150°-(-4)\cdot360°=-1150°+1440°=290°$$</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Une roue de la fortune tourne de $3$ tours et quart dans le sens positif. Déterminez la mesure principale de l'angle obtenu.</p>
+        <p class="text-sm">$3{,}25\cdot360°=1170°$ ; $\quad1170°:360°=3{,}25\to k=3$</p>
+        <p>$$\alpha_0=1170°-3\cdot360°=1170°-1080°=90°=\frac{\pi}{2}\ \text{rad}$$</p>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemples (en radians) :</b></p>
+        <p class="text-sm">$\frac{29\pi}{4}:2\pi=3{,}625\to k=3\ \Rightarrow\ \alpha_0=\frac{29\pi}{4}-3\cdot2\pi=\frac{29\pi}{4}-\frac{24\pi}{4}=\frac{5\pi}{4}$</p>
+        <p class="text-sm mt-2">$-\frac{17\pi}{3}:2\pi=-2{,}8\overline{3}\to k=-3\ \Rightarrow\ \alpha_0=-\frac{17\pi}{3}-(-3)\cdot2\pi=-\frac{17\pi}{3}+\frac{18\pi}{3}=\frac{\pi}{3}$</p>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Essaie : donne un angle quelconque en degrés (même négatif, même au-delà de $360°$)</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="slider-basic-fr" min="-1500" max="1500" value="-1150" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-20 text-right"><span id="basic-val-fr">-1150</span>°</span>
+        </div>
+        <p class="text-sm">Mesure principale : <span id="basic-result-fr">$\alpha_0=290°$</span></p>
+    </div>
+</section>
+
+
+<section id="sec-hodiny" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Application réelle : les aiguilles d'une montre</h2>
+    <p>Le mouvement des aiguilles d'une montre illustre bien la notion d'angle orienté — les deux aiguilles tournent en effet dans le sens <b>négatif</b> (sens horaire).</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> De $8\text{h}00$ à $10\text{h}20$ (soit $2$ heures $20$ minutes, c'est-à-dire $\frac{7}{3}$ heures), l'aiguille des minutes et l'aiguille des heures tournent toutes deux. Déterminez la mesure de l'angle orienté que parcourt chacune, ainsi que sa mesure principale.</p>
+        <p class="text-sm">L'aiguille des minutes effectue un tour complet par heure, donc : $-\frac{7}{3}\cdot360°=-840°=-\frac{14\pi}{3}\ \text{rad}$.</p>
+        <p class="text-sm">Mesure principale : $-840°:360°=-2{,}3\overline{3}\to k=-3\ \Rightarrow\ \alpha_0=-840°+1080°=240°$.</p>
+        <p class="text-sm mt-2">L'aiguille des heures parcourt $\frac{1}{12}$ de l'angle plein par heure, donc : $-\frac{7}{3}\cdot30°=-70°=-\frac{7\pi}{18}\ \text{rad}$.</p>
+        <p class="text-sm">Mesure principale : $\alpha_0=-70°+360°=290°$.</p>
+    </div>
+</section>
+
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Notion</th><th class="p-1 text-left">Idée clé</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">cercle trigonométrique</td><td class="p-1 text-left">cercle de rayon $1$, sur lequel on mesure les angles en radians</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">radian</td><td class="p-1 text-left">angle découpant sur le cercle trigonométrique un arc de longueur $1$ ; $2\pi\ \text{rad}=360°$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">angle orienté</td><td class="p-1 text-left">porte l'information sur le sens et le nombre de tours ; une infinité de mesures $\alpha_0+k\cdot360°$</td></tr>
+                <tr><td class="p-1 text-left">mesure principale</td><td class="p-1 text-left">l'unique valeur de l'intervalle $\langle0°;360°)$, obtenue en ajoutant/retranchant $360°$ (resp. $2\pi$)</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>La suite :</b> Dans le chapitre suivant, <i>Goniométrie 2</i>, nous utiliserons le cercle trigonométrique et l'angle orienté pour <b>étendre la définition des fonctions sinus et cosinus</b> à un angle quelconque — pas seulement aux angles aigus d'un triangle rectangle, comme nous les connaissions jusqu'à présent.
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 1 — Radians et angle orienté' : 'Goniometrie 1 — Oblouková míra a orientovaný úhel';
+    document.title = czVisible ? 'Goniométrie 1 — Théorie' : 'Goniometrie 1 — Teorie';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+function fmtNum(x){
+    const r = Math.round(x*100)/100;
+    let s = r.toString().replace('.', ',');
+    if (s === '-0') s = '0';
+    return s;
+}
+
+// ---- Demo: prevod stupne -> radiany ----
+function updateDegToRad(suffix){
+    suffix = suffix || '';
+    const deg = parseFloat(document.getElementById('slider-deg'+suffix).value);
+    const rad = deg*Math.PI/180;
+    document.getElementById('deg-val'+suffix).textContent = deg;
+    const el = document.getElementById('deg-to-rad'+suffix);
+    el.textContent = '$' + deg + '°\\approx' + fmtNum(rad) + '\\ \\text{rad}$';
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([el]);
+}
+
+// ---- Demo: zakladni velikost ----
+function basicOf(deg){
+    let b = deg % 360;
+    if (b < 0) b += 360;
+    return b;
+}
+function updateBasicDemo(suffix){
+    suffix = suffix || '';
+    const deg = parseFloat(document.getElementById('slider-basic'+suffix).value);
+    const basic = basicOf(deg);
+    document.getElementById('basic-val'+suffix).textContent = deg;
+    const el = document.getElementById('basic-result'+suffix);
+    el.textContent = '$\\alpha_0=' + basic + '°$';
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([el]);
+}
+
+// ---- Inicializace ----
+updateDegToRad(''); updateDegToRad('-fr');
+updateBasicDemo(''); updateBasicDemo('-fr');
+
+document.getElementById('slider-deg').addEventListener('input', () => updateDegToRad(''));
+document.getElementById('slider-deg-fr').addEventListener('input', () => updateDegToRad('-fr'));
+document.getElementById('slider-basic').addEventListener('input', () => updateBasicDemo(''));
+document.getElementById('slider-basic-fr').addEventListener('input', () => updateBasicDemo('-fr'));
+
+</script>
+
+</body>
+</html>

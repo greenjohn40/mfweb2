@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Goniometrie 1 — Oblouková míra a orientovaný úhel (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-goniometrie1.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Goniometrie 1</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (radián, převod stupňů a radiánů, orientovaný úhel, základní velikost).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    {
+        "id": "t1",
+        "type": "concept",
+        "cs": {
+            "q": "Co je $1$ radián?",
+            "a": "velikost úhlu, který na jednotkové kružnici vytíná oblouk délky $1$",
+            "o": [
+                "velikost úhlu, který na jednotkové kružnici vytíná oblouk délky $1$",
+                "velikost úhlu rovná $1°$",
+                "poloměr jednotkové kružnice",
+                "délka celé jednotkové kružnice"
+            ],
+            "h": "Mysli na definici obloukové míry.",
+            "e": "Radián je velikost úhlu, který na jednotkové kružnici vytíná oblouk o délce právě $1$."
+        },
+        "fr": {
+            "q": "Qu'est-ce que $1$ radian ?",
+            "a": "la mesure d'un angle qui découpe sur le cercle trigonométrique un arc de longueur $1$",
+            "o": [
+                "la mesure d'un angle qui découpe sur le cercle trigonométrique un arc de longueur $1$",
+                "la mesure d'un angle égale à $1°$",
+                "le rayon du cercle trigonométrique",
+                "la longueur du cercle trigonométrique entier"
+            ],
+            "h": "Pense à la définition de la mesure en radians.",
+            "e": "Le radian est la mesure d'un angle qui découpe sur le cercle trigonométrique un arc de longueur exactement $1$."
+        }
+    },
+    {
+        "id": "t2",
+        "type": "concept",
+        "cs": {
+            "q": "Kolik radiánů má plný úhel?",
+            "a": "$2\\pi$",
+            "o": [
+                "$2\\pi$",
+                "$\\pi$",
+                "$\\frac{\\pi}{2}$",
+                "$4\\pi$"
+            ],
+            "h": "Plný úhel odpovídá jedné celé otočce, tedy celému obvodu jednotkové kružnice.",
+            "e": "Obvod jednotkové kružnice je $2\\pi$, proto plný úhel měří $2\\pi\\ \\text{rad}$."
+        },
+        "fr": {
+            "q": "Combien de radians mesure l'angle plein ?",
+            "a": "$2\\pi$",
+            "o": [
+                "$2\\pi$",
+                "$\\pi$",
+                "$\\frac{\\pi}{2}$",
+                "$4\\pi$"
+            ],
+            "h": "L'angle plein correspond à un tour complet, donc au périmètre entier du cercle trigonométrique.",
+            "e": "Le périmètre du cercle trigonométrique vaut $2\\pi$, donc l'angle plein mesure $2\\pi\\ \\text{rad}$."
+        }
+    },
+    {
+        "id": "t3",
+        "type": "concept",
+        "cs": {
+            "q": "Který smysl otáčení polopřímky považujeme za kladný?",
+            "a": "proti směru hodinových ručiček",
+            "o": [
+                "proti směru hodinových ručiček",
+                "po směru hodinových ručiček",
+                "vždy směrem k ose $x$",
+                "závisí na poloze počátečního ramene"
+            ],
+            "h": "Porovnej se směrem, kterým se otáčejí ručičky hodin.",
+            "e": "Kladný smysl otáčení je definován jako smysl proti směru pohybu hodinových ručiček."
+        },
+        "fr": {
+            "q": "Quel sens de rotation d'une demi-droite considère-t-on comme positif ?",
+            "a": "le sens contraire des aiguilles d'une montre",
+            "o": [
+                "le sens contraire des aiguilles d'une montre",
+                "le sens des aiguilles d'une montre",
+                "toujours vers l'axe $x$",
+                "cela dépend de la position du côté initial"
+            ],
+            "h": "Compare avec le sens dans lequel tournent les aiguilles d'une montre.",
+            "e": "Le sens positif de rotation est défini comme le sens contraire des aiguilles d'une montre."
+        }
+    },
+    {
+        "id": "t4",
+        "type": "concept",
+        "cs": {
+            "q": "Co navíc oproti „obyčejnému\" úhlu nese orientovaný úhel?",
+            "a": "informaci o směru a počtu otoček mezi rameny",
+            "o": [
+                "informaci o směru a počtu otoček mezi rameny",
+                "informaci o délce ramen",
+                "informaci o barvě ramen",
+                "orientovaný úhel nenese žádnou další informaci"
+            ],
+            "h": "Zamysli se, proč rozlišujeme počáteční a koncové rameno.",
+            "e": "Orientovaný úhel navíc určuje, kterým směrem (kladným, nebo záporným) a kolikrát se od počátečního ramene otočíme ke koncovému."
+        },
+        "fr": {
+            "q": "Qu'est-ce qu'un angle orienté porte en plus par rapport à un angle « ordinaire » ?",
+            "a": "l'information sur le sens et le nombre de tours entre les côtés",
+            "o": [
+                "l'information sur le sens et le nombre de tours entre les côtés",
+                "l'information sur la longueur des côtés",
+                "l'information sur la couleur des côtés",
+                "un angle orienté ne porte aucune information supplémentaire"
+            ],
+            "h": "Réfléchis à pourquoi on distingue le côté initial et le côté final.",
+            "e": "L'angle orienté précise en plus dans quel sens (positif ou négatif) et combien de fois on tourne du côté initial vers le côté final."
+        }
+    },
+    {
+        "id": "t5",
+        "type": "concept",
+        "cs": {
+            "q": "V jakém intervalu leží základní velikost orientovaného úhlu (ve stupních)?",
+            "a": "$\\langle0°;360°)$",
+            "o": [
+                "$\\langle0°;360°)$",
+                "$(-180°;180°\\rangle$",
+                "$\\langle0°;180°)$",
+                "$\\langle0°;720°)$"
+            ],
+            "h": "Základní velikost odpovídá jedné celé otočce od nulové polohy.",
+            "e": "Podle dohody volíme základní velikost orientovaného úhlu z intervalu $\\langle0°;360°)$, resp. $\\langle0;2\\pi)$ v radiánech."
+        },
+        "fr": {
+            "q": "Dans quel intervalle se situe la mesure principale d'un angle orienté (en degrés) ?",
+            "a": "$\\langle0°;360°)$",
+            "o": [
+                "$\\langle0°;360°)$",
+                "$(-180°;180°\\rangle$",
+                "$\\langle0°;180°)$",
+                "$\\langle0°;720°)$"
+            ],
+            "h": "La mesure principale correspond à un seul tour complet depuis la position nulle.",
+            "e": "Par convention, on choisit la mesure principale d'un angle orienté dans l'intervalle $\\langle0°;360°)$, resp. $\\langle0;2\\pi)$ en radians."
+        }
+    },
+    {
+        "id": "t6",
+        "type": "concept",
+        "cs": {
+            "q": "Kdy při hledání základní velikosti k zadanému úhlu postupně přičítáme $360°$?",
+            "a": "je-li zadaný úhel záporný",
+            "o": [
+                "je-li zadaný úhel záporný",
+                "je-li zadaný úhel větší než $360°$",
+                "vždy, bez ohledu na velikost úhlu",
+                "nikdy, vždy jen odečítáme"
+            ],
+            "h": "Přičítáním se úhel zvětšuje — kdy to potřebujeme?",
+            "e": "Je-li úhel záporný, musíme ho zvětšit přičítáním $360°$ (resp. $2\\pi$), dokud nepadne do intervalu $\\langle0°;360°)$."
+        },
+        "fr": {
+            "q": "Quand ajoute-t-on successivement $360°$ à l'angle donné pour trouver sa mesure principale ?",
+            "a": "si l'angle donné est négatif",
+            "o": [
+                "si l'angle donné est négatif",
+                "si l'angle donné est supérieur à $360°$",
+                "toujours, quelle que soit la mesure de l'angle",
+                "jamais, on ne fait que retrancher"
+            ],
+            "h": "En ajoutant, l'angle augmente — quand en a-t-on besoin ?",
+            "e": "Si l'angle est négatif, il faut l'augmenter en ajoutant $360°$ (resp. $2\\pi$) jusqu'à obtenir un résultat dans l'intervalle $\\langle0°;360°)$."
+        }
+    },
+    {
+        "id": "t7",
+        "type": "concept",
+        "cs": {
+            "q": "Kolik dostaneme zaokrouhlením čísla $-3{,}6$ dolů na celé číslo?",
+            "a": "$-4$",
+            "o": [
+                "$-4$",
+                "$-3$",
+                "$-3{,}6$",
+                "$4$"
+            ],
+            "h": "Zaokrouhlení dolů znamená k nejbližšímu menšímu celému číslu, ne k nule.",
+            "e": "Zaokrouhlení dolů znamená k nejbližšímu menšímu celému číslu na číselné ose — pro $-3{,}6$ je to $-4$, ne $-3$."
+        },
+        "fr": {
+            "q": "Que donne l'arrondi à l'entier inférieur du nombre $-3{,}6$ ?",
+            "a": "$-4$",
+            "o": [
+                "$-4$",
+                "$-3$",
+                "$-3{,}6$",
+                "$4$"
+            ],
+            "h": "L'arrondi à l'entier inférieur signifie l'entier immédiatement inférieur, pas vers zéro.",
+            "e": "L'arrondi à l'entier inférieur signifie l'entier immédiatement inférieur sur l'axe des nombres — pour $-3{,}6$, c'est $-4$, et non $-3$."
+        }
+    },
+    {
+        "id": "t8",
+        "type": "concept",
+        "cs": {
+            "q": "Kterým smyslem se otáčejí ručičky hodin?",
+            "a": "záporným",
+            "o": [
+                "záporným",
+                "kladným",
+                "střídavě kladným a záporným",
+                "hodinová ručička kladným, minutová záporným"
+            ],
+            "h": "Porovnej se směrem definovaným jako kladný smysl otáčení.",
+            "e": "Ručičky hodin se pohybují po směru hodinových ručiček, což je podle dohody záporný smysl otáčení."
+        },
+        "fr": {
+            "q": "Dans quel sens tournent les aiguilles d'une montre ?",
+            "a": "négatif",
+            "o": [
+                "négatif",
+                "positif",
+                "alternativement positif et négatif",
+                "l'aiguille des heures en positif, celle des minutes en négatif"
+            ],
+            "h": "Compare avec le sens défini comme le sens positif de rotation.",
+            "e": "Les aiguilles d'une montre se déplacent dans le sens des aiguilles d'une montre, ce qui correspond par convention au sens négatif de rotation."
+        }
+    }
+];
+
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ [a,b]=[b, a%b]; } return a; }
+function fracPiStr(num, den){
+    if (den === 1) return num === 1 ? '\\pi' : (num + '\\pi');
+    if (num === 1) return '\\frac{\\pi}{' + den + '}';
+    return '\\frac{' + num + '\\pi}{' + den + '}';
+}
+function buildFracOptions(numCorrect, den, spread){
+    const set = new Set([numCorrect]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let cand = numCorrect + delta;
+        if (cand <= 0) cand = numCorrect + Math.abs(delta) + 1;
+        set.add(cand);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0,4).map(n => '$' + fracPiStr(n, den) + '$'));
+}
+function basicOf(deg){
+    const k = Math.floor(deg/360);
+    return { basic: deg - k*360, k };
+}
+
+// ======== VYPOCETNI ULOHY ========
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Vyjádři úhel ${deg}° v radiánech (přesná hodnota jako násobek $\\pi$).", h: "Vynásob počet stupňů zlomkem $\\frac{\\pi}{180}$ a zlomek zkrať.", e: "${deg}°=${deg}\\cdot{convFactor}\\ {unitRad}={fracLatex}$." },
+        fr: { q: "Exprime l'angle ${deg}° en radians (valeur exacte comme multiple de $\\pi$).", h: "Multiplie le nombre de degrés par $\\frac{\\pi}{180}$ et simplifie la fraction.", e: "${deg}°=${deg}\\cdot{convFactor}\\ {unitRad}={fracLatex}$." },
+        params: () => {
+            const degs = [20,40,50,70,80,100,130,140,160,200,250,260,280,320,340];
+            return { deg: randChoice(degs) };
+        },
+        solve: (p) => {
+            const g = gcd(p.deg, 180);
+            const num = p.deg / g, den = 180 / g;
+            const fracLatex = '$' + fracPiStr(num, den) + '$';
+            return { num, den, fracLatex, convFactor: '\\frac{\\pi}{180}', unitRad: '\\text{rad}', correct: '$' + fracPiStr(num, den) + '$' };
+        },
+        wrongOptions: (p, sol) => buildFracOptions(sol.num, sol.den, 3) },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Vyjádři úhel $\\frac{ {num} \\pi}{ {den} }$ rad ve stupních.", h: "Vynásob počet radiánů zlomkem $\\frac{180}{\\pi}$.", e: "$\\frac{ {num} \\pi}{ {den} }\\ {unitRad}={res}°$." },
+        fr: { q: "Exprime l'angle $\\frac{ {num} \\pi}{ {den} }$ rad en degrés.", h: "Multiplie le nombre de radians par $\\frac{180}{\\pi}$.", e: "$\\frac{ {num} \\pi}{ {den} }\\ {unitRad}={res}°$." },
+        params: () => {
+            const pairs = [[5,9],[7,12],[11,18],[13,9],[3,4],[5,4],[7,6],[11,6],[9,10],[13,10]];
+            const [num, den] = randChoice(pairs);
+            return { num, den };
+        },
+        solve: (p) => {
+            const res = p.num * 180 / p.den;
+            return { res, unitRad: '\\text{rad}', correct: fmt(res) };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], Math.max(6, Math.round(sol.res*0.15))) },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Urči základní velikost úhlu ${deg}°.", h: "Vyděl úhel $360°$ a podíl zaokrouhli dolů na celé číslo $k$; základní velikost je $\\alpha_0=\\alpha-k\\cdot360°$.", e: "${deg}°:360°={quot}\\to k={k}\\ \\Rightarrow\\ \\alpha_0={deg}°-{k}\\cdot360°={res}°$." },
+        fr: { q: "Détermine la mesure principale de l'angle ${deg}°.", h: "Divise l'angle par $360°$ et arrondis le quotient à l'entier inférieur $k$ ; la mesure principale est $\\alpha_0=\\alpha-k\\cdot360°$.", e: "${deg}°:360°={quot}\\to k={k}\\ \\Rightarrow\\ \\alpha_0={deg}°-{k}\\cdot360°={res}°$." },
+        params: () => {
+            const degs = [4200,3700,5100,2900,6300,4800,4450];
+            return { deg: randChoice(degs) };
+        },
+        solve: (p) => {
+            const { basic, k } = basicOf(p.deg);
+            const quot = fmt(p.deg/360);
+            return { res: basic, k, quot, correct: fmt(basic) };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 50) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Urči základní velikost úhlu ${deg}°.", h: "Je-li úhel záporný, přičítej $360°$, dokud výsledek nepadne do $\\langle0°;360°)$.", e: "${deg}°:360°={quot}\\to k={k}\\ \\Rightarrow\\ \\alpha_0={deg}°-{k}\\cdot360°={res}°$." },
+        fr: { q: "Détermine la mesure principale de l'angle ${deg}°.", h: "Si l'angle est négatif, ajoute $360°$ jusqu'à obtenir un résultat dans $\\langle0°;360°)$.", e: "${deg}°:360°={quot}\\to k={k}\\ \\Rightarrow\\ \\alpha_0={deg}°-{k}\\cdot360°={res}°$." },
+        params: () => {
+            const degs = [-2200,-3100,-4500,-2650,-3900,-2020,-3350];
+            return { deg: randChoice(degs) };
+        },
+        solve: (p) => {
+            const { basic, k } = basicOf(p.deg);
+            const quot = fmt(p.deg/360);
+            return { res: basic, k, quot, correct: fmt(basic) };
+        },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [], 50) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Máš určit základní velikost úhlu ${deg}°. Jaký je první krok?", h: "Podívej se, zda je úhel záporný, větší nebo roven $360°$, nebo už leží v $\\langle0°;360°)$.", e: "{expl}" },
+        fr: { q: "Tu dois déterminer la mesure principale de l'angle ${deg}°. Quelle est la première étape ?", h: "Regarde si l'angle est négatif, supérieur ou égal à $360°$, ou déjà dans $\\langle0°;360°)$.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { deg: -500, cat: 0 },
+                { deg: 800, cat: 1 },
+                { deg: 150, cat: 2 }
+            ];
+            return randChoice(scenarios);
+        },
+        solve: (p) => {
+            const explCsMap = [
+                "Úhel $-500°$ je záporný, proto k němu musíme přičítat $360°$, dokud nepadne do $\\langle0°;360°)$.",
+                "Úhel $800°$ je větší než $360°$, proto od něj musíme odečítat $360°$, dokud nepadne do $\\langle0°;360°)$.",
+                "Úhel $150°$ už leží v intervalu $\\langle0°;360°)$, takže nic měnit netřeba — základní velikost je rovnou $150°$."
+            ];
+            const explFrMap = [
+                "L'angle $-500°$ est négatif, il faut donc lui ajouter $360°$ jusqu'à obtenir un résultat dans $\\langle0°;360°)$.",
+                "L'angle $800°$ est supérieur à $360°$, il faut donc lui retrancher $360°$ jusqu'à obtenir un résultat dans $\\langle0°;360°)$.",
+                "L'angle $150°$ se trouve déjà dans l'intervalle $\\langle0°;360°)$, il n'y a donc rien à modifier — la mesure principale est directement $150°$."
+            ];
+            const catsCs = ["přičítat 360°", "odečítat 360°", "nic měnit netřeba"];
+            const catsFr = ["ajouter 360°", "retrancher 360°", "rien à modifier"];
+            return {
+                res: catsCs[p.cat], resFr: catsFr[p.cat],
+                explCs: explCsMap[p.cat], explFr: explFrMap[p.cat]
+            };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m5 */ },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "Mají orientované úhly o velikostech ${a}° a ${b}° stejnou základní velikost?", h: "Urči základní velikost obou úhlů zvlášť a porovnej je.", e: "{expl}" },
+        fr: { q: "Les angles orientés de ${a}° et de ${b}° ont-ils la même mesure principale ?", h: "Détermine séparément la mesure principale de chaque angle, puis compare-les.", e: "{expl}" },
+        params: () => {
+            const scenarios = [
+                { a: 830, b: 470, valid: true },
+                { a: 570, b: 1120, valid: false },
+                { a: 1200, b: 480, valid: true },
+                { a: 1370, b: 480, valid: false }
+            ];
+            return randChoice(scenarios);
+        },
+        solve: (p) => {
+            const ba = basicOf(p.a).basic, bb = basicOf(p.b).basic;
+            const explCs = p.valid
+                ? `Základní velikost obou úhlů je $${fmt(ba)}°$ — ano, jde o stejnou základní velikost.`
+                : `Základní velikosti jsou $${fmt(ba)}°$ a $${fmt(bb)}°$ — ne, nejde o stejnou základní velikost.`;
+            const explFr = p.valid
+                ? `La mesure principale des deux angles est $${fmt(ba)}°$ — oui, il s'agit de la même mesure principale.`
+                : `Les mesures principales sont $${fmt(ba)}°$ et $${fmt(bb)}°$ — non, ce n'est pas la même mesure principale.`;
+            return { res: p.valid ? 'ano' : 'ne', resFr: p.valid ? 'oui' : 'non', explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m6 */ }
+];
+
+const CATEGORIES_CS = ['přičítat 360°', 'odečítat 360°', 'nic měnit netřeba'];
+const CATEGORIES_FR = ['ajouter 360°', 'retrancher 360°', 'rien à modifier'];
+const DISTRACTOR_CS = 'vypočítat sinus úhlu';
+const DISTRACTOR_FR = 'calculer le sinus de l\'angle';
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit bez znalosti směru otáčení', 'záleží na tom, zda jde o stupně, nebo radiány'];
+const YESNO_DISTRACTORS_FR = ['impossible à déterminer sans connaître le sens de rotation', 'cela dépend du fait qu\'il s\'agisse de degrés ou de radians'];
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm5') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const cats = lang === 'cs' ? CATEGORIES_CS : CATEGORIES_FR;
+            const distractor = lang === 'cs' ? DISTRACTOR_CS : DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...cats, distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const catsOther = lang === 'cs' ? CATEGORIES_FR : CATEGORIES_CS;
+            const distractorOther = lang === 'cs' ? DISTRACTOR_FR : DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...catsOther, distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = sol.correct;
+                obj.o = shuffleArray([...options]);
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.optText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Oblouková míra i orientovaný úhel ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat rozdíl mezi převodem jednotek a určováním základní velikosti."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na základní vztah $2\\pi\\ \\text{rad}=360°$ a na postup hledání základní velikosti."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako radián, orientovaný úhel či základní velikost.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definice radiánu, orientovaného úhlu a základní velikosti.");
+            if (mathPercent >= 70) strengths.push("Výpočty (převody jednotek, základní velikost) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si zejména převod stupňů na radiány a určování základní velikosti.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Skvělá práce! Zvládl/a jsi kapitolu o obloukové míře a orientovaném úhlu – můžeš si otestovat své znalosti znovu s jinými čísly.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení jednotlivých vzorců a postupů.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>

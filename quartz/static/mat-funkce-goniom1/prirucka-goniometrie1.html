@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 1 — Oblouková míra a orientovaný úhel — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-goniometrie1.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Goniometrie 1 — Oblouková míra a orientovaný úhel · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniometrie 1 — Oblouková míra a orientovaný úhel</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Jednotková kružnice a radián</h2>
+<p class="mb-3">Kružnici s poloměrem rovným jedné délkové jednotce nazýváme <b>jednotková kružnice</b>. Velikost úhlu s vrcholem ve středu $S$ jednotkové kružnice v <b>obloukové míře</b> definujeme jako délku oblouku, který úhel na kružnici vytíná. Jednotkou obloukové míry je <b>radián</b>: $1\ \text{rad}$ je velikost úhlu, který vytíná oblouk o délce $1$.</p>
+<div class="def-box mb-3">
+    <p>Plný úhel: $2\pi\ \text{rad}$. Přímý úhel: $\pi\ \text{rad}$. Pravý úhel: $\dfrac{\pi}{2}\ \text{rad}$.</p>
+</div>
+<p class="mb-3">Radián je bezrozměrná jednotka (poměr dvou délek), proto se v zápisech, kde je přítomen symbol $\pi$, jednotka „rad" často vynechává: píšeme $\alpha=\frac{\pi}{4}$ místo $\alpha=\frac{\pi}{4}\ \text{rad}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Převod mezi stupni a radiány</h2>
+<p class="mb-3">Ze vztahu $2\pi\ \text{rad}=360°$, tedy $\pi\ \text{rad}=180°$, plyne převod oběma směry:</p>
+<div class="def-box mb-3">
+    <p>$$1°=\frac{\pi}{180}\ \text{rad} \qquad\qquad 1\ \text{rad}=\left(\frac{180}{\pi}\right)°$$</p>
+</div>
+<p class="mb-3"><b>Příklady (rad &rarr; °):</b> $2\ \text{rad}\approx114{,}6°$; $\ \frac{7\pi}{5}\ \text{rad}=252°$; $\ 0{,}3\ \text{rad}\approx17{,}19°$.</p>
+<p class="mb-3"><b>Příklady (° &rarr; rad):</b> $3°=\frac{\pi}{60}\ \text{rad}\approx0{,}0524\ \text{rad}$; $\ 162°=\frac{9\pi}{10}\ \text{rad}\approx2{,}827\ \text{rad}$; $\ 305°=\frac{61\pi}{36}\ \text{rad}\approx5{,}323\ \text{rad}$.</p>
+<div class="warn-box mb-3">
+    <p>Bez symbolu $\pi$ nelze jednotku vynechat: zápis $\alpha=2$ je nejednoznačný, zatímco $\alpha=2\ \text{rad}$ je jednoznačné. (Vedle stupňů a radiánů existuje ještě jednotka <b>grad</b>: $1$ grad $=\frac{1}{400}$ plného úhlu.)</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Orientovaný úhel</h2>
+<p class="mb-3"><b>Orientovaný úhel</b> je uspořádaná dvojice polopřímek se společným vrcholem $S$ — rozlišujeme počáteční ($SP$) a koncové ($SQ$) rameno a navíc směr a počet otoček mezi nimi:</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>kladný smysl</b> — proti směru hodinových ručiček</li>
+        <li><b>záporný smysl</b> — po směru hodinových ručiček</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> Vrtule dronu se roztočí v záporném smyslu o $3{,}25$ otáčky: $-3{,}25\cdot360°=-1170°=-6{,}5\pi\ \text{rad}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Velikost orientovaného úhlu</h2>
+<p class="mb-3">Otočení o $50°$ vede ke stejné poloze koncového ramene jako otočení o $50°+360°=410°$, o $50°-360°=-310°$ atd. Orientovaný úhel má proto nekonečně mnoho velikostí:</p>
+<div class="def-box mb-3">
+    <p>$$\alpha=\alpha_0+k\cdot360°,\quad k\in\mathbb{Z} \qquad\text{resp.}\qquad \alpha=\alpha_0+k\cdot2\pi,\quad k\in\mathbb{Z}$$</p>
+</div>
+<p class="mb-3">Ze všech těchto hodnot vybíráme jednu jako referenční — <b>základní velikost</b> $\alpha_0$, ležící v intervalu $\langle0°;360°)$, resp. $\langle0;2\pi)$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Určení základní velikosti</h2>
+<p class="mb-3">Je-li úhel <b>záporný</b>, postupně přičítáme $360°$ (resp. $2\pi$); je-li <b>větší nebo roven $360°$</b> (resp. $2\pi$), postupně odečítáme. U velkých čísel úhel vydělíme $360°$ (resp. $2\pi$) a podíl <b>zaokrouhlíme dolů</b> na celé číslo $k$; základní velikost je $\alpha_0=\alpha-k\cdot360°$.</p>
+<div class="warn-box mb-3">
+    <p>„Zaokrouhlit dolů" znamená k nejbližšímu <b>menšímu</b> celému číslu (vlevo na číselné ose), ne k nule: $5{,}2\to5$, ale $-3{,}6\to-4$ (ne $-3$)!</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $-1150°:360°=-3{,}19\overline{4}\to k=-4 \Rightarrow \alpha_0=-1150°+1440°=290°$.</p>
+<p class="mb-3"><b>Příklad:</b> $3{,}25$ otáčky $=1170°$; $1170°:360°=3{,}25\to k=3 \Rightarrow \alpha_0=1170°-1080°=90°=\frac{\pi}{2}\ \text{rad}$.</p>
+<p class="mb-3"><b>Příklady v radiánech:</b> $\frac{29\pi}{4}:2\pi=3{,}625\to k=3 \Rightarrow \alpha_0=\frac{5\pi}{4}$; $\quad-\frac{17\pi}{3}:2\pi=-2{,}8\overline{3}\to k=-3 \Rightarrow \alpha_0=\frac{\pi}{3}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Aplikace: ručičky hodin</h2>
+<p class="mb-3">Ručičky hodin se otáčejí v <b>záporném</b> smyslu. Od $8.00$ do $10.20$ (tj. $\frac{7}{3}$ hodiny) urazí minutová ručička $-\frac{7}{3}\cdot360°=-840°$ (základní velikost $240°$), hodinová ručička $-\frac{7}{3}\cdot30°=-70°$ (základní velikost $290°$).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Pojem</th>
+            <th class="text-left py-1">Klíčová myšlenka</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">radián</td><td class="py-1">úhel s obloukem délky $1$ na jednotkové kružnici; $2\pi\ \text{rad}=360°$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">orientovaný úhel</td><td class="py-1">nese informaci o směru a počtu otoček</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">velikost úhlu</td><td class="py-1">nekonečně mnoho hodnot $\alpha_0+k\cdot360°$</td></tr>
+        <tr><td class="py-1 pr-2">základní velikost</td><td class="py-1">jediná hodnota v $\langle0°;360°)$</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniométrie 1 — Mesure en radians et angle orienté</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Le cercle trigonométrique et le radian</h2>
+<p class="mb-3">Un cercle de rayon égal à une unité de longueur est appelé <b>cercle trigonométrique</b>. On définit la mesure d'un angle de sommet le centre $S$ du cercle trigonométrique <b>en radians</b> comme la longueur de l'arc qu'il découpe sur le cercle. L'unité de la mesure en radians est <b>le radian</b> : $1\ \text{rad}$ est la mesure d'un angle qui découpe un arc de longueur $1$.</p>
+<div class="def-box mb-3">
+    <p>Angle plein : $2\pi\ \text{rad}$. Angle plat : $\pi\ \text{rad}$. Angle droit : $\dfrac{\pi}{2}\ \text{rad}$.</p>
+</div>
+<p class="mb-3">Le radian est une unité sans dimension (rapport de deux longueurs), c'est pourquoi, dans les écritures où figure le symbole $\pi$, l'unité « rad » est souvent omise : on écrit $\alpha=\frac{\pi}{4}$ au lieu de $\alpha=\frac{\pi}{4}\ \text{rad}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Conversion entre degrés et radians</h2>
+<p class="mb-3">De la relation $2\pi\ \text{rad}=360°$, soit $\pi\ \text{rad}=180°$, on déduit la conversion dans les deux sens :</p>
+<div class="def-box mb-3">
+    <p>$$1°=\frac{\pi}{180}\ \text{rad} \qquad\qquad 1\ \text{rad}=\left(\frac{180}{\pi}\right)°$$</p>
+</div>
+<p class="mb-3"><b>Exemples (rad &rarr; °) :</b> $2\ \text{rad}\approx114{,}6°$ ; $\ \frac{7\pi}{5}\ \text{rad}=252°$ ; $\ 0{,}3\ \text{rad}\approx17{,}19°$.</p>
+<p class="mb-3"><b>Exemples (° &rarr; rad) :</b> $3°=\frac{\pi}{60}\ \text{rad}\approx0{,}0524\ \text{rad}$ ; $\ 162°=\frac{9\pi}{10}\ \text{rad}\approx2{,}827\ \text{rad}$ ; $\ 305°=\frac{61\pi}{36}\ \text{rad}\approx5{,}323\ \text{rad}$.</p>
+<div class="warn-box mb-3">
+    <p>Sans le symbole $\pi$, on ne peut pas omettre l'unité : l'écriture $\alpha=2$ est ambiguë, alors que $\alpha=2\ \text{rad}$ est sans ambiguïté. (Outre les degrés et les radians, il existe aussi l'unité <b>grade</b> : $1$ grade $=\frac{1}{400}$ de l'angle plein.)</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. L'angle orienté</h2>
+<p class="mb-3"><b>L'angle orienté</b> est un couple ordonné de demi-droites de même sommet $S$ — on distingue le côté initial ($SP$) et le côté final ($SQ$), et l'on précise en plus le sens et le nombre de tours entre eux :</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>sens positif</b> — sens contraire des aiguilles d'une montre</li>
+        <li><b>sens négatif</b> — sens des aiguilles d'une montre</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> L'hélice d'un drone tourne dans le sens négatif de $3{,}25$ tours : $-3{,}25\cdot360°=-1170°=-6{,}5\pi\ \text{rad}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Mesure d'un angle orienté</h2>
+<p class="mb-3">Une rotation de $50°$ mène à la même position finale qu'une rotation de $50°+360°=410°$, ou de $50°-360°=-310°$, etc. Un angle orienté possède donc une infinité de mesures :</p>
+<div class="def-box mb-3">
+    <p>$$\alpha=\alpha_0+k\cdot360°,\quad k\in\mathbb{Z} \qquad\text{resp.}\qquad \alpha=\alpha_0+k\cdot2\pi,\quad k\in\mathbb{Z}$$</p>
+</div>
+<p class="mb-3">Parmi toutes ces valeurs, on en choisit une comme référence — <b>la mesure principale</b> $\alpha_0$, appartenant à l'intervalle $\langle0°;360°)$, resp. $\langle0;2\pi)$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Détermination de la mesure principale</h2>
+<p class="mb-3">Si l'angle est <b>négatif</b>, on ajoute successivement $360°$ (resp. $2\pi$) ; s'il est <b>supérieur ou égal à $360°$</b> (resp. $2\pi$), on retranche successivement. Pour de grands nombres, on divise l'angle par $360°$ (resp. $2\pi$) et l'on <b>arrondit le quotient à l'entier inférieur</b> $k$ ; la mesure principale est $\alpha_0=\alpha-k\cdot360°$.</p>
+<div class="warn-box mb-3">
+    <p>« Arrondir à l'entier inférieur » signifie l'entier immédiatement <b>inférieur</b> (plus à gauche sur l'axe), pas vers zéro : $5{,}2\to5$, mais $-3{,}6\to-4$ (et non $-3$) !</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $-1150°:360°=-3{,}19\overline{4}\to k=-4 \Rightarrow \alpha_0=-1150°+1440°=290°$.</p>
+<p class="mb-3"><b>Exemple :</b> $3{,}25$ tours $=1170°$ ; $1170°:360°=3{,}25\to k=3 \Rightarrow \alpha_0=1170°-1080°=90°=\frac{\pi}{2}\ \text{rad}$.</p>
+<p class="mb-3"><b>Exemples en radians :</b> $\frac{29\pi}{4}:2\pi=3{,}625\to k=3 \Rightarrow \alpha_0=\frac{5\pi}{4}$ ; $\quad-\frac{17\pi}{3}:2\pi=-2{,}8\overline{3}\to k=-3 \Rightarrow \alpha_0=\frac{\pi}{3}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Application : les aiguilles d'une montre</h2>
+<p class="mb-3">Les aiguilles d'une montre tournent dans le sens <b>négatif</b>. De $8\text{h}00$ à $10\text{h}20$ (soit $\frac{7}{3}$ heures), l'aiguille des minutes parcourt $-\frac{7}{3}\cdot360°=-840°$ (mesure principale $240°$), l'aiguille des heures $-\frac{7}{3}\cdot30°=-70°$ (mesure principale $290°$).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Notion</th>
+            <th class="text-left py-1">Idée clé</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">radian</td><td class="py-1">angle d'arc de longueur $1$ sur le cercle trigonométrique ; $2\pi\ \text{rad}=360°$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">angle orienté</td><td class="py-1">porte l'information sur le sens et le nombre de tours</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">mesure de l'angle</td><td class="py-1">une infinité de valeurs $\alpha_0+k\cdot360°$</td></tr>
+        <tr><td class="py-1 pr-2">mesure principale</td><td class="py-1">l'unique valeur dans $\langle0°;360°)$</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 1 — Mesure en radians et angle orienté · Manuel' : 'Goniometrie 1 — Oblouková míra a orientovaný úhel · Příručka';
+    document.title = czVisible ? 'Goniométrie 1 — Mesure en radians et angle orienté — Manuel' : 'Goniometrie 1 — Oblouková míra a orientovaný úhel — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

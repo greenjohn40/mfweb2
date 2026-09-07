@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Goniometrie 1 — Oblouková míra / Goniométrie 1 — Mesure en radians</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-goniometrie1.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Goniometrie 1</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Goniométrie 1 — Mesure en radians et angle orienté
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Co je jednotková kružnice?",
+            "a": "Kružnice s poloměrem rovným jedné délkové jednotce."
+        },
+        {
+            "q": "Jak definujeme velikost úhlu v obloukové míře?",
+            "a": "Jako délku oblouku, který úhel vytíná na jednotkové kružnici."
+        },
+        {
+            "q": "Co je $1$ radián?",
+            "a": "Velikost úhlu, který na jednotkové kružnici vytíná oblouk o délce $1$."
+        },
+        {
+            "q": "Jaký je vztah mezi radiány a stupni pro plný úhel?",
+            "a": "$2\\pi\\ \\text{rad}=360°$"
+        },
+        {
+            "q": "Kolik radiánů má přímý úhel?",
+            "a": "$\\pi\\ \\text{rad}$"
+        },
+        {
+            "q": "Kolik radiánů má pravý úhel?",
+            "a": "$\\frac{\\pi}{2}\\ \\text{rad}$"
+        },
+        {
+            "q": "Proč je radián bezrozměrná jednotka?",
+            "a": "Protože je to poměr dvou délek (oblouku a poloměru)."
+        },
+        {
+            "q": "Jak převedeme stupně na radiány?",
+            "a": "Vynásobíme počet stupňů číslem $\\frac{\\pi}{180}$."
+        },
+        {
+            "q": "Jak převedeme radiány na stupně?",
+            "a": "Vynásobíme počet radiánů číslem $\\frac{180}{\\pi}$."
+        },
+        {
+            "q": "Kolik stupňů odpovídá $\\frac{\\pi}{6}$ rad?",
+            "a": "$30°$"
+        },
+        {
+            "q": "Kolik stupňů odpovídá $\\frac{\\pi}{4}$ rad?",
+            "a": "$45°$"
+        },
+        {
+            "q": "Kolik stupňů odpovídá $\\frac{\\pi}{3}$ rad?",
+            "a": "$60°$"
+        },
+        {
+            "q": "Kolik stupňů odpovídá $\\frac{3\\pi}{2}$ rad?",
+            "a": "$270°$"
+        },
+        {
+            "q": "Vyjádři $2\\ \\text{rad}$ ve stupních (přibližně).",
+            "a": "$\\approx114{,}6°$"
+        },
+        {
+            "q": "Vyjádři $\\frac{7\\pi}{5}\\ \\text{rad}$ ve stupních.",
+            "a": "$252°$"
+        },
+        {
+            "q": "Vyjádři $0{,}3\\ \\text{rad}$ ve stupních (přibližně).",
+            "a": "$\\approx17{,}19°$"
+        },
+        {
+            "q": "Vyjádři $3°$ v radiánech.",
+            "a": "$\\frac{\\pi}{60}\\ \\text{rad}\\approx0{,}0524\\ \\text{rad}$"
+        },
+        {
+            "q": "Vyjádři $162°$ v radiánech.",
+            "a": "$\\frac{9\\pi}{10}\\ \\text{rad}\\approx2{,}827\\ \\text{rad}$"
+        },
+        {
+            "q": "Vyjádři $305°$ v radiánech.",
+            "a": "$\\frac{61\\pi}{36}\\ \\text{rad}\\approx5{,}323\\ \\text{rad}$"
+        },
+        {
+            "q": "Proč se v zápisu $\\alpha=2\\pi$ často vynechává jednotka „rad\"?",
+            "a": "Protože přítomnost symbolu $\\pi$ jednoznačně signalizuje obloukovou míru."
+        },
+        {
+            "q": "Proč nelze jednotku vynechat v zápisu bez $\\pi$, např. $\\alpha=2$?",
+            "a": "Protože by bylo nejasné, zda jde o radiány, nebo stupně."
+        },
+        {
+            "q": "Co je jednotka grad (gon)?",
+            "a": "Jednotka úhlu, kde $1$ grad $=\\frac1{400}$ plného úhlu."
+        },
+        {
+            "q": "Kolik gradů má pravý úhel?",
+            "a": "$100$ gradů."
+        },
+        {
+            "q": "Co je orientovaný úhel?",
+            "a": "Uspořádaná dvojice polopřímek se společným vrcholem, u níž rozlišujeme směr a počet otoček."
+        },
+        {
+            "q": "Které rameno orientovaného úhlu je počáteční a které koncové?",
+            "a": "Počáteční je to, od kterého se otáčíme; koncové to, ke kterému se otáčíme."
+        },
+        {
+            "q": "Který smysl otáčení je kladný?",
+            "a": "Proti směru hodinových ručiček."
+        },
+        {
+            "q": "Který smysl otáčení je záporný?",
+            "a": "Po směru hodinových ručiček."
+        },
+        {
+            "q": "Vrtule dronu se otočí o $3{,}25$ otáčky v záporném smyslu. Jaký je výsledný úhel ve stupních?",
+            "a": "$-1170°$"
+        },
+        {
+            "q": "Vrtule dronu se otočí o $3{,}25$ otáčky v záporném smyslu. Jaký je výsledný úhel v radiánech?",
+            "a": "$-6{,}5\\pi\\ \\text{rad}$"
+        },
+        {
+            "q": "Proč má orientovaný úhel nekonečně mnoho velikostí?",
+            "a": "Protože stejné polohy koncového ramene dosáhneme přičtením libovolného celočíselného násobku $360°$."
+        },
+        {
+            "q": "Jak zapíšeme obecnou velikost orientovaného úhlu pomocí základní velikosti $\\alpha_0$?",
+            "a": "$\\alpha=\\alpha_0+k\\cdot360°,\\ k\\in\\mathbb Z$ (resp. $+k\\cdot2\\pi$)"
+        },
+        {
+            "q": "Co je základní velikost orientovaného úhlu?",
+            "a": "Ta z nekonečně mnoha velikostí, která leží v intervalu $\\langle0°;360°)$."
+        },
+        {
+            "q": "Jaký interval odpovídá základní velikosti v radiánech?",
+            "a": "$\\langle0;2\\pi)$"
+        },
+        {
+            "q": "Jak postupujeme při hledání základní velikosti záporného úhlu?",
+            "a": "Postupně přičítáme $360°$ (resp. $2\\pi$), dokud výsledek nepadne do $\\langle0°;360°)$."
+        },
+        {
+            "q": "Jak postupujeme při hledání základní velikosti úhlu většího nebo rovného $360°$?",
+            "a": "Postupně odečítáme $360°$ (resp. $2\\pi$)."
+        },
+        {
+            "q": "Jak urychlíme hledání základní velikosti u velkých čísel?",
+            "a": "Úhel vydělíme $360°$ (resp. $2\\pi$) a podíl zaokrouhlíme dolů na celé číslo $k$."
+        },
+        {
+            "q": "Jaký vzorec dává základní velikost pomocí koeficientu $k$?",
+            "a": "$\\alpha_0=\\alpha-k\\cdot360°$ (resp. $-k\\cdot2\\pi$)"
+        },
+        {
+            "q": "Co přesně znamená „zaokrouhlit dolů\"?",
+            "a": "Zaokrouhlit k nejbližšímu menšímu celému číslu (vlevo na číselné ose), ne k nule."
+        },
+        {
+            "q": "Na jaké celé číslo se zaokrouhlí dolů $5{,}2$?",
+            "a": "$5$"
+        },
+        {
+            "q": "Na jaké celé číslo se zaokrouhlí dolů $-3{,}6$?",
+            "a": "$-4$"
+        },
+        {
+            "q": "Urči koeficient $k$ pro úhel $-1150°$.",
+            "a": "$k=-4$"
+        },
+        {
+            "q": "Urči základní velikost úhlu $-1150°$.",
+            "a": "$290°$"
+        },
+        {
+            "q": "Urči základní velikost úhlu, který vznikl otočením o $3{,}25$ otáčky v kladném smyslu ($1170°$).",
+            "a": "$90°=\\frac{\\pi}{2}\\ \\text{rad}$"
+        },
+        {
+            "q": "Urči základní velikost úhlu $\\frac{29\\pi}{4}$.",
+            "a": "$\\frac{5\\pi}{4}$"
+        },
+        {
+            "q": "Urči základní velikost úhlu $-\\frac{17\\pi}{3}$.",
+            "a": "$\\frac{\\pi}{3}$"
+        },
+        {
+            "q": "Kterým směrem se otáčejí ručičky hodin — kladným, nebo záporným?",
+            "a": "Záporným."
+        },
+        {
+            "q": "Jaký úhel (ve stupních) urazí minutová ručička za $\\frac73$ hodiny (2 h 20 min)?",
+            "a": "$-840°$"
+        },
+        {
+            "q": "Jaká je základní velikost úhlu $-840°$?",
+            "a": "$240°$"
+        },
+        {
+            "q": "Jaký úhel (ve stupních) urazí hodinová ručička za $\\frac73$ hodiny?",
+            "a": "$-70°$"
+        },
+        {
+            "q": "Jaká je základní velikost úhlu $-70°$?",
+            "a": "$290°$"
+        }
+    ],
+    "fr": [
+        {
+            "q": "Qu'est-ce que le cercle trigonométrique ?",
+            "a": "Un cercle de rayon égal à une unité de longueur."
+        },
+        {
+            "q": "Comment définit-on la mesure d'un angle en radians ?",
+            "a": "Comme la longueur de l'arc que l'angle découpe sur le cercle trigonométrique."
+        },
+        {
+            "q": "Qu'est-ce que $1$ radian ?",
+            "a": "La mesure d'un angle qui découpe sur le cercle trigonométrique un arc de longueur $1$."
+        },
+        {
+            "q": "Quelle est la relation entre radians et degrés pour l'angle plein ?",
+            "a": "$2\\pi\\ \\text{rad}=360°$"
+        },
+        {
+            "q": "Combien de radians mesure l'angle plat ?",
+            "a": "$\\pi\\ \\text{rad}$"
+        },
+        {
+            "q": "Combien de radians mesure l'angle droit ?",
+            "a": "$\\frac{\\pi}{2}\\ \\text{rad}$"
+        },
+        {
+            "q": "Pourquoi le radian est-il une unité sans dimension ?",
+            "a": "Parce que c'est le rapport de deux longueurs (l'arc et le rayon)."
+        },
+        {
+            "q": "Comment convertit-on des degrés en radians ?",
+            "a": "On multiplie le nombre de degrés par $\\frac{\\pi}{180}$."
+        },
+        {
+            "q": "Comment convertit-on des radians en degrés ?",
+            "a": "On multiplie le nombre de radians par $\\frac{180}{\\pi}$."
+        },
+        {
+            "q": "À combien de degrés correspond $\\frac{\\pi}{6}$ rad ?",
+            "a": "$30°$"
+        },
+        {
+            "q": "À combien de degrés correspond $\\frac{\\pi}{4}$ rad ?",
+            "a": "$45°$"
+        },
+        {
+            "q": "À combien de degrés correspond $\\frac{\\pi}{3}$ rad ?",
+            "a": "$60°$"
+        },
+        {
+            "q": "À combien de degrés correspond $\\frac{3\\pi}{2}$ rad ?",
+            "a": "$270°$"
+        },
+        {
+            "q": "Exprime $2\\ \\text{rad}$ en degrés (approximativement).",
+            "a": "$\\approx114{,}6°$"
+        },
+        {
+            "q": "Exprime $\\frac{7\\pi}{5}\\ \\text{rad}$ en degrés.",
+            "a": "$252°$"
+        },
+        {
+            "q": "Exprime $0{,}3\\ \\text{rad}$ en degrés (approximativement).",
+            "a": "$\\approx17{,}19°$"
+        },
+        {
+            "q": "Exprime $3°$ en radians.",
+            "a": "$\\frac{\\pi}{60}\\ \\text{rad}\\approx0{,}0524\\ \\text{rad}$"
+        },
+        {
+            "q": "Exprime $162°$ en radians.",
+            "a": "$\\frac{9\\pi}{10}\\ \\text{rad}\\approx2{,}827\\ \\text{rad}$"
+        },
+        {
+            "q": "Exprime $305°$ en radians.",
+            "a": "$\\frac{61\\pi}{36}\\ \\text{rad}\\approx5{,}323\\ \\text{rad}$"
+        },
+        {
+            "q": "Pourquoi omet-on souvent l'unité « rad » dans l'écriture $\\alpha=2\\pi$ ?",
+            "a": "Parce que la présence du symbole $\\pi$ indique clairement la mesure en radians."
+        },
+        {
+            "q": "Pourquoi ne peut-on pas omettre l'unité dans une écriture sans $\\pi$, par exemple $\\alpha=2$ ?",
+            "a": "Parce qu'il serait ambigu de savoir s'il s'agit de radians ou de degrés."
+        },
+        {
+            "q": "Qu'est-ce que l'unité grade (gon) ?",
+            "a": "Une unité d'angle où $1$ grade $=\\frac1{400}$ de l'angle plein."
+        },
+        {
+            "q": "Combien de grades mesure l'angle droit ?",
+            "a": "$100$ grades."
+        },
+        {
+            "q": "Qu'est-ce qu'un angle orienté ?",
+            "a": "Un couple ordonné de demi-droites de même sommet, pour lequel on précise le sens et le nombre de tours."
+        },
+        {
+            "q": "Quel côté de l'angle orienté est initial et lequel est final ?",
+            "a": "L'initial est celui d'où l'on part ; le final celui vers lequel on tourne."
+        },
+        {
+            "q": "Quel sens de rotation est positif ?",
+            "a": "Le sens contraire des aiguilles d'une montre."
+        },
+        {
+            "q": "Quel sens de rotation est négatif ?",
+            "a": "Le sens des aiguilles d'une montre."
+        },
+        {
+            "q": "L'hélice d'un drone tourne de $3{,}25$ tours dans le sens négatif. Quel est l'angle obtenu en degrés ?",
+            "a": "$-1170°$"
+        },
+        {
+            "q": "L'hélice d'un drone tourne de $3{,}25$ tours dans le sens négatif. Quel est l'angle obtenu en radians ?",
+            "a": "$-6{,}5\\pi\\ \\text{rad}$"
+        },
+        {
+            "q": "Pourquoi un angle orienté possède-t-il une infinité de mesures ?",
+            "a": "Parce qu'on atteint la même position finale en ajoutant n'importe quel multiple entier de $360°$."
+        },
+        {
+            "q": "Comment écrit-on la mesure générale d'un angle orienté à l'aide de la mesure principale $\\alpha_0$ ?",
+            "a": "$\\alpha=\\alpha_0+k\\cdot360°,\\ k\\in\\mathbb Z$ (resp. $+k\\cdot2\\pi$)"
+        },
+        {
+            "q": "Qu'est-ce que la mesure principale d'un angle orienté ?",
+            "a": "Celle, parmi l'infinité de mesures, qui appartient à l'intervalle $\\langle0°;360°)$."
+        },
+        {
+            "q": "Quel intervalle correspond à la mesure principale en radians ?",
+            "a": "$\\langle0;2\\pi)$"
+        },
+        {
+            "q": "Comment procède-t-on pour trouver la mesure principale d'un angle négatif ?",
+            "a": "On ajoute successivement $360°$ (resp. $2\\pi$) jusqu'à obtenir un résultat dans $\\langle0°;360°)$."
+        },
+        {
+            "q": "Comment procède-t-on pour trouver la mesure principale d'un angle supérieur ou égal à $360°$ ?",
+            "a": "On retranche successivement $360°$ (resp. $2\\pi$)."
+        },
+        {
+            "q": "Comment accélère-t-on la recherche de la mesure principale pour de grands nombres ?",
+            "a": "On divise l'angle par $360°$ (resp. $2\\pi$) et on arrondit le quotient à l'entier inférieur $k$."
+        },
+        {
+            "q": "Quelle formule donne la mesure principale à l'aide du coefficient $k$ ?",
+            "a": "$\\alpha_0=\\alpha-k\\cdot360°$ (resp. $-k\\cdot2\\pi$)"
+        },
+        {
+            "q": "Que signifie exactement « arrondir à l'entier inférieur » ?",
+            "a": "Arrondir à l'entier immédiatement inférieur (plus à gauche sur l'axe), pas vers zéro."
+        },
+        {
+            "q": "À quel entier arrondit-on $5{,}2$ à l'entier inférieur ?",
+            "a": "$5$"
+        },
+        {
+            "q": "À quel entier arrondit-on $-3{,}6$ à l'entier inférieur ?",
+            "a": "$-4$"
+        },
+        {
+            "q": "Détermine le coefficient $k$ pour l'angle $-1150°$.",
+            "a": "$k=-4$"
+        },
+        {
+            "q": "Détermine la mesure principale de l'angle $-1150°$.",
+            "a": "$290°$"
+        },
+        {
+            "q": "Détermine la mesure principale de l'angle obtenu par une rotation de $3{,}25$ tours dans le sens positif ($1170°$).",
+            "a": "$90°=\\frac{\\pi}{2}\\ \\text{rad}$"
+        },
+        {
+            "q": "Détermine la mesure principale de l'angle $\\frac{29\\pi}{4}$.",
+            "a": "$\\frac{5\\pi}{4}$"
+        },
+        {
+            "q": "Détermine la mesure principale de l'angle $-\\frac{17\\pi}{3}$.",
+            "a": "$\\frac{\\pi}{3}$"
+        },
+        {
+            "q": "Dans quel sens tournent les aiguilles d'une montre — positif ou négatif ?",
+            "a": "Négatif."
+        },
+        {
+            "q": "Quel angle (en degrés) parcourt l'aiguille des minutes en $\\frac73$ heures (2 h 20 min) ?",
+            "a": "$-840°$"
+        },
+        {
+            "q": "Quelle est la mesure principale de l'angle $-840°$ ?",
+            "a": "$240°$"
+        },
+        {
+            "q": "Quel angle (en degrés) parcourt l'aiguille des heures en $\\frac73$ heures ?",
+            "a": "$-70°$"
+        },
+        {
+            "q": "Quelle est la mesure principale de l'angle $-70°$ ?",
+            "a": "$290°$"
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Goniometrie 2 — Sinus a kosinus / Goniométrie 2 — Sinus et cosinus</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-goniometrie2.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Goniometrie 2</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Goniométrie 2 — Sinus et cosinus
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Jak je na jednotkové kružnici definována funkce sinus?",
+            "a": "$\\sin\\alpha$ je $y$-ová souřadnice bodu $K$, kde koncové rameno úhlu protíná kružnici."
+        },
+        {
+            "q": "Jak je na jednotkové kružnici definována funkce kosinus?",
+            "a": "$\\cos\\alpha$ je $x$-ová souřadnice bodu $K$, kde koncové rameno úhlu protíná kružnici."
+        },
+        {
+            "q": "Dává definice sinu na jednotkové kružnici pro ostré úhly jinou hodnotu než definice z pravoúhlého trojúhelníku?",
+            "a": "Ne, hodnoty jsou stejné — definice se jen rozšiřuje na všechny úhly."
+        },
+        {
+            "q": "Čemu se rovná $\\sin30°$?",
+            "a": "$\\frac12$"
+        },
+        {
+            "q": "Čemu se rovná $\\sin45°$?",
+            "a": "$\\frac{\\sqrt2}{2}$"
+        },
+        {
+            "q": "Čemu se rovná $\\sin60°$?",
+            "a": "$\\frac{\\sqrt3}{2}$"
+        },
+        {
+            "q": "Čemu se rovná $\\cos30°$?",
+            "a": "$\\frac{\\sqrt3}{2}$"
+        },
+        {
+            "q": "Čemu se rovná $\\cos45°$?",
+            "a": "$\\frac{\\sqrt2}{2}$"
+        },
+        {
+            "q": "Čemu se rovná $\\cos60°$?",
+            "a": "$\\frac12$"
+        },
+        {
+            "q": "Čemu se rovná $\\sin90°$?",
+            "a": "$1$"
+        },
+        {
+            "q": "Čemu se rovná $\\cos180°$?",
+            "a": "$-1$"
+        },
+        {
+            "q": "Čemu se rovná $\\sin270°$?",
+            "a": "$-1$"
+        },
+        {
+            "q": "Jaké je znaménko $\\sin\\alpha$ a $\\cos\\alpha$ v I. kvadrantu?",
+            "a": "Obě hodnoty jsou kladné."
+        },
+        {
+            "q": "Jaké je znaménko $\\sin\\alpha$ a $\\cos\\alpha$ ve II. kvadrantu?",
+            "a": "$\\sin\\alpha$ je kladný, $\\cos\\alpha$ záporný."
+        },
+        {
+            "q": "Jaké je znaménko $\\sin\\alpha$ a $\\cos\\alpha$ ve III. kvadrantu?",
+            "a": "Obě hodnoty jsou záporné."
+        },
+        {
+            "q": "Jaké je znaménko $\\sin\\alpha$ a $\\cos\\alpha$ ve IV. kvadrantu?",
+            "a": "$\\sin\\alpha$ je záporný, $\\cos\\alpha$ kladný."
+        },
+        {
+            "q": "Co je referenční úhel $\\alpha_1$?",
+            "a": "Ostrý úhel z I. kvadrantu, pomocí kterého vyjadřujeme hodnoty sinu a kosinu pro ostatní kvadranty."
+        },
+        {
+            "q": "Jak vyjádříme $\\sin\\alpha$ pro úhel $\\alpha=\\pi-\\alpha_1$ z II. kvadrantu?",
+            "a": "$\\sin\\alpha=\\sin\\alpha_1$"
+        },
+        {
+            "q": "Jak vyjádříme $\\cos\\alpha$ pro úhel $\\alpha=\\pi-\\alpha_1$ z II. kvadrantu?",
+            "a": "$\\cos\\alpha=-\\cos\\alpha_1$"
+        },
+        {
+            "q": "Jak vyjádříme $\\sin\\alpha$ pro úhel $\\alpha=\\pi+\\alpha_1$ z III. kvadrantu?",
+            "a": "$\\sin\\alpha=-\\sin\\alpha_1$"
+        },
+        {
+            "q": "Jak vyjádříme $\\cos\\alpha$ pro úhel $\\alpha=\\pi+\\alpha_1$ z III. kvadrantu?",
+            "a": "$\\cos\\alpha=-\\cos\\alpha_1$"
+        },
+        {
+            "q": "Jak vyjádříme $\\sin\\alpha$ pro úhel $\\alpha=2\\pi-\\alpha_1$ z IV. kvadrantu?",
+            "a": "$\\sin\\alpha=-\\sin\\alpha_1$"
+        },
+        {
+            "q": "Jak vyjádříme $\\cos\\alpha$ pro úhel $\\alpha=2\\pi-\\alpha_1$ z IV. kvadrantu?",
+            "a": "$\\cos\\alpha=\\cos\\alpha_1$"
+        },
+        {
+            "q": "Vypočti $\\sin150°$ pomocí referenčního úhlu.",
+            "a": "$\\sin150°=\\sin30°=\\frac12$"
+        },
+        {
+            "q": "Vypočti $\\cos150°$ pomocí referenčního úhlu.",
+            "a": "$\\cos150°=-\\cos30°=-\\frac{\\sqrt3}{2}$"
+        },
+        {
+            "q": "Vypočti $\\sin210°$ pomocí referenčního úhlu.",
+            "a": "$\\sin210°=-\\sin30°=-\\frac12$"
+        },
+        {
+            "q": "Vypočti $\\sin315°$ pomocí referenčního úhlu.",
+            "a": "$\\sin315°=-\\sin45°=-\\frac{\\sqrt2}{2}$"
+        },
+        {
+            "q": "Vypočti $\\cos300°$ pomocí referenčního úhlu.",
+            "a": "$\\cos300°=\\cos60°=\\frac12$"
+        },
+        {
+            "q": "Vypočti přibližně $\\sin160°$ (ref. úhel $20°$).",
+            "a": "$\\sin160°=\\sin20°\\approx0{,}342$"
+        },
+        {
+            "q": "Vypočti přibližně $\\sin250°$ (ref. úhel $70°$).",
+            "a": "$\\sin250°=-\\sin70°\\approx-0{,}940$"
+        },
+        {
+            "q": "Vypočti přibližně $\\cos290°$ (ref. úhel $70°$).",
+            "a": "$\\cos290°=\\cos70°\\approx0{,}342$"
+        },
+        {
+            "q": "Jakou periodu mají funkce sinus a kosinus?",
+            "a": "$2\\pi$"
+        },
+        {
+            "q": "Jak zapíšeme periodicitu funkce sinus?",
+            "a": "$\\sin x=\\sin(x+k\\cdot2\\pi),\\ k\\in\\mathbb Z$"
+        },
+        {
+            "q": "Urči $\\sin1290°$.",
+            "a": "Základní velikost $210°$ (III. kv.) $\\Rightarrow\\sin1290°=-\\sin30°=-\\frac12$"
+        },
+        {
+            "q": "Urči $\\cos(-1470°)$.",
+            "a": "Základní velikost $330°$ (IV. kv.) $\\Rightarrow\\cos(-1470°)=\\cos30°=\\frac{\\sqrt3}{2}$"
+        },
+        {
+            "q": "Jaký je definiční obor funkcí sinus a kosinus?",
+            "a": "$\\mathbb{R}$ (všechna reálná čísla)"
+        },
+        {
+            "q": "Jaký je obor hodnot funkcí sinus a kosinus?",
+            "a": "$\\langle-1;1\\rangle$"
+        },
+        {
+            "q": "Je funkce sinus sudá, nebo lichá?",
+            "a": "Lichá."
+        },
+        {
+            "q": "Je funkce kosinus sudá, nebo lichá?",
+            "a": "Sudá."
+        },
+        {
+            "q": "Jak se nazývá graf funkce sinus?",
+            "a": "Sinusoida."
+        },
+        {
+            "q": "Jak koeficient $a$ v $y=a\\cdot\\sin x$ ovlivňuje graf?",
+            "a": "Mění obor hodnot na $\\langle-|a|;|a|\\rangle$ (amplitudu), periodu neovlivňuje."
+        },
+        {
+            "q": "Jaký je obor hodnot funkce $y=2\\sin x$?",
+            "a": "$\\langle-2;2\\rangle$"
+        },
+        {
+            "q": "Jaký je obor hodnot funkce $y=-3\\sin x$?",
+            "a": "$\\langle-3;3\\rangle$"
+        },
+        {
+            "q": "Jak koeficient $q\\gt0$ v $y=\\sin(qx)$ ovlivňuje graf?",
+            "a": "Mění periodu na $\\frac{2\\pi}{q}$, obor hodnot zůstává $\\langle-1;1\\rangle$."
+        },
+        {
+            "q": "Jaká je perioda funkce $y=\\sin(2x)$?",
+            "a": "$\\pi$"
+        },
+        {
+            "q": "Jaká je perioda funkce $y=\\sin\\frac{x}{2}$?",
+            "a": "$4\\pi$"
+        },
+        {
+            "q": "Jak koeficienty $m,n$ v $y=\\sin(x-m)+n$ ovlivňují graf?",
+            "a": "Posouvají graf o $m$ jednotek ve směru osy $x$ a o $n$ jednotek ve směru osy $y$."
+        },
+        {
+            "q": "Jaký je obor hodnot funkce $y=\\sin\\left(x-\\frac{\\pi}{3}\\right)+2$?",
+            "a": "$\\langle1;3\\rangle$"
+        },
+        {
+            "q": "Podle jakého vzorce určíme periodu funkce $y=a\\cdot\\sin(qx)$?",
+            "a": "$p=\\frac{2\\pi}{q}$"
+        },
+        {
+            "q": "Na kolik dílů dělíme periodu při sestrojování grafu funkce sinus či kosinus?",
+            "a": "Na čtyři (čtvrtiny)."
+        }
+    ],
+    "fr": [
+        {
+            "q": "Comment la fonction sinus est-elle définie sur le cercle trigonométrique ?",
+            "a": "$\\sin\\alpha$ est l'ordonnée du point $K$ où le côté final de l'angle coupe le cercle."
+        },
+        {
+            "q": "Comment la fonction cosinus est-elle définie sur le cercle trigonométrique ?",
+            "a": "$\\cos\\alpha$ est l'abscisse du point $K$ où le côté final de l'angle coupe le cercle."
+        },
+        {
+            "q": "La définition du sinus sur le cercle trigonométrique donne-t-elle une valeur différente pour les angles aigus par rapport au triangle rectangle ?",
+            "a": "Non, les valeurs sont identiques — la définition est simplement étendue à tous les angles."
+        },
+        {
+            "q": "À quoi est égal $\\sin30°$ ?",
+            "a": "$\\frac12$"
+        },
+        {
+            "q": "À quoi est égal $\\sin45°$ ?",
+            "a": "$\\frac{\\sqrt2}{2}$"
+        },
+        {
+            "q": "À quoi est égal $\\sin60°$ ?",
+            "a": "$\\frac{\\sqrt3}{2}$"
+        },
+        {
+            "q": "À quoi est égal $\\cos30°$ ?",
+            "a": "$\\frac{\\sqrt3}{2}$"
+        },
+        {
+            "q": "À quoi est égal $\\cos45°$ ?",
+            "a": "$\\frac{\\sqrt2}{2}$"
+        },
+        {
+            "q": "À quoi est égal $\\cos60°$ ?",
+            "a": "$\\frac12$"
+        },
+        {
+            "q": "À quoi est égal $\\sin90°$ ?",
+            "a": "$1$"
+        },
+        {
+            "q": "À quoi est égal $\\cos180°$ ?",
+            "a": "$-1$"
+        },
+        {
+            "q": "À quoi est égal $\\sin270°$ ?",
+            "a": "$-1$"
+        },
+        {
+            "q": "Quel est le signe de $\\sin\\alpha$ et $\\cos\\alpha$ dans le I. quadrant ?",
+            "a": "Les deux valeurs sont positives."
+        },
+        {
+            "q": "Quel est le signe de $\\sin\\alpha$ et $\\cos\\alpha$ dans le II. quadrant ?",
+            "a": "$\\sin\\alpha$ est positif, $\\cos\\alpha$ négatif."
+        },
+        {
+            "q": "Quel est le signe de $\\sin\\alpha$ et $\\cos\\alpha$ dans le III. quadrant ?",
+            "a": "Les deux valeurs sont négatives."
+        },
+        {
+            "q": "Quel est le signe de $\\sin\\alpha$ et $\\cos\\alpha$ dans le IV. quadrant ?",
+            "a": "$\\sin\\alpha$ est négatif, $\\cos\\alpha$ positif."
+        },
+        {
+            "q": "Qu'est-ce que l'angle de référence $\\alpha_1$ ?",
+            "a": "L'angle aigu du I. quadrant à l'aide duquel on exprime les valeurs du sinus et du cosinus des autres quadrants."
+        },
+        {
+            "q": "Comment exprime-t-on $\\sin\\alpha$ pour un angle $\\alpha=\\pi-\\alpha_1$ du II. quadrant ?",
+            "a": "$\\sin\\alpha=\\sin\\alpha_1$"
+        },
+        {
+            "q": "Comment exprime-t-on $\\cos\\alpha$ pour un angle $\\alpha=\\pi-\\alpha_1$ du II. quadrant ?",
+            "a": "$\\cos\\alpha=-\\cos\\alpha_1$"
+        },
+        {
+            "q": "Comment exprime-t-on $\\sin\\alpha$ pour un angle $\\alpha=\\pi+\\alpha_1$ du III. quadrant ?",
+            "a": "$\\sin\\alpha=-\\sin\\alpha_1$"
+        },
+        {
+            "q": "Comment exprime-t-on $\\cos\\alpha$ pour un angle $\\alpha=\\pi+\\alpha_1$ du III. quadrant ?",
+            "a": "$\\cos\\alpha=-\\cos\\alpha_1$"
+        },
+        {
+            "q": "Comment exprime-t-on $\\sin\\alpha$ pour un angle $\\alpha=2\\pi-\\alpha_1$ du IV. quadrant ?",
+            "a": "$\\sin\\alpha=-\\sin\\alpha_1$"
+        },
+        {
+            "q": "Comment exprime-t-on $\\cos\\alpha$ pour un angle $\\alpha=2\\pi-\\alpha_1$ du IV. quadrant ?",
+            "a": "$\\cos\\alpha=\\cos\\alpha_1$"
+        },
+        {
+            "q": "Calcule $\\sin150°$ à l'aide de l'angle de référence.",
+            "a": "$\\sin150°=\\sin30°=\\frac12$"
+        },
+        {
+            "q": "Calcule $\\cos150°$ à l'aide de l'angle de référence.",
+            "a": "$\\cos150°=-\\cos30°=-\\frac{\\sqrt3}{2}$"
+        },
+        {
+            "q": "Calcule $\\sin210°$ à l'aide de l'angle de référence.",
+            "a": "$\\sin210°=-\\sin30°=-\\frac12$"
+        },
+        {
+            "q": "Calcule $\\sin315°$ à l'aide de l'angle de référence.",
+            "a": "$\\sin315°=-\\sin45°=-\\frac{\\sqrt2}{2}$"
+        },
+        {
+            "q": "Calcule $\\cos300°$ à l'aide de l'angle de référence.",
+            "a": "$\\cos300°=\\cos60°=\\frac12$"
+        },
+        {
+            "q": "Calcule approximativement $\\sin160°$ (angle de référence $20°$).",
+            "a": "$\\sin160°=\\sin20°\\approx0{,}342$"
+        },
+        {
+            "q": "Calcule approximativement $\\sin250°$ (angle de référence $70°$).",
+            "a": "$\\sin250°=-\\sin70°\\approx-0{,}940$"
+        },
+        {
+            "q": "Calcule approximativement $\\cos290°$ (angle de référence $70°$).",
+            "a": "$\\cos290°=\\cos70°\\approx0{,}342$"
+        },
+        {
+            "q": "Quelle est la période des fonctions sinus et cosinus ?",
+            "a": "$2\\pi$"
+        },
+        {
+            "q": "Comment écrit-on la périodicité de la fonction sinus ?",
+            "a": "$\\sin x=\\sin(x+k\\cdot2\\pi),\\ k\\in\\mathbb Z$"
+        },
+        {
+            "q": "Détermine $\\sin1290°$.",
+            "a": "Mesure principale $210°$ (III. quad.) $\\Rightarrow\\sin1290°=-\\sin30°=-\\frac12$"
+        },
+        {
+            "q": "Détermine $\\cos(-1470°)$.",
+            "a": "Mesure principale $330°$ (IV. quad.) $\\Rightarrow\\cos(-1470°)=\\cos30°=\\frac{\\sqrt3}{2}$"
+        },
+        {
+            "q": "Quel est le domaine de définition des fonctions sinus et cosinus ?",
+            "a": "$\\mathbb{R}$ (tous les nombres réels)"
+        },
+        {
+            "q": "Quelle est l'image des fonctions sinus et cosinus ?",
+            "a": "$\\langle-1;1\\rangle$"
+        },
+        {
+            "q": "La fonction sinus est-elle paire ou impaire ?",
+            "a": "Impaire."
+        },
+        {
+            "q": "La fonction cosinus est-elle paire ou impaire ?",
+            "a": "Paire."
+        },
+        {
+            "q": "Comment appelle-t-on la courbe de la fonction sinus ?",
+            "a": "Une sinusoïde."
+        },
+        {
+            "q": "Comment le coefficient $a$ dans $y=a\\cdot\\sin x$ influence-t-il la courbe ?",
+            "a": "Il change l'image en $\\langle-|a|;|a|\\rangle$ (l'amplitude), sans influencer la période."
+        },
+        {
+            "q": "Quelle est l'image de la fonction $y=2\\sin x$ ?",
+            "a": "$\\langle-2;2\\rangle$"
+        },
+        {
+            "q": "Quelle est l'image de la fonction $y=-3\\sin x$ ?",
+            "a": "$\\langle-3;3\\rangle$"
+        },
+        {
+            "q": "Comment le coefficient $q\\gt0$ dans $y=\\sin(qx)$ influence-t-il la courbe ?",
+            "a": "Il change la période en $\\frac{2\\pi}{q}$, l'image reste $\\langle-1;1\\rangle$."
+        },
+        {
+            "q": "Quelle est la période de la fonction $y=\\sin(2x)$ ?",
+            "a": "$\\pi$"
+        },
+        {
+            "q": "Quelle est la période de la fonction $y=\\sin\\frac{x}{2}$ ?",
+            "a": "$4\\pi$"
+        },
+        {
+            "q": "Comment les coefficients $m,n$ dans $y=\\sin(x-m)+n$ influencent-ils la courbe ?",
+            "a": "Ils décalent la courbe de $m$ unités selon l'axe $x$ et de $n$ unités selon l'axe $y$."
+        },
+        {
+            "q": "Quelle est l'image de la fonction $y=\\sin\\left(x-\\frac{\\pi}{3}\\right)+2$ ?",
+            "a": "$\\langle1;3\\rangle$"
+        },
+        {
+            "q": "Quelle formule donne la période de la fonction $y=a\\cdot\\sin(qx)$ ?",
+            "a": "$p=\\frac{2\\pi}{q}$"
+        },
+        {
+            "q": "En combien de parties divise-t-on la période pour construire la courbe du sinus ou du cosinus ?",
+            "a": "En quatre (des quarts)."
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

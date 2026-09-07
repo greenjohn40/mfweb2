@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Goniometrie 4 — Goniometrické rovnice a nerovnice (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-goniometrie4.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Goniometrie 4</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (základní rovnice, substituce, součinový tvar, nerovnice).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate < 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0, 4).map(fmt));
+}
+function buildCategoryOptions(correct, allCategories) {
+    const others = allCategories.filter(c => c !== correct);
+    const chosen = shuffleArray([...others]).slice(0, 3);
+    return shuffleArray([correct, ...chosen]);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    {
+        "id": "t1",
+        "type": "concept",
+        "cs": {
+            "q": "Co je základní řešení goniometrické rovnice?",
+            "a": "všechna řešení ležící v intervalu $\\langle0;2\\pi)$",
+            "o": [
+                "všechna řešení ležící v intervalu $\\langle0;2\\pi)$",
+                "jediné nejmenší kladné řešení rovnice",
+                "všechna řešení ležící v intervalu $\\langle0;\\pi\\rangle$",
+                "řešení, které je nejblíže nule"
+            ],
+            "h": "Mysli na periodu funkce a na to, kolik různých bodů na jednotkové kružnici existuje.",
+            "e": "Základním řešením nazýváme všechna řešení, která leží v intervalu $\\langle0;2\\pi)$ — obvykle jich je jedno nebo dvě."
+        },
+        "fr": {
+            "q": "Qu'appelle-t-on solution de base d'une équation trigonométrique ?",
+            "a": "toutes les solutions situées dans l'intervalle $\\langle0;2\\pi)$",
+            "o": [
+                "toutes les solutions situées dans l'intervalle $\\langle0;2\\pi)$",
+                "la plus petite solution positive de l'équation",
+                "toutes les solutions situées dans l'intervalle $\\langle0;\\pi\\rangle$",
+                "la solution la plus proche de zéro"
+            ],
+            "h": "Pense à la période de la fonction et au nombre de points distincts sur le cercle trigonométrique.",
+            "e": "On appelle solution de base toutes les solutions situées dans l'intervalle $\\langle0;2\\pi)$ — il y en a généralement une ou deux."
+        }
+    },
+    {
+        "id": "t2",
+        "type": "concept",
+        "cs": {
+            "q": "Kdy nemá rovnice $\\sin x=a$ žádné řešení?",
+            "a": "když $|a|\\gt1$",
+            "o": [
+                "když $|a|\\gt1$",
+                "když $a=0$",
+                "nikdy, tato rovnice má vždy alespoň jedno řešení",
+                "když je $a$ záporné"
+            ],
+            "h": "Rozmysli si, jaký je obor hodnot funkce sinus.",
+            "e": "Obor hodnot sinu je $\\langle-1;1\\rangle$, takže rovnice $\\sin x=a$ nemá řešení právě tehdy, když $|a|\\gt1$."
+        },
+        "fr": {
+            "q": "Quand l'équation $\\sin x=a$ n'a-t-elle aucune solution ?",
+            "a": "quand $|a|\\gt1$",
+            "o": [
+                "quand $|a|\\gt1$",
+                "quand $a=0$",
+                "jamais, cette équation a toujours au moins une solution",
+                "quand $a$ est négatif"
+            ],
+            "h": "Réfléchis à l'ensemble des valeurs de la fonction sinus.",
+            "e": "L'ensemble des valeurs du sinus est $\\langle-1;1\\rangle$, donc l'équation $\\sin x=a$ n'a pas de solution exactement quand $|a|\\gt1$."
+        }
+    },
+    {
+        "id": "t3",
+        "type": "concept",
+        "cs": {
+            "q": "Jaký je obor hodnot funkcí tangens a kotangens?",
+            "a": "$\\mathbb{R}$",
+            "o": [
+                "$\\mathbb{R}$",
+                "$\\langle-1;1\\rangle$",
+                "$\\langle0;\\infty)$",
+                "$\\mathbb{R}-\\{0\\}$"
+            ],
+            "h": "Na rozdíl od sinu a kosinu není obor hodnot omezený.",
+            "e": "Obor hodnot tangens i kotangens je celé $\\mathbb{R}$, proto mají rovnice $\\operatorname{tg}x=a$ i $\\operatorname{cotg}x=a$ řešení pro libovolné $a$."
+        },
+        "fr": {
+            "q": "Quelle est l'image des fonctions tangente et cotangente ?",
+            "a": "$\\mathbb{R}$",
+            "o": [
+                "$\\mathbb{R}$",
+                "$\\langle-1;1\\rangle$",
+                "$\\langle0;\\infty)$",
+                "$\\mathbb{R}-\\{0\\}$"
+            ],
+            "h": "Contrairement au sinus et au cosinus, l'image n'est pas bornée.",
+            "e": "L'image de la tangente et de la cotangente est $\\mathbb{R}$ tout entier, donc les équations $\\operatorname{tg}x=a$ et $\\operatorname{cotg}x=a$ ont une solution pour tout $a$."
+        }
+    },
+    {
+        "id": "t4",
+        "type": "concept",
+        "cs": {
+            "q": "Jakou substituci zavádíme u rovnice s výrazem $qx+m$ v argumentu?",
+            "a": "$u=qx+m$",
+            "o": [
+                "$u=qx+m$",
+                "$u=x$",
+                "$u=qx$",
+                "$u=mx+q$"
+            ],
+            "h": "Substituujeme přesně ten výraz, který stojí v argumentu goniometrické funkce.",
+            "e": "Zavádíme substituci $u=qx+m$ — celý lineární výraz v argumentu nahradíme jedinou novou neznámou."
+        },
+        "fr": {
+            "q": "Quelle substitution introduit-on pour une équation avec une expression $qx+m$ dans l'argument ?",
+            "a": "$u=qx+m$",
+            "o": [
+                "$u=qx+m$",
+                "$u=x$",
+                "$u=qx$",
+                "$u=mx+q$"
+            ],
+            "h": "On substitue exactement l'expression qui se trouve dans l'argument de la fonction trigonométrique.",
+            "e": "On introduit la substitution $u=qx+m$ — toute l'expression linéaire de l'argument est remplacée par une seule nouvelle inconnue."
+        }
+    },
+    {
+        "id": "t5",
+        "type": "concept",
+        "cs": {
+            "q": "Kdy při substituční metodě vydělíme periodu koeficientem $q$?",
+            "a": "až při návratu k původní neznámé $x$",
+            "o": [
+                "až při návratu k původní neznámé $x$",
+                "hned na začátku, ještě před vyřešením rovnice pro $u$",
+                "periodu nikdy nedělíme",
+                "až v úplně posledním kroku, po dosazení celých čísel za $k$"
+            ],
+            "h": "Napřed vyřeš rovnici pro novou neznámou $u$ (i s periodou), teprve pak se vracej k $x$.",
+            "e": "Periodu vydělíme koeficientem $q$ až ve chvíli, kdy se z rovnice $qx+m=u$ vracíme k původní neznámé $x$."
+        },
+        "fr": {
+            "q": "Quand, dans la méthode de substitution, divise-t-on la période par le coefficient $q$ ?",
+            "a": "seulement au moment du retour à l'inconnue d'origine $x$",
+            "o": [
+                "seulement au moment du retour à l'inconnue d'origine $x$",
+                "dès le début, avant de résoudre l'équation pour $u$",
+                "on ne divise jamais la période",
+                "seulement à la toute dernière étape, après substitution d'entiers à $k$"
+            ],
+            "h": "Résous d'abord l'équation pour la nouvelle inconnue $u$ (avec la période), puis reviens ensuite à $x$.",
+            "e": "On divise la période par le coefficient $q$ seulement au moment où, à partir de $qx+m=u$, on revient à l'inconnue d'origine $x$."
+        }
+    },
+    {
+        "id": "t6",
+        "type": "concept",
+        "cs": {
+            "q": "Co znamená vyřešit goniometrickou rovnici v součinovém tvaru?",
+            "a": "vyřešit samostatně dvě (či více) jednodušších rovnic a jejich řešení sjednotit",
+            "o": [
+                "vyřešit samostatně dvě (či více) jednodušších rovnic a jejich řešení sjednotit",
+                "sečíst obě strany rovnice a teprve poté ji řešit",
+                "vynásobit obě strany rovnice stejným číslem",
+                "řešit pouze první z dvojice rovnic, druhá je nadbytečná"
+            ],
+            "h": "Součin je roven nule právě tehdy, když je nule roven aspoň jeden z činitelů.",
+            "e": "Rovnici v součinovém tvaru řešíme tak, že vyřešíme samostatně každou dílčí rovnici a jejich řešení sjednotíme."
+        },
+        "fr": {
+            "q": "Que signifie résoudre une équation trigonométrique sous forme de produit ?",
+            "a": "résoudre séparément deux (ou plusieurs) équations plus simples et réunir leurs solutions",
+            "o": [
+                "résoudre séparément deux (ou plusieurs) équations plus simples et réunir leurs solutions",
+                "additionner les deux côtés de l'équation avant de la résoudre",
+                "multiplier les deux côtés de l'équation par le même nombre",
+                "résoudre seulement la première des deux équations, la seconde est superflue"
+            ],
+            "h": "Un produit est nul si et seulement si au moins un des facteurs est nul.",
+            "e": "On résout une équation sous forme de produit en résolvant séparément chaque équation partielle, puis en réunissant leurs solutions."
+        }
+    },
+    {
+        "id": "t7",
+        "type": "concept",
+        "cs": {
+            "q": "Jaký je základní tvar goniometrické nerovnice?",
+            "a": "$f(x)\\ge a$, $f(x)\\le a$, $f(x)\\gt a$ nebo $f(x)\\lt a$",
+            "o": [
+                "$f(x)\\ge a$, $f(x)\\le a$, $f(x)\\gt a$ nebo $f(x)\\lt a$",
+                "pouze $f(x)\\ge a$ nebo $f(x)\\le a$",
+                "pouze $f(x)\\gt a$ nebo $f(x)\\lt a$",
+                "$f(x)=a$"
+            ],
+            "h": "Nerovnice zahrnuje jak ostré, tak neostré vztahy.",
+            "e": "Základní goniometrická nerovnice může mít kterýkoli ze čtyř tvarů: $f(x)\\ge a$, $f(x)\\le a$, $f(x)\\gt a$ nebo $f(x)\\lt a$."
+        },
+        "fr": {
+            "q": "Quelle est la forme de base d'une inéquation trigonométrique ?",
+            "a": "$f(x)\\ge a$, $f(x)\\le a$, $f(x)\\gt a$ ou $f(x)\\lt a$",
+            "o": [
+                "$f(x)\\ge a$, $f(x)\\le a$, $f(x)\\gt a$ ou $f(x)\\lt a$",
+                "seulement $f(x)\\ge a$ ou $f(x)\\le a$",
+                "seulement $f(x)\\gt a$ ou $f(x)\\lt a$",
+                "$f(x)=a$"
+            ],
+            "h": "Une inéquation regroupe aussi bien les relations strictes que larges.",
+            "e": "Une inéquation trigonométrique de base peut prendre l'une des quatre formes : $f(x)\\ge a$, $f(x)\\le a$, $f(x)\\gt a$ ou $f(x)\\lt a$."
+        }
+    },
+    {
+        "id": "t8",
+        "type": "concept",
+        "cs": {
+            "q": "Na co je třeba dát zvláštní pozor u goniometrických nerovnic s tangens nebo kotangens?",
+            "a": "zda krajní bod intervalu neleží mimo definiční obor",
+            "o": [
+                "zda krajní bod intervalu neleží mimo definiční obor",
+                "na nic, řeší se úplně stejně jako nerovnice se sinem",
+                "interval musí být vždy uzavřený",
+                "interval musí být vždy otevřený"
+            ],
+            "h": "Tangens a kotangens nejsou definované ve všech bodech.",
+            "e": "U nerovnic s tangens či kotangens musíme ověřit, zda krajní bod intervalu neleží mimo definiční obor — tam musí interval zůstat otevřený."
+        },
+        "fr": {
+            "q": "À quoi faut-il faire particulièrement attention pour les inéquations avec tangente ou cotangente ?",
+            "a": "vérifier que le point limite de l'intervalle ne se situe pas en dehors du domaine de définition",
+            "o": [
+                "vérifier que le point limite de l'intervalle ne se situe pas en dehors du domaine de définition",
+                "à rien, cela se résout exactement comme pour le sinus",
+                "l'intervalle doit toujours être fermé",
+                "l'intervalle doit toujours être ouvert"
+            ],
+            "h": "La tangente et la cotangente ne sont pas définies partout.",
+            "e": "Pour les inéquations avec tangente ou cotangente, il faut vérifier que le point limite de l'intervalle ne se situe pas en dehors du domaine de définition — l'intervalle doit alors y rester ouvert."
+        }
+    }
+];
+
+// ======== VYPOCETNI ULOHY ========
+const M1_ENTRIES = [
+    { fnLatex: '\\sin', aLatex: '\\frac12', lo: 30, hi: 150 },
+    { fnLatex: '\\sin', aLatex: '-\\frac12', lo: 210, hi: 330 },
+    { fnLatex: '\\sin', aLatex: '\\frac{\\sqrt3}{2}', lo: 60, hi: 120 },
+    { fnLatex: '\\sin', aLatex: '-\\frac{\\sqrt3}{2}', lo: 240, hi: 300 },
+    { fnLatex: '\\sin', aLatex: '\\frac{\\sqrt2}{2}', lo: 45, hi: 135 },
+    { fnLatex: '\\sin', aLatex: '-\\frac{\\sqrt2}{2}', lo: 225, hi: 315 },
+    { fnLatex: '\\cos', aLatex: '\\frac12', lo: 60, hi: 300 },
+    { fnLatex: '\\cos', aLatex: '-\\frac12', lo: 120, hi: 240 },
+    { fnLatex: '\\cos', aLatex: '\\frac{\\sqrt3}{2}', lo: 30, hi: 330 },
+    { fnLatex: '\\cos', aLatex: '-\\frac{\\sqrt3}{2}', lo: 150, hi: 210 },
+    { fnLatex: '\\cos', aLatex: '\\frac{\\sqrt2}{2}', lo: 45, hi: 315 },
+    { fnLatex: '\\cos', aLatex: '-\\frac{\\sqrt2}{2}', lo: 135, hi: 225 }
+];
+
+const M2_ENTRIES = [
+    { aLatex: '1', lo: 45, hi: 225 },
+    { aLatex: '-1', lo: 135, hi: 315 },
+    { aLatex: '\\sqrt3', lo: 60, hi: 240 },
+    { aLatex: '-\\sqrt3', lo: 120, hi: 300 },
+    { aLatex: '\\frac{\\sqrt3}{3}', lo: 30, hi: 210 },
+    { aLatex: '-\\frac{\\sqrt3}{3}', lo: 150, hi: 330 }
+];
+
+const M3_ENTRIES = [
+    { aLatex: '\\frac12', lo: 15, hi: 75 },
+    { aLatex: '-\\frac12', lo: 105, hi: 165 },
+    { aLatex: '\\frac{\\sqrt3}{2}', lo: 30, hi: 60 },
+    { aLatex: '-\\frac{\\sqrt3}{2}', lo: 120, hi: 150 }
+];
+
+const M4_ENTRIES = [
+    { fnLatex: '\\sin', rel: '\\gt', aLatex: '\\frac12', lo: 30, hi: 150 },
+    { fnLatex: '\\sin', rel: '\\lt', aLatex: '-\\frac12', lo: 210, hi: 330 },
+    { fnLatex: '\\cos', rel: '\\lt', aLatex: '\\frac12', lo: 60, hi: 300 },
+    { fnLatex: '\\cos', rel: '\\gt', aLatex: '-\\frac12', lo: 120, hi: 240 },
+    { fnLatex: '\\sin', rel: '\\gt', aLatex: '\\frac{\\sqrt2}{2}', lo: 45, hi: 135 },
+    { fnLatex: '\\cos', rel: '\\lt', aLatex: '-\\frac{\\sqrt3}{2}', lo: 150, hi: 210 }
+];
+
+const M5_ENTRIES = [
+    { exprLatex: '5\\cos x+8=0', correct: '0',
+      whyCs: 'Rovnice dává $\\cos x=-1{,}6$, což je mimo obor hodnot kosinu $\\langle-1;1\\rangle$.',
+      whyFr: "L'équation donne $\\cos x=-1{,}6$, ce qui est en dehors de l'ensemble des valeurs du cosinus $\\langle-1;1\\rangle$." },
+    { exprLatex: '\\sin x=1', correct: '1',
+      whyCs: 'Hodnotu $1$ nabývá sinus jen v jediném bodě intervalu $\\langle0;2\\pi)$, a to $x=\\frac{\\pi}{2}$.',
+      whyFr: "Le sinus ne prend la valeur $1$ qu'en un seul point de l'intervalle $\\langle0;2\\pi)$, à savoir $x=\\frac{\\pi}{2}$." },
+    { exprLatex: '\\cos x=1', correct: '1',
+      whyCs: 'Hodnotu $1$ nabývá kosinus jen v jediném bodě intervalu $\\langle0;2\\pi)$, a to $x=0$.',
+      whyFr: "Le cosinus ne prend la valeur $1$ qu'en un seul point de l'intervalle $\\langle0;2\\pi)$, à savoir $x=0$." },
+    { exprLatex: '\\sin x=-1', correct: '1',
+      whyCs: 'Hodnotu $-1$ nabývá sinus jen v jediném bodě intervalu $\\langle0;2\\pi)$, a to $x=\\frac{3\\pi}{2}$.',
+      whyFr: "Le sinus ne prend la valeur $-1$ qu'en un seul point de l'intervalle $\\langle0;2\\pi)$, à savoir $x=\\frac{3\\pi}{2}$." },
+    { exprLatex: '3\\sin x-10=0', correct: '0',
+      whyCs: 'Rovnice dává $\\sin x=\\frac{10}{3}\\doteq3{,}33$, což je mimo obor hodnot sinu $\\langle-1;1\\rangle$.',
+      whyFr: "L'équation donne $\\sin x=\\frac{10}{3}\\doteq3{,}33$, ce qui est en dehors de l'ensemble des valeurs du sinus $\\langle-1;1\\rangle$." },
+    { exprLatex: '\\cos x=0{,}5', correct: '2',
+      whyCs: 'Hodnota $0{,}5$ leží uvnitř oboru hodnot kosinu a není krajní, proto má rovnice dvě různá základní řešení.',
+      whyFr: "La valeur $0{,}5$ se situe à l'intérieur de l'ensemble des valeurs du cosinus et n'est pas une valeur limite, donc l'équation a deux solutions de base distinctes." },
+    { exprLatex: '\\operatorname{tg}x=5', correct: '2',
+      whyCs: 'Tangens nabývá každé reálné hodnoty právě ve dvou bodech intervalu $\\langle0;2\\pi)$ (lišících se o periodu $\\pi$).',
+      whyFr: "La tangente prend chaque valeur réelle en exactement deux points de l'intervalle $\\langle0;2\\pi)$ (distants d'une période $\\pi$)." },
+    { exprLatex: '4\\cos x+9=0', correct: '0',
+      whyCs: 'Rovnice dává $\\cos x=-2{,}25$, což je mimo obor hodnot kosinu $\\langle-1;1\\rangle$.',
+      whyFr: "L'équation donne $\\cos x=-2{,}25$, ce qui est en dehors de l'ensemble des valeurs du cosinus $\\langle-1;1\\rangle$." }
+];
+
+const M5_CATEGORIES = ['0', '1', '2'];
+const M5_DISTRACTOR_CS = ['nekonečně mnoho'];
+const M5_DISTRACTOR_FR = ['une infinité'];
+
+const FN_LATEX_M6 = { sin: '\\sin', cos: '\\cos', tg: '\\operatorname{tg}', cotg: '\\operatorname{cotg}' };
+const FN_NAME_CS_M6 = { sin: 'sinus', cos: 'kosinus', tg: 'tangens', cotg: 'kotangens' };
+const FN_NAME_FR_M6 = { sin: 'du sinus', cos: 'du cosinus', tg: 'de la tangente', cotg: 'de la cotangente' };
+
+const M6_ENTRIES = [
+    { fn: 'sin', aNum: 1.5, aLatex: '1{,}5' },
+    { fn: 'cos', aNum: -2, aLatex: '-2' },
+    { fn: 'tg', aNum: 100, aLatex: '100' },
+    { fn: 'cotg', aNum: -50, aLatex: '-50' },
+    { fn: 'sin', aNum: 0.9, aLatex: '0{,}9' },
+    { fn: 'cos', aNum: 1, aLatex: '1' },
+    { fn: 'sin', aNum: -1.2, aLatex: '-1{,}2' }
+];
+
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Rovnice ${fnLatex} x={aLatex}$ má dvě základní řešení. Určete menší z nich (ve stupních).", h: "Použij hodnoty ostrých úhlů $30°,45°,60°$ a rozhodni, ve kterých kvadrantech funkce nabývá danou hodnotu.", e: "Základní řešení jsou $\\overline x_1={lo}°$ a $\\overline x_2={hi}°$, menší z nich je ${correct}°$." },
+        fr: { q: "L'équation ${fnLatex} x={aLatex}$ a deux solutions de base. Déterminez la plus petite (en degrés).", h: "Utilise les valeurs des angles aigus $30°,45°,60°$ et détermine dans quels quadrants la fonction prend cette valeur.", e: "Les solutions de base sont $\\overline x_1={lo}°$ et $\\overline x_2={hi}°$, la plus petite est ${correct}°$." },
+        params: () => {
+            const e = randChoice(M1_ENTRIES);
+            return { fnLatex: e.fnLatex, aLatex: e.aLatex, lo: e.lo, hi: e.hi };
+        },
+        solve: (p) => ({ correct: p.lo }),
+        wrongOptions: (p, sol) => buildOptions(sol.correct, [p.hi], 60) },
+
+    { id: 'm2', type: 'math',
+        cs: { q: "Rovnice ${fnOp}x={aLatex}$ má dvě základní řešení (lišící se o $180°$). Určete menší z nich.", h: "Nejprve najdi řešení v intervalu $(0°;180°)$ pomocí tabulky hodnot, druhé pak přičtením $180°$.", e: "Základní řešení jsou $\\overline x_1={lo}°$ a $\\overline x_2={hi}°$ (liší se o periodu $180°$), menší je ${correct}°$." },
+        fr: { q: "L'équation ${fnOp}x={aLatex}$ a deux solutions de base (distantes de $180°$). Déterminez la plus petite.", h: "Trouve d'abord la solution dans l'intervalle $(0°;180°)$ à l'aide du tableau des valeurs, puis la seconde en ajoutant $180°$.", e: "Les solutions de base sont $\\overline x_1={lo}°$ et $\\overline x_2={hi}°$ (distantes de la période $180°$), la plus petite est ${correct}°$." },
+        params: () => {
+            const e = randChoice(M2_ENTRIES);
+            return { aLatex: e.aLatex, lo: e.lo, hi: e.hi, fnOp: '\\operatorname{tg}' };
+        },
+        solve: (p) => ({ correct: p.lo }),
+        wrongOptions: (p, sol) => buildOptions(sol.correct, [p.hi], 60) },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Rovnice $\\sin(2x)={aLatex}$ má na intervalu $\\langle0°;180°)$ dvě řešení. Určete menší z nich.", h: "Zaveď substituci $u=2x$, vyřeš základní rovnici pro $u$, a teprve pak se vrať k $x$.", e: "Substituce $u=2x$ dá základní řešení pro $u$; po návratu k $x$ (dělením dvěma) dostaneme $x_1={lo}°$ a $x_2={hi}°$, menší je ${correct}°$." },
+        fr: { q: "L'équation $\\sin(2x)={aLatex}$ a deux solutions sur l'intervalle $\\langle0°;180°)$. Déterminez la plus petite.", h: "Introduis la substitution $u=2x$, résous l'équation de base pour $u$, puis reviens seulement ensuite à $x$.", e: "La substitution $u=2x$ donne la solution de base pour $u$ ; en revenant à $x$ (en divisant par deux) on obtient $x_1={lo}°$ et $x_2={hi}°$, la plus petite est ${correct}°$." },
+        params: () => {
+            const e = randChoice(M3_ENTRIES);
+            return { aLatex: e.aLatex, lo: e.lo, hi: e.hi };
+        },
+        solve: (p) => ({ correct: p.lo }),
+        wrongOptions: (p, sol) => buildOptions(sol.correct, [p.hi], 30) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Řešte nerovnici ${fnLatex} x{rel}{aLatex}$ (ve stupních) a určete menší z krajních bodů základního intervalu.", h: "Nejprve vyřeš rovnici ${fnLatex} x={aLatex}$ — dostaneš dva body dělící kružnici na dva oblouky.", e: "Rovnice ${fnLatex} x={aLatex}$ dá krajní body $ {lo}°$ a $ {hi}°$; menší z nich je ${correct}°$." },
+        fr: { q: "Résolvez l'inéquation ${fnLatex} x{rel}{aLatex}$ (en degrés) et déterminez le plus petit des points limites de l'intervalle de base.", h: "Résous d'abord l'équation ${fnLatex} x={aLatex}$ — tu obtiens deux points qui partagent le cercle en deux arcs.", e: "L'équation ${fnLatex} x={aLatex}$ donne les points limites $ {lo}°$ et $ {hi}°$ ; le plus petit est ${correct}°$." },
+        params: () => {
+            const e = randChoice(M4_ENTRIES);
+            return { fnLatex: e.fnLatex, rel: e.rel, aLatex: e.aLatex, lo: e.lo, hi: e.hi };
+        },
+        solve: (p) => ({ correct: p.lo }),
+        wrongOptions: (p, sol) => buildOptions(sol.correct, [p.hi], 60) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Kolik základních řešení (v intervalu $\\langle0;2\\pi)$) má rovnice ${exprLatex}$?", h: "Uvědom si obor hodnot dané funkce a zda hodnota $a$ do něj vůbec patří.", e: "{why}" },
+        fr: { q: "Combien de solutions de base (dans l'intervalle $\\langle0;2\\pi)$) a l'équation ${exprLatex}$ ?", h: "Réfléchis à l'ensemble des valeurs de la fonction et si la valeur $a$ y appartient.", e: "{why}" },
+        params: () => {
+            const e = randChoice(M5_ENTRIES);
+            return { exprLatex: e.exprLatex, correct: e.correct, whyCs: e.whyCs, whyFr: e.whyFr };
+        },
+        solve: (p) => ({ res: p.correct }),
+        wrongOptions: (p, sol) => null /* special-cased below for m5 */ },
+
+    { id: 'm6', type: 'math',
+        cs: { q: "Má rovnice ${fnLatex} x={aLatex}$ řešení v $\\mathbb R$?", h: "Rozmysli si obor hodnot dané funkce.", e: "{expl}" },
+        fr: { q: "L'équation ${fnLatex} x={aLatex}$ a-t-elle une solution dans $\\mathbb R$ ?", h: "Réfléchis à l'ensemble des valeurs de la fonction.", e: "{expl}" },
+        params: () => {
+            const e = randChoice(M6_ENTRIES);
+            return { fn: e.fn, fnLatex: FN_LATEX_M6[e.fn], aNum: e.aNum, aLatex: e.aLatex };
+        },
+        solve: (p) => {
+            const bounded = (p.fn === 'sin' || p.fn === 'cos');
+            const valid = bounded ? (Math.abs(p.aNum) <= 1) : true;
+            const explCs = valid
+                ? (bounded ? `Ano, protože $|${p.aLatex}|\\le1$, a hodnota tedy leží v oboru hodnot funkce ${FN_NAME_CS_M6[p.fn]}.` : `Ano, funkce ${FN_NAME_CS_M6[p.fn]} nabývá všech reálných hodnot.`)
+                : `Ne, protože $|${p.aLatex}|\\gt1$, což je mimo obor hodnot funkce ${FN_NAME_CS_M6[p.fn]}.`;
+            const explFr = valid
+                ? (bounded ? `Oui, car $|${p.aLatex}|\\le1$, donc la valeur appartient à l'ensemble des valeurs ${FN_NAME_FR_M6[p.fn]}.` : `Oui, la fonction ${FN_NAME_FR_M6[p.fn]} prend toutes les valeurs réelles.`)
+                : `Non, car $|${p.aLatex}|\\gt1$, ce qui est en dehors de l'ensemble des valeurs ${FN_NAME_FR_M6[p.fn]}.`;
+            return { res: valid ? 'ano' : 'ne', resFr: valid ? 'oui' : 'non', explCs, explFr };
+        },
+        wrongOptions: (p, sol) => null /* special-cased below for m6 */ }
+];
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit bez kalkulačky', 'záleží na tom, zda je úhel zadán ve stupních, nebo radiánech'];
+const YESNO_DISTRACTORS_FR = ["impossible à déterminer sans calculatrice", "cela dépend du fait que l'angle soit donné en degrés ou en radians"];
+
+function fmt3(x){
+    if (Number.isInteger(x)) return x.toString();
+    let s = x.toFixed(3);
+    s = s.replace(/0+$/,'').replace(/\.$/,'');
+    if (s === '' || s === '-') s = '0';
+    return s.replace('.', ',');
+}
+function buildOptions3(correct, extras, spread){
+    const set = new Set([correct, ...extras]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = (randInt(1,100)/100) * spread * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = Math.round((correct + delta)*1000)/1000;
+        set.add(candidate);
+        guard++;
+    }
+    return shuffleArray([...set].slice(0,4).map(fmt3));
+}
+
+function prepareQuestion(template, lang) {
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = lang === 'fr' ? JSON.parse(JSON.stringify(template['cs'])) : JSON.parse(JSON.stringify(template['fr']));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+
+        if (template.id === 'm5') {
+            const dictCs = Object.assign({}, p, { why: p.whyCs });
+            const dictFr = Object.assign({}, p, { why: p.whyFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = '$' + sol.res + '$';
+            const distractor = lang === 'cs' ? M5_DISTRACTOR_CS : M5_DISTRACTOR_FR;
+            q.o = buildCategoryOptions(q.a, [...M5_CATEGORIES.map(c => '$' + c + '$'), ...distractor]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = '$' + sol.res + '$';
+            const distractorOther = lang === 'cs' ? M5_DISTRACTOR_FR : M5_DISTRACTOR_CS;
+            tr.o = buildCategoryOptions(tr.a, [...M5_CATEGORIES.map(c => '$' + c + '$'), ...distractorOther]);
+
+        } else if (template.id === 'm6') {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dictForLang = lang === 'cs' ? dictCs : dictFr;
+            q.q = (lang === 'cs' ? template.cs.q : template.fr.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.e = (lang === 'cs' ? template.cs.e : template.fr.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictForLang[k] === 'number' ? fmt(dictForLang[k]) : dictForLang[k]));
+            q.a = lang === 'cs' ? sol.res : sol.resFr;
+            const yn = lang === 'cs' ? YESNO_CS : YESNO_FR;
+            const ynd = lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR;
+            q.o = buildCategoryOptions(q.a, [...yn, ...ynd]);
+
+            const dictOther = lang === 'cs' ? dictFr : dictCs;
+            tr.q = (lang === 'cs' ? template.fr.q : template.cs.q).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.e = (lang === 'cs' ? template.fr.e : template.cs.e).replace(/\{(\w+)\}/g, (_, k) => (typeof dictOther[k] === 'number' ? fmt(dictOther[k]) : dictOther[k]));
+            tr.a = lang === 'cs' ? sol.resFr : sol.res;
+            const ynOther = lang === 'cs' ? YESNO_FR : YESNO_CS;
+            const yndOther = lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS;
+            tr.o = buildCategoryOptions(tr.a, [...ynOther, ...yndOther]);
+
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dispInject = (obj) => {
+                obj.q = obj.q.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.e = obj.e.replace(/\{(\w+)\}/g, (_, k) => (typeof p[k] === 'number' ? fmt(p[k]) : (p[k] !== undefined ? p[k] : (typeof sol[k] === 'number' ? fmt(sol[k]) : sol[k]))));
+                obj.a = '' + sol.correct + '°';
+                obj.o = shuffleArray([...options]).map(o => o + '°');
+            };
+            dispInject(q); dispInject(tr);
+        }
+    }
+
+    shuffleArray(q.o);
+    shuffleArray(tr.o);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            renderContent();
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.optText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const isCorrect = (selected === correct);
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Goniometrické rovnice i nerovnice ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat postup řešení pomocí jednotkové kružnice a obory hodnot jednotlivých funkcí."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – zaměř se na základní goniometrické rovnice a na pojem základního řešení."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmu základního řešení, substituci i řešení nerovnic.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definiční obor a periodicitu tangens a kotangens.");
+            if (mathPercent >= 70) strengths.push("Výpočty (redukční vzorce, hodnoty pro libovolný úhel) ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si zejména řešení pomocí jednotkové kružnice a substituci u rovnic s výrazem $qx+m$.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
+            } else {
+                recommendations.push("Skvělá práce! Zvládl/a jsi kapitolu o tangens a kotangens – můžeš si otestovat své znalosti znovu s jinými čísly.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení jednotlivých vzorců a postupů.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny ve francouzštině."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>
