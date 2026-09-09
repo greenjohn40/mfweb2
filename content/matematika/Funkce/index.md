@@ -17,11 +17,11 @@
 <br>
 
 <h4>GONIOMETRICKÉ FUNKCE</h4>
-<a href="/static/mat-funkce-goniom1/rozcestnik-goniometrie1.html" data-router-ignore>Orientovaný úhel, jednotková kružnice</a><p>
+<a href="/static/mat-funkce-goniom1/rozcestnik-goniometrie1.html" data-router-ignore>Orientovaný úhel, jednotková kružnice</a>
 <br>
-<a href="/static/mat-funkce-goniom2/rozcestnik-goniometrie2.html" data-router-ignore>Sinus, kosinus</a><p>
+<a href="/static/mat-funkce-goniom2/rozcestnik-goniometrie2.html" data-router-ignore>Sinus, kosinus</a>
 <br>
-<a href="/static/mat-funkce-goniom3/rozcestnik-goniometrie3.html" data-router-ignore>Tangens, kotangens</a><p>
+<a href="/static/mat-funkce-goniom3/rozcestnik-goniometrie3.html" data-router-ignore>Tangens, kotangens</a>
 <br>
 <a href="/static/mat-funkce-goniom4/rozcestnik-goniometrie4.html" data-router-ignore>Goniometrické rovnice a nerovnice</a><p>
 <br>
