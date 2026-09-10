@@ -16,6 +16,10 @@
 <a href="/static/mat-funkce-kvadraticka2/rozcestnik-graficke-reseni.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a><p>
 <br>
 
+<h4>LOGARITMICKÁ FUNKCE</h4>
+<a href="/static/mat-funkce-log-rce/rozcestnik-logaritmy2.html" data-router-ignore>Logaritmické rovnice a nerovnice</a><p>
+<br>
+  
 <h4>GONIOMETRICKÉ FUNKCE</h4>
 <a href="/static/mat-funkce-goniom1/rozcestnik-goniometrie1.html" data-router-ignore>Orientovaný úhel, jednotková kružnice</a>
 <br>
