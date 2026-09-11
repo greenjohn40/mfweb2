@@ -5,7 +5,7 @@ title: Známkování
 Požadavky a principy klasifikace
 --------------------------------
 
-1) Aktivní účast v hodinách (přítomnost alesp. 80%)
+1) Aktivní účast v hodinách s dostatečnou docházkou
 2) Absolvování krátkých testů, velkých testů a vypracování domácích úkolů
 3) Schopnost pořizování poznámek v hodinách
 4) Schopnost práce se studijními materiály
