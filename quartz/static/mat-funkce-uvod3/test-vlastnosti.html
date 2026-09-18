@@ -20,6 +20,7 @@
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
             options: { enableMenu: false }
         };
     </script>
@@ -147,9 +148,9 @@
         const theoryPool = [
             { id: 't1', type: 'concept', cs: { q: "Kdy je funkce rostoucí?", a: "Když pro všechna x1,x2 z $D(f)$ platí: je-li $x1 \\lt x2$, pak $f(x1) \\lt f(x2)$", o: ["Když pro všechna x1,x2 z $D(f)$ platí: je-li $x1 \\lt x2$, pak $f(x1) \\lt f(x2)$", "Když pro všechna x1,x2 z $D(f)$ platí: je-li $x1 \\lt x2$, pak $f(x1) \\gt f(x2)$", "Když $f(x1) = f(x2)$ pro všechna x1,x2", "Když má funkce alespoň jeden kladný bod"], h: "Menší x musí dávat menší $f(x)$.", e: "Funkce je rostoucí, pokud pro všechna x1,x2 z $D(f)$ platí: je-li $x1 \\lt x2$, pak $f(x1) \\lt f(x2)$ — s rostoucím x roste i y." }, fr: { q: "Quand une fonction est-elle croissante ?", a: "Quand pour tous x1,x2 de $D(f)$ : si $x1 \\lt x2$, alors $f(x1) \\lt f(x2)$", o: ["Quand pour tous x1,x2 de $D(f)$ : si $x1 \\lt x2$, alors $f(x1) \\lt f(x2)$", "Quand pour tous x1,x2 de $D(f)$ : si $x1 \\lt x2$, alors $f(x1) \\gt f(x2)$", "Quand $f(x1) = f(x2)$ pour tous x1,x2", "Quand la fonction a au moins un point positif"], h: "Un x plus petit doit donner un $f(x)$ plus petit.", e: "Une fonction est croissante si pour tous x1,x2 de $D(f)$ : si $x1 \\lt x2$, alors $f(x1) \\lt f(x2)$ — quand x augmente, y augmente aussi." } },
             { id: 't2', type: 'concept', cs: { q: "Kdy je funkce ryze monotónní?", a: "Když je na celém svém definičním oboru rostoucí, nebo na celém definičním oboru klesající", o: ["Když je na celém svém definičním oboru rostoucí, nebo na celém definičním oboru klesající", "Když je rostoucí alespoň na části definičního oboru", "Když má právě jeden extrém", "Když je sudá nebo lichá"], h: "Podstatné je slovo „celém“ — netýká se to jen části.", e: "Ryze monotónní funkce je rostoucí na celém $D(f)$, nebo klesající na celém $D(f)$ — nesmí se v žádném místě „zlomit“." }, fr: { q: "Quand une fonction est-elle strictement monotone ?", a: "Quand elle est croissante sur tout son domaine de définition, ou décroissante sur tout son domaine", o: ["Quand elle est croissante sur tout son domaine de définition, ou décroissante sur tout son domaine", "Quand elle est croissante sur au moins une partie du domaine", "Quand elle a exactement un extremum", "Quand elle est paire ou impaire"], h: "Le mot clé est « tout » — pas seulement une partie.", e: "Une fonction strictement monotone est croissante sur tout $D(f)$, ou décroissante sur tout $D(f)$ — elle ne doit « se briser » nulle part." } },
-            { id: 't3', type: 'concept', cs: { q: "Kdy má funkce v bodě x_M maximum?", a: "Když pro všechna x z $D(f)$ platí $f(x)≤f(x_M)$", o: ["Když pro všechna x z $D(f)$ platí $f(x)≤f(x_M)$", "Když pro všechna x z $D(f)$ platí $f(x)≥f(x_M)$", "Když $f(x_M)=0$", "Když x_M=0"], h: "Maximum znamená, že žádná jiná hodnota není větší.", e: "Funkce má v bodě x_M maximum, pokud je $f(x_M)$ alespoň tak velké jako $f(x)$ pro každé jiné x z definičního oboru, tedy $f(x)≤f(x_M)$." }, fr: { q: "Quand une fonction a-t-elle un maximum au point x_M ?", a: "Quand pour tout x de $D(f)$, $f(x)≤f(x_M)$", o: ["Quand pour tout x de $D(f)$, $f(x)≤f(x_M)$", "Quand pour tout x de $D(f)$, $f(x)≥f(x_M)$", "Quand $f(x_M)=0$", "Quand x_M=0"], h: "Maximum signifie qu'aucune autre valeur n'est plus grande.", e: "Une fonction a un maximum au point x_M si $f(x_M)$ est au moins aussi grand que $f(x)$ pour tout autre x du domaine, soit $f(x)≤f(x_M)$." } },
+            { id: 't3', type: 'concept', cs: { q: "Kdy má funkce v bodě $x_M$ maximum?", a: "Když pro všechna x z $D(f)$ platí $f(x)≤f(x_M)$", o: ["Když pro všechna x z $D(f)$ platí $f(x)≤f(x_M)$", "Když pro všechna x z $D(f)$ platí $f(x)≥f(x_M)$", "Když $f(x_M)=0$", "Když $x_M=0$"], h: "Maximum znamená, že žádná jiná hodnota není větší.", e: "Funkce má v bodě $x_M$ maximum, pokud je $f(x_M)$ alespoň tak velké jako $f(x)$ pro každé jiné x z definičního oboru, tedy $f(x)≤f(x_M)$." }, fr: { q: "Quand une fonction a-t-elle un maximum au point $x_M$ ?", a: "Quand pour tout x de $D(f)$, $f(x)≤f(x_M)$", o: ["Quand pour tout x de $D(f)$, $f(x)≤f(x_M)$", "Quand pour tout x de $D(f)$, $f(x)≥f(x_M)$", "Quand $f(x_M)=0$", "Quand $x_M=0$"], h: "Maximum signifie qu'aucune autre valeur n'est plus grande.", e: "Une fonction a un maximum au point $x_M$ si $f(x_M)$ est au moins aussi grand que $f(x)$ pour tout autre x du domaine, soit $f(x)≤f(x_M)$." } },
             { id: 't4', type: 'concept', cs: { q: "Kdy je funkce omezená shora?", a: "Když existuje číslo h takové, že pro všechna x z $D(f)$ platí $f(x)$≤h", o: ["Když existuje číslo h takové, že pro všechna x z $D(f)$ platí $f(x)$≤h", "Když existuje číslo h takové, že pro všechna x z $D(f)$ platí $f(x)$≥h", "Když má funkce maximum přesně v jednom bodě", "Když je $D(f)$ konečná množina"], h: "Horní hranice omezuje funkci shora, ne zdola.", e: "Funkce je omezená shora, pokud existuje číslo h (horní hranice) takové, že $f(x)$≤h platí pro všechna x z definičního oboru." }, fr: { q: "Quand une fonction est-elle majorée ?", a: "Quand il existe un nombre h tel que pour tout x de $D(f)$, $f(x)$≤h", o: ["Quand il existe un nombre h tel que pour tout x de $D(f)$, $f(x)$≤h", "Quand il existe un nombre h tel que pour tout x de $D(f)$, $f(x)$≥h", "Quand la fonction a un maximum en exactement un point", "Quand $D(f)$ est un ensemble fini"], h: "Un majorant borne la fonction par le haut, pas par le bas.", e: "Une fonction est majorée s'il existe un nombre h (majorant) tel que $f(x)$≤h pour tout x du domaine de définition." } },
-            { id: 't5', type: 'concept', cs: { q: "Kdy je funkce sudá?", a: "Když je $D(f)$ souměrný podle nuly a $f(-x)=f(x)$ pro každé x z $D(f)$", o: ["Když je $D(f)$ souměrný podle nuly a $f(-x)=f(x)$ pro každé x z $D(f)$", "Když je $D(f)$ souměrný podle nuly a $f(-x)=-$$f(x)$ pro každé x z $D(f)$", "Když $f(0)=0$", "Když je funkce rostoucí"], h: "Sudá funkce má graf souměrný podle osy y.", e: "Funkce je sudá, pokud je $D(f)$ souměrný podle nuly a pro každé x z $D(f)$ platí $f(-x)=f(x)$. Graf je pak souměrný podle osy y." }, fr: { q: "Quand une fonction est-elle paire ?", a: "Quand $D(f)$ est symétrique par rapport à zéro et $f(-x)=f(x)$ pour tout x de $D(f)$", o: ["Quand $D(f)$ est symétrique par rapport à zéro et $f(-x)=f(x)$ pour tout x de $D(f)$", "Quand $D(f)$ est symétrique par rapport à zéro et $f(-x)=-$$f(x)$ pour tout x de $D(f)$", "Quand $f(0)=0$", "Quand la fonction est croissante"], h: "Une fonction paire a un graphe symétrique par rapport à l'axe y.", e: "Une fonction est paire si $D(f)$ est symétrique par rapport à zéro et pour tout x de $D(f)$, $f(-x)=f(x)$. Le graphe est alors symétrique par rapport à l'axe y." } },
+            { id: 't5', type: 'concept', cs: { q: "Kdy je funkce sudá?", a: "Když je $D(f)$ souměrný podle nuly a $f(-x)=f(x)$ pro každé x z $D(f)$", o: ["Když je $D(f)$ souměrný podle nuly a $f(-x)=f(x)$ pro každé x z $D(f)$", "Když je $D(f)$ souměrný podle nuly a $f(-x)=-f(x)$ pro každé x z $D(f)$", "Když $f(0)=0$", "Když je funkce rostoucí"], h: "Sudá funkce má graf souměrný podle osy y.", e: "Funkce je sudá, pokud je $D(f)$ souměrný podle nuly a pro každé x z $D(f)$ platí $f(-x)=f(x)$. Graf je pak souměrný podle osy y." }, fr: { q: "Quand une fonction est-elle paire ?", a: "Quand $D(f)$ est symétrique par rapport à zéro et $f(-x)=f(x)$ pour tout x de $D(f)$", o: ["Quand $D(f)$ est symétrique par rapport à zéro et $f(-x)=f(x)$ pour tout x de $D(f)$", "Quand $D(f)$ est symétrique par rapport à zéro et $f(-x)=-f(x)$ pour tout x de $D(f)$", "Quand $f(0)=0$", "Quand la fonction est croissante"], h: "Une fonction paire a un graphe symétrique par rapport à l'axe y.", e: "Une fonction est paire si $D(f)$ est symétrique par rapport à zéro et pour tout x de $D(f)$, $f(-x)=f(x)$. Le graphe est alors symétrique par rapport à l'axe y." } },
             { id: 't6', type: 'concept', cs: { q: "Dokazuje shoda $f(-x)=f(x)$ na několika konkrétních číslech, že je funkce sudá?", a: "Ne, muselo by to platit pro úplně všechna x z definičního oboru", o: ["Ne, muselo by to platit pro úplně všechna x z definičního oboru", "Ano, stačí to ověřit na dvou různých číslech", "Ano, pokud jsou to celá čísla", "Ne, sudost se vůbec nedá dokázat"], h: "Kolik hodnot x může proměnná nabývat?", e: "Ověření na několika číslech není důkaz — proměnná x probíhá nekonečně mnoho hodnot, takže je nutné dosadit -x do předpisu obecně (algebraicky)." }, fr: { q: "La coïncidence $f(-x)=f(x)$ sur quelques nombres concrets prouve-t-elle qu'une fonction est paire ?", a: "Non, cela devrait être vrai pour absolument tout x du domaine de définition", o: ["Non, cela devrait être vrai pour absolument tout x du domaine de définition", "Oui, il suffit de le vérifier sur deux nombres différents", "Oui, si ce sont des nombres entiers", "Non, la parité ne peut pas du tout être prouvée"], h: "Combien de valeurs la variable x peut-elle prendre ?", e: "Vérifier sur quelques nombres n'est pas une preuve — la variable x parcourt une infinité de valeurs, il faut donc substituer -x dans l'expression de façon générale (algébrique)." } },
             { id: 't7', type: 'concept', cs: { q: "Kdy je funkce prostá?", a: "Když pro všechna x1,x2 z $D(f)$ platí: je-li $x1 \\neq x2$, pak $f(x1) \\neq f(x2)$", o: ["Když pro všechna x1,x2 z $D(f)$ platí: je-li $x1 \\neq x2$, pak $f(x1) \\neq f(x2)$", "Když pro všechna x1,x2 z $D(f)$ platí $f(x1) = f(x2)$", "Když je funkce sudá", "Když má funkce jen jeden bod v $D(f)$"], h: "Různá vstupní čísla musí dávat různé výstupy.", e: "Funkce je prostá, pokud různým hodnotám $x1 \\neq x2$ vždy odpovídají různé hodnoty $f(x1) \\neq f(x2)$ — žádné dvě různé vstupní hodnoty nedávají stejný výstup." }, fr: { q: "Quand une fonction est-elle injective ?", a: "Quand pour tous x1,x2 de $D(f)$ : si $x1 \\neq x2$, alors $f(x1) \\neq f(x2)$", o: ["Quand pour tous x1,x2 de $D(f)$ : si $x1 \\neq x2$, alors $f(x1) \\neq f(x2)$", "Quand pour tous x1,x2 de $D(f)$, $f(x1) = f(x2)$", "Quand la fonction est paire", "Quand la fonction n'a qu'un seul point dans $D(f)$"], h: "Des entrées différentes doivent donner des sorties différentes.", e: "Une fonction est injective si des valeurs différentes $x1 \\neq x2$ correspondent toujours à des valeurs différentes $f(x1) \\neq f(x2)$ — deux entrées différentes ne donnent jamais la même sortie." } },
             { id: 't8', type: 'concept', cs: { q: "Jak zní test vodorovnou přímkou?", a: "Funkce je prostá, právě když každá vodorovná přímka protíná její graf nejvýše v jednom bodě", o: ["Funkce je prostá, právě když každá vodorovná přímka protíná její graf nejvýše v jednom bodě", "Funkce je prostá, právě když každá svislá přímka protíná její graf nejvýše v jednom bodě", "Funkce je prostá, právě když je graf souměrný podle osy y", "Funkce je prostá, právě když má maximum"], h: "Test se týká vodorovných přímek, ne svislých.", e: "Test vodorovnou přímkou: funkce je prostá, právě když každá přímka rovnoběžná s osou x protíná její graf nejvýše v jednom bodě." }, fr: { q: "Quel est l'énoncé du test de la droite horizontale ?", a: "Une fonction est injective si et seulement si toute droite horizontale coupe son graphe en au plus un point", o: ["Une fonction est injective si et seulement si toute droite horizontale coupe son graphe en au plus un point", "Une fonction est injective si et seulement si toute droite verticale coupe son graphe en au plus un point", "Une fonction est injective si et seulement si le graphe est symétrique par rapport à l'axe y", "Une fonction est injective si et seulement si elle a un maximum"], h: "Le test concerne les droites horizontales, pas verticales.", e: "Test de la droite horizontale : une fonction est injective si et seulement si toute droite parallèle à l'axe x coupe son graphe en au plus un point." } }
@@ -196,6 +197,8 @@
         let translationUsedCount = 0;
         let hintUsedCount = 0;
         let isTranslated = false;
+        let answeredIndex = null;   // index vybrané možnosti (shodný v CZ i FR) u aktuální otázky, null = ještě nezodpovězeno
+        let answeredCorrect = null; // zda byla zvolená odpověď správně
 
         function startQuiz() {
             sessionQuestions = generateBalancedQuiz();
@@ -237,25 +240,35 @@
                 const p = template.params();
                 const sol = template.solve(p);
                 const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
-                const inject = (obj) => {
+                const substitute = (obj) => {
                     obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
                     obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
-                    obj.a = sol.correct;
-                    if (template.wrongOptions) {
-                        obj.o = template.wrongOptions(p, sol);
-                    } else {
-                        const val = parseFloat(sol.res);
-                        const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
-                        const opts = new Set([sol.correct, mk(val*2), mk(val/2), mk(val*10)]);
-                        while (opts.size < 4) opts.add(mk(val + opts.size));
-                        obj.o = Array.from(opts).slice(0,4);
-                    }
                 };
-                inject(q); inject(tr);
+                substitute(q); substitute(tr);
+
+                // Hodnoty možností (čísla/procenta) jsou jazykově neutrální — počítají se JEN JEDNOU,
+                // aby CZ i FR verze měly stejný obsah (a po sdíleném zamíchání níže i stejné pořadí).
+                q.a = sol.correct; tr.a = sol.correct;
+                let options;
+                if (template.wrongOptions) {
+                    options = template.wrongOptions(p, sol);
+                } else {
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    const opts = new Set([sol.correct, mk(val*2), mk(val/2), mk(val*10)]);
+                    while (opts.size < 4) opts.add(mk(val + opts.size));
+                    options = Array.from(opts).slice(0,4);
+                }
+                q.o = [...options];
+                tr.o = [...options];
             }
 
-            shuffleArray(q.o);
-            shuffleArray(tr.o);
+            // Sdílené pořadí možností pro CZ i FR verzi: index i v q.o odpovídá stejné možnosti
+            // jako index i v tr.o. Díky tomu zůstane po přepnutí jazyka (překladu) zvolená
+            // odpověď identifikovatelná podle indexu, ne podle (jazykově odlišného) textu.
+            const order = shuffleArray([...Array(q.o.length).keys()]);
+            q.o = order.map(i => q.o[i]);
+            tr.o = order.map(i => tr.o[i]);
 
             return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
         }
@@ -263,6 +276,8 @@
         function showQuestion() {
             const q = sessionQuestions[currentQuestionIndex];
             isTranslated = false;
+            answeredIndex = null;
+            answeredCorrect = null;
 
             const transBtn = document.getElementById('translate-btn');
             if (q.lang === 'fr') {
@@ -292,11 +307,25 @@
 
             const grid = document.getElementById('options-grid');
             grid.innerHTML = '';
-            data.o.forEach((opt) => {
+            const alreadyAnswered = (answeredIndex !== null);
+            data.o.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
                 btn.textContent = opt;
-                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                btn.dataset.optText = opt; // syrový text (před typesetem MathJaxu) pro spolehlivé porovnání
+                if (alreadyAnswered) {
+                    // Otázka už byla zodpovězena (i před případným překladem) - tlačítka jsou
+                    // uzamčená a zvýraznění zvolené/správné odpovědi se zachovává podle indexu,
+                    // který je shodný v CZ i FR verzi, takže nezávisí na (jazykově odlišném) textu.
+                    btn.disabled = true;
+                    if (opt === data.a) {
+                        btn.classList.add('correct');
+                    } else if (idx === answeredIndex && !answeredCorrect) {
+                        btn.classList.add('wrong');
+                    }
+                } else {
+                    btn.onclick = () => checkAnswer(btn, idx, opt, data.a);
+                }
                 grid.appendChild(btn);
             });
 
@@ -304,8 +333,16 @@
                 document.getElementById('hint-box').innerHTML = data.h;
             }
 
+            if (alreadyAnswered) {
+                // Vysvětlení ve feedbacku se při překladu přepíše do aktuálního jazyka,
+                // aby zůstalo konzistentní s právě zobrazenou otázkou.
+                document.getElementById('feedback-explanation').innerHTML = data.e;
+            }
+
             if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+                const nodesToTypeset = [document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')];
+                if (alreadyAnswered) nodesToTypeset.push(document.getElementById('feedback-explanation'));
+                MathJax.typesetPromise(nodesToTypeset).catch(err => console.warn('MathJax error:', err));
             }
         }
 
@@ -328,17 +365,21 @@
             }
         }
 
-        function checkAnswer(btn, selected, correct) {
+        function checkAnswer(btn, idx, selected, correct) {
+            if (answeredIndex !== null) return; // otázka už byla jednou zodpovězena - další odpověď se nepočítá
+
             const q = sessionQuestions[currentQuestionIndex];
             const data = isTranslated ? q.translation : q;
             const allBtns = document.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.disabled = true);
 
             const isCorrect = (selected === correct);
+            answeredIndex = idx;
+            answeredCorrect = isCorrect;
             if (isCorrect) { btn.classList.add('correct'); score++; }
             else {
                 btn.classList.add('wrong');
-                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+                allBtns.forEach(b => { if(b.dataset.optText === correct) b.classList.add('correct'); });
             }
 
             document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
@@ -388,29 +429,29 @@
 
             let overallMsg, overallIcon;
             if (percent >= 85) {
-                overallMsg = "Výborně! Definice funkce i francouzština ti jdou skvěle.";
+                overallMsg = "Výborně! Vlastnosti funkcí i francouzština ti jdou skvěle.";
                 overallIcon = "🏆";
             } else if (percent >= 70) {
                 overallMsg = "Dobrá práce! Máš solidní znalosti, ale ještě je co zlepšovat.";
                 overallIcon = "💪";
             } else if (percent >= 50) {
-                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat definiční obor a rovnost funkcí.";
+                overallMsg = "Základní přehled máš, ale doporučuji si zopakovat monotónnost a sudost/lichost funkce.";
                 overallIcon = "📚";
             } else {
-                overallMsg = "Je potřeba více trénovat – zaměř se na určování definičního oboru a práci s funkční hodnotou.";
+                overallMsg = "Je potřeba více trénovat – zaměř se na určování extrémů a ověřování sudosti/lichosti funkce.";
                 overallIcon = "🔍";
             }
 
             let strengths = [], weaknesses = [];
-            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako definiční obor, obor hodnot či rovnost funkcí.");
-            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definici funkce, D(f)/H(f) a podmínky platnosti tabulky.");
-            if (mathPercent >= 70) strengths.push("Výpočty s definičním oborem a funkční hodnotou ti jdou velmi dobře!");
-            else weaknesses.push("Ve výpočtech chybuješ – procvič si určování definičního oboru a hledání x pro dané y.");
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako monotónnost, extrémy, sudost/lichost či omezenost funkce.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definice rostoucí/klesající funkce, maxima/minima a sudé/liché funkce.");
+            if (mathPercent >= 70) strengths.push("Výpočty s dosazováním a ověřováním vlastností funkcí ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si dosazování do předpisu funkce a ověřování sudosti/lichosti v konkrétním bodě.");
             if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
 
             let recommendations = [];
             if (weaknesses.length > 0) {
-                recommendations.push("Zaměř se na opakování definičního oboru, oboru hodnot a rovnosti funkcí – projdi si příručku a vzorové příklady.");
+                recommendations.push("Zaměř se na opakování monotónnosti, extrémů a sudosti/lichosti funkce – projdi si příručku a vzorové příklady.");
             } else {
                 recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o lineárních funkcích.");
             }
