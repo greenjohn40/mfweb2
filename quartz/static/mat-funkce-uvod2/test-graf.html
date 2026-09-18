@@ -20,6 +20,7 @@
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
             options: { enableMenu: false }
         };
     </script>
@@ -145,13 +146,13 @@
         }
 
         const theoryPool = [
-            { id: 't1', type: 'concept', cs: { q: "Co je graf funkce f?", a: "Množina všech bodů [x<sub>0</sub>; f(x₀)], kde x<sub>0</sub> probíhá celý D(f)", o: ["Množina všech bodů [x<sub>0</sub>; f(x₀)], kde x<sub>0 probíhá celý D(f)", "Množina všech bodů [f(x₀); x<sub>0</sub>], kde x<sub>0 probíhá celý D(f)", "Jen ty body, kde f(x₀)=0", "Libovolná křivka v rovině"], h: "Graf tvoří dvojice (vstup, výstup) pro každé x z definičního oboru.", e: "Graf funkce f je množina všech bodů [x<sub>0; f(x₀)], kde x<sub>0</sub> postupně probíhá celý definiční obor D(f)." }, fr: { q: "Qu'est-ce que le graphe d'une fonction f ?", a: "L'ensemble de tous les points [x<sub>0</sub>; f(x₀)], où x<sub>0</sub> parcourt tout D(f)", o: ["L'ensemble de tous les points [x<sub>0</sub>; f(x₀)], où x<sub>0</sub> parcourt tout D(f)", "L'ensemble de tous les points [f(x₀); x<sub>0</sub>], où x<sub>0</sub> parcourt tout D(f)", "Seulement les points où f(x₀)=0", "N'importe quelle courbe dans le plan"], h: "Le graphe est formé des couples (entrée, sortie) pour chaque x du domaine.", e: "Le graphe d'une fonction f est l'ensemble de tous les points [x<sub>0</sub>; f(x₀)], où x<sub>0</sub> parcourt tout le domaine de définition D(f)." } },
+            { id: 't1', type: 'concept', cs: { q: "Co je graf funkce f?", a: "Množina všech bodů [$x_0$; $f(x_0)$], kde $x_0$ probíhá celý $D(f)$", o: ["Množina všech bodů [$x_0$; $f(x_0)$], kde $x_0$ probíhá celý $D(f)$", "Množina všech bodů [$f(x_0)$; $x_0$], kde $x_0$ probíhá celý $D(f)$", "Jen ty body, kde $f(x_0)$=0", "Libovolná křivka v rovině"], h: "Graf tvoří dvojice (vstup, výstup) pro každé x z definičního oboru.", e: "Graf funkce f je množina všech bodů [$x_0$; $f(x_0)$], kde $x_0$ postupně probíhá celý definiční obor $D(f)$." }, fr: { q: "Qu'est-ce que le graphe d'une fonction f ?", a: "L'ensemble de tous les points [$x_0$; $f(x_0)$], où $x_0$ parcourt tout $D(f)$", o: ["L'ensemble de tous les points [$x_0$; $f(x_0)$], où $x_0$ parcourt tout $D(f)$", "L'ensemble de tous les points [$f(x_0)$; $x_0$], où $x_0$ parcourt tout $D(f)$", "Seulement les points où $f(x_0)$=0", "N'importe quelle courbe dans le plan"], h: "Le graphe est formé des couples (entrée, sortie) pour chaque x du domaine.", e: "Le graphe d'une fonction f est l'ensemble de tous les points [$x_0$; $f(x_0)$], où $x_0$ parcourt tout le domaine de définition $D(f)$." } },
             { id: 't2', type: 'concept', cs: { q: "Jak zní test svislou přímkou?", a: "Množina bodů je grafem funkce, právě když každá přímka rovnoběžná s osou y ji protíná nejvýše v jednom bodě", o: ["Množina bodů je grafem funkce, právě když každá přímka rovnoběžná s osou y ji protíná nejvýše v jednom bodě", "Množina bodů je grafem funkce, právě když každá přímka rovnoběžná s osou x ji protíná nejvýše v jednom bodě", "Množina bodů je grafem funkce, právě když je souvislá", "Množina bodů je grafem funkce, právě když prochází počátkem"], h: "Test se týká svislých přímek, tedy rovnoběžných s osou y.", e: "Množina bodů v rovině je grafem nějaké funkce, právě když každá přímka rovnoběžná s osou y protíná tuto množinu nejvýše v jednom bodě." }, fr: { q: "Quel est l'énoncé du test de la droite verticale ?", a: "Un ensemble de points est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe y le coupe en au plus un point", o: ["Un ensemble de points est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe y le coupe en au plus un point", "Un ensemble de points est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe x le coupe en au plus un point", "Un ensemble de points est le graphe d'une fonction si et seulement si il est connexe", "Un ensemble de points est le graphe d'une fonction si et seulement si il passe par l'origine"], h: "Le test concerne les droites verticales, donc parallèles à l'axe y.", e: "Un ensemble de points du plan est le graphe d'une fonction si et seulement si toute droite parallèle à l'axe y coupe cet ensemble en au plus un point." } },
             { id: 't3', type: 'concept', cs: { q: "Proč svislá přímka protíná graf funkce nejvýše jednou?", a: "Protože podle definice funkce má každé x přiřazenu právě jednu hodnotu y", o: ["Protože podle definice funkce má každé x přiřazenu právě jednu hodnotu y", "Protože grafy funkcí jsou vždy přímky", "Protože osa y je kolmá na osu x", "Je to jen dohoda bez hlubšího důvodu"], h: "Zamysli se nad tím, co by znamenaly dva průsečíky pro stejné x.", e: "Kdyby svislá přímka $x=x_0$ protla graf ve dvou bodech, znamenalo by to, že $x_0$ odpovídají dvě různé hodnoty y — a to by odporovalo definici funkce, podle které má každé x přiřazenu právě jednu hodnotu y." }, fr: { q: "Pourquoi une droite verticale coupe-t-elle le graphe d'une fonction au plus une fois ?", a: "Parce que par définition, chaque x a exactement une valeur y associée", o: ["Parce que par définition, chaque x a exactement une valeur y associée", "Parce que les graphes de fonctions sont toujours des droites", "Parce que l'axe y est perpendiculaire à l'axe x", "C'est juste une convention sans raison plus profonde"], h: "Réfléchis à ce que signifieraient deux intersections pour le même x.", e: "Si la droite verticale $x=x_0$ coupait le graphe en deux points, cela signifierait que deux valeurs différentes de y correspondent à $x_0$ — ce qui contredirait la définition d'une fonction, selon laquelle chaque x a exactement une valeur y." } },
             { id: 't4', type: 'concept', cs: { q: "Je kružnice grafem nějaké funkce?", a: "Ne, svislá přímka ji protíná ve dvou bodech", o: ["Ne, svislá přímka ji protíná ve dvou bodech", "Ano, je grafem konstantní funkce", "Ano, pokud má střed v počátku", "Ne, protože nemá žádný definiční obor"], h: "Zkus si představit svislou přímku procházející středem kružnice.", e: "Kružnice test svislou přímkou nesplňuje — svislá přímka procházející jejím vnitřkem ji protíná ve dvou bodech (kromě krajních bodů). Kružnice proto není grafem žádné funkce $y=f(x)$." }, fr: { q: "Un cercle est-il le graphe d'une fonction ?", a: "Non, une droite verticale le coupe en deux points", o: ["Non, une droite verticale le coupe en deux points", "Oui, c'est le graphe d'une fonction constante", "Oui, s'il est centré à l'origine", "Non, car il n'a pas de domaine de définition"], h: "Imagine une droite verticale passant par le centre du cercle.", e: "Un cercle ne satisfait pas le test de la droite verticale — une droite verticale passant par son intérieur le coupe en deux points (sauf aux points extrêmes). Un cercle n'est donc le graphe d'aucune fonction $y=f(x)$." } },
             { id: 't5', type: 'concept', cs: { q: "Jak najdeme definiční obor funkce z jejího grafu?", a: "Jako kolmý průmět grafu na osu x", o: ["Jako kolmý průmět grafu na osu x", "Jako kolmý průmět grafu na osu y", "Jako nejvyšší bod grafu", "Jako vzdálenost krajních bodů grafu"], h: "$D(f)$ se týká vodorovné osy.", e: "Definiční obor $D(f)$ najdeme jako kolmý průmět grafu na osu x." }, fr: { q: "Comment trouve-t-on le domaine de définition d'une fonction à partir de son graphe ?", a: "Par projection perpendiculaire du graphe sur l'axe x", o: ["Par projection perpendiculaire du graphe sur l'axe x", "Par projection perpendiculaire du graphe sur l'axe y", "Par le point le plus haut du graphe", "Par la distance entre les points extrêmes du graphe"], h: "$D(f)$ concerne l'axe horizontal.", e: "Le domaine de définition $D(f)$ s'obtient par projection perpendiculaire du graphe sur l'axe x." } },
             { id: 't6', type: 'concept', cs: { q: "Co je asymptota grafu funkce?", a: "Přímka, ke které se graf přibližuje, ale nikdy se jí nedotkne", o: ["Přímka, ke které se graf přibližuje, ale nikdy se jí nedotkne", "Přímka, která graf protíná přesně jednou", "Jiný název pro osu x", "Bod, kde graf má maximum"], h: "Jde o hranici, kterou graf jen \"cítí\", ale nikdy nedosáhne.", e: "Asymptota je přímka, ke které se graf funkce přibližuje, ale nikdy se jí nedotkne. Hodnota, které asymptota odpovídá, se z příslušného oboru ($D(f)$ nebo $H(f)$) vylučuje." }, fr: { q: "Qu'est-ce qu'une asymptote du graphe d'une fonction ?", a: "Une droite dont le graphe se rapproche sans jamais la toucher", o: ["Une droite dont le graphe se rapproche sans jamais la toucher", "Une droite qui coupe le graphe exactement une fois", "Un autre nom pour l'axe x", "Un point où le graphe a un maximum"], h: "C'est une frontière que le graphe ne fait qu'approcher, sans jamais l'atteindre.", e: "Une asymptote est une droite dont le graphe d'une fonction se rapproche sans jamais la toucher. La valeur correspondant à l'asymptote est exclue de l'ensemble concerné ($D(f)$ ou $H(f)$)." } },
-            { id: 't7', type: 'concept', cs: { q: "Jak ověříme, že bod [$x_0$;$y_0$] leží na grafu funkce f?", a: "Dosadíme $x_0$ do předpisu funkce a porovnáme výsledek s $y_0$", o: ["Dosadíme $x_0$ do předpisu funkce a porovnáme výsledek s $y_0$", "Ověříme, že $x_0$ patří do $D(f)$, a to stačí", "Dosadíme $y_0$ do předpisu a porovnáme výsledek s $x_0$", "Zkontrolujeme, že bod leží v I. kvadrantu"], h: "Nestačí ověřit jen definiční obor — musí sedět i konkrétní hodnota.", e: "Bod [$x_0$;$y_0$] leží na grafu funkce f, právě když $f(x₀)$=$y_0$. Ověříme to dosazením $x_0$ do předpisu a porovnáním výsledku s $y_0$." }, fr: { q: "Comment vérifie-t-on qu'un point [$x_0$;$y_0$] appartient au graphe d'une fonction f ?", a: "On substitue $x_0$ dans l'expression de la fonction et on compare le résultat à $y_0$", o: ["On substitue $x_0$ dans l'expression de la fonction et on compare le résultat à $y_0$", "Il suffit de vérifier que $x_0$ appartient à $D(f)$", "On substitue $y_0$ dans l'expression et on compare le résultat à $x_0$", "On vérifie que le point est dans le Ier quadrant"], h: "Il ne suffit pas de vérifier seulement le domaine de définition — la valeur précise doit aussi correspondre.", e: "Le point [$x_0$;$y_0$] appartient au graphe de f si et seulement si $f(x₀)$=$y_0$. On le vérifie en substituant $x_0$ dans l'expression et en comparant le résultat à $y_0$." } },
+            { id: 't7', type: 'concept', cs: { q: "Jak ověříme, že bod [$x_0$;$y_0$] leží na grafu funkce f?", a: "Dosadíme $x_0$ do předpisu funkce a porovnáme výsledek s $y_0$", o: ["Dosadíme $x_0$ do předpisu funkce a porovnáme výsledek s $y_0$", "Ověříme, že $x_0$ patří do $D(f)$, a to stačí", "Dosadíme $y_0$ do předpisu a porovnáme výsledek s $x_0$", "Zkontrolujeme, že bod leží v I. kvadrantu"], h: "Nestačí ověřit jen definiční obor — musí sedět i konkrétní hodnota.", e: "Bod [$x_0$;$y_0$] leží na grafu funkce f, právě když $f(x_0)$=$y_0$. Ověříme to dosazením $x_0$ do předpisu a porovnáním výsledku s $y_0$." }, fr: { q: "Comment vérifie-t-on qu'un point [$x_0$;$y_0$] appartient au graphe d'une fonction f ?", a: "On substitue $x_0$ dans l'expression de la fonction et on compare le résultat à $y_0$", o: ["On substitue $x_0$ dans l'expression de la fonction et on compare le résultat à $y_0$", "Il suffit de vérifier que $x_0$ appartient à $D(f)$", "On substitue $y_0$ dans l'expression et on compare le résultat à $x_0$", "On vérifie que le point est dans le Ier quadrant"], h: "Il ne suffit pas de vérifier seulement le domaine de définition — la valeur précise doit aussi correspondre.", e: "Le point [$x_0$;$y_0$] appartient au graphe de f si et seulement si $f(x_0)$=$y_0$. On le vérifie en substituant $x_0$ dans l'expression et en comparant le résultat à $y_0$." } },
             { id: 't8', type: 'concept', cs: { q: "Kolik průsečíků s osou y může mít graf funkce nejvýše?", a: "Nejvýše jeden", o: ["Nejvýše jeden", "Nejvýše dva", "Libovolně mnoho", "Přesně dva"], h: "Kolik hodnot y může dát dosazení $x=0$?", e: "Graf funkce má vždy nejvýše jeden průsečík s osou y, protože $x=0$ dává (podle definice funkce) nejvýše jednu hodnotu y." }, fr: { q: "Combien d'intersections avec l'axe y un graphe de fonction peut-il avoir au maximum ?", a: "Au plus une", o: ["Au plus une", "Au plus deux", "Un nombre quelconque", "Exactement deux"], h: "Combien de valeurs y la substitution $x=0$ peut-elle donner ?", e: "Le graphe d'une fonction a toujours au plus une intersection avec l'axe y, car $x=0$ donne (par définition d'une fonction) au plus une valeur de y." } }
         ];
 
@@ -197,6 +198,8 @@
         let translationUsedCount = 0;
         let hintUsedCount = 0;
         let isTranslated = false;
+        let answeredIndex = null;   // index vybrané možnosti (shodný v CZ i FR) u aktuální otázky, null = ještě nezodpovězeno
+        let answeredCorrect = null; // zda byla zvolená odpověď správně
 
         function startQuiz() {
             sessionQuestions = generateBalancedQuiz();
@@ -238,25 +241,35 @@
                 const p = template.params();
                 const sol = template.solve(p);
                 const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
-                const inject = (obj) => {
+                const substitute = (obj) => {
                     obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
                     obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
-                    obj.a = sol.correct;
-                    if (template.wrongOptions) {
-                        obj.o = template.wrongOptions(p, sol);
-                    } else {
-                        const val = parseFloat(sol.res);
-                        const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
-                        const opts = new Set([sol.correct, mk(val*2), mk(val/2), mk(val*10)]);
-                        while (opts.size < 4) opts.add(mk(val + opts.size));
-                        obj.o = Array.from(opts).slice(0,4);
-                    }
                 };
-                inject(q); inject(tr);
+                substitute(q); substitute(tr);
+
+                // Hodnoty možností (čísla/procenta) jsou jazykově neutrální — počítají se JEN JEDNOU,
+                // aby CZ i FR verze měly stejný obsah (a po sdíleném zamíchání níže i stejné pořadí).
+                q.a = sol.correct; tr.a = sol.correct;
+                let options;
+                if (template.wrongOptions) {
+                    options = template.wrongOptions(p, sol);
+                } else {
+                    const val = parseFloat(sol.res);
+                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                    const opts = new Set([sol.correct, mk(val*2), mk(val/2), mk(val*10)]);
+                    while (opts.size < 4) opts.add(mk(val + opts.size));
+                    options = Array.from(opts).slice(0,4);
+                }
+                q.o = [...options];
+                tr.o = [...options];
             }
 
-            shuffleArray(q.o);
-            shuffleArray(tr.o);
+            // Sdílené pořadí možností pro CZ i FR verzi: index i v q.o odpovídá stejné možnosti
+            // jako index i v tr.o. Díky tomu zůstane po přepnutí jazyka (překladu) zvolená
+            // odpověď identifikovatelná podle indexu, ne podle (jazykově odlišného) textu.
+            const order = shuffleArray([...Array(q.o.length).keys()]);
+            q.o = order.map(i => q.o[i]);
+            tr.o = order.map(i => tr.o[i]);
 
             return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
         }
@@ -264,6 +277,8 @@
         function showQuestion() {
             const q = sessionQuestions[currentQuestionIndex];
             isTranslated = false;
+            answeredIndex = null;
+            answeredCorrect = null;
 
             const transBtn = document.getElementById('translate-btn');
             if (q.lang === 'fr') {
@@ -293,11 +308,25 @@
 
             const grid = document.getElementById('options-grid');
             grid.innerHTML = '';
-            data.o.forEach((opt) => {
+            const alreadyAnswered = (answeredIndex !== null);
+            data.o.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
                 btn.textContent = opt;
-                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                btn.dataset.optText = opt; // syrový text (před typesetem MathJaxu) pro spolehlivé porovnání
+                if (alreadyAnswered) {
+                    // Otázka už byla zodpovězena (i před případným překladem) - tlačítka jsou
+                    // uzamčená a zvýraznění zvolené/správné odpovědi se zachovává podle indexu,
+                    // který je shodný v CZ i FR verzi, takže nezávisí na (jazykově odlišném) textu.
+                    btn.disabled = true;
+                    if (opt === data.a) {
+                        btn.classList.add('correct');
+                    } else if (idx === answeredIndex && !answeredCorrect) {
+                        btn.classList.add('wrong');
+                    }
+                } else {
+                    btn.onclick = () => checkAnswer(btn, idx, opt, data.a);
+                }
                 grid.appendChild(btn);
             });
 
@@ -305,8 +334,16 @@
                 document.getElementById('hint-box').innerHTML = data.h;
             }
 
+            if (alreadyAnswered) {
+                // Vysvětlení ve feedbacku se při překladu přepíše do aktuálního jazyka,
+                // aby zůstalo konzistentní s právě zobrazenou otázkou.
+                document.getElementById('feedback-explanation').innerHTML = data.e;
+            }
+
             if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+                const nodesToTypeset = [document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')];
+                if (alreadyAnswered) nodesToTypeset.push(document.getElementById('feedback-explanation'));
+                MathJax.typesetPromise(nodesToTypeset).catch(err => console.warn('MathJax error:', err));
             }
         }
 
@@ -329,17 +366,21 @@
             }
         }
 
-        function checkAnswer(btn, selected, correct) {
+        function checkAnswer(btn, idx, selected, correct) {
+            if (answeredIndex !== null) return; // otázka už byla jednou zodpovězena - další odpověď se nepočítá
+
             const q = sessionQuestions[currentQuestionIndex];
             const data = isTranslated ? q.translation : q;
             const allBtns = document.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.disabled = true);
 
             const isCorrect = (selected === correct);
+            answeredIndex = idx;
+            answeredCorrect = isCorrect;
             if (isCorrect) { btn.classList.add('correct'); score++; }
             else {
                 btn.classList.add('wrong');
-                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+                allBtns.forEach(b => { if(b.dataset.optText === correct) b.classList.add('correct'); });
             }
 
             document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
