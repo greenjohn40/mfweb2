@@ -20,6 +20,7 @@
     <script>
         window.MathJax = {
             tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
             options: { enableMenu: false }
         };
     </script>
@@ -152,7 +153,7 @@
             { id: 't5', type: 'concept', cs: { q: "Kolik hodnot y může mít podle definice funkce jedno x z $D(f)$?", a: "Vždy přesně jednu", o: ["Vždy přesně jednu", "Nejvýše dvě", "Libovolně mnoho", "Žádnou"], h: "Toto je samotná podstata pojmu funkce.", e: "Podle definice funkce má každé x z $D(f)$ přiřazenou přesně jednu hodnotu y — to je základní vlastnost funkce." }, fr: { q: "Combien de valeurs y un seul x de $D(f)$ peut-il avoir selon la définition d'une fonction ?", a: "Toujours exactement une", o: ["Toujours exactement une", "Au plus deux", "Un nombre quelconque", "Aucune"], h: "C'est l'essence même de la notion de fonction.", e: "Par définition, chaque x de $D(f)$ a exactement une valeur y associée — c'est la propriété fondamentale d'une fonction." } },
             { id: 't6', type: 'concept', cs: { q: "Kdy tabulka NENÍ platným zadáním funkce?", a: "Když je jedné hodnotě x přiřazeno více různých hodnot y", o: ["Když je jedné hodnotě x přiřazeno více různých hodnot y", "Když se v tabulce opakuje nějaká hodnota y", "Když tabulka obsahuje záporná čísla", "Když tabulka má méně než pět sloupců"], h: "Pozor na zlomky/desetinná čísla, která se ve skutečnosti rovnají.", e: "Tabulka není platným zadáním funkce, pokud je stejné hodnotě x (i po převodu zlomků na desetinná čísla) přiřazeno více různých hodnot y — to porušuje samotnou definici funkce." }, fr: { q: "Quand un tableau ne définit-il PAS valablement une fonction ?", a: "Quand une même valeur de x se voit associer plusieurs valeurs y différentes", o: ["Quand une même valeur de x se voit associer plusieurs valeurs y différentes", "Quand une valeur de y se répète dans le tableau", "Quand le tableau contient des nombres négatifs", "Quand le tableau a moins de cinq colonnes"], h: "Attention aux fractions/décimaux qui sont en réalité égaux.", e: "Un tableau n'est pas une définition valide d'une fonction si une même valeur de x (même après conversion des fractions en décimaux) a plusieurs valeurs y différentes — cela viole la définition même d'une fonction." } },
             { id: 't7', type: 'concept', cs: { q: "Co znamená, když při hledání x pro dané y dostaneme neplatnou rovnost (např. $0=5$)?", a: "Daná hodnota y nepatří do oboru hodnot funkce", o: ["Daná hodnota y nepatří do oboru hodnot funkce", "Ve výpočtu je určitě chyba", "Funkce nemá definiční obor", "Řešením je $x=0$"], h: "Neplatná rovnost neznamená chybu ve výpočtu.", e: "Pokud po dosazení y do rovnice dostaneme neplatné tvrzení, znamená to, že daná hodnota y jednoduše nepatří do $H(f)$ — funkce jí nikdy nenabývá." }, fr: { q: "Que signifie obtenir une égalité fausse (par ex. $0=5$) en cherchant x pour un y donné ?", a: "Cette valeur de y n'appartient pas à l'image de la fonction", o: ["Cette valeur de y n'appartient pas à l'image de la fonction", "Il y a certainement une erreur de calcul", "La fonction n'a pas de domaine de définition", "La solution est $x=0$"], h: "Une égalité fausse ne signifie pas une erreur de calcul.", e: "Si après substitution de y on obtient une affirmation fausse, cela signifie simplement que cette valeur de y n'appartient pas à $H(f)$ — la fonction ne l'atteint jamais." } },
-            { id: 't8', type: 'concept', cs: { q: "Proč funkce $f: y=\\dfrac{x^2-1}{x-1}$ a $g: y=x+1$ nejsou si rovny, i když se po zkrácení shodují?", a: "Protože mají různé definiční obory ($D(f)$ neobsahuje $x=1$, $D(g)$ ano)", o: ["Protože mají různé definiční obory ($D(f)$ neobsahuje $x=1$, $D(g)$ ano)", "Protože mají různé obory hodnot", "Protože f má vyšší stupeň než g", "Ve skutečnosti si rovny jsou"], h: "Podívej se, co se stane ve jmenovateli f v bodě $x=1$.", e: "V bodě $x=1$ by se u f dělilo nulou, takže $D(f)=\mathbb{R}-\{1\}$, zatímco $D(g)=\mathbb{R}$. Definiční obory se liší, a proto si funkce nejsou rovny, přestože se jejich hodnoty shodují všude, kde je f definovaná." }, fr: { q: "Pourquoi $f: y=\\dfrac{x^2-1}{x-1}$ et $g: y=x+1$ ne sont-elles pas égales, bien qu'elles coïncident après simplification ?", a: "Parce qu'elles ont des domaines de définition différents ($D(f)$ exclut $x=1$, $D(g)$ non)", o: ["Parce qu'elles ont des domaines de définition différents ($D(f)$ exclut $x=1$, $D(g)$ non)", "Parce qu'elles ont des images différentes", "Parce que f a un degré supérieur à g", "En réalité, elles sont égales"], h: "Regardez ce qui se passe au dénominateur de f en $x=1$.", e: "En $x=1$, on diviserait par zéro dans f, donc $D(f)=\mathbb{R}-\{1\}$, alors que $D(g)=\mathbb{R}$. Les domaines diffèrent, donc les fonctions ne sont pas égales, bien que leurs valeurs coïncident partout où f est définie." } }
+            { id: 't8', type: 'concept', cs: { q: "Proč funkce $f: y=\\dfrac{x^2-1}{x-1}$ a $g: y=x+1$ nejsou si rovny, i když se po zkrácení shodují?", a: "Protože mají různé definiční obory ($D(f)$ neobsahuje $x=1$, $D(g)$ ano)", o: ["Protože mají různé definiční obory ($D(f)$ neobsahuje $x=1$, $D(g)$ ano)", "Protože mají různé obory hodnot", "Protože f má vyšší stupeň než g", "Ve skutečnosti si rovny jsou"], h: "Podívej se, co se stane ve jmenovateli f v bodě $x=1$.", e: "V bodě $x=1$ by se u f dělilo nulou, takže $D(f)=\\mathbb{R}-\\{1\\}$, zatímco $D(g)=\\mathbb{R}$. Definiční obory se liší, a proto si funkce nejsou rovny, přestože se jejich hodnoty shodují všude, kde je f definovaná." }, fr: { q: "Pourquoi $f: y=\\dfrac{x^2-1}{x-1}$ et $g: y=x+1$ ne sont-elles pas égales, bien qu'elles coïncident après simplification ?", a: "Parce qu'elles ont des domaines de définition différents ($D(f)$ exclut $x=1$, $D(g)$ non)", o: ["Parce qu'elles ont des domaines de définition différents ($D(f)$ exclut $x=1$, $D(g)$ non)", "Parce qu'elles ont des images différentes", "Parce que f a un degré supérieur à g", "En réalité, elles sont égales"], h: "Regardez ce qui se passe au dénominateur de f en $x=1$.", e: "En $x=1$, on diviserait par zéro dans f, donc $D(f)=\\mathbb{R}-\\{1\\}$, alors que $D(g)=\\mathbb{R}$. Les domaines diffèrent, donc les fonctions ne sont pas égales, bien que leurs valeurs coïncident partout où f est définie." } }
         ];
 
         // ======== VÝPOČETNÍ ÚLOHY ========
@@ -196,6 +197,8 @@
         let translationUsedCount = 0;
         let hintUsedCount = 0;
         let isTranslated = false;
+        let answeredIndex = null;   // index vybrané možnosti (shodný v CZ i FR) u aktuální otázky, null = ještě nezodpovězeno
+        let answeredCorrect = null; // zda byla zvolená odpověď správně
 
         function startQuiz() {
             sessionQuestions = generateBalancedQuiz();
@@ -237,21 +240,30 @@
                 const p = template.params();
                 const sol = template.solve(p);
                 const disp = (v) => (typeof v === 'number' ? fmt(v) : v);
-                const inject = (obj) => {
+                const substitute = (obj) => {
                     obj.q = obj.q.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
                     obj.e = obj.e.replace(/{(\w+)}/g, (_, k) => disp(p[k] !== undefined ? p[k] : sol[k]));
-                    obj.a = sol.correct;
-                    const val = parseFloat(sol.res);
-                    const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
-                    const opts = new Set([sol.correct, mk(val*2), mk(val/2), mk(val*10)]);
-                    while (opts.size < 4) opts.add(mk(val + opts.size));
-                    obj.o = Array.from(opts).slice(0,4);
                 };
-                inject(q); inject(tr);
+                substitute(q); substitute(tr);
+
+                // Hodnoty možností (čísla) jsou jazykově neutrální — počítají se JEN JEDNOU,
+                // aby CZ i FR verze měly stejný obsah (a po sdíleném zamíchání níže i stejné pořadí).
+                q.a = sol.correct; tr.a = sol.correct;
+                const val = parseFloat(sol.res);
+                const mk = (x) => fmt(x) + (sol.unit ? ' ' + sol.unit : '');
+                const opts = new Set([sol.correct, mk(val*2), mk(val/2), mk(val*10)]);
+                while (opts.size < 4) opts.add(mk(val + opts.size));
+                const options = Array.from(opts).slice(0,4);
+                q.o = [...options];
+                tr.o = [...options];
             }
 
-            shuffleArray(q.o);
-            shuffleArray(tr.o);
+            // Sdílené pořadí možností pro CZ i FR verzi: index i v q.o odpovídá stejné možnosti
+            // jako index i v tr.o. Díky tomu zůstane po přepnutí jazyka (překladu) zvolená
+            // odpověď identifikovatelná podle indexu, ne podle (jazykově odlišného) textu.
+            const order = shuffleArray([...Array(q.o.length).keys()]);
+            q.o = order.map(i => q.o[i]);
+            tr.o = order.map(i => tr.o[i]);
 
             return { ...q, type: template.type, lang: lang, translation: tr, id: template.id };
         }
@@ -259,6 +271,8 @@
         function showQuestion() {
             const q = sessionQuestions[currentQuestionIndex];
             isTranslated = false;
+            answeredIndex = null;
+            answeredCorrect = null;
 
             const transBtn = document.getElementById('translate-btn');
             if (q.lang === 'fr') {
@@ -288,11 +302,25 @@
 
             const grid = document.getElementById('options-grid');
             grid.innerHTML = '';
-            data.o.forEach((opt) => {
+            const alreadyAnswered = (answeredIndex !== null);
+            data.o.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
                 btn.textContent = opt;
-                btn.onclick = () => checkAnswer(btn, opt, data.a);
+                btn.dataset.optText = opt; // syrový text (před typesetem MathJaxu) pro spolehlivé porovnání
+                if (alreadyAnswered) {
+                    // Otázka už byla zodpovězena (i před případným překladem) - tlačítka jsou
+                    // uzamčená a zvýraznění zvolené/správné odpovědi se zachovává podle indexu,
+                    // který je shodný v CZ i FR verzi, takže nezávisí na (jazykově odlišném) textu.
+                    btn.disabled = true;
+                    if (opt === data.a) {
+                        btn.classList.add('correct');
+                    } else if (idx === answeredIndex && !answeredCorrect) {
+                        btn.classList.add('wrong');
+                    }
+                } else {
+                    btn.onclick = () => checkAnswer(btn, idx, opt, data.a);
+                }
                 grid.appendChild(btn);
             });
 
@@ -300,8 +328,16 @@
                 document.getElementById('hint-box').innerHTML = data.h;
             }
 
+            if (alreadyAnswered) {
+                // Vysvětlení ve feedbacku se při překladu přepíše do aktuálního jazyka,
+                // aby zůstalo konzistentní s právě zobrazenou otázkou.
+                document.getElementById('feedback-explanation').innerHTML = data.e;
+            }
+
             if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
+                const nodesToTypeset = [document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')];
+                if (alreadyAnswered) nodesToTypeset.push(document.getElementById('feedback-explanation'));
+                MathJax.typesetPromise(nodesToTypeset).catch(err => console.warn('MathJax error:', err));
             }
         }
 
@@ -324,17 +360,21 @@
             }
         }
 
-        function checkAnswer(btn, selected, correct) {
+        function checkAnswer(btn, idx, selected, correct) {
+            if (answeredIndex !== null) return; // otázka už byla jednou zodpovězena - další odpověď se nepočítá
+
             const q = sessionQuestions[currentQuestionIndex];
             const data = isTranslated ? q.translation : q;
             const allBtns = document.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.disabled = true);
 
             const isCorrect = (selected === correct);
+            answeredIndex = idx;
+            answeredCorrect = isCorrect;
             if (isCorrect) { btn.classList.add('correct'); score++; }
             else {
                 btn.classList.add('wrong');
-                allBtns.forEach(b => { if(b.textContent === correct) b.classList.add('correct'); });
+                allBtns.forEach(b => { if(b.dataset.optText === correct) b.classList.add('correct'); });
             }
 
             document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
@@ -408,7 +448,7 @@
             if (weaknesses.length > 0) {
                 recommendations.push("Zaměř se na opakování definičního oboru, oboru hodnot a rovnosti funkcí – projdi si příručku a vzorové příklady.");
             } else {
-                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o lineárních funkcích.");
+                recommendations.push("Můžeš se posunout dál – zkus si prostudovat navazující kapitolu o grafu funkce.");
             }
             if (percent < 50) recommendations.push("Doporučuji použít flashcards a sekci Úlohy k procvičení základních pojmů.");
 
