@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Stereometrie 1 — Základní pojmy / Stéréométrie 1 — Notions fondamentales</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-stereometrie1.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Stereometrie 1</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíte)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Stéréométrie 1 — Notions fondamentales
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Čím se zabývá stereometrie?",
+            "a": "geometrií útvarů v prostoru"
+        },
+        {
+            "q": "Jak značíme body?",
+            "a": "velkými písmeny latinské abecedy, např. $A,\\ B,\\ M$"
+        },
+        {
+            "q": "Jak značíme přímky?",
+            "a": "malými písmeny latinské abecedy, např. $p,\\ q$"
+        },
+        {
+            "q": "Jak značíme roviny?",
+            "a": "malými písmeny řecké abecedy, např. $\\alpha,\\ \\beta,\\ \\rho$"
+        },
+        {
+            "q": "Má rovina okraj nebo tloušťku?",
+            "a": "ne, rovina je neomezená a nemá tloušťku"
+        },
+        {
+            "q": "Kolik přímek prochází dvěma různými body?",
+            "a": "právě jedna"
+        },
+        {
+            "q": "Kolik různých přímek určují vrcholy krychle?",
+            "a": "$\\binom82=28$"
+        },
+        {
+            "q": "Co je mnohostěn?",
+            "a": "těleso, jehož povrch tvoří rovinné mnohoúhelníky (stěny)"
+        },
+        {
+            "q": "Co jsou hrany mnohostěnu?",
+            "a": "strany jeho stěn"
+        },
+        {
+            "q": "Kolik stěn, hran a vrcholů má krychle?",
+            "a": "$6$ stěn, $12$ hran a $8$ vrcholů"
+        },
+        {
+            "q": "Jaké stěny má krychle?",
+            "a": "šest shodných čtverců"
+        },
+        {
+            "q": "Jaké stěny má kvádr?",
+            "a": "protější stěny jsou shodné obdélníky (případně čtverce)"
+        },
+        {
+            "q": "Co jsou obrysové površky válce?",
+            "a": "svislé úsečky, které se dotýkají elips obou podstav a tvoří obrys válce"
+        },
+        {
+            "q": "Co jsou podstavy $n$-bokého hranolu?",
+            "a": "dva shodné $n$-úhelníky v rovnoběžných rovinách"
+        },
+        {
+            "q": "Jaké jsou boční stěny hranolu?",
+            "a": "rovnoběžníky"
+        },
+        {
+            "q": "Kdy je hranol kolmý?",
+            "a": "jsou-li jeho boční stěny kolmé k podstavám"
+        },
+        {
+            "q": "Kolik vrcholů má $n$-boký hranol?",
+            "a": "$v=2n$"
+        },
+        {
+            "q": "Kolik hran má $n$-boký hranol?",
+            "a": "$h=3n$"
+        },
+        {
+            "q": "Kolik stěn má $n$-boký hranol?",
+            "a": "$s=n+2$"
+        },
+        {
+            "q": "Jaké boční stěny má jehlan?",
+            "a": "trojúhelníky se společným vrcholem $V$"
+        },
+        {
+            "q": "Kolik hran má $n$-boký jehlan?",
+            "a": "$h=2n$"
+        },
+        {
+            "q": "Kolik vrcholů a kolik stěn má $n$-boký jehlan?",
+            "a": "$v=n+1$ vrcholů a $s=n+1$ stěn"
+        },
+        {
+            "q": "Kolik hran má osmiboký hranol?",
+            "a": "$3\\cdot8=24$"
+        },
+        {
+            "q": "Jak zní Eulerův vzorec pro konvexní mnohostěn?",
+            "a": "$v-h+s=2$ (vrcholy, hrany, stěny)"
+        },
+        {
+            "q": "Jak vznikne rotační válec?",
+            "a": "otáčením obdélníku kolem přímky, na které leží jedna jeho strana"
+        },
+        {
+            "q": "Jak vznikne rotační kužel?",
+            "a": "otáčením pravoúhlého trojúhelníku kolem přímky, na které leží jedna jeho odvěsna"
+        },
+        {
+            "q": "Proč válec není mnohostěn?",
+            "a": "protože jeho plášť je zakřivená plocha"
+        },
+        {
+            "q": "Obdélník $4\\text{ cm}\\times2\\text{ cm}$ otočíme kolem delší strany. Jaký válec vznikne?",
+            "a": "válec s výškou $4$ cm a poloměrem podstavy $2$ cm"
+        },
+        {
+            "q": "Co je průmětna?",
+            "a": "rovina, do které promítáme"
+        },
+        {
+            "q": "Jakou podmínku musí splňovat směr promítání vzhledem k průmětně?",
+            "a": "nesmí být s průmětnou rovnoběžný"
+        },
+        {
+            "q": "Jak najdeme průmět $X'$ bodu $X$?",
+            "a": "bodem $X$ vedeme přímku rovnoběžnou se směrem $s$, $X'$ je její průsečík s průmětnou"
+        },
+        {
+            "q": "Co je obrys tělesa?",
+            "a": "hranice průmětu tělesa"
+        },
+        {
+            "q": "Který každodenní jev je modelem rovnoběžného promítání?",
+            "a": "stín předmětu za slunečného dne"
+        },
+        {
+            "q": "Co je průmětem přímky rovnoběžné se směrem promítání?",
+            "a": "bod"
+        },
+        {
+            "q": "Co je průmětem přímky, která není rovnoběžná se směrem promítání?",
+            "a": "přímka"
+        },
+        {
+            "q": "Čím mohou být průměty dvou rovnoběžných přímek?",
+            "a": "dvěma rovnoběžkami, jednou přímkou, nebo dvěma body"
+        },
+        {
+            "q": "Kam se promítne střed úsečky?",
+            "a": "do středu jejího průmětu"
+        },
+        {
+            "q": "$|AB|:|BC|=2:3$ a $|A'B'|=4$ cm. Jaká je délka $|B'C'|$?",
+            "a": "$\\frac32\\cdot4=6$ cm"
+        },
+        {
+            "q": "Jak se zobrazí útvar ležící v rovině rovnoběžné s průmětnou?",
+            "a": "jako útvar s ním shodný"
+        },
+        {
+            "q": "Zachovává rovnoběžné promítání velikosti úhlů?",
+            "a": "obecně ne (jen u útvarů v rovinách rovnoběžných s průmětnou)"
+        },
+        {
+            "q": "Co je průčelná rovina?",
+            "a": "rovina rovnoběžná s průmětnou"
+        },
+        {
+            "q": "Jak ve VRP kreslíme úsečky kolmé k průmětně?",
+            "a": "pod úhlem $45^\\circ$ a zkrácené na polovinu ($q=\\frac12$)"
+        },
+        {
+            "q": "Jakou délku má ve VRP úsečka délky $8$ cm kolmá k průmětně?",
+            "a": "$8\\cdot\\frac12=4$ cm"
+        },
+        {
+            "q": "Jak kreslíme neviditelné hrany?",
+            "a": "čárkovaně"
+        },
+        {
+            "q": "Co znamená nadhled?",
+            "a": "pohled shora: hrany do hloubky míří v obraze vzhůru"
+        },
+        {
+            "q": "Který vrchol krychle $ABCDEFGH$ je skrytý v pravém nadhledu?",
+            "a": "$D$"
+        },
+        {
+            "q": "Které hrany krychle $ABCDEFGH$ jsou neviditelné v pravém nadhledu?",
+            "a": "$AD,\\ DC,\\ DH$"
+        },
+        {
+            "q": "Zkracuje se ve VRP výška jehlanu?",
+            "a": "ne, je svislá, a tedy rovnoběžná s průmětnou"
+        },
+        {
+            "q": "Co je průmětem kružnice ležící ve vodorovné rovině?",
+            "a": "elipsa"
+        },
+        {
+            "q": "Ve kterých bodech se elipsa dotýká stran rovnoběžníku, který je obrazem opsaného čtverce?",
+            "a": "ve středech stran"
+        }
+    ],
+    "fr": [
+        {
+            "q": "De quoi s'occupe la stéréométrie ?",
+            "a": "de la géométrie des figures de l'espace"
+        },
+        {
+            "q": "Comment note-t-on les points ?",
+            "a": "par des lettres majuscules de l'alphabet latin, par ex. $A,\\ B,\\ M$"
+        },
+        {
+            "q": "Comment note-t-on les droites ?",
+            "a": "par des lettres minuscules de l'alphabet latin, par ex. $p,\\ q$"
+        },
+        {
+            "q": "Comment note-t-on les plans ?",
+            "a": "par des lettres minuscules de l'alphabet grec, par ex. $\\alpha,\\ \\beta,\\ \\rho$"
+        },
+        {
+            "q": "Un plan a-t-il un bord ou une épaisseur ?",
+            "a": "non, un plan est illimité et n'a pas d'épaisseur"
+        },
+        {
+            "q": "Combien de droites passent par deux points distincts ?",
+            "a": "une seule"
+        },
+        {
+            "q": "Combien de droites distinctes les sommets d'un cube déterminent-ils ?",
+            "a": "$\\binom82=28$"
+        },
+        {
+            "q": "Qu'est-ce qu'un polyèdre ?",
+            "a": "un solide dont la surface est formée de polygones plans (les faces)"
+        },
+        {
+            "q": "Que sont les arêtes d'un polyèdre ?",
+            "a": "les côtés de ses faces"
+        },
+        {
+            "q": "Combien de faces, d'arêtes et de sommets possède un cube ?",
+            "a": "$6$ faces, $12$ arêtes et $8$ sommets"
+        },
+        {
+            "q": "Quelles faces possède un cube ?",
+            "a": "six carrés identiques"
+        },
+        {
+            "q": "Quelles faces possède un pavé droit ?",
+            "a": "les faces opposées sont des rectangles identiques (éventuellement des carrés)"
+        },
+        {
+            "q": "Que sont les génératrices de contour d'un cylindre ?",
+            "a": "les segments verticaux tangents aux ellipses des deux bases, qui forment le contour du cylindre"
+        },
+        {
+            "q": "Que sont les bases d'un prisme à base $n$-gonale ?",
+            "a": "deux polygones identiques à $n$ côtés situés dans des plans parallèles"
+        },
+        {
+            "q": "Que sont les faces latérales d'un prisme ?",
+            "a": "des parallélogrammes"
+        },
+        {
+            "q": "Quand un prisme est-il droit ?",
+            "a": "quand ses faces latérales sont perpendiculaires aux bases"
+        },
+        {
+            "q": "Combien de sommets possède un prisme à base $n$-gonale ?",
+            "a": "$v=2n$"
+        },
+        {
+            "q": "Combien d'arêtes possède un prisme à base $n$-gonale ?",
+            "a": "$h=3n$"
+        },
+        {
+            "q": "Combien de faces possède un prisme à base $n$-gonale ?",
+            "a": "$s=n+2$"
+        },
+        {
+            "q": "Quelles faces latérales possède une pyramide ?",
+            "a": "des triangles ayant un sommet commun $V$"
+        },
+        {
+            "q": "Combien d'arêtes possède une pyramide à base $n$-gonale ?",
+            "a": "$h=2n$"
+        },
+        {
+            "q": "Combien de sommets et combien de faces possède une pyramide à base $n$-gonale ?",
+            "a": "$v=n+1$ sommets et $s=n+1$ faces"
+        },
+        {
+            "q": "Combien d'arêtes possède un prisme à base octogonale ?",
+            "a": "$3\\cdot8=24$"
+        },
+        {
+            "q": "Quelle est la relation d'Euler pour un polyèdre convexe ?",
+            "a": "$v-h+s=2$ (sommets, arêtes, faces)"
+        },
+        {
+            "q": "Comment obtient-on un cylindre de révolution ?",
+            "a": "en faisant tourner un rectangle autour de la droite portant l'un de ses côtés"
+        },
+        {
+            "q": "Comment obtient-on un cône de révolution ?",
+            "a": "en faisant tourner un triangle rectangle autour de la droite portant l'un des côtés de l'angle droit"
+        },
+        {
+            "q": "Pourquoi un cylindre n'est-il pas un polyèdre ?",
+            "a": "parce que sa surface latérale est courbe"
+        },
+        {
+            "q": "On fait tourner un rectangle de $4\\text{ cm}\\times2\\text{ cm}$ autour du grand côté. Quel cylindre obtient-on ?",
+            "a": "un cylindre de hauteur $4$ cm et de rayon de base $2$ cm"
+        },
+        {
+            "q": "Qu'est-ce que le plan de projection ?",
+            "a": "le plan sur lequel on projette"
+        },
+        {
+            "q": "Quelle condition la direction de projection doit-elle remplir par rapport au plan de projection ?",
+            "a": "elle ne doit pas lui être parallèle"
+        },
+        {
+            "q": "Comment trouve-t-on le projeté $X'$ du point $X$ ?",
+            "a": "on mène par $X$ la droite parallèle à la direction $s$ ; $X'$ est son intersection avec le plan de projection"
+        },
+        {
+            "q": "Qu'est-ce que le contour apparent d'un solide ?",
+            "a": "la frontière du projeté du solide"
+        },
+        {
+            "q": "Quel phénomène quotidien est un modèle de projection parallèle ?",
+            "a": "l'ombre d'un objet par une journée ensoleillée"
+        },
+        {
+            "q": "Quel est le projeté d'une droite parallèle à la direction de projection ?",
+            "a": "un point"
+        },
+        {
+            "q": "Quel est le projeté d'une droite non parallèle à la direction de projection ?",
+            "a": "une droite"
+        },
+        {
+            "q": "Que peuvent être les projetés de deux droites parallèles ?",
+            "a": "deux droites parallèles, une seule droite ou deux points"
+        },
+        {
+            "q": "Sur quel point se projette le milieu d'un segment ?",
+            "a": "sur le milieu de son projeté"
+        },
+        {
+            "q": "$|AB|:|BC|=2:3$ et $|A'B'|=4$ cm. Quelle est la longueur $|B'C'|$ ?",
+            "a": "$\\frac32\\cdot4=6$ cm"
+        },
+        {
+            "q": "Comment est représentée une figure située dans un plan parallèle au plan de projection ?",
+            "a": "par une figure qui lui est superposable"
+        },
+        {
+            "q": "La projection parallèle conserve-t-elle la mesure des angles ?",
+            "a": "en général non (seulement pour les figures situées dans des plans parallèles au plan de projection)"
+        },
+        {
+            "q": "Qu'est-ce qu'un plan frontal ?",
+            "a": "un plan parallèle au plan de projection"
+        },
+        {
+            "q": "Comment dessine-t-on en perspective cavalière les segments perpendiculaires au plan de projection ?",
+            "a": "avec un angle de $45^\\circ$ et réduits de moitié ($q=\\frac12$)"
+        },
+        {
+            "q": "Quelle longueur a en perspective cavalière un segment de $8$ cm perpendiculaire au plan de projection ?",
+            "a": "$8\\cdot\\frac12=4$ cm"
+        },
+        {
+            "q": "Comment dessine-t-on les arêtes cachées ?",
+            "a": "en pointillés"
+        },
+        {
+            "q": "Que signifie « vue plongeante » ?",
+            "a": "une vue d'en haut : les arêtes fuyantes montent sur le dessin"
+        },
+        {
+            "q": "Quel sommet du cube $ABCDEFGH$ est caché en vue plongeante à droite ?",
+            "a": "$D$"
+        },
+        {
+            "q": "Quelles arêtes du cube $ABCDEFGH$ sont cachées en vue plongeante à droite ?",
+            "a": "$AD,\\ DC,\\ DH$"
+        },
+        {
+            "q": "La hauteur d'une pyramide est-elle réduite en perspective cavalière ?",
+            "a": "non, elle est verticale, donc parallèle au plan de projection"
+        },
+        {
+            "q": "Quel est le projeté d'un cercle situé dans un plan horizontal ?",
+            "a": "une ellipse"
+        },
+        {
+            "q": "En quels points l'ellipse est-elle tangente aux côtés du parallélogramme, image du carré circonscrit ?",
+            "a": "aux milieux des côtés"
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

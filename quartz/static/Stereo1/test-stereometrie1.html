@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Stereometrie 1 — Základní pojmy (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-stereometrie1.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Stereometrie 1</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (tělesa, rovnoběžné promítání, volné rovnoběžné promítání, viditelnost).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Vaše výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza vašeho výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([correct, ...extras.filter(e => e > 0)]);
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        let candidate = correct + delta;
+        if (candidate <= 0) candidate = correct + Math.abs(delta);
+        set.add(candidate);
+        guard++;
+    }
+    return [...set].slice(0, 4).map(fmt);
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    {
+        "id": "t1",
+        "type": "concept",
+        "cs": {
+            "q": "Jak značíme roviny?",
+            "a": "malými písmeny řecké abecedy",
+            "o": [
+                "malými písmeny řecké abecedy",
+                "velkými písmeny latinské abecedy",
+                "malými písmeny latinské abecedy",
+                "velkými písmeny řecké abecedy"
+            ],
+            "h": "Body a přímky značíme latinskými písmeny, roviny jinak.",
+            "e": "Roviny značíme malými písmeny řecké abecedy, např. $\\alpha,\\ \\beta,\\ \\rho$. Body značíme velkými a přímky malými písmeny latinské abecedy."
+        },
+        "fr": {
+            "q": "Comment note-t-on les plans ?",
+            "a": "par des lettres minuscules de l'alphabet grec",
+            "o": [
+                "par des lettres minuscules de l'alphabet grec",
+                "par des lettres majuscules de l'alphabet latin",
+                "par des lettres minuscules de l'alphabet latin",
+                "par des lettres majuscules de l'alphabet grec"
+            ],
+            "h": "Les points et les droites sont notés par des lettres latines, les plans autrement.",
+            "e": "Les plans sont notés par des lettres minuscules de l'alphabet grec, par ex. $\\alpha,\\ \\beta,\\ \\rho$. Les points sont notés par des majuscules et les droites par des minuscules de l'alphabet latin."
+        }
+    },
+    {
+        "id": "t2",
+        "type": "concept",
+        "cs": {
+            "q": "Čemu se rovná výraz $v-h+s$ (vrcholy, hrany, stěny) pro každý konvexní mnohostěn?",
+            "a": "$2$",
+            "o": [
+                "$2$",
+                "$0$",
+                "$1$",
+                "počtu vrcholů podstavy"
+            ],
+            "h": "Vyzkoušejte to na krychli: $8$ vrcholů, $12$ hran, $6$ stěn.",
+            "e": "Podle Eulerova vzorce platí $v-h+s=2$, například pro krychli $8-12+6=2$."
+        },
+        "fr": {
+            "q": "À quoi est égale l'expression $v-h+s$ (sommets, arêtes, faces) pour tout polyèdre convexe ?",
+            "a": "$2$",
+            "o": [
+                "$2$",
+                "$0$",
+                "$1$",
+                "au nombre de sommets de la base"
+            ],
+            "h": "Essayez avec le cube : $8$ sommets, $12$ arêtes, $6$ faces.",
+            "e": "D'après la relation d'Euler, $v-h+s=2$, par exemple pour le cube $8-12+6=2$."
+        }
+    },
+    {
+        "id": "t3",
+        "type": "concept",
+        "cs": {
+            "q": "Která vlastnost se při rovnoběžném promítání obecně nezachovává?",
+            "a": "velikost úhlů",
+            "o": [
+                "velikost úhlů",
+                "rovnoběžnost přímek",
+                "incidence bodu a přímky",
+                "poměr délek úseček na jedné přímce"
+            ],
+            "h": "Vzpomeňte si, čím se může zobrazit čtverec.",
+            "e": "Průmětem čtverce může být kosý rovnoběžník, velikost úhlů se tedy obecně nezachovává. Rovnoběžnost, incidence i poměr délek úseček na jedné přímce se zachovávají."
+        },
+        "fr": {
+            "q": "Quelle propriété n'est en général pas conservée par la projection parallèle ?",
+            "a": "la mesure des angles",
+            "o": [
+                "la mesure des angles",
+                "le parallélisme des droites",
+                "l'incidence d'un point et d'une droite",
+                "le rapport des longueurs de segments d'une même droite"
+            ],
+            "h": "Rappelez-vous par quoi un carré peut être représenté.",
+            "e": "Le projeté d'un carré peut être un parallélogramme quelconque, la mesure des angles n'est donc en général pas conservée. Le parallélisme, l'incidence et le rapport des longueurs de segments d'une même droite sont conservés."
+        }
+    },
+    {
+        "id": "t4",
+        "type": "concept",
+        "cs": {
+            "q": "Jak ve volném rovnoběžném promítání (standardní parametry) kreslíme úsečky kolmé k průmětně?",
+            "a": "pod úhlem $45^\\circ$, zkrácené na polovinu",
+            "o": [
+                "pod úhlem $45^\\circ$, zkrácené na polovinu",
+                "pod úhlem $45^\\circ$ ve skutečné délce",
+                "svisle, zkrácené na polovinu",
+                "pod úhlem $60^\\circ$, zkrácené na třetinu"
+            ],
+            "h": "Standardní parametry jsou $\\varphi=45^\\circ$ a $q=\\frac12$.",
+            "e": "Úsečky kolmé k průmětně kreslíme pod úhlem $\\varphi=45^\\circ$ k vodorovné přímce a zkracujeme je koeficientem $q=\\frac12$, tedy na polovinu."
+        },
+        "fr": {
+            "q": "Comment dessine-t-on en perspective cavalière (paramètres standard) les segments perpendiculaires au plan de projection ?",
+            "a": "avec un angle de $45^\\circ$, réduits de moitié",
+            "o": [
+                "avec un angle de $45^\\circ$, réduits de moitié",
+                "avec un angle de $45^\\circ$, en vraie grandeur",
+                "verticalement, réduits de moitié",
+                "avec un angle de $60^\\circ$, réduits au tiers"
+            ],
+            "h": "Les paramètres standard sont $\\varphi=45^\\circ$ et $q=\\frac12$.",
+            "e": "Les segments perpendiculaires au plan de projection sont dessinés avec un angle $\\varphi=45^\\circ$ par rapport à l'horizontale et réduits par le coefficient $q=\\frac12$, c'est-à-dire de moitié."
+        }
+    },
+    {
+        "id": "t5",
+        "type": "concept",
+        "cs": {
+            "q": "Co je ve volném rovnoběžném promítání obrazem kružnice ležící ve vodorovné rovině?",
+            "a": "elipsa",
+            "o": [
+                "elipsa",
+                "kružnice",
+                "úsečka",
+                "rovnoběžník"
+            ],
+            "h": "Vodorovná rovina není rovnoběžná s průmětnou.",
+            "e": "Kružnice ve vodorovné rovině není rovnoběžná s průmětnou, a proto se zobrazí jako elipsa vepsaná do rovnoběžníku, který je obrazem opsaného čtverce."
+        },
+        "fr": {
+            "q": "En perspective cavalière, quelle est l'image d'un cercle situé dans un plan horizontal ?",
+            "a": "une ellipse",
+            "o": [
+                "une ellipse",
+                "un cercle",
+                "un segment",
+                "un parallélogramme"
+            ],
+            "h": "Un plan horizontal n'est pas parallèle au plan de projection.",
+            "e": "Un cercle situé dans un plan horizontal n'est pas parallèle au plan de projection ; il est donc représenté par une ellipse inscrite dans le parallélogramme qui est l'image du carré circonscrit."
+        }
+    },
+    {
+        "id": "t6",
+        "type": "concept",
+        "cs": {
+            "q": "Který vrchol krychle $ABCDEFGH$ (dolní podstava $ABCD$, přední stěna $ABFE$) je skrytý v pravém nadhledu?",
+            "a": "$D$",
+            "o": [
+                "$D$",
+                "$C$",
+                "$H$",
+                "$G$"
+            ],
+            "h": "V pravém nadhledu se na krychli díváme shora a zprava.",
+            "e": "V pravém nadhledu je skrytý vrchol $D$ (dole, vzadu, vlevo), neviditelné jsou hrany $AD$, $DC$ a $DH$."
+        },
+        "fr": {
+            "q": "Quel sommet du cube $ABCDEFGH$ (base inférieure $ABCD$, face avant $ABFE$) est caché en vue plongeante à droite ?",
+            "a": "$D$",
+            "o": [
+                "$D$",
+                "$C$",
+                "$H$",
+                "$G$"
+            ],
+            "h": "En vue plongeante à droite, on regarde le cube d'en haut et depuis la droite.",
+            "e": "En vue plongeante à droite, le sommet caché est $D$ (en bas, à l'arrière, à gauche) ; les arêtes cachées sont $AD$, $DC$ et $DH$."
+        }
+    },
+    {
+        "id": "t7",
+        "type": "concept",
+        "cs": {
+            "q": "Jak vznikne rotační kužel?",
+            "a": "otáčením pravoúhlého trojúhelníku kolem přímky, na které leží jedna jeho odvěsna",
+            "o": [
+                "otáčením pravoúhlého trojúhelníku kolem přímky, na které leží jedna jeho odvěsna",
+                "otáčením obdélníku kolem přímky, na které leží jedna jeho strana",
+                "otáčením pravoúhlého trojúhelníku kolem přímky, na které leží jeho přepona",
+                "otáčením kruhu kolem jeho průměru"
+            ],
+            "h": "Osa rotace se stane výškou kužele.",
+            "e": "Rotační kužel vznikne otáčením pravoúhlého trojúhelníku kolem přímky, na které leží jedna jeho odvěsna. Tato odvěsna je výškou kužele, druhá odvěsna poloměrem podstavy."
+        },
+        "fr": {
+            "q": "Comment obtient-on un cône de révolution ?",
+            "a": "en faisant tourner un triangle rectangle autour de la droite portant l'un des côtés de l'angle droit",
+            "o": [
+                "en faisant tourner un triangle rectangle autour de la droite portant l'un des côtés de l'angle droit",
+                "en faisant tourner un rectangle autour de la droite portant l'un de ses côtés",
+                "en faisant tourner un triangle rectangle autour de la droite portant son hypoténuse",
+                "en faisant tourner un disque autour de l'un de ses diamètres"
+            ],
+            "h": "L'axe de révolution devient la hauteur du cône.",
+            "e": "Un cône de révolution est obtenu en faisant tourner un triangle rectangle autour de la droite portant l'un des côtés de l'angle droit. Ce côté devient la hauteur du cône, l'autre côté de l'angle droit le rayon de la base."
+        }
+    },
+    {
+        "id": "t8",
+        "type": "concept",
+        "cs": {
+            "q": "Kdy se útvar při rovnoběžném promítání zobrazí ve skutečné velikosti?",
+            "a": "leží-li v rovině rovnoběžné s průmětnou",
+            "o": [
+                "leží-li v rovině rovnoběžné s průmětnou",
+                "leží-li ve vodorovné rovině",
+                "leží-li v rovině kolmé k průmětně",
+                "vždy, rovnoběžné promítání zachovává délky"
+            ],
+            "h": "Vzpomeňte si na pojem průčelná rovina.",
+            "e": "Útvar ležící v rovině rovnoběžné s průmětnou (v průčelné rovině) se promítne do útvaru s ním shodného. V ostatních případech se délky obecně mění."
+        },
+        "fr": {
+            "q": "Quand une figure est-elle représentée en vraie grandeur par une projection parallèle ?",
+            "a": "quand elle est située dans un plan parallèle au plan de projection",
+            "o": [
+                "quand elle est située dans un plan parallèle au plan de projection",
+                "quand elle est située dans un plan horizontal",
+                "quand elle est située dans un plan perpendiculaire au plan de projection",
+                "toujours, la projection parallèle conserve les longueurs"
+            ],
+            "h": "Pensez à la notion de plan frontal.",
+            "e": "Une figure située dans un plan parallèle au plan de projection (un plan frontal) se projette sur une figure superposable. Dans les autres cas, les longueurs changent en général."
+        }
+    }
+];
+
+// ======== VYPOCETNI SABLONY ========
+const VIEWS = [
+    { cs: 'v pravém nadhledu', fr: 'en vue plongeante à droite', hv: 'D', hid: ['AD', 'DC', 'DH'] },
+    { cs: 'v levém nadhledu', fr: 'en vue plongeante à gauche', hv: 'C', hid: ['BC', 'CG', 'DC'] },
+    { cs: 'v pravém podhledu', fr: 'en contre-plongée à droite', hv: 'H', hid: ['DH', 'EH', 'HG'] },
+    { cs: 'v levém podhledu', fr: 'en contre-plongée à gauche', hv: 'G', hid: ['CG', 'FG', 'HG'] }
+];
+const CUBE_EDGES = ['AB', 'BC', 'DC', 'AD', 'EF', 'FG', 'HG', 'EH', 'AE', 'BF', 'CG', 'DH'];
+
+const mathPool = [
+    { id: 'm1', type: 'math', kind: 'number',
+        cs: { q: "Kolik {qtyCs} má {n}-boký {solidCs}?", h: "Hranol: $v=2n$, $h=3n$, $s=n+2$. Jehlan: $v=n+1$, $h=2n$, $s=n+1$.", e: "Pro {n}-boký {solidCs} platí {form}." },
+        fr: { q: "Combien {qtyFr} possède {solidFr} dont la base a {n} côtés ?", h: "Prisme : $v=2n$, $h=3n$, $s=n+2$. Pyramide : $v=n+1$, $h=2n$, $s=n+1$.", e: "Pour {solidFr} dont la base a {n} côtés, on a {form}." },
+        params: () => {
+            const n = randInt(3, 10);
+            const solid = randChoice(['prism', 'pyr']);
+            const qty = randChoice(['v', 'h', 's']);
+            const names = {
+                v: { cs: 'vrcholů', fr: 'de sommets' },
+                h: { cs: 'hran', fr: "d'arêtes" },
+                s: { cs: 'stěn', fr: 'de faces' }
+            };
+            return { n, solid, qty, qtyCs: names[qty].cs, qtyFr: names[qty].fr,
+                     solidCs: solid === 'prism' ? 'hranol' : 'jehlan', solidFr: solid === 'prism' ? 'un prisme' : 'une pyramide' };
+        },
+        solve: (p) => {
+            const n = p.n;
+            const F = {
+                prism: { v: [2*n, '2\\cdot' + n], h: [3*n, '3\\cdot' + n], s: [n+2, n + '+2'] },
+                pyr:   { v: [n+1, n + '+1'],      h: [2*n, '2\\cdot' + n], s: [n+1, n + '+1'] }
+            };
+            const [res, expr] = F[p.solid][p.qty];
+            return { res, correct: fmt(res), form: '$' + p.qty + '=' + expr + '=' + res + '$' };
+        },
+        wrongOptions: (p, sol) => {
+            const n = p.n;
+            return buildOptions(sol.res, [2*n, 3*n, n+2, n+1, 2*n+2].filter(x => x !== sol.res), 3);
+        } },
+
+    { id: 'm2', type: 'math', kind: 'category',
+        cs: { q: "Co je rovnoběžným průmětem tohoto útvaru: {popisCs}?", h: "Rozhodující je poloha útvaru vůči směru promítání a vůči průmětně.", e: "{explCs}" },
+        fr: { q: "Quel est le projeté parallèle de cette figure : {popisFr} ?", h: "Ce qui compte, c'est la position de la figure par rapport à la direction de projection et au plan de projection.", e: "{explFr}" },
+        params: () => {
+            const scenarios = [
+                { idx: 0, popisCs: "přímka rovnoběžná se směrem promítání", popisFr: "une droite parallèle à la direction de projection",
+                  explCs: "Všechny body přímky rovnoběžné se směrem promítání leží na jedné promítací přímce, a proto se promítnou do jediného bodu.",
+                  explFr: "Tous les points d'une droite parallèle à la direction de projection sont sur une même droite de projection : ils se projettent donc sur un seul point." },
+                { idx: 0, popisCs: "úsečka rovnoběžná se směrem promítání", popisFr: "un segment parallèle à la direction de projection",
+                  explCs: "Úsečka rovnoběžná se směrem promítání leží na jedné promítací přímce, jejím průmětem je proto jediný bod.",
+                  explFr: "Un segment parallèle à la direction de projection est situé sur une seule droite de projection : son projeté est donc un seul point." },
+                { idx: 1, popisCs: "přímka, která není rovnoběžná se směrem promítání", popisFr: "une droite qui n'est pas parallèle à la direction de projection",
+                  explCs: "Průmětem přímky, která není rovnoběžná se směrem promítání, je přímka.",
+                  explFr: "Le projeté d'une droite qui n'est pas parallèle à la direction de projection est une droite." },
+                { idx: 1, popisCs: "přímka kolmá k průmětně při šikmém směru promítání", popisFr: "une droite perpendiculaire au plan de projection, la direction de projection étant oblique",
+                  explCs: "Při šikmém směru promítání není přímka kolmá k průmětně rovnoběžná se směrem promítání, jejím průmětem je tedy přímka. Právě tak vznikají hrany do hloubky ve volném rovnoběžném promítání.",
+                  explFr: "Avec une direction de projection oblique, une droite perpendiculaire au plan de projection n'est pas parallèle à la direction de projection : son projeté est donc une droite. C'est ainsi que naissent les arêtes fuyantes en perspective cavalière." },
+                { idx: 2, popisCs: "trojúhelník ležící v rovině rovnoběžné s průmětnou", popisFr: "un triangle situé dans un plan parallèle au plan de projection",
+                  explCs: "Útvar ležící v rovině rovnoběžné s průmětnou se promítne do útvaru s ním shodného.",
+                  explFr: "Une figure située dans un plan parallèle au plan de projection se projette sur une figure qui lui est superposable." },
+                { idx: 2, popisCs: "čtverec ležící v průčelné rovině", popisFr: "un carré situé dans un plan frontal",
+                  explCs: "Průčelná rovina je rovnoběžná s průmětnou, čtverec se proto promítne do shodného čtverce.",
+                  explFr: "Un plan frontal est parallèle au plan de projection, le carré se projette donc sur un carré superposable." }
+            ];
+            return Object.assign({}, randChoice(scenarios));
+        },
+        solve: (p) => ({ idx: p.idx }) },
+
+    { id: 'm3', type: 'math', kind: 'number',
+        cs: { q: "Úsečka délky ${L}$ cm je kolmá k průmětně. Jakou délku (v cm) má její obraz ve volném rovnoběžném promítání s parametry $\\varphi={phi}^\\circ$ a $q={qTex}$?", h: "Délku úsečky kolmé k průmětně vynásobíme koeficientem $q$, úhel $\\varphi$ délku neovlivní.", e: "${L}\\cdot{qTex}={res}\\text{ cm}$, úsečku nakreslíme pod úhlem ${phi}^\\circ$." },
+        fr: { q: "Un segment de longueur ${L}$ cm est perpendiculaire au plan de projection. Quelle longueur (en cm) a son image en perspective cavalière avec les paramètres $\\varphi={phi}^\\circ$ et $q={qTex}$ ?", h: "On multiplie la longueur du segment perpendiculaire au plan de projection par le coefficient $q$ ; l'angle $\\varphi$ n'influence pas la longueur.", e: "${L}\\cdot{qTex}={res}\\text{ cm}$ ; on dessine le segment avec un angle de ${phi}^\\circ$." },
+        params: () => {
+            const cases = [
+                [4, 45, '\\frac12', 1/2], [6, 45, '\\frac12', 1/2], [8, 45, '\\frac12', 1/2], [10, 45, '\\frac12', 1/2], [12, 45, '\\frac12', 1/2],
+                [3, 60, '\\frac23', 2/3], [6, 60, '\\frac23', 2/3], [9, 60, '\\frac23', 2/3], [12, 60, '\\frac23', 2/3]
+            ];
+            const [L, phi, qTex, qv] = randChoice(cases);
+            return { L, phi, qTex, qv };
+        },
+        solve: (p) => { const res = Math.round(p.L * p.qv * 100) / 100; return { res, correct: fmt(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [p.L, p.qv === 0.5 ? p.L * 2 / 3 : p.L / 2, p.L * 2].filter(x => Number.isInteger(x) && x !== sol.res), 2) },
+
+    { id: 'm4', type: 'math', kind: 'number',
+        cs: { q: "Body $A,\\ B,\\ C$ leží v tomto pořadí na přímce a platí $|AB|:|BC|={m}:{k}$. V rovnoběžném průmětu je $|A'B'|={x}$ cm. Jaká je délka $|B'C'|$ (v cm)?", h: "Rovnoběžné promítání zachovává poměr délek úseček na jedné přímce.", e: "Poměr se zachovává: $|A'B'|:|B'C'|={m}:{k}$, tedy $|B'C'|={x}\\cdot{frac}={res}$ cm." },
+        fr: { q: "Les points $A,\\ B,\\ C$ sont situés dans cet ordre sur une droite et $|AB|:|BC|={m}:{k}$. Sur le projeté parallèle, $|A'B'|={x}$ cm. Quelle est la longueur $|B'C'|$ (en cm) ?", h: "La projection parallèle conserve le rapport des longueurs de segments d'une même droite.", e: "Le rapport est conservé : $|A'B'|:|B'C'|={m}:{k}$, donc $|B'C'|={x}\\cdot{frac}={res}$ cm." },
+        params: () => {
+            const triples = [[2,3,4],[1,2,3],[3,2,6],[2,5,4],[3,4,6],[4,3,8],[1,3,5],[5,2,10]];
+            const [m, k, x] = randChoice(triples);
+            return { m, k, x };
+        },
+        solve: (p) => { const res = p.x * p.k / p.m; return { res, correct: fmt(res), frac: (p.m === 1 ? String(p.k) : '\\dfrac' + p.k + p.m) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [p.x * p.m / p.k, p.x + p.k, p.x * p.k].filter(x => Number.isInteger(x) && x !== sol.res), 3) },
+
+    { id: 'm5', type: 'math', kind: 'number',
+        cs: { q: "Kružnice o poloměru ${r}$ cm leží ve vodorovné rovině. Jaký obvod (v cm) má ve volném rovnoběžném promítání ($\\varphi=45^\\circ$, $q=\\frac12$) rovnoběžník, do kterého vepíšeme její elipsu?", h: "Kružnici opíšeme čtverec, jeho boční strany se ve volném rovnoběžném promítání zkrátí na polovinu.", e: "Opsaný čtverec má stranu ${d}$ cm, jeho obrazem je rovnoběžník se stranami ${d}$ cm a ${r}$ cm. Obvod: $2\\cdot{d}+2\\cdot{r}={res}$ cm." },
+        fr: { q: "Un cercle de rayon ${r}$ cm est situé dans un plan horizontal. Quel est le périmètre (en cm), en perspective cavalière ($\\varphi=45^\\circ$, $q=\\frac12$), du parallélogramme dans lequel on inscrit son ellipse ?", h: "On circonscrit un carré au cercle ; en perspective cavalière, ses côtés latéraux sont réduits de moitié.", e: "Le carré circonscrit a un côté de ${d}$ cm, son image est un parallélogramme de côtés ${d}$ cm et ${r}$ cm. Périmètre : $2\\cdot{d}+2\\cdot{r}={res}$ cm." },
+        params: () => ({ r: randInt(2, 7) }),
+        solve: (p) => { const d = 2 * p.r; const res = 6 * p.r; return { d, res, correct: fmt(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [8 * p.r, 4 * p.r, 3 * p.r], 3) },
+
+    { id: 'm6', type: 'math', kind: 'yesno',
+        cs: { q: "Krychli $ABCDEFGH$ (dolní podstava $ABCD$, přední stěna $ABFE$) zobrazíme {viewCs}. Je hrana ${edge}$ viditelná?", h: "V každém pohledu je skrytý právě jeden vrchol krychle a neviditelné jsou tři hrany, které z něj vycházejí.", e: "{explCs}" },
+        fr: { q: "On représente le cube $ABCDEFGH$ (base inférieure $ABCD$, face avant $ABFE$) {viewFr}. L'arête ${edge}$ est-elle visible ?", h: "Dans chaque vue, exactement un sommet du cube est caché, et les trois arêtes qui en partent sont cachées.", e: "{explFr}" },
+        params: () => {
+            const v = randChoice(VIEWS);
+            const wantVisible = Math.random() < 0.5;
+            const pool = CUBE_EDGES.filter(e => (v.hid.indexOf(e) === -1) === wantVisible);
+            const edge = randChoice(pool);
+            return { viewCs: v.cs, viewFr: v.fr, hv: v.hv, hidList: v.hid.join(',\\ '), edge, visible: wantVisible };
+        },
+        solve: (p) => {
+            const explCs = 'Při zobrazení ' + p.viewCs + ' je skrytý vrchol $' + p.hv + '$ a neviditelné jsou hrany $' + p.hidList + '$. Hrana $' + p.edge + '$ je tedy ' + (p.visible ? 'viditelná.' : 'neviditelná.');
+            const explFr = 'Pour une représentation ' + p.viewFr + ', le sommet caché est $' + p.hv + '$ et les arêtes cachées sont $' + p.hidList + '$. L\'arête $' + p.edge + '$ est donc ' + (p.visible ? 'visible.' : 'cachée.');
+            return { yes: p.visible, explCs, explFr };
+        } }
+];
+
+const CATEGORIES_CS = ['bod', 'přímka', 'shodný útvar'];
+const CATEGORIES_FR = ['un point', 'une droite', 'une figure superposable'];
+const DISTRACTOR_CS = 'prázdná množina';
+const DISTRACTOR_FR = "l'ensemble vide";
+
+const YESNO_CS = ['ano', 'ne'];
+const YESNO_FR = ['oui', 'non'];
+const YESNO_DISTRACTORS_CS = ['nelze určit', 'záleží na délce hrany krychle'];
+const YESNO_DISTRACTORS_FR = ['impossible à déterminer', "cela dépend de la longueur de l'arête du cube"];
+
+function inject(str, dict) {
+    return str.replace(/\{(\w+)\}/g, (_, k) => (typeof dict[k] === 'number' ? fmt(dict[k]) : String(dict[k])));
+}
+
+function prepareQuestion(template, lang) {
+    const other = lang === 'cs' ? 'fr' : 'cs';
+    let q, tr;
+    if (template.type === 'concept') {
+        q = JSON.parse(JSON.stringify(template[lang]));
+        tr = JSON.parse(JSON.stringify(template[other]));
+    } else {
+        const p = template.params();
+        const sol = template.solve(p);
+        const dict = Object.assign({}, p, sol);
+        const build = (L) => ({ q: inject(template[L].q, dict), h: template[L].h, e: inject(template[L].e, dict) });
+        q = build(lang); tr = build(other);
+        let optsCs, optsFr, ansCs, ansFr;
+        if (template.kind === 'category') {
+            optsCs = [...CATEGORIES_CS, DISTRACTOR_CS];
+            optsFr = [...CATEGORIES_FR, DISTRACTOR_FR];
+            ansCs = CATEGORIES_CS[sol.idx]; ansFr = CATEGORIES_FR[sol.idx];
+        } else if (template.kind === 'yesno') {
+            optsCs = [...YESNO_CS, ...YESNO_DISTRACTORS_CS];
+            optsFr = [...YESNO_FR, ...YESNO_DISTRACTORS_FR];
+            ansCs = sol.yes ? YESNO_CS[0] : YESNO_CS[1];
+            ansFr = sol.yes ? YESNO_FR[0] : YESNO_FR[1];
+        } else {
+            const nums = template.wrongOptions(p, sol);
+            optsCs = nums; optsFr = [...nums];
+            ansCs = sol.correct; ansFr = sol.correct;
+        }
+        q.o = lang === 'cs' ? optsCs : optsFr;   q.a = lang === 'cs' ? ansCs : ansFr;
+        tr.o = lang === 'cs' ? optsFr : optsCs;  tr.a = lang === 'cs' ? ansFr : ansCs;
+    }
+    // jedno sdilene promichani pro obe jazykove verze
+    const order = shuffleArray([...Array(q.o.length).keys()]);
+    q.o = order.map(i => q.o[i]);
+    tr.o = order.map(i => tr.o[i]);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+        let answeredIndex = null;
+        let answeredCorrect = null;
+
+        function typesetNodes(nodes) {
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise(nodes).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('score-text').textContent = 'Body: 0';
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+            answeredIndex = null;
+            answeredCorrect = null;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+
+            renderContent();
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            const title = document.getElementById('question-title');
+            title.innerHTML = data.q;
+            title.className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.optText = opt;
+                btn.dataset.idx = idx;
+                if (answeredIndex !== null) {
+                    btn.disabled = true;
+                    if (opt === data.a) btn.classList.add('correct');
+                    else if (idx === answeredIndex) btn.classList.add('wrong');
+                } else {
+                    btn.onclick = () => checkAnswer(idx);
+                }
+                grid.appendChild(btn);
+            });
+
+            const hb = document.getElementById('hint-box');
+            if (!hb.classList.contains('hidden')) hb.innerHTML = data.h;
+            if (answeredIndex !== null) document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            typesetNodes([title, grid, hb, document.getElementById('feedback-explanation')]);
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            typesetNodes([hb]);
+        }
+
+        function checkAnswer(idx) {
+            if (answeredIndex !== null) return;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const isCorrect = (data.o[idx] === data.a);
+            answeredIndex = idx;
+            answeredCorrect = isCorrect;
+            if (isCorrect) score++;
+
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => {
+                b.disabled = true;
+                if (b.dataset.optText === data.a) b.classList.add('correct');
+                else if (parseInt(b.dataset.idx) === idx) b.classList.add('wrong');
+            });
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně! / Correct !" : "Chyba / Erreur";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            typesetNodes([document.getElementById('feedback-explanation')]);
+
+            userAnswers.push({ type: q.type, correct: isCorrect });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Základní pojmy stereometrie i volné rovnoběžné promítání zvládáte skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máte solidní znalosti, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máte, ale doporučuji zopakovat si vlastnosti rovnoběžného promítání a pravidlo volného rovnoběžného promítání ($\\varphi=45^\\circ$, $q=\\frac12$)."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat. Zaměřte se na značení, počty vrcholů, hran a stěn těles a na to, které hrany jsou v jednotlivých pohledech neviditelné."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáte dobře: rozumíte pojmům jako průmětna, průčelná rovina, nadhled či obrys.");
+            else weaknesses.push("Teorie vám dělá potíže: zopakujte si definici rovnoběžného promítání, jeho vlastnosti a vznik rotačních těles.");
+            if (mathPercent >= 70) strengths.push("Výpočty (počty hran, délky ve volném rovnoběžném promítání, zachování poměru, viditelnost) vám jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybujete: procvičte si zejména zkracování hran do hloubky a zachování poměru délek úseček.");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Zaměřte se na opakování: projděte si příručku, v teorii vyzkoušejte průzkumník krychle a spočítejte si řešené úlohy.");
+            } else {
+                recommendations.push("Skvělá práce! Kapitolu o základních pojmech stereometrie máte zvládnutou. Test si můžete zopakovat s jinými čísly a pak pokračovat kapitolou Stereometrie 2 – Polohové vlastnosti.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít kartičky k procvičení pojmů, značení a pravidel promítání.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Francouzským zadáním rozumíte skvěle, překlad jste použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština vám dělá mírné potíže. Zkuste si zvykat na odborné termíny jako plan de projection, perspective cavalière nebo arête cachée."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jste spoléhal/a na překlad. Zkuste si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné, zaměřte se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny, skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}×)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jste využil/a ${hintUsedCount}×. ${hintUsedCount > 3 ? "Zkuste se více spolehnout na vlastní úvahu." : "Dobře, že jste nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            typesetNodes([document.getElementById('ai-analysis')]);
+        }
+
+    </script>
+
+</body>
+</html>

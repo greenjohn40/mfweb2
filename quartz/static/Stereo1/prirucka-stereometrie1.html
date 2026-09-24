@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stereometrie 1 — Základní pojmy — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-stereometrie1.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Stereometrie 1 — Základní pojmy · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Stereometrie 1 — Základní pojmy</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Bod, přímka, rovina</h2>
+<p class="mb-3">Stereometrie je geometrie v prostoru. Jejími základními pojmy jsou bod, přímka a rovina. Nedefinujeme je, představujeme si je pomocí modelů (špička připínáčku, napnutá struna, hladina jezera).</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>body značíme velkými písmeny latinské abecedy: $A,\ B,\ M$</li>
+        <li>přímky značíme malými písmeny latinské abecedy: $p,\ q,\ a$</li>
+        <li>roviny značíme malými písmeny řecké abecedy: $\alpha,\ \beta,\ \rho$</li>
+    </ul>
+</div>
+<div class="warn-box mb-3">
+    <p>Přímka i rovina jsou neomezené. Model nebo obrázek vždy ukazuje jen jejich část.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> Vrcholy krychle $ABCDEFGH$ určují $\binom82=28$ různých přímek, protože žádné tři vrcholy neleží na jedné přímce ($12$ přímek obsahuje hranu, $12$ stěnovou a $4$ tělesovou úhlopříčku).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Mnohostěny</h2>
+<p class="mb-3">Mnohostěn je těleso, jehož povrch tvoří rovinné mnohoúhelníky (stěny). Strany stěn jsou hrany, jejich koncové body vrcholy.</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>krychle:</b> šest shodných čtvercových stěn, protější stěny rovnoběžné, sousední kolmé</li>
+        <li><b>kvádr:</b> protější stěny jsou shodné obdélníky, protější stěny rovnoběžné, sousední kolmé</li>
+        <li><b>$n$-boký hranol:</b> dvě shodné podstavy ($n$-úhelníky) v rovnoběžných rovinách, boční stěny rovnoběžníky; u kolmého hranolu jsou boční stěny obdélníky nebo čtverce</li>
+        <li><b>$n$-boký jehlan:</b> podstava je $n$-úhelník, boční stěny jsou trojúhelníky se společným vrcholem $V$ mimo rovinu podstavy</li>
+    </ul>
+</div>
+<p class="mb-3">Pro počet vrcholů $v$, hran $h$ a stěn $s$ platí: hranol $v=2n$, $h=3n$, $s=n+2$; jehlan $v=n+1$, $h=2n$, $s=n+1$.</p>
+<p class="mb-3"><b>Příklad:</b> Šestiboký hranol má $12$ vrcholů, $18$ hran a $8$ stěn. Pětiboký jehlan má $6$ vrcholů, $10$ hran a $6$ stěn.</p>
+<p class="mb-3">Pro každý konvexní mnohostěn platí <b>Eulerův vzorec</b> $v-h+s=2$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Rotační tělesa</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>rotační válec</b> vznikne otáčením obdélníku kolem přímky, na které leží jedna jeho strana; má dvě shodné kruhové podstavy v rovnoběžných rovinách</li>
+        <li><b>rotační kužel</b> vznikne otáčením pravoúhlého trojúhelníku kolem přímky, na které leží jedna jeho odvěsna; má kruhovou podstavu a vrchol $V$</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> Obdélník $4\text{ cm}\times2\text{ cm}$ otočený kolem delší strany dá válec s výškou $4$ cm a poloměrem $2$ cm, otočený kolem kratší strany válec s výškou $2$ cm a poloměrem $4$ cm.</p>
+<div class="warn-box mb-3">
+    <p>Válec a kužel nejsou mnohostěny (mají zakřivený plášť), Eulerův vzorec se na ně nevztahuje.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Rovnoběžné promítání</h2>
+<div class="def-box mb-3">
+    <p>Zvolíme průmětnu $\pi$ a směr promítání $s$, který s ní není rovnoběžný. Průmět $X'$ bodu $X$ je průsečík přímky vedené bodem $X$ rovnoběžně se směrem $s$ s průmětnou. Průmět útvaru je množina průmětů všech jeho bodů, obrys je hranice průmětu tělesa.</p>
+</div>
+<p class="mb-3">Modelem rovnoběžného promítání je stín předmětu za slunečného dne. Tyč zapíchnutá svisle do země vrhá v poledne krátký stín a k večeru dlouhý: průmět závisí na směru promítání.</p>
+<p class="mb-3">Jiná zobrazení: pravoúhlé promítání (směr kolmý k průmětně, technické výkresy s nárysem, půdorysem a bokorysem) a středové promítání (paprsky z jednoho bodu, rovnoběžky se sbíhají do úběžníku).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Vlastnosti rovnoběžného promítání</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>průmětem přímky nerovnoběžné se směrem $s$ je přímka, průmětem přímky rovnoběžné se směrem $s$ je bod</li>
+        <li>$K\in p\ \Rightarrow\ K'\in p'$ (incidence se zachovává)</li>
+        <li>průmětem rovnoběžek jsou rovnoběžky, jedna přímka, nebo dva body</li>
+        <li>poměr délek úseček na jedné přímce nebo na rovnoběžkách se zachovává, střed úsečky se promítne do středu průmětu</li>
+        <li>útvar v rovině rovnoběžné s průmětnou se promítne do shodného útvaru</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> Body $A,\ B,\ C$ leží v tomto pořadí na přímce, $|AB|:|BC|=2:3$ a $|A'B'|=4$ cm. Pak $|B'C'|=\frac32\cdot4=6$ cm.</p>
+<p class="mb-3"><b>Příklad:</b> Průmětem obdélníku je obecně rovnoběžník. Čtverec o straně $4$ cm v rovině rovnoběžné s průmětnou se zobrazí jako shodný čtverec.</p>
+<div class="warn-box mb-3">
+    <p>Délky úseček a velikosti úhlů se obecně nezachovávají, jen u útvarů v rovinách rovnoběžných s průmětnou.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Volné rovnoběžné promítání (VRP)</h2>
+<p class="mb-3">Průmětnou je svislá rovina, roviny s ní rovnoběžné jsou průčelné.</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>útvary v průčelných rovinách kreslíme ve skutečné velikosti</li>
+        <li>úsečky kolmé k průmětně kreslíme pod úhlem $\varphi=45^\circ$ k vodorovné přímce a zkracujeme je na polovinu ($q=\frac12$)</li>
+        <li>svislé úsečky zůstávají svislé, vodorovné průčelné úsečky vodorovné</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> Úsečka délky $6$ cm kolmá k průmětně se zobrazí jako úsečka délky $3$ cm pod úhlem $45^\circ$. Při parametrech $\varphi=60^\circ$ a $q=\frac23$ by měla délku $4$ cm a svírala by úhel $60^\circ$.</p>
+<p class="mb-3">Při $\varphi=45^\circ$ a $q=\frac12$ splyne v obraze krychle tělesová úhlopříčka $AG$ s hranou $AD$ (bod $D'$ leží na $A'G'$). V takové situaci je vhodné zvolit jiné parametry.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Nadhled, podhled a viditelnost</h2>
+<p class="mb-3">Míří-li hrany do hloubky v obraze vzhůru, jde o nadhled, míří-li dolů, o podhled; podle toho, zda míří doprava, nebo doleva, jde o pravý, nebo levý. Neviditelné hrany kreslíme čárkovaně. U krychle $ABCDEFGH$ (dolní podstava $ABCD$, přední stěna $ABFE$) je v každém pohledu skrytý jeden vrchol:</p>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Pohled</th>
+            <th class="text-left py-1 pr-2">Skrytý vrchol</th>
+            <th class="text-left py-1">Neviditelné hrany</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">pravý nadhled</td><td class="py-1 pr-2">$D$</td><td class="py-1">$AD,\ DC,\ DH$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">levý nadhled</td><td class="py-1 pr-2">$C$</td><td class="py-1">$BC,\ CG,\ DC$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">pravý podhled</td><td class="py-1 pr-2">$H$</td><td class="py-1">$DH,\ EH,\ HG$</td></tr>
+        <tr><td class="py-1 pr-2">levý podhled</td><td class="py-1 pr-2">$G$</td><td class="py-1">$CG,\ FG,\ HG$</td></tr>
+    </tbody>
+</table>
+<p class="mb-3">Nebude-li řečeno jinak, kreslíme v pravém nadhledu s $\varphi=45^\circ$ a $q=\frac12$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Zobrazení krychle a kvádru</h2>
+<p class="mb-3">Postup: přední stěnu $ABFE$ nakreslíme ve skutečné velikosti, z jejích vrcholů vedeme hrany do hloubky (pod $45^\circ$, poloviční), spojíme koncové body do zadní stěny $DCGH$ a určíme viditelnost.</p>
+<p class="mb-3"><b>Příklad:</b> Kvádr $5\times4\times3$ cm (šířka, hloubka, výška): přední stěna je obdélník $5\times3$ cm, hrany do hloubky mají v obraze délku $2$ cm a jejich koncové body jsou posunuty o $\sqrt2\doteq1{,}41$ cm doprava a nahoru. Neviditelné jsou hrany $AD$, $DC$, $DH$. Obraz středu tělesové úhlopříčky $AG$ je střed úsečky $A'G'$.</p>
+<div class="warn-box mb-3">
+    <p>Úsečky, které nejsou průčelné, nemají v obraze skutečnou délku: tělesová úhlopříčka tohoto kvádru měří $\sqrt{50}\doteq7{,}07$ cm, v obraze však asi $7{,}79$ cm.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Zobrazení jehlanu</h2>
+<p class="mb-3">Nejdřív zobrazíme podstavu a její střed $S$ (u čtyřbokého jehlanu průsečík úhlopříček podstavy). Výška je svislá, a proto se nezkracuje: vrchol $V'$ leží svisle nad $S'$ ve skutečné výšce. Pak doplníme boční hrany a viditelnost.</p>
+<p class="mb-3"><b>Příklad:</b> Pravidelný čtyřboký jehlan s podstavnou hranou $4$ cm a výškou $5$ cm: podstava je rovnoběžník se stranami $4$ cm a $2$ cm a úhlem $45^\circ$, $V'$ leží $5$ cm nad $S'$. V pravém nadhledu jsou neviditelné hrany $AD$, $DC$ a $DV$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Průmět kružnice: elipsa</h2>
+<p class="mb-3">Kružnice ve vodorovné rovině se zobrazí jako elipsa. Náčrt: kružnici opíšeme čtverec, ten zobrazíme jako rovnoběžník, vyznačíme středy jeho stran a obraz středu kružnice; elipsu vedeme středy stran tak, aby se v nich stran dotýkala. Funguje to, protože se zachovává incidence (dotyk) i poměr (středy stran).</p>
+<p class="mb-3"><b>Příklad:</b> Kružnice o poloměru $3$ cm: opsaný čtverec o straně $6$ cm se zobrazí jako rovnoběžník se stranami $6$ cm a $3$ cm a úhlem $45^\circ$.</p>
+<div class="warn-box mb-3">
+    <p>Osy elipsy nejsou rovnoběžné se stranami rovnoběžníku. Elipsu nekreslíme jako kružnici zmáčknutou ve svislém směru.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Náčrt válce a kužele</h2>
+<p class="mb-3"><b>Válec:</b> Načrtneme elipsu dolní podstavy se středem $S_1$, svisle nad ním ve výšce válce vyznačíme střed $S_2$ horní podstavy a načrtneme stejnou elipsu. Obě elipsy spojíme svislými obrysovými površkami. Zadní polovina dolní elipsy je neviditelná.</p>
+<p class="mb-3"><b>Kužel:</b> Načrtneme elipsu podstavy se středem $S$, svisle nad ním vyznačíme vrchol $V$ a z vrcholu vedeme dvě tečny k elipse (obrysové površky). Část elipsy za body dotyku je neviditelná.</p>
+<p class="mb-3"><b>Příklad:</b> Válec i kužel s poloměrem $2$ cm a výškou $5$ cm mají podstavy vepsané do rovnoběžníku se stranami $4$ cm a $2$ cm; středy podstav válce, resp. střed podstavy a vrchol kužele, leží $5$ cm nad sebou.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">12. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Téma</th>
+            <th class="text-left py-1">Co si zapamatovat</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">značení</td><td class="py-1">body $A,\ B$, přímky $p,\ q$, roviny $\alpha,\ \beta$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">hranol, jehlan</td><td class="py-1">hranol: $v=2n$, $h=3n$, $s=n+2$; jehlan: $v=n+1$, $h=2n$, $s=n+1$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">rotační tělesa</td><td class="py-1">válec (otáčení obdélníku), kužel (otáčení pravoúhlého trojúhelníku)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">rovnoběžné promítání</td><td class="py-1">zachovává rovnoběžnost, incidenci a poměr úseček na přímce; průčelné útvary ve skutečné velikosti</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">VRP</td><td class="py-1">hrany do hloubky pod $45^\circ$, zkrácené na polovinu; pravý nadhled</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">viditelnost</td><td class="py-1">neviditelné hrany čárkovaně</td></tr>
+        <tr><td class="py-1 pr-2">kružnice</td><td class="py-1">ve vodorovné rovině se zobrazí jako elipsa vepsaná do rovnoběžníku</td></tr>
+    </tbody>
+</table>
+<p class="mb-3"><b>Co bude dál:</b> Kapitola Stereometrie 2 – Polohové vlastnosti se věnuje vzájemné poloze dvou přímek (včetně mimoběžek), přímky a roviny a dvou rovin a řezům těles. Úlohy budeme řešit v náčrtech ve volném rovnoběžném promítání.</p>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Stéréométrie 1 — Notions fondamentales</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Point, droite, plan</h2>
+<p class="mb-3">La stéréométrie est la géométrie dans l'espace. Ses notions fondamentales sont le point, la droite et le plan. On ne les définit pas, on se les représente à l'aide de modèles (pointe d'une punaise, corde tendue, surface d'un lac).</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>les points sont notés par des lettres majuscules de l'alphabet latin : $A,\ B,\ M$</li>
+        <li>les droites sont notées par des lettres minuscules de l'alphabet latin : $p,\ q,\ a$</li>
+        <li>les plans sont notés par des lettres minuscules de l'alphabet grec : $\alpha,\ \beta,\ \rho$</li>
+    </ul>
+</div>
+<div class="warn-box mb-3">
+    <p>La droite et le plan sont illimités. Un modèle ou un dessin n'en montre toujours qu'une partie.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> Les sommets du cube $ABCDEFGH$ déterminent $\binom82=28$ droites distinctes, car trois sommets ne sont jamais alignés ($12$ droites contiennent une arête, $12$ une diagonale de face et $4$ une diagonale du cube).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Polyèdres</h2>
+<p class="mb-3">Un polyèdre est un solide dont la surface est formée de polygones plans (les faces). Les côtés des faces sont les arêtes, leurs extrémités sont les sommets.</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>cube :</b> six faces carrées identiques, faces opposées parallèles, faces voisines perpendiculaires</li>
+        <li><b>pavé droit :</b> les faces opposées sont des rectangles identiques, faces opposées parallèles, faces voisines perpendiculaires</li>
+        <li><b>prisme à base $n$-gonale :</b> deux bases identiques (polygones à $n$ côtés) dans des plans parallèles, faces latérales en forme de parallélogrammes ; dans un prisme droit, les faces latérales sont des rectangles ou des carrés</li>
+        <li><b>pyramide à base $n$-gonale :</b> la base est un polygone à $n$ côtés, les faces latérales sont des triangles ayant un sommet commun $V$ hors du plan de la base</li>
+    </ul>
+</div>
+<p class="mb-3">Pour le nombre de sommets $v$, d'arêtes $h$ et de faces $s$, on a : prisme $v=2n$, $h=3n$, $s=n+2$ ; pyramide $v=n+1$, $h=2n$, $s=n+1$.</p>
+<p class="mb-3"><b>Exemple :</b> Un prisme hexagonal a $12$ sommets, $18$ arêtes et $8$ faces. Une pyramide à base pentagonale a $6$ sommets, $10$ arêtes et $6$ faces.</p>
+<p class="mb-3">Pour tout polyèdre convexe, on a la <b>relation d'Euler</b> $v-h+s=2$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Solides de révolution</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>le <b>cylindre de révolution</b> est obtenu en faisant tourner un rectangle autour de la droite portant l'un de ses côtés ; il possède deux bases circulaires identiques dans des plans parallèles</li>
+        <li>le <b>cône de révolution</b> est obtenu en faisant tourner un triangle rectangle autour de la droite portant l'un des côtés de l'angle droit ; il possède une base circulaire et un sommet $V$</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> Un rectangle de $4\text{ cm}\times2\text{ cm}$ tournant autour du grand côté donne un cylindre de hauteur $4$ cm et de rayon $2$ cm ; tournant autour du petit côté, il donne un cylindre de hauteur $2$ cm et de rayon $4$ cm.</p>
+<div class="warn-box mb-3">
+    <p>Le cylindre et le cône ne sont pas des polyèdres (leur surface latérale est courbe), la relation d'Euler ne s'applique pas à eux.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Projection parallèle</h2>
+<div class="def-box mb-3">
+    <p>On choisit un plan de projection $\pi$ et une direction de projection $s$ qui ne lui est pas parallèle. Le projeté $X'$ d'un point $X$ est le point d'intersection avec le plan de projection de la droite menée par $X$ parallèlement à la direction $s$. Le projeté d'une figure est l'ensemble des projetés de tous ses points, le contour apparent est la frontière du projeté d'un solide.</p>
+</div>
+<p class="mb-3">L'ombre d'un objet par une journée ensoleillée est un modèle de projection parallèle. Un bâton planté verticalement dans le sol projette à midi une ombre courte et le soir une ombre longue : le projeté dépend de la direction de projection.</p>
+<p class="mb-3">Autres représentations : la projection orthogonale (direction perpendiculaire au plan de projection, dessins techniques avec vue de face, vue de dessus et vue de côté) et la projection centrale (rayons issus d'un même point, les droites parallèles se rejoignent en un point de fuite).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Propriétés de la projection parallèle</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>le projeté d'une droite non parallèle à la direction $s$ est une droite, le projeté d'une droite parallèle à la direction $s$ est un point</li>
+        <li>$K\in p\ \Rightarrow\ K'\in p'$ (l'incidence est conservée)</li>
+        <li>les projetés de droites parallèles sont des droites parallèles, une seule droite ou deux points</li>
+        <li>le rapport des longueurs de segments situés sur une même droite ou sur des droites parallèles est conservé, le milieu d'un segment se projette sur le milieu du projeté</li>
+        <li>une figure située dans un plan parallèle au plan de projection se projette sur une figure superposable</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> Les points $A,\ B,\ C$ sont situés dans cet ordre sur une droite, $|AB|:|BC|=2:3$ et $|A'B'|=4$ cm. Alors $|B'C'|=\frac32\cdot4=6$ cm.</p>
+<p class="mb-3"><b>Exemple :</b> Le projeté d'un rectangle est en général un parallélogramme. Un carré de côté $4$ cm situé dans un plan parallèle au plan de projection est représenté par un carré superposable.</p>
+<div class="warn-box mb-3">
+    <p>En général, les longueurs des segments et la mesure des angles ne sont pas conservées, sauf pour les figures situées dans des plans parallèles au plan de projection.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Perspective cavalière</h2>
+<p class="mb-3">Le plan de projection est un plan vertical, les plans qui lui sont parallèles sont les plans frontaux.</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>les figures situées dans des plans frontaux sont dessinées en vraie grandeur</li>
+        <li>les segments perpendiculaires au plan de projection sont dessinés avec un angle $\varphi=45^\circ$ par rapport à l'horizontale et réduits de moitié ($q=\frac12$)</li>
+        <li>les segments verticaux restent verticaux, les segments frontaux horizontaux restent horizontaux</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> Un segment de longueur $6$ cm perpendiculaire au plan de projection est représenté par un segment de longueur $3$ cm avec un angle de $45^\circ$. Avec les paramètres $\varphi=60^\circ$ et $q=\frac23$, il mesurerait $4$ cm et formerait un angle de $60^\circ$.</p>
+<p class="mb-3">Avec $\varphi=45^\circ$ et $q=\frac12$, la diagonale $AG$ du cube se confond sur le dessin avec l'arête $AD$ (le point $D'$ appartient à $A'G'$). Dans une telle situation, il vaut mieux choisir d'autres paramètres.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Vue plongeante, contre-plongée et visibilité</h2>
+<p class="mb-3">Si les arêtes fuyantes montent sur le dessin, on parle de vue plongeante ; si elles descendent, de contre-plongée ; selon qu'elles partent vers la droite ou vers la gauche, la vue est à droite ou à gauche. Les arêtes cachées sont dessinées en pointillés. Pour le cube $ABCDEFGH$ (base inférieure $ABCD$, face avant $ABFE$), chaque vue cache un sommet :</p>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Vue</th>
+            <th class="text-left py-1 pr-2">Sommet caché</th>
+            <th class="text-left py-1">Arêtes cachées</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">vue plongeante à droite</td><td class="py-1 pr-2">$D$</td><td class="py-1">$AD,\ DC,\ DH$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">vue plongeante à gauche</td><td class="py-1 pr-2">$C$</td><td class="py-1">$BC,\ CG,\ DC$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">contre-plongée à droite</td><td class="py-1 pr-2">$H$</td><td class="py-1">$DH,\ EH,\ HG$</td></tr>
+        <tr><td class="py-1 pr-2">contre-plongée à gauche</td><td class="py-1 pr-2">$G$</td><td class="py-1">$CG,\ FG,\ HG$</td></tr>
+    </tbody>
+</table>
+<p class="mb-3">Sauf indication contraire, on dessine en vue plongeante à droite avec $\varphi=45^\circ$ et $q=\frac12$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Représentation du cube et du pavé droit</h2>
+<p class="mb-3">Démarche : on dessine la face avant $ABFE$ en vraie grandeur, on trace depuis ses sommets les arêtes fuyantes (à $45^\circ$, réduites de moitié), on relie leurs extrémités pour obtenir la face arrière $DCGH$ et on détermine la visibilité.</p>
+<p class="mb-3"><b>Exemple :</b> Pavé droit de $5\times4\times3$ cm (largeur, profondeur, hauteur) : la face avant est un rectangle de $5\times3$ cm, les arêtes fuyantes mesurent $2$ cm sur le dessin et leurs extrémités sont décalées de $\sqrt2\approx1{,}41$ cm vers la droite et vers le haut. Les arêtes cachées sont $AD$, $DC$, $DH$. L'image du milieu de la diagonale $AG$ est le milieu du segment $A'G'$.</p>
+<div class="warn-box mb-3">
+    <p>Les segments qui ne sont pas frontaux n'ont pas leur vraie longueur sur le dessin : la diagonale de ce pavé mesure $\sqrt{50}\approx7{,}07$ cm, mais environ $7{,}79$ cm sur le dessin.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Représentation de la pyramide</h2>
+<p class="mb-3">On représente d'abord la base et son centre $S$ (pour une pyramide à base carrée, le point d'intersection des diagonales de la base). La hauteur est verticale, donc elle n'est pas réduite : le sommet $V'$ se trouve à la verticale de $S'$, à la hauteur réelle. On complète ensuite les arêtes latérales et la visibilité.</p>
+<p class="mb-3"><b>Exemple :</b> Pyramide régulière à base carrée d'arête de base $4$ cm et de hauteur $5$ cm : la base est un parallélogramme de côtés $4$ cm et $2$ cm formant un angle de $45^\circ$, $V'$ se trouve $5$ cm au-dessus de $S'$. En vue plongeante à droite, les arêtes cachées sont $AD$, $DC$ et $DV$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Projeté d'un cercle : l'ellipse</h2>
+<p class="mb-3">Un cercle situé dans un plan horizontal est représenté par une ellipse. Esquisse : on circonscrit un carré au cercle, on le représente par un parallélogramme, on marque les milieux de ses côtés et l'image du centre du cercle ; on trace l'ellipse par les milieux des côtés de manière à ce qu'elle y soit tangente aux côtés. Cela fonctionne parce que l'incidence (le contact) et les rapports (les milieux des côtés) sont conservés.</p>
+<p class="mb-3"><b>Exemple :</b> Cercle de rayon $3$ cm : le carré circonscrit de côté $6$ cm est représenté par un parallélogramme de côtés $6$ cm et $3$ cm formant un angle de $45^\circ$.</p>
+<div class="warn-box mb-3">
+    <p>Les axes de l'ellipse ne sont pas parallèles aux côtés du parallélogramme. On ne dessine pas l'ellipse comme un cercle écrasé verticalement.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Esquisse du cylindre et du cône</h2>
+<p class="mb-3"><b>Cylindre :</b> On esquisse l'ellipse de la base inférieure de centre $S_1$ ; à la verticale au-dessus, à la hauteur du cylindre, on marque le centre $S_2$ de la base supérieure et on esquisse la même ellipse. On relie les deux ellipses par les génératrices de contour verticales. La moitié arrière de l'ellipse inférieure est cachée.</p>
+<p class="mb-3"><b>Cône :</b> On esquisse l'ellipse de la base de centre $S$, on marque à la verticale au-dessus le sommet $V$ et, depuis le sommet, on trace les deux tangentes à l'ellipse (les génératrices de contour). La partie de l'ellipse derrière les points de contact est cachée.</p>
+<p class="mb-3"><b>Exemple :</b> Un cylindre et un cône de rayon $2$ cm et de hauteur $5$ cm ont leurs bases inscrites dans un parallélogramme de côtés $4$ cm et $2$ cm ; les centres des bases du cylindre, ou le centre de la base et le sommet du cône, sont situés à $5$ cm l'un au-dessus de l'autre.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">12. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Thème</th>
+            <th class="text-left py-1">À retenir</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">notations</td><td class="py-1">points $A,\ B$, droites $p,\ q$, plans $\alpha,\ \beta$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">prisme, pyramide</td><td class="py-1">prisme : $v=2n$, $h=3n$, $s=n+2$ ; pyramide : $v=n+1$, $h=2n$, $s=n+1$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">solides de révolution</td><td class="py-1">cylindre (rotation d'un rectangle), cône (rotation d'un triangle rectangle)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">projection parallèle</td><td class="py-1">conserve le parallélisme, l'incidence et le rapport des segments d'une droite ; figures frontales en vraie grandeur</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">perspective cavalière</td><td class="py-1">arêtes fuyantes à $45^\circ$, réduites de moitié ; vue plongeante à droite</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">visibilité</td><td class="py-1">arêtes cachées en pointillés</td></tr>
+        <tr><td class="py-1 pr-2">cercle</td><td class="py-1">dans un plan horizontal, il est représenté par une ellipse inscrite dans un parallélogramme</td></tr>
+    </tbody>
+</table>
+<p class="mb-3"><b>Et ensuite ?</b> Le chapitre Stéréométrie 2 – Positions relatives traite de la position relative de deux droites (y compris les droites non coplanaires), d'une droite et d'un plan et de deux plans, ainsi que des sections de solides. Nous résoudrons les problèmes sur des dessins en perspective cavalière.</p>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Stéréométrie 1 — Notions fondamentales · Manuel' : 'Stereometrie 1 — Základní pojmy · Příručka';
+    document.title = czVisible ? 'Stéréométrie 1 — Notions fondamentales — Manuel' : 'Stereometrie 1 — Základní pojmy — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>
