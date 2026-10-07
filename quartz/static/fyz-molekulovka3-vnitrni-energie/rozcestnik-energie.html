@@ -27,9 +27,6 @@
             transform: scale(1.05);
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
         }
-        .pos-5:hover {
-            transform: translateX(-50%) scale(1.05);
-        }
         .central-node {
             background: linear-gradient(135deg, #be123c 0%, #9f1239 100%);
             color: white;
@@ -83,13 +80,14 @@
         }
         .flag { display: inline-block; margin-right: 0.5rem; }
 
-        /* Desktop positions – 5 uzlů */
+        /* Desktop positions – 6 uzlů */
         @media (min-width: 1024px) {
-            .pos-1 { position: absolute; top: 10%; left: 15%; }
-            .pos-2 { position: absolute; top: 10%; right: 15%; }
-            .pos-3 { position: absolute; top: 40%; left: 5%; }
-            .pos-4 { position: absolute; top: 40%; right: 5%; }
-            .pos-5 { position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); }
+            .pos-1 { position: absolute; top: 8%; left: 15%; }
+            .pos-2 { position: absolute; top: 8%; right: 15%; }
+            .pos-3 { position: absolute; top: 40%; left: 3%; }
+            .pos-4 { position: absolute; top: 40%; right: 3%; }
+            .pos-5 { position: absolute; bottom: 8%; left: 15%; }
+            .pos-6 { position: absolute; bottom: 8%; right: 15%; }
         }
         /* Mobile layout */
         @media (max-width: 1023px) {
@@ -102,13 +100,9 @@
                 width: 180px;
                 height: 180px;
             }
-            .pos-1, .pos-2, .pos-3, .pos-4, .pos-5 {
+            .pos-1, .pos-2, .pos-3, .pos-4, .pos-5, .pos-6 {
                 position: static !important;
                 margin-bottom: 1rem;
-                transform: none !important;
-            }
-            .pos-5:hover {
-                transform: scale(1.05) !important;
             }
             .line-svg { display: none; }
         }
@@ -160,8 +154,16 @@
             <div class="text-xs mt-2 text-rose-700">Řešit úlohy →</div>
         </a>
 
-        <!-- 5. Interaktivní test -->
-        <a href="test-energie.html" target="_blank" class="node link-card pos-5 border-rose-200 bg-rose-50" data-node="5">
+        <!-- 5. Neřešené úlohy (PDF) -->
+        <a href="neresene-energie.html" target="_blank" class="node link-card pos-5" data-node="5">
+            <div class="category-label">Samostatná práce</div>
+            <div class="font-bold"><span class="flag">📄</span>Neřešené úlohy</div>
+            <div class="text-xs mt-1 text-slate-500">Zadání ve formátu PDF k samostatnému řešení</div>
+            <div class="text-xs mt-2 text-rose-700">Zobrazit zadání →</div>
+        </a>
+
+        <!-- 6. Interaktivní test -->
+        <a href="test-energie.html" target="_blank" class="node link-card pos-6 border-rose-200 bg-rose-50" data-node="6">
             <div class="category-label text-rose-600">Evaluace</div>
             <div class="font-bold">Interaktivní test</div>
             <div class="text-xs mt-1 text-slate-500">CLIL: fyzika + francouzština, s analýzou výkonu</div>

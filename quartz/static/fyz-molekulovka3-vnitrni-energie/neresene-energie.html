@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vnitřní energie – Neřešené úlohy</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .pdf-frame {
+            width: 100%;
+            height: calc(100vh - 220px);
+            min-height: 600px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <header class="text-center mb-6">
+        <h1 class="text-3xl font-extrabold text-slate-900 mb-2">Vnitřní energie – neřešené úlohy</h1>
+        <p class="text-slate-600">Exercices non corrigés – zadání k samostatnému řešení</p>
+    </header>
+
+    <div class="flex flex-wrap justify-center gap-3 mb-4">
+        <a href="rozcestnik-energie.html" class="px-4 py-2 rounded-lg border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-sm font-semibold">← Rozcestník</a>
+        <a id="open-link" href="neresene-ulohy-energie.pdf" target="_blank" class="px-4 py-2 rounded-lg bg-rose-700 text-white hover:bg-rose-800 text-sm font-semibold">Otevřít PDF v novém okně</a>
+        <a id="download-link" href="neresene-ulohy-energie.pdf" download class="px-4 py-2 rounded-lg border border-rose-300 bg-rose-50 text-rose-700 hover:bg-rose-100 text-sm font-semibold">Stáhnout PDF</a>
+    </div>
+
+    <object class="pdf-frame" data="neresene-ulohy-energie.pdf#view=FitH" type="application/pdf">
+        <div class="p-8 text-center text-slate-600">
+            Váš prohlížeč neumí zobrazit PDF přímo na stránce.<br>
+            Použijte tlačítko <strong>Otevřít PDF v novém okně</strong> nebo <strong>Stáhnout PDF</strong> výše.
+        </div>
+    </object>
+
+    <footer class="mt-8 pt-6 border-t border-slate-200 text-center text-slate-500 text-sm">
+        Metodický materiál pro výuku fyziky a CLIL.
+    </footer>
+</div>
+
+</body>
+</html>
