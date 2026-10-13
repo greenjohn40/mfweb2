@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Stereometrie 2 — Polohové vlastnosti a řezy / Géométrie dans l'espace 2 — Positions relatives et sections</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-stereometrie2.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Stereometrie 2</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Géométrie dans l'espace 2 — Positions relatives et sections
+    </footer>
+
+    <script>
+const rawData = {
+        "cs": [
+                {
+                        "q": "Kolika různými body je přímka jednoznačně určena?",
+                        "a": "dvěma různými body"
+                },
+                {
+                        "q": "Jaké čtyři vzájemné polohy mohou mít dvě přímky v prostoru?",
+                        "a": "různoběžky, rovnoběžky různé, totožné přímky, mimoběžky"
+                },
+                {
+                        "q": "Co mají společného různoběžky a rovnoběžky (na rozdíl od mimoběžek)?",
+                        "a": "leží v jedné rovině"
+                },
+                {
+                        "q": "Co jsou mimoběžky?",
+                        "a": "přímky, které neleží v jedné rovině (nemají společný bod a nejsou rovnoběžné)"
+                },
+                {
+                        "q": "Jak se nazývá jediný společný bod dvou různoběžek?",
+                        "a": "průsečík"
+                },
+                {
+                        "q": "Jaká je vzájemná poloha přímek $AB$ a $CG$ v krychli $ABCDEFGH$?",
+                        "a": "mimoběžky"
+                },
+                {
+                        "q": "Jaká je vzájemná poloha přímek $AF$ a $DG$ v krychli $ABCDEFGH$?",
+                        "a": "rovnoběžky různé"
+                },
+                {
+                        "q": "V jakém bodě se protínají tělesové úhlopříčky $AG$ a $BH$ krychle?",
+                        "a": "ve středu krychle $S$"
+                },
+                {
+                        "q": "Proč z obrázku nelze poznat, zda jsou dvě přímky různoběžné?",
+                        "a": "průměty mimoběžek se na obrázku také mohou křížit"
+                },
+                {
+                        "q": "Co je příčka dvou mimoběžek?",
+                        "a": "přímka, která obě mimoběžky protíná"
+                },
+                {
+                        "q": "Jak sestrojíme příčku mimoběžek $p$, $q$ procházející bodem $M$?",
+                        "a": "rovinou $Mp$ protneme $q$ v bodě $Y$; příčkou je $MY$"
+                },
+                {
+                        "q": "Jakými čtyřmi způsoby lze určit rovinu?",
+                        "a": "třemi body neležícími na přímce, přímkou a bodem mimo ni, dvěma různoběžkami, dvěma různými rovnoběžkami"
+                },
+                {
+                        "q": "Jak se nazývají body, které leží na jedné přímce?",
+                        "a": "kolineární"
+                },
+                {
+                        "q": "Jak se nazývají body, které leží v jedné rovině?",
+                        "a": "komplanární"
+                },
+                {
+                        "q": "Leží body $A$, $C$, $F$, $H$ krychle v jedné rovině?",
+                        "a": "ne, jsou to vrcholy pravidelného čtyřstěnu"
+                },
+                {
+                        "q": "Kolik rovnoběžek lze daným bodem vést k dané přímce?",
+                        "a": "právě jednu"
+                },
+                {
+                        "q": "Platí-li $p\\parallel q$ a $q\\parallel r$, co platí pro $p$ a $r$?",
+                        "a": "$p\\parallel r$ (tranzitivita)"
+                },
+                {
+                        "q": "Jaké tři vzájemné polohy mohou mít přímka a rovina?",
+                        "a": "různoběžné, rovnoběžné, přímka leží v rovině"
+                },
+                {
+                        "q": "Kdy přímka leží v rovině?",
+                        "a": "když v rovině leží dva její různé body"
+                },
+                {
+                        "q": "Jak zní kritérium rovnoběžnosti přímky s rovinou?",
+                        "a": "přímka je rovnoběžná s rovinou, právě když v rovině existuje přímka s ní rovnoběžná"
+                },
+                {
+                        "q": "Proč je přímka $S_{AE}S_{EH}$ rovnoběžná s rovinou $BDG$?",
+                        "a": "je rovnoběžná s $AH$ a $AH\\parallel BG\\subseteq BDG$"
+                },
+                {
+                        "q": "Jaké tři vzájemné polohy mohou mít dvě roviny?",
+                        "a": "různoběžné, rovnoběžné různé, totožné"
+                },
+                {
+                        "q": "Jak se nazývá společná přímka dvou různoběžných rovin?",
+                        "a": "průsečnice"
+                },
+                {
+                        "q": "Jak zní kritérium rovnoběžnosti dvou rovin?",
+                        "a": "obsahuje-li rovina $\\alpha$ dvě různoběžky rovnoběžné s rovinou $\\beta$, je $\\alpha\\parallel\\beta$"
+                },
+                {
+                        "q": "Proč jsou roviny $AFH$ a $BDG$ krychle rovnoběžné?",
+                        "a": "$AF\\parallel DG$ a $AH\\parallel BG$ (a roviny nejsou totožné)"
+                },
+                {
+                        "q": "Co je svazek rovin?",
+                        "a": "roviny, které mají jednu společnou přímku"
+                },
+                {
+                        "q": "Kolik společných bodů mají roviny $ABC$, $ADH$ a $ABF$ krychle?",
+                        "a": "jediný, bod $A$"
+                },
+                {
+                        "q": "Jakou polohu mají roviny $ABG$, $CDE$ a $ABC$ krychle?",
+                        "a": "každé dvě jsou různoběžné, tři průsečnice jsou rovnoběžné, společný bod nemají"
+                },
+                {
+                        "q": "Jak se nazývá metoda hledání průsečíku přímky s rovinou?",
+                        "a": "metoda pomocné roviny"
+                },
+                {
+                        "q": "Jaké jsou tři kroky metody pomocné roviny?",
+                        "a": "přímkou $p$ proložíme rovinu $\\rho$, sestrojíme $r=\\rho\\cap\\alpha$, průsečík je $P=p\\cap r$"
+                },
+                {
+                        "q": "Jakou pomocnou rovinu volíme u hranolu?",
+                        "a": "rovnoběžnou s bočními hranami"
+                },
+                {
+                        "q": "Jakou pomocnou rovinu volíme u jehlanu?",
+                        "a": "rovinu procházející vrcholem"
+                },
+                {
+                        "q": "$K=S_{EF}$, $L=S_{CG}$. Jaké jsou průměty $K'$, $L'$ do podstavy $ABCD$?",
+                        "a": "$K'=S_{AB}$, $L'=C$"
+                },
+                {
+                        "q": "$K=S_{EF}$, $L=S_{CG}$, $P=KL\\cap ABC$. Jakou roli má bod $L$ na úsečce $KP$?",
+                        "a": "je jejím středem"
+                },
+                {
+                        "q": "Body $K$, $L$ leží ve stěně $ABV$ jehlanu. Kde leží průsečík $KL$ s rovinou podstavy?",
+                        "a": "na přímce $AB$"
+                },
+                {
+                        "q": "Co je řez tělesa rovinou?",
+                        "a": "průnik tělesa a roviny"
+                },
+                {
+                        "q": "Jaký útvar je řez hranatého tělesa?",
+                        "a": "mnohoúhelník, jehož strany leží ve stěnách tělesa"
+                },
+                {
+                        "q": "Co uděláme se dvěma body řezu, které leží ve stejné stěně?",
+                        "a": "spojíme je, úsečka je stranou řezu"
+                },
+                {
+                        "q": "Jak protne rovina řezu dvě rovnoběžné stěny?",
+                        "a": "ve dvou rovnoběžných úsečkách"
+                },
+                {
+                        "q": "Kde se protínají průsečnice roviny řezu se dvěma sousedními stěnami?",
+                        "a": "na přímce společné hrany těchto stěn"
+                },
+                {
+                        "q": "Kolik stran může mít nejvýše řez krychle?",
+                        "a": "šest"
+                },
+                {
+                        "q": "Jak kreslíme strany řezu v neviditelných stěnách?",
+                        "a": "čárkovaně"
+                },
+                {
+                        "q": "$K\\in AB$, $|AK|=2$; $L\\in BC$, $|BL|=2$; $M\\in FG$, $|FM|=4$. Jaký mnohoúhelník je řezem krychle o hraně $6$?",
+                        "a": "pětiúhelník"
+                },
+                {
+                        "q": "$K\\in AE$, $|AK|=2$; $L=S_{BC}$; $M\\in GH$, $|GM|=2$. Jaký mnohoúhelník je řezem krychle o hraně $6$?",
+                        "a": "šestiúhelník"
+                },
+                {
+                        "q": "Kdy při konstrukci řezu potřebujeme průsečík přímky s rovinou stěny?",
+                        "a": "když spojování bodů a rovnoběžky nestačí (body neleží ve stejných ani rovnoběžných stěnách)"
+                },
+                {
+                        "q": "$K$, $L$ jsou středy hran $AV$, $CV$ jehlanu. S čím je přímka $KL$ rovnoběžná?",
+                        "a": "s úhlopříčkou $AC$, a tedy s rovinou podstavy"
+                },
+                {
+                        "q": "Kolik průsečíků má obvykle přímka s povrchem konvexního tělesa?",
+                        "a": "dva"
+                },
+                {
+                        "q": "Jaká je viditelnost úsečky mezi dvěma průsečíky přímky s tělesem?",
+                        "a": "je neviditelná (leží uvnitř tělesa)"
+                },
+                {
+                        "q": "Kolik společných bodů potřebujeme k určení průsečnice dvou rovin?",
+                        "a": "dva různé"
+                },
+                {
+                        "q": "Které dva body určují průsečnici rovin $ACF$ a $BDE$ krychle?",
+                        "a": "střed podstavy $ABCD$ a střed stěny $ABFE$"
+                }
+        ],
+        "fr": [
+                {
+                        "q": "Par combien de points distincts une droite est-elle déterminée de manière unique ?",
+                        "a": "par deux points distincts"
+                },
+                {
+                        "q": "Quelles sont les quatre positions relatives possibles de deux droites dans l'espace ?",
+                        "a": "sécantes, parallèles distinctes, confondues, non coplanaires"
+                },
+                {
+                        "q": "Qu'ont en commun les droites sécantes et les droites parallèles (contrairement aux droites non coplanaires) ?",
+                        "a": "elles sont dans un même plan"
+                },
+                {
+                        "q": "Que sont des droites non coplanaires ?",
+                        "a": "des droites qui ne sont pas dans un même plan (sans point commun et non parallèles)"
+                },
+                {
+                        "q": "Comment appelle-t-on l'unique point commun de deux droites sécantes ?",
+                        "a": "le point d'intersection"
+                },
+                {
+                        "q": "Quelle est la position relative des droites $AB$ et $CG$ dans le cube $ABCDEFGH$ ?",
+                        "a": "non coplanaires"
+                },
+                {
+                        "q": "Quelle est la position relative des droites $AF$ et $DG$ dans le cube $ABCDEFGH$ ?",
+                        "a": "parallèles distinctes"
+                },
+                {
+                        "q": "En quel point se coupent les grandes diagonales $AG$ et $BH$ du cube ?",
+                        "a": "au centre du cube $S$"
+                },
+                {
+                        "q": "Pourquoi ne peut-on pas savoir sur une figure si deux droites sont sécantes ?",
+                        "a": "les projections de droites non coplanaires peuvent aussi se croiser sur la figure"
+                },
+                {
+                        "q": "Qu'est-ce qu'une transversale de deux droites non coplanaires ?",
+                        "a": "une droite qui coupe chacune des deux droites"
+                },
+                {
+                        "q": "Comment construit-on la transversale de $p$ et $q$ passant par le point $M$ ?",
+                        "a": "le plan $Mp$ coupe $q$ en $Y$ ; la transversale est $MY$"
+                },
+                {
+                        "q": "De quelles quatre manières peut-on déterminer un plan ?",
+                        "a": "trois points non alignés, une droite et un point extérieur, deux droites sécantes, deux droites parallèles distinctes"
+                },
+                {
+                        "q": "Comment appelle-t-on des points situés sur une même droite ?",
+                        "a": "alignés (colinéaires)"
+                },
+                {
+                        "q": "Comment appelle-t-on des points situés dans un même plan ?",
+                        "a": "coplanaires"
+                },
+                {
+                        "q": "Les points $A$, $C$, $F$, $H$ du cube sont-ils dans un même plan ?",
+                        "a": "non, ce sont les sommets d'un tétraèdre régulier"
+                },
+                {
+                        "q": "Combien de parallèles à une droite donnée peut-on mener par un point donné ?",
+                        "a": "une et une seule"
+                },
+                {
+                        "q": "Si $p\\parallel q$ et $q\\parallel r$, que peut-on dire de $p$ et $r$ ?",
+                        "a": "$p\\parallel r$ (transitivité)"
+                },
+                {
+                        "q": "Quelles sont les trois positions relatives possibles d'une droite et d'un plan ?",
+                        "a": "sécants, parallèles, droite contenue dans le plan"
+                },
+                {
+                        "q": "Quand une droite est-elle contenue dans un plan ?",
+                        "a": "quand deux de ses points distincts appartiennent à ce plan"
+                },
+                {
+                        "q": "Quel est le critère de parallélisme d'une droite et d'un plan ?",
+                        "a": "une droite est parallèle à un plan si et seulement s'il existe dans ce plan une droite qui lui est parallèle"
+                },
+                {
+                        "q": "Pourquoi la droite $S_{AE}S_{EH}$ est-elle parallèle au plan $BDG$ ?",
+                        "a": "elle est parallèle à $AH$ et $AH\\parallel BG\\subseteq BDG$"
+                },
+                {
+                        "q": "Quelles sont les trois positions relatives possibles de deux plans ?",
+                        "a": "sécants, parallèles distincts, confondus"
+                },
+                {
+                        "q": "Comment appelle-t-on la droite commune de deux plans sécants ?",
+                        "a": "la droite d'intersection"
+                },
+                {
+                        "q": "Quel est le critère de parallélisme de deux plans ?",
+                        "a": "si le plan $\\alpha$ contient deux droites sécantes parallèles au plan $\\beta$, alors $\\alpha\\parallel\\beta$"
+                },
+                {
+                        "q": "Pourquoi les plans $AFH$ et $BDG$ du cube sont-ils parallèles ?",
+                        "a": "$AF\\parallel DG$ et $AH\\parallel BG$ (et les plans ne sont pas confondus)"
+                },
+                {
+                        "q": "Qu'est-ce qu'un faisceau de plans ?",
+                        "a": "des plans qui ont une droite commune"
+                },
+                {
+                        "q": "Combien de points communs ont les plans $ABC$, $ADH$ et $ABF$ du cube ?",
+                        "a": "un seul, le point $A$"
+                },
+                {
+                        "q": "Quelle est la position des plans $ABG$, $CDE$ et $ABC$ du cube ?",
+                        "a": "deux à deux sécants, trois droites d'intersection parallèles, aucun point commun"
+                },
+                {
+                        "q": "Comment s'appelle la méthode pour trouver l'intersection d'une droite et d'un plan ?",
+                        "a": "la méthode du plan auxiliaire"
+                },
+                {
+                        "q": "Quelles sont les trois étapes de la méthode du plan auxiliaire ?",
+                        "a": "plan $\\rho$ passant par $p$, droite $r=\\rho\\cap\\alpha$, point $P=p\\cap r$"
+                },
+                {
+                        "q": "Quel plan auxiliaire choisit-on pour un prisme ?",
+                        "a": "un plan parallèle aux arêtes latérales"
+                },
+                {
+                        "q": "Quel plan auxiliaire choisit-on pour une pyramide ?",
+                        "a": "un plan passant par le sommet"
+                },
+                {
+                        "q": "$K=S_{EF}$, $L=S_{CG}$. Quelles sont les projections $K'$, $L'$ sur la base $ABCD$ ?",
+                        "a": "$K'=S_{AB}$, $L'=C$"
+                },
+                {
+                        "q": "$K=S_{EF}$, $L=S_{CG}$, $P=KL\\cap ABC$. Quel est le rôle du point $L$ sur le segment $KP$ ?",
+                        "a": "c'est son milieu"
+                },
+                {
+                        "q": "Les points $K$, $L$ sont dans la face $ABV$ d'une pyramide. Où se trouve l'intersection de $KL$ avec le plan de la base ?",
+                        "a": "sur la droite $AB$"
+                },
+                {
+                        "q": "Qu'est-ce que la section d'un solide par un plan ?",
+                        "a": "l'intersection du solide et du plan"
+                },
+                {
+                        "q": "Quelle figure est la section d'un polyèdre ?",
+                        "a": "un polygone dont les côtés sont dans les faces du solide"
+                },
+                {
+                        "q": "Que fait-on avec deux points de la section situés dans la même face ?",
+                        "a": "on les joint, le segment est un côté de la section"
+                },
+                {
+                        "q": "Comment le plan de section coupe-t-il deux faces parallèles ?",
+                        "a": "selon deux segments parallèles"
+                },
+                {
+                        "q": "Où se coupent les droites d'intersection du plan de section avec deux faces voisines ?",
+                        "a": "sur la droite de l'arête commune à ces faces"
+                },
+                {
+                        "q": "Combien de côtés une section d'un cube peut-elle avoir au maximum ?",
+                        "a": "six"
+                },
+                {
+                        "q": "Comment dessine-t-on les côtés de la section situés dans des faces cachées ?",
+                        "a": "en pointillés"
+                },
+                {
+                        "q": "$K\\in AB$, $|AK|=2$ ; $L\\in BC$, $|BL|=2$ ; $M\\in FG$, $|FM|=4$. Quel polygone est la section du cube d'arête $6$ ?",
+                        "a": "un pentagone"
+                },
+                {
+                        "q": "$K\\in AE$, $|AK|=2$ ; $L=S_{BC}$ ; $M\\in GH$, $|GM|=2$. Quel polygone est la section du cube d'arête $6$ ?",
+                        "a": "un hexagone"
+                },
+                {
+                        "q": "Quand a-t-on besoin de l'intersection d'une droite avec le plan d'une face pour construire une section ?",
+                        "a": "quand joindre les points et mener des parallèles ne suffit pas"
+                },
+                {
+                        "q": "$K$, $L$ sont les milieux des arêtes $AV$, $CV$ d'une pyramide. À quoi la droite $KL$ est-elle parallèle ?",
+                        "a": "à la diagonale $AC$, donc au plan de la base"
+                },
+                {
+                        "q": "Combien de points d'intersection une droite a-t-elle en général avec la surface d'un solide convexe ?",
+                        "a": "deux"
+                },
+                {
+                        "q": "Quelle est la visibilité du segment entre les deux points d'intersection d'une droite et d'un solide ?",
+                        "a": "il est caché (il est à l'intérieur du solide)"
+                },
+                {
+                        "q": "Combien de points communs faut-il pour déterminer la droite d'intersection de deux plans ?",
+                        "a": "deux points distincts"
+                },
+                {
+                        "q": "Quels deux points déterminent la droite d'intersection des plans $ACF$ et $BDE$ du cube ?",
+                        "a": "le centre de la base $ABCD$ et le centre de la face $ABFE$"
+                }
+        ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Stereometrie 2 — Polohové vlastnosti a řezy (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-stereometrie2.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Stereometrie 2</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické otázky a 6 úloh (vzájemná poloha přímek a rovin, průsečíky, řezy krychle a jehlanu).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', '{,}');
+}
+function tex(x) { return '$' + fmt(x) + '$'; }
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function buildOptions(correct, extras, spread) {
+    const set = new Set([tex(correct)]);
+    extras.filter(x => Number.isInteger(x) && x > 0).forEach(x => { if (set.size < 4) set.add(tex(x)); });
+    let guard = 0;
+    while (set.size < 4 && guard < 200) {
+        const delta = randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        const candidate = correct + delta;
+        if (candidate > 0) set.add(tex(candidate));
+        guard++;
+    }
+    return [...set];
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    {
+        "id": "t1",
+        "type": "concept",
+        "cs": {
+            "q": "Které tvrzení přesně popisuje mimoběžky?",
+            "o": [
+                "neleží v jedné rovině, a proto nemají společný bod",
+                "leží v jedné rovině a nemají společný bod",
+                "mají právě jeden společný bod",
+                "jejich průměty se na obrázku nikdy nekříží"
+            ],
+            "h": "Rozhodující je, zda obě přímky leží v jedné rovině.",
+            "e": "Mimoběžky neleží v jedné rovině; nemají proto žádný společný bod a nejsou ani rovnoběžné. Přímky v jedné rovině bez společného bodu jsou rovnoběžky.",
+            "a": "neleží v jedné rovině, a proto nemají společný bod"
+        },
+        "fr": {
+            "q": "Quelle affirmation décrit exactement des droites non coplanaires ?",
+            "o": [
+                "elles ne sont pas dans un même plan, elles n'ont donc aucun point commun",
+                "elles sont dans un même plan et n'ont aucun point commun",
+                "elles ont exactement un point commun",
+                "leurs projections ne se croisent jamais sur la figure"
+            ],
+            "h": "L'essentiel est de savoir si les deux droites sont dans un même plan.",
+            "e": "Des droites non coplanaires ne sont pas dans un même plan ; elles n'ont donc aucun point commun et ne sont pas non plus parallèles. Des droites coplanaires sans point commun sont parallèles.",
+            "a": "elles ne sont pas dans un même plan, elles n'ont donc aucun point commun"
+        }
+    },
+    {
+        "id": "t2",
+        "type": "concept",
+        "cs": {
+            "q": "Která z možností <b>neurčuje</b> rovinu jednoznačně?",
+            "o": [
+                "tři různé body ležící na jedné přímce",
+                "přímka a bod, který na ní neleží",
+                "dvě různoběžky",
+                "dvě různé rovnoběžky"
+            ],
+            "h": "Kolik rovin prochází přímkou?",
+            "e": "Tři body na jedné přímce určují jen tuto přímku a prochází jí nekonečně mnoho rovin. Ostatní tři možnosti rovinu určují jednoznačně.",
+            "a": "tři různé body ležící na jedné přímce"
+        },
+        "fr": {
+            "q": "Laquelle de ces possibilités <b>ne détermine pas</b> un plan de manière unique ?",
+            "o": [
+                "trois points distincts alignés",
+                "une droite et un point qui ne lui appartient pas",
+                "deux droites sécantes",
+                "deux droites parallèles distinctes"
+            ],
+            "h": "Combien de plans passent par une droite ?",
+            "e": "Trois points alignés ne déterminent que leur droite, et une infinité de plans passent par cette droite. Les trois autres possibilités déterminent un plan de manière unique.",
+            "a": "trois points distincts alignés"
+        }
+    },
+    {
+        "id": "t3",
+        "type": "concept",
+        "cs": {
+            "q": "Kdy je přímka $p$ rovnoběžná s rovinou $\\alpha$?",
+            "o": [
+                "právě když v rovině $\\alpha$ existuje přímka rovnoběžná s $p$",
+                "právě když je $p$ rovnoběžná se všemi přímkami roviny $\\alpha$",
+                "právě když má $p$ s rovinou $\\alpha$ jeden společný bod",
+                "právě když $p$ protíná dvě různoběžky roviny $\\alpha$"
+            ],
+            "h": "Stačí najít v rovině jedinou vhodnou přímku.",
+            "e": "Podle kritéria rovnoběžnosti stačí, aby v rovině $\\alpha$ existovala přímka $q\\parallel p$. Rovnoběžná se všemi přímkami roviny přímka být nemůže.",
+            "a": "právě když v rovině $\\alpha$ existuje přímka rovnoběžná s $p$"
+        },
+        "fr": {
+            "q": "Quand la droite $p$ est-elle parallèle au plan $\\alpha$ ?",
+            "o": [
+                "si et seulement s'il existe dans $\\alpha$ une droite parallèle à $p$",
+                "si et seulement si $p$ est parallèle à toutes les droites de $\\alpha$",
+                "si et seulement si $p$ a un point commun avec $\\alpha$",
+                "si et seulement si $p$ coupe deux droites sécantes de $\\alpha$"
+            ],
+            "h": "Il suffit de trouver une seule droite adaptée dans le plan.",
+            "e": "D'après le critère de parallélisme, il suffit qu'il existe dans $\\alpha$ une droite $q\\parallel p$. Une droite ne peut pas être parallèle à toutes les droites d'un plan.",
+            "a": "si et seulement s'il existe dans $\\alpha$ une droite parallèle à $p$"
+        }
+    },
+    {
+        "id": "t4",
+        "type": "concept",
+        "cs": {
+            "q": "Které tvrzení je kritériem rovnoběžnosti rovin $\\alpha$ a $\\beta$?",
+            "o": [
+                "rovina $\\alpha$ obsahuje dvě různoběžky rovnoběžné s rovinou $\\beta$",
+                "rovina $\\alpha$ obsahuje jednu přímku rovnoběžnou s rovinou $\\beta$",
+                "roviny $\\alpha$ a $\\beta$ mají společný bod",
+                "rovina $\\alpha$ obsahuje dvě rovnoběžky rovnoběžné s rovinou $\\beta$"
+            ],
+            "h": "Jedna přímka nestačí a dvě rovnoběžky také ne.",
+            "e": "Kritérium vyžaduje dvě různoběžky. I v rovině, která rovinu $\\beta$ protíná, je s rovinou $\\beta$ rovnoběžná každá přímka rovnoběžná s jejich průsečnicí; najdeme tam tedy jednu přímku, a dokonce i dvě rovnoběžky, rovnoběžné s $\\beta$.",
+            "a": "rovina $\\alpha$ obsahuje dvě různoběžky rovnoběžné s rovinou $\\beta$"
+        },
+        "fr": {
+            "q": "Quelle affirmation est le critère de parallélisme des plans $\\alpha$ et $\\beta$ ?",
+            "o": [
+                "le plan $\\alpha$ contient deux droites sécantes parallèles au plan $\\beta$",
+                "le plan $\\alpha$ contient une droite parallèle au plan $\\beta$",
+                "les plans $\\alpha$ et $\\beta$ ont un point commun",
+                "le plan $\\alpha$ contient deux droites parallèles entre elles et parallèles au plan $\\beta$"
+            ],
+            "h": "Une seule droite ne suffit pas, deux droites parallèles non plus.",
+            "e": "Le critère exige deux droites sécantes. Même dans un plan qui coupe $\\beta$, toute droite parallèle à leur droite d'intersection est parallèle à $\\beta$ ; on y trouve donc une droite, et même deux droites parallèles, parallèles à $\\beta$.",
+            "a": "le plan $\\alpha$ contient deux droites sécantes parallèles au plan $\\beta$"
+        }
+    },
+    {
+        "id": "t5",
+        "type": "concept",
+        "cs": {
+            "q": "Co je svazek rovin?",
+            "o": [
+                "roviny, které mají jednu společnou přímku",
+                "roviny, které jsou navzájem rovnoběžné",
+                "roviny, které mají jediný společný bod",
+                "roviny, jejichž průsečnice jsou rovnoběžné"
+            ],
+            "h": "Vzpomeň si na křídla otáčivých dveří.",
+            "e": "Svazek tvoří roviny procházející jednou společnou přímkou, například úhlopříčné roviny krychle $ACG$ a $BDH$ spolu s rovinou $S_{AB}S_{CD}S_{EF}$.",
+            "a": "roviny, které mají jednu společnou přímku"
+        },
+        "fr": {
+            "q": "Qu'est-ce qu'un faisceau de plans ?",
+            "o": [
+                "des plans qui ont une droite commune",
+                "des plans parallèles entre eux",
+                "des plans qui ont un seul point commun",
+                "des plans dont les droites d'intersection sont parallèles"
+            ],
+            "h": "Pense aux vantaux d'une porte tambour.",
+            "e": "Un faisceau est formé de plans passant par une même droite, par exemple les plans diagonaux $ACG$ et $BDH$ du cube avec le plan $S_{AB}S_{CD}S_{EF}$.",
+            "a": "des plans qui ont une droite commune"
+        }
+    },
+    {
+        "id": "t6",
+        "type": "concept",
+        "cs": {
+            "q": "Přímkou $p$ jsme proložili pomocnou rovinu $\\rho$. Co sestrojíme v dalším kroku při hledání průsečíku $p$ s rovinou $\\alpha$?",
+            "o": [
+                "průsečnici $r=\\rho\\cap\\alpha$",
+                "rovnoběžku s $p$ v rovině $\\alpha$",
+                "řez tělesa rovinou $\\alpha$",
+                "druhou pomocnou rovinu rovnoběžnou s $\\alpha$"
+            ],
+            "h": "Hledaný průsečík leží v obou rovinách $\\rho$ i $\\alpha$.",
+            "e": "Po proložení pomocné roviny sestrojíme průsečnici $r=\\rho\\cap\\alpha$; hledaný průsečík je $P=p\\cap r$.",
+            "a": "průsečnici $r=\\rho\\cap\\alpha$"
+        },
+        "fr": {
+            "q": "On a fait passer par la droite $p$ un plan auxiliaire $\\rho$. Que construit-on ensuite pour trouver l'intersection de $p$ et du plan $\\alpha$ ?",
+            "o": [
+                "la droite d'intersection $r=\\rho\\cap\\alpha$",
+                "une parallèle à $p$ dans le plan $\\alpha$",
+                "la section du solide par le plan $\\alpha$",
+                "un second plan auxiliaire parallèle à $\\alpha$"
+            ],
+            "h": "Le point cherché appartient aux deux plans $\\rho$ et $\\alpha$.",
+            "e": "Après avoir choisi le plan auxiliaire, on construit la droite d'intersection $r=\\rho\\cap\\alpha$ ; le point cherché est $P=p\\cap r$.",
+            "a": "la droite d'intersection $r=\\rho\\cap\\alpha$"
+        }
+    },
+    {
+        "id": "t7",
+        "type": "concept",
+        "cs": {
+            "q": "Kolik stran může mít nejvýše řez krychle rovinou?",
+            "o": [
+                "$6$",
+                "$8$",
+                "$5$",
+                "$4$"
+            ],
+            "h": "Každá strana řezu leží v jiné stěně krychle.",
+            "e": "Každá strana řezu leží v jiné stěně a krychle má šest stěn, řez má tedy nejvýše šest stran.",
+            "a": "$6$"
+        },
+        "fr": {
+            "q": "Combien de côtés une section d'un cube par un plan peut-elle avoir au maximum ?",
+            "o": [
+                "$6$",
+                "$8$",
+                "$5$",
+                "$4$"
+            ],
+            "h": "Chaque côté de la section est situé dans une face différente du cube.",
+            "e": "Chaque côté de la section est dans une face différente et le cube a six faces, la section a donc au plus six côtés.",
+            "a": "$6$"
+        }
+    },
+    {
+        "id": "t8",
+        "type": "concept",
+        "cs": {
+            "q": "Přímka protíná krychli ve dvou bodech $X$ a $Y$. Jaká je viditelnost úsečky $XY$?",
+            "o": [
+                "je neviditelná, protože leží uvnitř krychle",
+                "je vždy viditelná",
+                "je viditelná, leží-li $X$ ve viditelné stěně",
+                "viditelnost závisí na délce hrany krychle"
+            ],
+            "h": "Kde leží body úsečky mezi oběma průsečíky?",
+            "e": "Úsečka mezi průsečíky přímky s tělesem leží uvnitř tělesa, a je proto vždy neviditelná.",
+            "a": "je neviditelná, protože leží uvnitř krychle"
+        },
+        "fr": {
+            "q": "Une droite coupe un cube en deux points $X$ et $Y$. Quelle est la visibilité du segment $XY$ ?",
+            "o": [
+                "il est caché, car il est à l'intérieur du cube",
+                "il est toujours visible",
+                "il est visible si $X$ est dans une face visible",
+                "la visibilité dépend de la longueur de l'arête du cube"
+            ],
+            "h": "Où se trouvent les points du segment entre les deux points d'intersection ?",
+            "e": "Le segment entre les points d'intersection d'une droite et d'un solide est à l'intérieur du solide, il est donc toujours caché.",
+            "a": "il est caché, car il est à l'intérieur du cube"
+        }
+    }
+];
+
+// ======== VYPOCETNI ULOHY ========
+const M1_DATA = [[10, 2, 1], [6, 5, 3], [10, 6, 1], [12, 5, 2], [6, 2, 1], [6, 3, 1], [12, 9, 3], [10, 9, 6], [6, 4, 1], [10, 4, 2], [12, 3, 2], [12, 10, 4], [10, 9, 3], [8, 4, 2], [4, 3, 2], [6, 3, 2], [10, 6, 3], [10, 6, 2]];
+const M3_DATA = [{"descCs": "$K\\in AB$, $|AK|=2$; $L\\in AD$, $|AL|=2$; $M\\in AE$, $|AM|=2$", "descFr": "$K\\in AB$, $|AK|=2$ ; $L\\in AD$, $|AL|=2$ ; $M\\in AE$, $|AM|=2$", "n": 3}, {"descCs": "$K\\in AB$, $|AK|=3$; $L\\in BC$, $|BL|=3$; $M\\in BF$, $|BM|=3$", "descFr": "$K\\in AB$, $|AK|=3$ ; $L\\in BC$, $|BL|=3$ ; $M\\in BF$, $|BM|=3$", "n": 3}, {"descCs": "$K\\in AE$, $|AK|=3$; $L\\in BF$, $|BL|=3$; $M\\in CG$, $|CM|=3$", "descFr": "$K\\in AE$, $|AK|=3$ ; $L\\in BF$, $|BL|=3$ ; $M\\in CG$, $|CM|=3$", "n": 4}, {"descCs": "$K\\in AB$, $|AK|=2$; $L\\in CD$, $|CL|=4$; $M\\in GH$, $|GM|=2$", "descFr": "$K\\in AB$, $|AK|=2$ ; $L\\in CD$, $|CL|=4$ ; $M\\in GH$, $|GM|=2$", "n": 4}, {"descCs": "$K\\in AB$, $|AK|=2$; $L\\in BC$, $|BL|=2$; $M\\in FG$, $|FM|=4$", "descFr": "$K\\in AB$, $|AK|=2$ ; $L\\in BC$, $|BL|=2$ ; $M\\in FG$, $|FM|=4$", "n": 5}, {"descCs": "$K\\in AE$, $|AK|=2$; $L\\in BC$, $|BL|=3$; $M\\in GH$, $|GM|=2$", "descFr": "$K\\in AE$, $|AK|=2$ ; $L\\in BC$, $|BL|=3$ ; $M\\in GH$, $|GM|=2$", "n": 6}, {"descCs": "$K\\in AE$, $|AK|=4$; $L\\in AB$, $|AL|=3$; $M\\in FG$, $|FM|=3$", "descFr": "$K\\in AE$, $|AK|=4$ ; $L\\in AB$, $|AL|=3$ ; $M\\in FG$, $|FM|=3$", "n": 5}, {"descCs": "$K\\in AB$, $|AK|=3$; $L\\in BC$, $|BL|=3$; $M\\in GH$, $|GM|=3$", "descFr": "$K\\in AB$, $|AK|=3$ ; $L\\in BC$, $|BL|=3$ ; $M\\in GH$, $|GM|=3$", "n": 6}, {"descCs": "$K\\in AE$, $|AK|=3$; $L\\in BF$, $|BL|=2$; $M\\in CG$, $|CM|=1$", "descFr": "$K\\in AE$, $|AK|=3$ ; $L\\in BF$, $|BL|=2$ ; $M\\in CG$, $|CM|=1$", "n": 4}];
+const M4_DATA = [[8, 4, 2, 6], [12, 3, 3, 6], [10, 2, 4, 6], [12, 6, 4, 11], [8, 4, 1, 7], [10, 5, 1, 3], [12, 2, 5, 9], [12, 6, 3, 7], [8, 4, 1, 4], [12, 2, 5, 8], [8, 4, 1, 3], [10, 5, 1, 6], [12, 4, 2, 8], [12, 6, 4, 10], [10, 5, 1, 8], [12, 10, 1, 10], [10, 4, 3, 9], [12, 4, 4, 7], [10, 5, 4, 9], [10, 2, 4, 9]];
+const M5_DATA = [[6, "1/3", "1/4"], [6, "1/2", "1/4"], [6, "1/2", "1/3"], [6, "2/3", "1/3"], [6, "2/3", "1/2"], [6, "3/4", "1/2"], [6, "3/4", "2/3"], [8, "1/3", "1/4"], [8, "1/2", "1/4"], [8, "1/2", "1/3"], [8, "2/3", "1/2"], [8, "3/4", "1/4"], [8, "3/4", "1/2"], [8, "3/4", "2/3"], [10, "1/3", "1/4"], [10, "1/2", "1/4"], [10, "1/2", "1/3"], [10, "2/3", "1/4"], [10, "2/3", "1/2"], [10, "3/4", "1/3"], [10, "3/4", "1/2"], [10, "3/4", "2/3"], [12, "1/3", "1/4"], [12, "1/2", "1/4"], [12, "1/2", "1/3"], [12, "2/3", "1/3"], [12, "2/3", "1/2"], [12, "3/4", "1/2"], [12, "3/4", "2/3"]];
+const RATIO_TEX = { '1/4': '\\tfrac14', '1/3': '\\tfrac13', '1/2': '\\tfrac12', '2/3': '\\tfrac23', '3/4': '\\tfrac34' };
+
+const M2_SCEN = [
+    { l1: 'AB', l2: 'GH', ans: 1, eCs: 'Přímky $AB$ a $GH$ leží v rovině $ABGH$ a nemají společný bod (protilehlé strany obdélníku), jsou to rovnoběžky různé.', eFr: 'Les droites $AB$ et $GH$ sont dans le plan $ABGH$ et n\'ont aucun point commun (côtés opposés d\'un rectangle), elles sont parallèles distinctes.' },
+    { l1: 'AF', l2: 'DG', ans: 1, eCs: 'Přímky $AF$ a $DG$ jsou protilehlé strany obdélníku $ADGF$, jsou to rovnoběžky různé.', eFr: 'Les droites $AF$ et $DG$ sont des côtés opposés du rectangle $ADGF$, elles sont parallèles distinctes.' },
+    { l1: 'BE', l2: 'CH', ans: 1, eCs: 'Přímky $BE$ a $CH$ jsou protilehlé strany obdélníku $BCHE$, jsou to rovnoběžky různé.', eFr: 'Les droites $BE$ et $CH$ sont des côtés opposés du rectangle $BCHE$, elles sont parallèles distinctes.' },
+    { l1: 'EG', l2: 'AC', ans: 1, eCs: 'Přímky $EG$ a $AC$ jsou protilehlé strany obdélníku $ACGE$, jsou to rovnoběžky různé.', eFr: 'Les droites $EG$ et $AC$ sont des côtés opposés du rectangle $ACGE$, elles sont parallèles distinctes.' },
+    { l1: 'AG', l2: 'CE', ans: 0, eCs: 'Tělesové úhlopříčky $AG$ a $CE$ leží v rovině $ACGE$ a protínají se ve středu krychle, jsou to různoběžky.', eFr: 'Les grandes diagonales $AG$ et $CE$ sont dans le plan $ACGE$ et se coupent au centre du cube, elles sont sécantes.' },
+    { l1: 'AF', l2: 'BE', ans: 0, eCs: 'Úhlopříčky $AF$ a $BE$ stěny $ABFE$ se protínají v jejím středu, jsou to různoběžky.', eFr: 'Les diagonales $AF$ et $BE$ de la face $ABFE$ se coupent en son centre, elles sont sécantes.' },
+    { l1: 'BD', l2: 'DH', ans: 0, eCs: 'Přímky $BD$ a $DH$ mají společný bod $D$, jsou to různoběžky.', eFr: 'Les droites $BD$ et $DH$ ont le point commun $D$, elles sont sécantes.' },
+    { l1: 'AB', l2: 'CG', ans: 2, eCs: 'Přímka $CG$ protíná rovinu podstavy jen v bodě $C$, který na $AB$ neleží, a přímky nejsou rovnoběžné; jsou to mimoběžky.', eFr: 'La droite $CG$ coupe le plan de la base seulement au point $C$, qui n\'appartient pas à $AB$, et les droites ne sont pas parallèles ; elles sont non coplanaires.' },
+    { l1: 'AF', l2: 'CH', ans: 2, eCs: 'Přímky $AF$ a $CH$ leží v rovnoběžných stěnách $ABFE$ a $CDHG$ a nejsou rovnoběžné ($AF\\parallel DG$ a $DG$ protíná $CH$); jsou to mimoběžky.', eFr: 'Les droites $AF$ et $CH$ sont dans les faces parallèles $ABFE$ et $CDHG$ et ne sont pas parallèles ($AF\\parallel DG$ et $DG$ coupe $CH$) ; elles sont non coplanaires.' },
+    { l1: 'BD', l2: 'EG', ans: 2, eCs: 'Přímky $BD$ a $EG$ leží v rovnoběžných rovinách podstav a nejsou rovnoběžné ($BD\\parallel FH$ a $FH$ protíná $EG$); jsou to mimoběžky.', eFr: 'Les droites $BD$ et $EG$ sont dans les plans parallèles des bases et ne sont pas parallèles ($BD\\parallel FH$ et $FH$ coupe $EG$) ; elles sont non coplanaires.' },
+    { l1: 'AE', l2: 'FG', ans: 2, eCs: 'Přímka $FG$ leží v rovině $EFG$ a přímka $AE$ ji protíná jen v bodě $E$, který na $FG$ neleží; přímky nejsou rovnoběžné, jsou to mimoběžky.', eFr: 'La droite $FG$ est dans le plan $EFG$, que la droite $AE$ coupe seulement au point $E$, qui n\'appartient pas à $FG$ ; les droites ne sont pas parallèles, elles sont non coplanaires.' }
+];
+const M2_CATS_CS = ['různoběžky', 'rovnoběžky různé', 'mimoběžky', 'totožné přímky'];
+const M2_CATS_FR = ['sécantes', 'parallèles distinctes', 'non coplanaires', 'confondues'];
+
+const M6_SCEN = [
+    { sCs: 'Je přímka $S_{AB}S_{BC}$ rovnoběžná s rovinou $ACH$?', sFr: 'La droite $S_{AB}S_{BC}$ est-elle parallèle au plan $ACH$ ?', valid: true,
+      eCs: 'Ano: $S_{AB}S_{BC}\\parallel AC$ a $AC\\subseteq ACH$, přitom $S_{AB}\\notin ACH$.', eFr: 'Oui : $S_{AB}S_{BC}\\parallel AC$ et $AC\\subseteq ACH$, avec $S_{AB}\\notin ACH$.' },
+    { sCs: 'Je přímka $BG$ rovnoběžná s rovinou $ADH$?', sFr: 'La droite $BG$ est-elle parallèle au plan $ADH$ ?', valid: true,
+      eCs: 'Ano: $BG\\parallel AH$ a $AH\\subseteq ADH$, přitom $B\\notin ADH$.', eFr: 'Oui : $BG\\parallel AH$ et $AH\\subseteq ADH$, avec $B\\notin ADH$.' },
+    { sCs: 'Je přímka $EG$ rovnoběžná s rovinou $ABC$?', sFr: 'La droite $EG$ est-elle parallèle au plan $ABC$ ?', valid: true,
+      eCs: 'Ano: $EG\\parallel AC$ a $AC\\subseteq ABC$, přitom $E\\notin ABC$.', eFr: 'Oui : $EG\\parallel AC$ et $AC\\subseteq ABC$, avec $E\\notin ABC$.' },
+    { sCs: 'Jsou roviny $BDE$ a $CFH$ rovnoběžné?', sFr: 'Les plans $BDE$ et $CFH$ sont-ils parallèles ?', valid: true,
+      eCs: 'Ano: rovina $BDE$ obsahuje různoběžky $BD$ a $BE$, přitom $BD\\parallel FH$ a $BE\\parallel CH$.', eFr: 'Oui : le plan $BDE$ contient les droites sécantes $BD$ et $BE$, avec $BD\\parallel FH$ et $BE\\parallel CH$.' },
+    { sCs: 'Je přímka $BH$ rovnoběžná s rovinou $ACE$?', sFr: 'La droite $BH$ est-elle parallèle au plan $ACE$ ?', valid: false,
+      eCs: 'Ne: přímka $BH$ prochází středem krychle, který leží v rovině $ACGE$; s rovinou má tedy společný bod.', eFr: 'Non : la droite $BH$ passe par le centre du cube, qui appartient au plan $ACGE$ ; elle a donc un point commun avec le plan.' },
+    { sCs: 'Je přímka $AG$ rovnoběžná s rovinou $BDE$?', sFr: 'La droite $AG$ est-elle parallèle au plan $BDE$ ?', valid: false,
+      eCs: 'Ne: body $A$ a $G$ leží na opačných stranách roviny $BDE$, přímka $AG$ ji tedy protíná.', eFr: 'Non : les points $A$ et $G$ sont de part et d\'autre du plan $BDE$, la droite $AG$ le coupe donc.' },
+    { sCs: 'Jsou roviny $ABG$ a $CDE$ rovnoběžné?', sFr: 'Les plans $ABG$ et $CDE$ sont-ils parallèles ?', valid: false,
+      eCs: 'Ne: obě roviny procházejí středem krychle, jsou tedy různoběžné (průsečnice je rovnoběžná s $AB$).', eFr: 'Non : les deux plans passent par le centre du cube, ils sont donc sécants (leur droite d\'intersection est parallèle à $AB$).' },
+    { sCs: 'Jsou roviny $ACF$ a $BDE$ rovnoběžné?', sFr: 'Les plans $ACF$ et $BDE$ sont-ils parallèles ?', valid: false,
+      eCs: 'Ne: obě roviny obsahují střed podstavy $AC\\cap BD$, jsou tedy různoběžné.', eFr: 'Non : les deux plans contiennent le centre de la base $AC\\cap BD$, ils sont donc sécants.' }
+];
+const M6_OPTS_CS = ['ano', 'ne', 'nelze rozhodnout', 'záleží na délce hrany krychle'];
+const M6_OPTS_FR = ['oui', 'non', 'impossible à décider', 'cela dépend de la longueur de l\'arête'];
+
+const SHAPES_CS = { 3: 'trojúhelník', 4: 'čtyřúhelník', 5: 'pětiúhelník', 6: 'šestiúhelník' };
+const SHAPES_FR = { 3: 'un triangle', 4: 'un quadrilatère', 5: 'un pentagone', 6: 'un hexagone' };
+
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Krychle $ABCDEFGH$ má hranu ${a}$. Na hraně $AE$ leží bod $K$, $|AK|={k}$, na hraně $BF$ bod $L$, $|BL|={l}$. Přímka $KL$ protíná přímku $AB$ v bodě $P$. Urči $|BP|$.",
+              h: "Přímka $KL$ leží ve stěně $ABFE$; využij podobnost trojúhelníků $PBL$ a $PAK$.",
+              e: "Z podobnosti trojúhelníků $PBL$ a $PAK$ plyne $\\dfrac{|BP|}{|BP|+a}=\\dfrac{|BL|}{|AK|}$, tedy $|BP|=\\dfrac{ {a}\\cdot{l} }{ {k}-{l} }={res}$." },
+        fr: { q: "Le cube $ABCDEFGH$ a une arête de longueur ${a}$. Sur l'arête $AE$, le point $K$ vérifie $|AK|={k}$, sur l'arête $BF$, le point $L$ vérifie $|BL|={l}$. La droite $KL$ coupe la droite $AB$ au point $P$. Détermine $|BP|$.",
+              h: "La droite $KL$ est dans la face $ABFE$ ; utilise la similitude des triangles $PBL$ et $PAK$.",
+              e: "La similitude des triangles $PBL$ et $PAK$ donne $\\dfrac{|BP|}{|BP|+a}=\\dfrac{|BL|}{|AK|}$, donc $|BP|=\\dfrac{ {a}\\cdot{l} }{ {k}-{l} }={res}$." },
+        params: () => { const [a, k, l] = randChoice(M1_DATA); return { a, k, l }; },
+        solve: (p) => { const res = p.a * p.l / (p.k - p.l); return { res, correct: tex(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [p.a + sol.res, p.a * p.l / p.k, p.l * (p.k - p.l)], 3) },
+
+    { id: 'm2', type: 'math', category: true,
+        cs: { q: "Jaká je vzájemná poloha přímek $\\leftrightarrow {l1}$ a $\\leftrightarrow {l2}$ v krychli $ABCDEFGH$?",
+              h: "Nejprve rozhodni, zda obě přímky leží v jedné rovině.",
+              e: "{expl}" },
+        fr: { q: "Quelle est la position relative des droites $\\leftrightarrow {l1}$ et $\\leftrightarrow {l2}$ dans le cube $ABCDEFGH$ ?",
+              h: "Décide d'abord si les deux droites sont dans un même plan.",
+              e: "{expl}" },
+        params: () => Object.assign({}, randChoice(M2_SCEN)),
+        solve: (p) => ({ idx: p.ans, explCs: p.eCs, explFr: p.eFr }),
+        optionsCs: M2_CATS_CS, optionsFr: M2_CATS_FR },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Krychle $ABCDEFGH$ má hranu $6$. Rovina řezu prochází body {descCs}. Kolik stran má řez krychle touto rovinou?",
+              h: "Postupně najdi strany řezu v jednotlivých stěnách: spojuj body ve stejné stěně a v rovnoběžných stěnách veď rovnoběžky.",
+              e: "Rovina protne {res} {stenCs} krychle, řezem je {shapeCs}." },
+        fr: { q: "Le cube $ABCDEFGH$ a une arête de longueur $6$. Le plan de section passe par les points {descFr}. Combien de côtés a la section du cube par ce plan ?",
+              h: "Cherche successivement les côtés de la section dans les faces : joins les points d'une même face et mène des parallèles dans les faces parallèles.",
+              e: "Le plan coupe {res} faces du cube, la section est {shapeFr}." },
+        params: () => Object.assign({}, randChoice(M3_DATA)),
+        solve: (p) => ({ res: p.n, correct: tex(p.n), shapeCs: SHAPES_CS[p.n], shapeFr: SHAPES_FR[p.n], stenCs: p.n < 5 ? 'stěny' : 'stěn' }),
+        wrongOptions: (p, sol) => ['$3$', '$4$', '$5$', '$6$'] },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Krychle $ABCDEFGH$ má hranu ${a}$. Rovina řezu prochází body $K\\in AB$, $|AK|={k}$; $L\\in BC$, $|BL|={l}$; $M\\in FG$, $|FM|={m}$. Řez protne hranu $EH$ v bodě $N$. Urči $|EN|$.",
+              h: "Stěna $EFGH$ je rovnoběžná se stěnou $ABCD$, proto je strana řezu $MN$ rovnoběžná s $KL$.",
+              e: "$MN\\parallel KL$. Na přímce $KL$ odpovídá posunu o ${ak}$ ve směru $AB$ posun o ${l}$ ve směru $BC$, na přímce $MN$ proto posunu o ${a}$ odpovídá posun o ${shift}$. Tedy $|EN|={m}-{shift}={res}$." },
+        fr: { q: "Le cube $ABCDEFGH$ a une arête de longueur ${a}$. Le plan de section passe par les points $K\\in AB$, $|AK|={k}$ ; $L\\in BC$, $|BL|={l}$ ; $M\\in FG$, $|FM|={m}$. La section coupe l'arête $EH$ au point $N$. Détermine $|EN|$.",
+              h: "La face $EFGH$ est parallèle à la face $ABCD$, le côté $MN$ de la section est donc parallèle à $KL$.",
+              e: "$MN\\parallel KL$. Sur la droite $KL$, un déplacement de ${ak}$ dans la direction $AB$ correspond à un déplacement de ${l}$ dans la direction $BC$ ; sur la droite $MN$, un déplacement de ${a}$ correspond donc à un déplacement de ${shift}$. Ainsi $|EN|={m}-{shift}={res}$." },
+        params: () => { const [a, k, l, m] = randChoice(M4_DATA); return { a, k, l, m, ak: a - k, shift: l * a / (a - k) }; },
+        solve: (p) => { const res = p.m - p.shift; return { res, correct: tex(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [p.m - p.l, p.a - sol.res, p.shift], 2) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Pravidelný čtyřboký jehlan $ABCDV$ má podstavu o hraně ${a}$. Bod $K\\in AV$ splňuje $|AK|={pT}|AV|$, bod $L\\in BV$ splňuje $|BL|={qT}|BV|$. Přímka $KL$ protíná přímku $AB$ v bodě $P$ za bodem $B$. Urči $|BP|$.",
+              h: "Přímka $KL$ leží ve stěně $ABV$. Výšky bodů nad přímkou $AB$ jsou v poměru daných zlomků; výška se podél přímky mění rovnoměrně.",
+              e: "Průmět bodu $K$ na $AB$ je ve vzdálenosti ${xk}$ od $A$ a $K$ je ve výšce ${pT}v$, průmět bodu $L$ je ve vzdálenosti ${xl}$ od $A$ a $L$ je ve výšce ${qT}v$ ($v$ je výška stěny $ABV$). Výška klesá rovnoměrně, nulová je ve vzdálenosti $|AP|={ap}$, tedy $|BP|={res}$." },
+        fr: { q: "La pyramide régulière $ABCDV$ a une base d'arête ${a}$. Le point $K\\in AV$ vérifie $|AK|={pT}|AV|$, le point $L\\in BV$ vérifie $|BL|={qT}|BV|$. La droite $KL$ coupe la droite $AB$ en un point $P$ situé au-delà de $B$. Détermine $|BP|$.",
+              h: "La droite $KL$ est dans la face $ABV$. Les hauteurs des points au-dessus de la droite $AB$ sont dans le rapport des fractions données ; la hauteur varie régulièrement le long de la droite.",
+              e: "La projection de $K$ sur $AB$ est à la distance ${xk}$ de $A$ et $K$ est à la hauteur ${pT}v$ ; la projection de $L$ est à la distance ${xl}$ de $A$ et $L$ est à la hauteur ${qT}v$ ($v$ est la hauteur de la face $ABV$). La hauteur diminue régulièrement et s'annule à la distance $|AP|={ap}$, donc $|BP|={res}$." },
+        params: () => {
+            const [a, ps, qs] = randChoice(M5_DATA);
+            const fr = s => { const [n, d] = s.split('/').map(Number); return n / d; };
+            const p = fr(ps), q = fr(qs);
+            const xk = p * a / 2, xl = a - q * a / 2, t = p / (p - q), ap = xk + t * (xl - xk);
+            return { a, pT: RATIO_TEX[ps], qT: RATIO_TEX[qs], xk, xl, ap };
+        },
+        solve: (p) => { const res = Math.round((p.ap - p.a) * 1000) / 1000; return { res, correct: tex(res) }; },
+        wrongOptions: (p, sol) => buildOptions(sol.res, [p.ap, p.a / 2 + sol.res], 3) },
+
+    { id: 'm6', type: 'math', category: true,
+        cs: { q: "Krychle $ABCDEFGH$. {sCs}", h: "Využij kritérium rovnoběžnosti, nebo najdi společný bod.", e: "{expl}" },
+        fr: { q: "Cube $ABCDEFGH$. {sFr}", h: "Utilise le critère de parallélisme, ou trouve un point commun.", e: "{expl}" },
+        params: () => Object.assign({}, randChoice(M6_SCEN)),
+        solve: (p) => ({ idx: p.valid ? 0 : 1, explCs: p.eCs, explFr: p.eFr }),
+        optionsCs: M6_OPTS_CS, optionsFr: M6_OPTS_FR }
+];
+
+function fillTemplate(text, dict) {
+    return text.replace(/\{(\w+)\}/g, (_, k) => (typeof dict[k] === 'number' ? fmt(dict[k]) : dict[k]));
+}
+
+function prepareQuestion(template, lang) {
+    const other = lang === 'cs' ? 'fr' : 'cs';
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = JSON.parse(JSON.stringify(template[other]));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+        if (template.category) {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dict = { cs: dictCs, fr: dictFr };
+            const opts = { cs: template.optionsCs, fr: template.optionsFr };
+            q.q = fillTemplate(template[lang].q, dict[lang]);
+            q.e = fillTemplate(template[lang].e, dict[lang]);
+            q.o = [...opts[lang]];
+            q.a = opts[lang][sol.idx];
+            tr.q = fillTemplate(template[other].q, dict[other]);
+            tr.e = fillTemplate(template[other].e, dict[other]);
+            tr.o = [...opts[other]];
+            tr.a = opts[other][sol.idx];
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dict = Object.assign({}, p, sol);
+            [q, tr].forEach(obj => {
+                obj.q = fillTemplate(obj.q, dict);
+                obj.e = fillTemplate(obj.e, dict);
+                obj.a = sol.correct;
+                obj.o = [...options];
+            });
+        }
+    }
+
+    // jedno sdilene promichani poradi moznosti pro obe jazykove verze
+    const order = shuffleArray([...Array(q.o.length).keys()]);
+    q.o = order.map(i => q.o[i]);
+    tr.o = order.map(i => tr.o[i]);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+        let answeredIndex = null;
+        let answeredCorrect = null;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('score-text').textContent = 'Body: 0';
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+            answeredIndex = null;
+            answeredCorrect = null;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Úloha' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+
+            renderContent();
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.optText = opt;
+                btn.dataset.idx = idx;
+                if (answeredIndex !== null) {
+                    btn.disabled = true;
+                    if (opt === data.a) btn.classList.add('correct');
+                    else if (idx === answeredIndex) btn.classList.add('wrong');
+                } else {
+                    btn.onclick = () => checkAnswer(btn, idx);
+                }
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+            if (answeredIndex !== null) {
+                document.getElementById('feedback-explanation').innerHTML = data.e;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box'), document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, idx) {
+            if (answeredIndex !== null) return;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const selected = data.o[idx];
+            const isCorrect = (selected === data.a);
+            answeredIndex = idx;
+            answeredCorrect = isCorrect;
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.dataset.optText === data.a) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect, id: q.id });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            const wrongIds = userAnswers.filter(a => !a.correct).map(a => a.id);
+            const posWrong = wrongIds.some(id => ['m2', 'm6', 't1', 't2', 't3', 't4', 't5'].includes(id));
+            const constrWrong = wrongIds.some(id => ['m1', 'm3', 'm4', 'm5', 't6', 't7', 't8'].includes(id));
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! Vzájemné polohy přímek a rovin i konstrukce řezů ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Máš solidní prostorovou představivost, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat kritéria rovnoběžnosti a postup při konstrukci řezu."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – začni rozlišováním různoběžek, rovnoběžek a mimoběžek v krychli a metodou pomocné roviny."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako mimoběžky, kritérium rovnoběžnosti či metoda pomocné roviny.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definice vzájemných poloh a kritéria rovnoběžnosti.");
+            if (mathPercent >= 70) strengths.push("Úlohy na polohu a řezy v krychli i jehlanu ti jdou velmi dobře!");
+            else weaknesses.push("V úlohách chybuješ – procvič si určování vzájemné polohy v krychli a výpočty délek při konstrukci řezů.");
+            if (posWrong && !constrWrong) weaknesses.push("Chyby se týkaly hlavně vzájemné polohy přímek a rovin (části A a B).");
+            if (constrWrong && !posWrong) weaknesses.push("Chyby se týkaly hlavně polohových úloh – průsečíků a řezů (část C).");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Projdi si v teorii krokové konstrukce řezů a vyzkoušej si nástroj na řezy krychle; pak se vrať k řešeným úlohám.");
+            } else {
+                recommendations.push("Skvělá práce! Kapitolu o polohových vlastnostech a řezech máš zvládnutou – můžeš si test zopakovat s jinými zadáními a pak pokračovat kapitolou Stereometrie 3 – Metrické úlohy.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít kartičky k procvičení pojmů a vět.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na termíny jako droites non coplanaires, plan auxiliaire nebo section."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. úlohy", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Úlohy: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>

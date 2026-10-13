@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stereometrie 2 — Polohové vlastnosti a řezy — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-stereometrie2.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Stereometrie 2 — Polohové vlastnosti a řezy · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Stereometrie 2 — Polohové vlastnosti a řezy</h1>
+
+<p class="mb-3">Ve všech příkladech: krychle $ABCDEFGH$ o hraně $6$ se spodní podstavou $ABCD$ a s bodem $E$ nad bodem $A$; pravidelný čtyřboký jehlan $ABCDV$ s podstavou $6\times6$ a výškou $6$. Střed hrany $AB$ značíme $S_{AB}$, střed krychle $S$. Přímku určenou body $A$, $B$ zapisujeme $\leftrightarrow AB$ (francouzsky $(AB)$).</p>
+
+<h2 class="text-xl font-bold mt-10 mb-3">Část A: Body a přímky</h2>
+
+<h3 class="text-lg font-bold mt-6 mb-2">1. Dva body; bod a přímka</h3>
+<p class="mb-3">Dva body jsou buď totožné ($A=B$), nebo různé ($A\neq B$). Dvěma různými body prochází právě jedna přímka. Bod na přímce buď leží ($A\in p$), nebo neleží ($A\notin p$).</p>
+<p class="mb-3"><b>Příklad:</b> Středy úseček $AG$ a $BH$ splývají se středem krychle $S$. Platí $S\in\,\leftrightarrow CE$, ale $S_{AB}\notin\,\leftrightarrow CE$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">2. Vzájemná poloha dvou přímek</h3>
+<p class="mb-3">Leží-li dvě přímky v jedné rovině, jsou buď různoběžné, nebo rovnoběžné. Pokud v jedné rovině neleží, jsou mimoběžné.</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>Různoběžky:</b> leží v jedné rovině a mají právě jeden společný bod (průsečík), $\{P\}=a\cap b$.</li>
+        <li><b>Rovnoběžky různé:</b> leží v jedné rovině a nemají společný bod, $a\parallel b$.</li>
+        <li><b>Totožné přímky:</b> mají všechny body společné (zvláštní případ rovnoběžek), $a=b$.</li>
+        <li><b>Mimoběžky:</b> neleží v jedné rovině, nemají společný bod a nejsou rovnoběžné.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> $AB\parallel GH$ a $AF\parallel DG$; $AB$ a $CG$ jsou mimoběžky, stejně jako $AF$ a $CH$; úhlopříčky $AG$ a $BH$ jsou různoběžky s průsečíkem $S$.</p>
+<div class="warn-box mb-3">
+    <p>Průměty mimoběžek se na obrázku často kříží. Z obrázku proto nelze usoudit, že jsou přímky různoběžné; je třeba najít rovinu, ve které by obě ležely.</p>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">3. Příčka mimoběžek</h3>
+<p class="mb-3">Příčka dvou mimoběžek je přímka, která obě protíná. Příček je nekonečně mnoho, jednoznačnou úlohu dává až doplňující podmínka.</p>
+<ul class="list-disc list-inside space-y-1 mb-3">
+    <li><b>Příčka daným bodem $M$:</b> bodem $M$ a mimoběžkou $p$ proložíme rovinu $\rho$, najdeme průsečík $Y$ mimoběžky $q$ s rovinou $\rho$; příčkou je přímka $MY$.</li>
+    <li><b>Příčka daným směrem $s$:</b> mimoběžkou $p$ proložíme rovinu $\rho$ rovnoběžnou se směrem $s$, najdeme průsečík $R$ mimoběžky $q$ s rovinou $\rho$ a bodem $R$ vedeme rovnoběžku se směrem $s$.</li>
+</ul>
+<p class="mb-3"><b>Příklad:</b> Příčka mimoběžek $AB$ a $CE$ procházející bodem $S_{GH}$: rovinou je $ABGH$, ta protne $CE$ v bodě $S$ a příčka $S_{GH}S$ protne $AB$ v bodě $S_{AB}$.</p>
+<p class="mb-3"><b>Příklad:</b> Příčka mimoběžek $AB$ a $CF$ rovnoběžná s $AG$: rovinou je opět $ABGH$, ta protne $CF$ ve středu $R$ stěny $BCGF$ a rovnoběžka s $AG$ bodem $R$ protne $AB$ v bodě $S_{AB}$.</p>
+
+<h2 class="text-xl font-bold mt-10 mb-3">Část B: Roviny</h2>
+
+<h3 class="text-lg font-bold mt-6 mb-2">4. Určení roviny; bod v rovině</h3>
+<div class="def-box mb-3">
+    <p class="mb-1">Rovina je jednoznačně určena:</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li>třemi různými body, které neleží na jedné přímce ($\leftrightarrow BCH$),</li>
+        <li>přímkou a bodem, který na ní neleží ($\leftrightarrow Hp$),</li>
+        <li>dvěma různoběžkami ($\leftrightarrow ab$),</li>
+        <li>dvěma různými rovnoběžkami.</li>
+    </ul>
+</div>
+<p class="mb-3">Body na jedné přímce jsou <b>kolineární</b>, body v jedné rovině <b>komplanární</b>. Leží-li bod na přímce, která leží v rovině, leží i v této rovině: $A\in p\;\wedge\;p\subseteq\sigma\;\Rightarrow\;A\in\sigma$.</p>
+<p class="mb-3"><b>Příklad:</b> Rovinu $ACGE$ určují body $A$, $C$, $G$, různoběžky $AC$ a $CG$ i rovnoběžky $AE$ a $CG$. Bod $S_{GH}$ leží v rovině $ABG$, protože leží na přímce $GH\subseteq ABGH$. Body $A$, $C$, $F$, $H$ komplanární nejsou.</p>
+<div class="warn-box mb-3">
+    <p>Z pouhého obrázku nelze polohu bodu poznat; bod musí být zadán vzhledem k nějaké hraně, úhlopříčce nebo přímce v rovině.</p>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">5. Věty o rovnoběžkách</h3>
+<p class="mb-3">Daným bodem lze k dané přímce vést právě jednu rovnoběžku. Platí tranzitivita: $p\parallel q\;\wedge\;q\parallel r\;\Rightarrow\;p\parallel r$.</p>
+<p class="mb-3"><b>Příklad:</b> $AE\parallel BF$ a $BF\parallel CG$, tedy $AE\parallel CG$, ačkoli $AE$ a $CG$ nejsou hranami společné stěny.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">6. Vzájemná poloha přímky a roviny</h3>
+<p class="mb-3">Přímka a rovina jsou buď různoběžné (jeden společný bod, $\{P\}=p\cap\omega$), nebo rovnoběžné ($p\parallel\omega$), nebo přímka leží v rovině ($p\subseteq\omega$). Přímka leží v rovině, právě když v ní leží dva její různé body.</p>
+<div class="def-box mb-3">
+    <p><b>Kritérium rovnoběžnosti přímky s rovinou:</b> přímka je rovnoběžná s rovinou, právě když v rovině existuje přímka s ní rovnoběžná. Je-li navíc $p\parallel\alpha$ a $q\parallel p$, je i $q\parallel\alpha$.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> Přímka $S_{AE}S_{EH}$ je rovnoběžná s $AH$ (střední příčka trojúhelníku $AEH$), $AH\parallel BG$ a $BG\subseteq BDG$; proto je $S_{AE}S_{EH}\parallel BDG$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">7. Vzájemná poloha dvou rovin</h3>
+<p class="mb-3">Dvě roviny jsou buď různoběžné (společná je právě jedna přímka, průsečnice $p=\alpha\cap\beta$), nebo rovnoběžné různé ($\alpha\parallel\beta$), nebo totožné ($\alpha=\beta$).</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Daným bodem lze k dané rovině vést právě jednu rovnoběžnou rovinu.</li>
+        <li>Tranzitivita: $\alpha\parallel\beta\;\wedge\;\beta\parallel\gamma\;\Rightarrow\;\alpha\parallel\gamma$.</li>
+        <li>Přímka rovnoběžná se dvěma různoběžnými rovinami je rovnoběžná s jejich průsečnicí.</li>
+        <li><b>Kritérium:</b> obsahuje-li rovina $\alpha$ dvě různoběžky rovnoběžné s rovinou $\beta$, je $\alpha\parallel\beta$.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> Roviny $ACGE$ a $BDHF$ se protínají v ose krychle. Roviny $AFH$ a $BDG$ jsou rovnoběžné různé, protože $AF\parallel DG$, $AH\parallel BG$ a $B\notin AFH$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">8. Vzájemná poloha tří rovin</h3>
+<ol class="list-decimal list-inside space-y-1 mb-3">
+    <li>Všechny tři rovnoběžné: $ABC$, $EFG$ a rovina středů svislých hran.</li>
+    <li>Dvě rovnoběžné, třetí je protíná ve dvou rovnoběžných průsečnicích: $ABC$, $EFG$, $ACG$ (průsečnice $AC\parallel EG$).</li>
+    <li>Svazek rovin se společnou přímkou: $ACG$, $BDH$ a rovina $S_{AB}S_{CD}S_{EF}$ (společnou přímkou je osa krychle).</li>
+    <li>Každé dvě různoběžné, tři průsečnice rovnoběžné, žádný společný bod: $ABG$, $CDE$, $ABC$.</li>
+    <li>Jediný společný bod: $ABC$, $ADH$, $ABF$ (společný bod $A$).</li>
+</ol>
+
+<h2 class="text-xl font-bold mt-10 mb-3">Část C: Polohové úlohy</h2>
+
+<h3 class="text-lg font-bold mt-6 mb-2">9. Průsečík přímky s rovinou</h3>
+<div class="def-box mb-3">
+    <p><b>Metoda pomocné roviny:</b> přímkou $p$ proložíme vhodnou pomocnou rovinu $\rho$, sestrojíme průsečnici $r=\rho\cap\alpha$ a hledaný průsečík je $P=p\cap r$. Pomocnou rovinu volíme vhodným směrem (u hranolu rovnoběžně s bočními hranami) nebo vhodným bodem (u jehlanu vrcholem).</p>
+</div>
+<p class="mb-3"><b>Příklad (krychle):</b> $K=S_{EF}$, $L=S_{CG}$. Průměty do podstavy jsou $K'=S_{AB}$ a $L'=C$. Průsečík přímky $KL$ s rovinou $ABC$ je $P=KL\cap K'L'$; leží mimo podstavu a $L$ je středem úsečky $KP$.</p>
+<p class="mb-3"><b>Příklad (jehlan):</b> $K\in AV$, $|AK|=\tfrac23|AV|$; $L\in BV$, $|BL|=\tfrac13|BV|$. Přímka $KL$ leží ve stěně $ABV$, takže průsečík s rovinou podstavy leží na přímce $AB$, za bodem $B$ ve vzdálenosti $|BP|=2$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">10. Řez tělesa rovinou</h3>
+<p class="mb-3">Řez tělesa rovinou je průnik tělesa a roviny; u hranatých těles je to mnohoúhelník, jehož strany leží ve stěnách tělesa.</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>Věta 1:</b> dva body řezu ve stejné stěně spojíme, úsečka je stranou řezu.</li>
+        <li><b>Věta 2:</b> dvě rovnoběžné roviny protíná třetí rovina v rovnoběžných přímkách, strany řezu v rovnoběžných stěnách jsou proto rovnoběžné.</li>
+        <li><b>Věta 3:</b> průsečnice roviny řezu se dvěma sousedními stěnami se protínají (pokud nejsou rovnoběžné) v bodě na přímce společné hrany těchto stěn.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Postup:</b> (1) spojit body ve stejné stěně, (2) v rovnoběžných stěnách vést rovnoběžky, (3) jinak hledat průsečík přímky roviny řezu s rovinou stěny, (4) určit viditelnost (strany v neviditelných stěnách čárkovaně).</p>
+<div class="warn-box mb-3">
+    <p>Řez krychle má nejvýše šest stran (krychle má šest stěn), řez čtyřbokého jehlanu nejvýše pět.</p>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">11. Řezy krychle</h3>
+<p class="mb-3"><b>Příklad (pětiúhelník):</b> $K\in AB$, $|AK|=2$; $L\in BC$, $|BL|=2$; $M\in FG$, $|FM|=4$. Spojíme $KL$ a $LM$. Bodem $M$ vedeme rovnoběžku s $KL$, na $EH$ dostaneme $N$, $|EN|=1$. Bodem $N$ vedeme rovnoběžku s $LM$, na $AE$ dostaneme její střed $O$. Spojíme $OK$. Řezem je pětiúhelník $KLMNO$.</p>
+<p class="mb-3"><b>Příklad (šestiúhelník):</b> $K\in AE$, $|AK|=2$; $L=S_{BC}$; $M\in GH$, $|GM|=2$. Průsečík přímky $KM$ s rovinou $ABC$ najdeme pomocí průmětů $K'=A$, $M'\in CD$, $|DM'|=4$; je to bod $P$ mimo krychli. Přímka $PL$ protne $AB$ v bodě $X$, $|AX|=2$. Dále spojíme $KX$, bodem $M$ vedeme rovnoběžku s $XL$ (na $EH$ střed $N$), spojíme $KN$, bodem $L$ vedeme rovnoběžku s $KN$ (na $CG$ bod $Y$, $|CY|=4$) a spojíme $YM$. Řezem je šestiúhelník $KXLYMN$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">12. Řez jehlanu</h3>
+<p class="mb-3"><b>Příklad:</b> $K$, $L$ jsou středy hran $AV$, $CV$, $M$ je střed $AB$. Spojíme $KM$. Protože $KL$ je rovnoběžná s podstavou, vedeme bodem $M$ rovnoběžku s $KL$; na $BC$ dostaneme její střed $N$ a spojíme $NL$. Bod na $DV$ najdeme v rovině $BDV$: $Q=KL\cap SV$ ($S$ je střed podstavy), $R=MN\cap BD$, přímka $RQ$ protne $DV$ v bodě $T$, $|DT|=\tfrac34|DV|$. Řezem je pětiúhelník $KMNLT$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">13. Průsečíky přímky s tělesem</h3>
+<p class="mb-3">Přímkou proložíme vhodnou rovinu (u hranolu rovnoběžnou s bočními hranami, u jehlanu procházející vrcholem), sestrojíme řez tělesa touto rovinou a průsečíky přímky s obvodem řezu jsou hledané body.</p>
+<div class="warn-box mb-3">
+    <p>Úsečka mezi průsečíky leží uvnitř tělesa, a je tedy neviditelná. Za průsečíkem v neviditelné stěně je přímka zakrytá až k obrysu tělesa.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> Přímka $KL$ s průměty $K'$, $L'$ do podstavy. Rovina proložená přímkou $KL$ rovnoběžně se svislými hranami protne podstavu v přímce $K'L'$ a krychli v obdélníku (protíná hrany $AB$ a $CD$). Přímka $KL$ protne obvod obdélníku v bodech $X$ (stěna $ABFE$) a $Y$ (stěna $CDHG$).</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">14. Průsečnice dvou rovin</h3>
+<p class="mb-3">Najdeme dva různé společné body obou rovin, obvykle jako průsečíky dvou přímek ležících v téže třetí rovině (například ve stěně), z nichž jedna patří první a druhá druhé rovině.</p>
+<p class="mb-3"><b>Příklad:</b> Rovina $ACF$ a rovina $BDE$: $AC\cap BD=S_1$ (střed podstavy), $AF\cap BE=S_2$ (střed stěny $ABFE$); průsečnicí je přímka $S_1S_2$.</p>
+
+<h2 class="text-xl font-bold mt-10 mb-3">Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Útvary / úloha</th>
+            <th class="text-left py-1">Možnosti / postup</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">dvě přímky</td><td class="py-1">různoběžky, rovnoběžky různé, totožné, mimoběžky</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">přímka a rovina</td><td class="py-1">různoběžné, rovnoběžné, přímka leží v rovině</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">dvě roviny</td><td class="py-1">různoběžné, rovnoběžné různé, totožné</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">tři roviny</td><td class="py-1">pět případů (viz bod 8)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">průsečík přímky s rovinou</td><td class="py-1">pomocná rovina, průsečnice, průsečík</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">řez tělesa</td><td class="py-1">spojit body v téže stěně, rovnoběžky, průsečík se stěnou, viditelnost</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">přímka a těleso</td><td class="py-1">směrová nebo vrcholová rovina, řez, průsečíky s obvodem řezu</td></tr>
+        <tr><td class="py-1 pr-2">průsečnice dvou rovin</td><td class="py-1">dva společné body</td></tr>
+    </tbody>
+</table>
+<p class="mb-3"><b>Co bude dál:</b> V kapitole Stereometrie 3: Metrické úlohy budeme určovat vzdálenosti bodů, přímek a rovin a odchylky přímek a rovin; řezy a průsečíky z této kapitoly nám poslouží jako pomocné konstrukce.</p>
+
+</main>
+</div>
+
+<!-- ============================================================ -->
+<!-- FR CONTENT -->
+<!-- ============================================================ -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Géométrie dans l'espace 2 — Positions relatives et sections</h1>
+
+<p class="mb-3">Dans tous les exemples : cube $ABCDEFGH$ d'arête $6$, de base inférieure $ABCD$, le point $E$ étant au-dessus du point $A$ ; pyramide régulière $ABCDV$ de base $6\times6$ et de hauteur $6$. Le milieu de l'arête $AB$ est noté $S_{AB}$, le centre du cube $S$. La droite déterminée par les points $A$, $B$ s'écrit $\leftrightarrow AB$ (en France $(AB)$).</p>
+
+<h2 class="text-xl font-bold mt-10 mb-3">Partie A : Points et droites</h2>
+
+<h3 class="text-lg font-bold mt-6 mb-2">1. Deux points ; un point et une droite</h3>
+<p class="mb-3">Deux points sont soit confondus ($A=B$), soit distincts ($A\neq B$). Par deux points distincts passe une et une seule droite. Un point appartient à une droite ($A\in p$) ou ne lui appartient pas ($A\notin p$).</p>
+<p class="mb-3"><b>Exemple :</b> Les milieux des segments $AG$ et $BH$ coïncident avec le centre du cube $S$. On a $S\in\,\leftrightarrow CE$, mais $S_{AB}\notin\,\leftrightarrow CE$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">2. Position relative de deux droites</h3>
+<p class="mb-3">Si deux droites sont dans un même plan, elles sont sécantes ou parallèles. Si elles ne sont pas dans un même plan, elles sont non coplanaires.</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>Droites sécantes :</b> coplanaires, avec exactement un point commun (point d'intersection), $\{P\}=a\cap b$.</li>
+        <li><b>Droites parallèles distinctes :</b> coplanaires, sans point commun, $a\parallel b$.</li>
+        <li><b>Droites confondues :</b> tous leurs points sont communs (cas particulier de parallélisme), $a=b$.</li>
+        <li><b>Droites non coplanaires :</b> elles ne sont pas dans un même plan, n'ont aucun point commun et ne sont pas parallèles.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> $AB\parallel GH$ et $AF\parallel DG$ ; $AB$ et $CG$ sont non coplanaires, de même que $AF$ et $CH$ ; les diagonales $AG$ et $BH$ sont sécantes en $S$.</p>
+<div class="warn-box mb-3">
+    <p>Les projections de droites non coplanaires se croisent souvent sur la figure. On ne peut donc pas conclure à partir de la figure que les droites sont sécantes ; il faut trouver un plan qui les contiendrait toutes les deux.</p>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">3. Transversale de deux droites non coplanaires</h3>
+<p class="mb-3">Une transversale de deux droites non coplanaires est une droite qui coupe chacune d'elles. Il en existe une infinité ; seule une condition supplémentaire donne un problème à solution unique.</p>
+<ul class="list-disc list-inside space-y-1 mb-3">
+    <li><b>Transversale passant par un point $M$ :</b> on fait passer un plan $\rho$ par $M$ et la droite $p$, on cherche le point d'intersection $Y$ de la droite $q$ avec $\rho$ ; la transversale est la droite $MY$.</li>
+    <li><b>Transversale de direction $s$ :</b> on fait passer par $p$ un plan $\rho$ parallèle à la direction $s$, on cherche le point d'intersection $R$ de $q$ avec $\rho$ et on mène par $R$ la parallèle à $s$.</li>
+</ul>
+<p class="mb-3"><b>Exemple :</b> Transversale des droites $AB$ et $CE$ passant par $S_{GH}$ : le plan est $ABGH$, il coupe $CE$ en $S$, et la transversale $S_{GH}S$ coupe $AB$ en $S_{AB}$.</p>
+<p class="mb-3"><b>Exemple :</b> Transversale des droites $AB$ et $CF$ parallèle à $AG$ : le plan est de nouveau $ABGH$, il coupe $CF$ au centre $R$ de la face $BCGF$, et la parallèle à $AG$ menée par $R$ coupe $AB$ en $S_{AB}$.</p>
+
+<h2 class="text-xl font-bold mt-10 mb-3">Partie B : Plans</h2>
+
+<h3 class="text-lg font-bold mt-6 mb-2">4. Détermination d'un plan ; point d'un plan</h3>
+<div class="def-box mb-3">
+    <p class="mb-1">Un plan est déterminé de manière unique par :</p>
+    <ul class="list-disc list-inside space-y-1">
+        <li>trois points distincts non alignés ($\leftrightarrow BCH$),</li>
+        <li>une droite et un point qui ne lui appartient pas ($\leftrightarrow Hp$),</li>
+        <li>deux droites sécantes ($\leftrightarrow ab$),</li>
+        <li>deux droites parallèles distinctes.</li>
+    </ul>
+</div>
+<p class="mb-3">Des points situés sur une même droite sont <b>alignés</b> (colinéaires), des points situés dans un même plan sont <b>coplanaires</b>. Si un point appartient à une droite contenue dans un plan, il appartient aussi à ce plan : $A\in p\;\wedge\;p\subseteq\sigma\;\Rightarrow\;A\in\sigma$.</p>
+<p class="mb-3"><b>Exemple :</b> Le plan $ACGE$ est déterminé par les points $A$, $C$, $G$, par les droites sécantes $AC$ et $CG$ ou par les droites parallèles $AE$ et $CG$. Le point $S_{GH}$ appartient au plan $ABG$, car il appartient à la droite $GH\subseteq ABGH$. Les points $A$, $C$, $F$, $H$ ne sont pas coplanaires.</p>
+<div class="warn-box mb-3">
+    <p>Une figure seule ne permet pas de connaître la position d'un point ; un point doit être donné par rapport à une arête, une diagonale ou une droite du plan.</p>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">5. Théorèmes sur les droites parallèles</h3>
+<p class="mb-3">Par un point donné, on peut mener une et une seule parallèle à une droite donnée. Le parallélisme des droites est transitif : $p\parallel q\;\wedge\;q\parallel r\;\Rightarrow\;p\parallel r$.</p>
+<p class="mb-3"><b>Exemple :</b> $AE\parallel BF$ et $BF\parallel CG$, donc $AE\parallel CG$, bien que $AE$ et $CG$ ne soient pas des arêtes d'une même face.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">6. Position relative d'une droite et d'un plan</h3>
+<p class="mb-3">Une droite et un plan sont soit sécants (un point commun, $\{P\}=p\cap\omega$), soit parallèles ($p\parallel\omega$), soit la droite est contenue dans le plan ($p\subseteq\omega$). Une droite est contenue dans un plan si et seulement si deux de ses points distincts appartiennent à ce plan.</p>
+<div class="def-box mb-3">
+    <p><b>Critère de parallélisme d'une droite et d'un plan :</b> une droite est parallèle à un plan si et seulement s'il existe dans ce plan une droite qui lui est parallèle. De plus, si $p\parallel\alpha$ et $q\parallel p$, alors $q\parallel\alpha$.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> La droite $S_{AE}S_{EH}$ est parallèle à $AH$ (elle joint les milieux de deux côtés du triangle $AEH$), $AH\parallel BG$ et $BG\subseteq BDG$ ; donc $S_{AE}S_{EH}\parallel BDG$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">7. Position relative de deux plans</h3>
+<p class="mb-3">Deux plans sont soit sécants (exactement une droite commune, la droite d'intersection $p=\alpha\cap\beta$), soit parallèles distincts ($\alpha\parallel\beta$), soit confondus ($\alpha=\beta$).</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Par un point donné, on peut mener un et un seul plan parallèle à un plan donné.</li>
+        <li>Transitivité : $\alpha\parallel\beta\;\wedge\;\beta\parallel\gamma\;\Rightarrow\;\alpha\parallel\gamma$.</li>
+        <li>Une droite parallèle à deux plans sécants est parallèle à leur droite d'intersection.</li>
+        <li><b>Critère :</b> si le plan $\alpha$ contient deux droites sécantes parallèles au plan $\beta$, alors $\alpha\parallel\beta$.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> Les plans $ACGE$ et $BDHF$ se coupent selon l'axe du cube. Les plans $AFH$ et $BDG$ sont parallèles distincts, car $AF\parallel DG$, $AH\parallel BG$ et $B\notin AFH$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">8. Position relative de trois plans</h3>
+<ol class="list-decimal list-inside space-y-1 mb-3">
+    <li>Les trois plans sont parallèles : $ABC$, $EFG$ et le plan des milieux des arêtes verticales.</li>
+    <li>Deux plans sont parallèles, le troisième les coupe selon deux droites parallèles : $ABC$, $EFG$, $ACG$ (droites d'intersection $AC\parallel EG$).</li>
+    <li>Faisceau de plans ayant une droite commune : $ACG$, $BDH$ et le plan $S_{AB}S_{CD}S_{EF}$ (la droite commune est l'axe du cube).</li>
+    <li>Plans deux à deux sécants, trois droites d'intersection parallèles, aucun point commun : $ABG$, $CDE$, $ABC$.</li>
+    <li>Un seul point commun : $ABC$, $ADH$, $ABF$ (point commun $A$).</li>
+</ol>
+
+<h2 class="text-xl font-bold mt-10 mb-3">Partie C : Problèmes de position</h2>
+
+<h3 class="text-lg font-bold mt-6 mb-2">9. Point d'intersection d'une droite et d'un plan</h3>
+<div class="def-box mb-3">
+    <p><b>Méthode du plan auxiliaire :</b> on fait passer par la droite $p$ un plan auxiliaire $\rho$ bien choisi, on construit la droite d'intersection $r=\rho\cap\alpha$, et le point cherché est $P=p\cap r$. On choisit le plan auxiliaire selon une direction adaptée (pour un prisme, parallèlement aux arêtes latérales) ou par un point adapté (pour une pyramide, par le sommet).</p>
+</div>
+<p class="mb-3"><b>Exemple (cube) :</b> $K=S_{EF}$, $L=S_{CG}$. Les projections sur la base sont $K'=S_{AB}$ et $L'=C$. Le point d'intersection de la droite $KL$ et du plan $ABC$ est $P=KL\cap K'L'$ ; il se trouve hors de la base et $L$ est le milieu du segment $KP$.</p>
+<p class="mb-3"><b>Exemple (pyramide) :</b> $K\in AV$, $|AK|=\tfrac23|AV|$ ; $L\in BV$, $|BL|=\tfrac13|BV|$. La droite $KL$ est contenue dans la face $ABV$, donc son point d'intersection avec le plan de la base se trouve sur la droite $AB$, au-delà du point $B$, à la distance $|BP|=2$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">10. Section d'un solide par un plan</h3>
+<p class="mb-3">La section d'un solide par un plan est l'intersection du solide et du plan ; pour un polyèdre, c'est un polygone dont les côtés sont situés dans les faces du solide.</p>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li><b>Théorème 1 :</b> on joint deux points de la section situés dans la même face, le segment est un côté de la section.</li>
+        <li><b>Théorème 2 :</b> un troisième plan coupe deux plans parallèles selon des droites parallèles ; les côtés de la section situés dans des faces parallèles sont donc parallèles.</li>
+        <li><b>Théorème 3 :</b> les droites d'intersection du plan de section avec deux faces voisines se coupent (si elles ne sont pas parallèles) en un point de la droite de l'arête commune à ces faces.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Démarche :</b> (1) joindre les points situés dans une même face, (2) mener des parallèles dans les faces parallèles, (3) sinon, chercher le point d'intersection d'une droite du plan de section avec le plan d'une face, (4) déterminer la visibilité (côtés situés dans des faces cachées en pointillés).</p>
+<div class="warn-box mb-3">
+    <p>Une section d'un cube a au plus six côtés (le cube a six faces), une section d'une pyramide à base carrée au plus cinq.</p>
+</div>
+
+<h3 class="text-lg font-bold mt-6 mb-2">11. Sections d'un cube</h3>
+<p class="mb-3"><b>Exemple (pentagone) :</b> $K\in AB$, $|AK|=2$ ; $L\in BC$, $|BL|=2$ ; $M\in FG$, $|FM|=4$. On joint $KL$ et $LM$. Par $M$, on mène la parallèle à $KL$ et on obtient sur $EH$ le point $N$, $|EN|=1$. Par $N$, on mène la parallèle à $LM$ et on obtient sur $AE$ son milieu $O$. On joint $OK$. La section est le pentagone $KLMNO$.</p>
+<p class="mb-3"><b>Exemple (hexagone) :</b> $K\in AE$, $|AK|=2$ ; $L=S_{BC}$ ; $M\in GH$, $|GM|=2$. On trouve le point d'intersection de la droite $KM$ et du plan $ABC$ à l'aide des projections $K'=A$, $M'\in CD$, $|DM'|=4$ ; c'est un point $P$ situé hors du cube. La droite $PL$ coupe $AB$ au point $X$, $|AX|=2$. Ensuite, on joint $KX$, on mène par $M$ la parallèle à $XL$ (milieu $N$ de $EH$), on joint $KN$, on mène par $L$ la parallèle à $KN$ (point $Y$ de $CG$, $|CY|=4$) et on joint $YM$. La section est l'hexagone $KXLYMN$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">12. Section d'une pyramide</h3>
+<p class="mb-3"><b>Exemple :</b> $K$, $L$ sont les milieux des arêtes $AV$, $CV$, $M$ est le milieu de $AB$. On joint $KM$. Comme $KL$ est parallèle à la base, on mène par $M$ la parallèle à $KL$ ; on obtient sur $BC$ son milieu $N$ et on joint $NL$. On trouve le point de $DV$ dans le plan $BDV$ : $Q=KL\cap SV$ ($S$ est le centre de la base), $R=MN\cap BD$, et la droite $RQ$ coupe $DV$ au point $T$, $|DT|=\tfrac34|DV|$. La section est le pentagone $KMNLT$.</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">13. Points d'intersection d'une droite et d'un solide</h3>
+<p class="mb-3">On fait passer par la droite un plan bien choisi (pour un prisme, parallèle aux arêtes latérales ; pour une pyramide, passant par le sommet), on construit la section du solide par ce plan, et les points d'intersection de la droite avec le contour de la section sont les points cherchés.</p>
+<div class="warn-box mb-3">
+    <p>Le segment entre les points d'intersection est à l'intérieur du solide, il est donc caché. Au-delà d'un point d'intersection situé dans une face cachée, la droite est cachée jusqu'au contour apparent du solide.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> La droite $KL$ avec ses projections $K'$, $L'$ sur la base. Le plan passant par $KL$ et parallèle aux arêtes verticales coupe la base selon la droite $K'L'$ et le cube selon un rectangle (il coupe les arêtes $AB$ et $CD$). La droite $KL$ coupe le contour du rectangle aux points $X$ (face $ABFE$) et $Y$ (face $CDHG$).</p>
+
+<h3 class="text-lg font-bold mt-6 mb-2">14. Droite d'intersection de deux plans</h3>
+<p class="mb-3">On cherche deux points communs distincts des deux plans, en général comme points d'intersection de deux droites situées dans un même troisième plan (par exemple une face), l'une appartenant au premier plan, l'autre au second.</p>
+<p class="mb-3"><b>Exemple :</b> Plans $ACF$ et $BDE$ : $AC\cap BD=S_1$ (centre de la base), $AF\cap BE=S_2$ (centre de la face $ABFE$) ; la droite d'intersection est la droite $S_1S_2$.</p>
+
+<h2 class="text-xl font-bold mt-10 mb-3">Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Objets / problème</th>
+            <th class="text-left py-1">Possibilités / démarche</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">deux droites</td><td class="py-1">sécantes, parallèles distinctes, confondues, non coplanaires</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">une droite et un plan</td><td class="py-1">sécants, parallèles, droite contenue dans le plan</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">deux plans</td><td class="py-1">sécants, parallèles distincts, confondus</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">trois plans</td><td class="py-1">cinq cas (voir point 8)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">intersection d'une droite et d'un plan</td><td class="py-1">plan auxiliaire, droite d'intersection, point d'intersection</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">section d'un solide</td><td class="py-1">joindre les points d'une même face, parallèles, intersection avec une face, visibilité</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">une droite et un solide</td><td class="py-1">plan parallèle aux arêtes latérales ou passant par le sommet, section, intersections avec le contour de la section</td></tr>
+        <tr><td class="py-1 pr-2">intersection de deux plans</td><td class="py-1">deux points communs</td></tr>
+    </tbody>
+</table>
+<p class="mb-3"><b>Et ensuite :</b> Dans le chapitre Géométrie dans l'espace 3 : problèmes métriques, nous déterminerons les distances entre points, droites et plans ainsi que les angles entre droites et plans ; les sections et points d'intersection de ce chapitre nous serviront de constructions auxiliaires.</p>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? "Géométrie dans l'espace 2 — Positions relatives et sections · Manuel" : 'Stereometrie 2 — Polohové vlastnosti a řezy · Příručka';
+    document.title = czVisible ? "Géométrie dans l'espace 2 — Positions relatives et sections — Manuel" : 'Stereometrie 2 — Polohové vlastnosti a řezy — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>
