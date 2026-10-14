@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Goniometrie 5 — Goniometrické vzorce / Goniométrie 5 — Formules trigonométriques</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-goniometrie5.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Goniometrie 5</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Goniométrie 5 — Formules trigonométriques
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Co udává vzorec $\\sin^2x+\\cos^2x=1$?",
+            "a": "Hodnotu $1$ pro součet druhých mocnin sinu a kosinu téhož úhlu, pro každé reálné $x$."
+        },
+        {
+            "q": "Z čeho vzorec $\\sin^2x+\\cos^2x=1$ plyne?",
+            "a": "Z definice sinu a kosinu na jednotkové kružnici a z Pythagorovy věty."
+        },
+        {
+            "q": "Jaký je vzorec vyjadřující vztah mezi $\\operatorname{tg}x$ a $\\operatorname{cotg}x$?",
+            "a": "$\\operatorname{tg}x\\cdot\\operatorname{cotg}x=1$."
+        },
+        {
+            "q": "Pro jaká $x$ platí vzorec $\\operatorname{tg}x\\cdot\\operatorname{cotg}x=1$?",
+            "a": "Pro $x\\neq k\\cdot\\dfrac{\\pi}{2}$, $k\\in\\mathbb{Z}$."
+        },
+        {
+            "q": "Jak z $\\operatorname{tg}x\\cdot\\operatorname{cotg}x=1$ vyjádříme $\\operatorname{tg}x$?",
+            "a": "$\\operatorname{tg}x=\\dfrac{1}{\\operatorname{cotg}x}$ (obdobně $\\operatorname{cotg}x=\\dfrac{1}{\\operatorname{tg}x}$)."
+        },
+        {
+            "q": "Co musíme znát navíc ke znalosti $\\sin x$ (resp. $\\cos x$), abychom pomocí $\\sin^2x+\\cos^2x=1$ dopočítali druhou funkci se správným znaménkem?",
+            "a": "Kvadrant, ve kterém úhel $x$ leží."
+        },
+        {
+            "q": "Kolik možných hodnot (až na znaménko) dá vzorec $\\sin^2x=1-\\cos^2x$ pro $\\sin x$?",
+            "a": "Dvě, lišící se znaménkem ($\\pm$)."
+        },
+        {
+            "q": "K čemu se vzorec $\\sin^2x+\\cos^2x=1$ často využívá při úpravě výrazů?",
+            "a": "K nahrazení druhé mocniny jedné funkce výrazem s druhou mocninou druhé funkce."
+        },
+        {
+            "q": "Jaký je součtový vzorec pro $\\sin(x+y)$?",
+            "a": "$\\sin(x+y)=\\sin x\\cos y+\\cos x\\sin y$."
+        },
+        {
+            "q": "Jaký je součtový vzorec pro $\\cos(x-y)$?",
+            "a": "$\\cos(x-y)=\\cos x\\cos y+\\sin x\\sin y$."
+        },
+        {
+            "q": "Jak vznikne vzorec pro $\\sin2x$ ze součtového vzorce?",
+            "a": "Dosazením $y=x$ do vzorce pro $\\sin(x+y)$."
+        },
+        {
+            "q": "Jaký je vzorec pro $\\sin2x$?",
+            "a": "$\\sin2x=2\\sin x\\cos x$."
+        },
+        {
+            "q": "Jaký je základní vzorec pro $\\cos2x$?",
+            "a": "$\\cos2x=\\cos^2x-\\sin^2x$."
+        },
+        {
+            "q": "Jaké další dva ekvivalentní tvary má vzorec pro $\\cos2x$?",
+            "a": "$\\cos2x=2\\cos^2x-1=1-2\\sin^2x$."
+        },
+        {
+            "q": "Jaký je vzorec pro poloviční úhel $\\left|\\sin\\dfrac{x}{2}\\right|$?",
+            "a": "$\\left|\\sin\\dfrac{x}{2}\\right|=\\sqrt{\\dfrac{1-\\cos x}{2}}$."
+        },
+        {
+            "q": "Jaký je první krok při řešení goniometrické rovnice substitucí, obsahuje-li rovnice tutéž funkci vícekrát?",
+            "a": "Upravit rovnici tak, aby obsahovala jen jednu goniometrickou funkci."
+        },
+        {
+            "q": "Proč musíme po vyřešení substituční rovnice ověřit, zda kořen leží v oboru hodnot dané funkce?",
+            "a": "Protože například $\\sin x=2$ by neodpovídalo žádnému reálnému $x$ (obor hodnot sinu je $\\langle-1;1\\rangle$)."
+        },
+        {
+            "q": "Co znamená, že umocnění goniometrické rovnice na druhou není ekvivalentní úprava?",
+            "a": "Že mohou vzniknout kořeny, které původní rovnici nevyhovují (zdánlivé kořeny)."
+        },
+        {
+            "q": "Co musíme provést po umocnění rovnice?",
+            "a": "Zkoušku dosazením do původní (neumocněné) rovnice."
+        },
+        {
+            "q": "Jaký je poslední krok obecného postupu řešení substitucí?",
+            "a": "Zapsat množinu všech řešení $K$."
+        },
+        {
+            "q": "Ověřte vzorec pro $x=\\dfrac{\\pi}{4}$: $\\sin^2\\dfrac{\\pi}{4}+\\cos^2\\dfrac{\\pi}{4}=$?",
+            "a": "$=1$ (neboť $\\left(\\dfrac{\\sqrt2}{2}\\right)^2+\\left(\\dfrac{\\sqrt2}{2}\\right)^2=\\dfrac12+\\dfrac12=1$)."
+        },
+        {
+            "q": "Vypočtěte $\\operatorname{tg}\\dfrac{\\pi}{4}\\cdot\\operatorname{cotg}\\dfrac{\\pi}{4}$.",
+            "a": "$=1\\cdot1=1$."
+        },
+        {
+            "q": "$\\cos x=\\dfrac45$, $x$ v I. kvadrantu. Určete $\\sin x$.",
+            "a": "$\\sin x=\\dfrac35$."
+        },
+        {
+            "q": "$\\cos x=-\\dfrac{5}{13}$, $x$ ve II. kvadrantu. Určete $\\sin x$.",
+            "a": "$\\sin x=\\dfrac{12}{13}$."
+        },
+        {
+            "q": "$\\sin x=\\dfrac12$, $x$ ve II. kvadrantu. Určete $\\cos x$.",
+            "a": "$\\cos x=-\\dfrac{\\sqrt3}{2}$."
+        },
+        {
+            "q": "Zjednodušte výraz $4\\sin^2x-3\\cos^2x+3$.",
+            "a": "$=7\\sin^2x$."
+        },
+        {
+            "q": "Vypočtěte přesnou hodnotu $\\cos15°$ pomocí součtového vzorce ($45°-30°$).",
+            "a": "$\\cos15°=\\dfrac{\\sqrt6+\\sqrt2}{4}$."
+        },
+        {
+            "q": "Vypočtěte přesnou hodnotu $\\sin15°$ pomocí součtového vzorce.",
+            "a": "$\\sin15°=\\dfrac{\\sqrt6-\\sqrt2}{4}$."
+        },
+        {
+            "q": "Ověřte vzorec pro dvojnásobný úhel: $\\sin60°=2\\sin30°\\cos30°=$?",
+            "a": "$=\\dfrac{\\sqrt3}{2}$ (souhlasí se známou hodnotou $\\sin60°$)."
+        },
+        {
+            "q": "Zjednodušte výraz $\\dfrac{1+\\cos2t}{\\sin2t}$.",
+            "a": "$=\\operatorname{cotg}t$."
+        },
+        {
+            "q": "Zjednodušte výraz $\\sin^2x-\\cos^2x$ pomocí vzorce pro dvojnásobný úhel.",
+            "a": "$=-\\cos2x$."
+        },
+        {
+            "q": "Vyjádřete $\\cos^2x$ pomocí $\\cos2x$.",
+            "a": "$\\cos^2x=\\dfrac{1+\\cos2x}{2}$."
+        },
+        {
+            "q": "Řešte v $\\mathbb{R}$ rovnici $\\sin^2x+\\sin x-2=0$ (základní řešení).",
+            "a": "Subs. $u=\\sin x$: $(u+2)(u-1)=0$, $u=-2$ se zamítá, $\\sin x=1\\Rightarrow x=\\dfrac{\\pi}{2}+k\\cdot2\\pi$."
+        },
+        {
+            "q": "Řešte v $\\mathbb{R}$ rovnici $\\cos^2x-\\cos x=0$.",
+            "a": "$\\cos x(\\cos x-1)=0\\Rightarrow\\cos x=0$ nebo $\\cos x=1$."
+        },
+        {
+            "q": "Řešte v $\\mathbb{R}$ rovnici $\\operatorname{tg}x=\\operatorname{cotg}x$ (základní řešení).",
+            "a": "$\\operatorname{tg}^2x=1\\Rightarrow\\operatorname{tg}x=\\pm1\\Rightarrow x=\\dfrac{\\pi}{4}+k\\cdot\\dfrac{\\pi}{2}$."
+        },
+        {
+            "q": "Řešte v $\\mathbb{R}$ rovnici $\\sin x\\cdot\\cos x=\\dfrac12$.",
+            "a": "$\\sin2x=1\\Rightarrow x=\\dfrac{\\pi}{4}+k\\pi$."
+        },
+        {
+            "q": "Řešte v $\\mathbb{R}$ rovnici $\\sin2x+\\cos x=0$.",
+            "a": "$\\cos x(2\\sin x+1)=0\\Rightarrow\\cos x=0$ nebo $\\sin x=-\\dfrac12$."
+        },
+        {
+            "q": "Rovnice $\\cos x-\\sqrt3\\sin x=1$ po umocnění dá kandidáty $\\sin x=0$ a $\\sin x=-\\dfrac{\\sqrt3}{2}$. Které dvojice $(\\sin x;\\cos x)$ vyhoví zkoušce?",
+            "a": "$(0;1)$ a $\\left(-\\dfrac{\\sqrt3}{2};-\\dfrac12\\right)$."
+        },
+        {
+            "q": "Jaký vzorec použijeme k výpočtu $\\sin(x-y)$?",
+            "a": "$\\sin(x-y)=\\sin x\\cos y-\\cos x\\sin y$."
+        },
+        {
+            "q": "Jaký vzorec použijeme k výpočtu $\\cos(x+y)$?",
+            "a": "$\\cos(x+y)=\\cos x\\cos y-\\sin x\\sin y$."
+        },
+        {
+            "q": "Proč potřebujeme při zjednodušování výrazu s $\\operatorname{tg}x$ i podmínku $\\cos x\\neq0$, i když se $\\operatorname{tg}x$ objeví až během úpravy?",
+            "a": "Protože podmínky existence musí platit pro všechny funkce použité kdykoli v postupu, ne jen v původním výrazu."
+        },
+        {
+            "q": "Jaký je vzorec pro poloviční úhel $\\left|\\cos\\dfrac{x}{2}\\right|$?",
+            "a": "$\\left|\\cos\\dfrac{x}{2}\\right|=\\sqrt{\\dfrac{1+\\cos x}{2}}$."
+        },
+        {
+            "q": "Co znamená zápis $K=\\bigcup_{k\\in\\mathbb{Z}}\\{\\dots\\}$ na konci řešení goniometrické rovnice?",
+            "a": "Sjednocení všech řešení přes všechna celá čísla $k$ (kvůli periodicitě)."
+        },
+        {
+            "q": "Jaký typ úpravy vede k odvození vzorců pro poloviční úhel?",
+            "a": "Vyjádření ze vzorců pro dvojnásobný úhel (dosazením $x\\to\\dfrac{x}{2}$)."
+        },
+        {
+            "q": "Proč se rovnice v součinovém tvaru řeší zvlášť pro každého činitele?",
+            "a": "Protože součin je roven nule právě tehdy, když je nule roven aspoň jeden z činitelů."
+        },
+        {
+            "q": "Zjednodušte výraz $\\dfrac{\\sin x\\cdot\\cos x}{1-\\sin^2x}$.",
+            "a": "$=\\operatorname{tg}x$ (podm. $\\cos x\\neq0$)."
+        },
+        {
+            "q": "Ověřte, že $\\cos^2x-\\sin^2x=1-2\\sin^2x$.",
+            "a": "Dosazením $\\cos^2x=1-\\sin^2x$: $(1-\\sin^2x)-\\sin^2x=1-2\\sin^2x$ ✓."
+        },
+        {
+            "q": "Ověřte, že $\\cos^2x-\\sin^2x=2\\cos^2x-1$.",
+            "a": "Dosazením $\\sin^2x=1-\\cos^2x$: $\\cos^2x-(1-\\cos^2x)=2\\cos^2x-1$ ✓."
+        },
+        {
+            "q": "Kdy je vhodné použít tvar $\\cos2x=2\\cos^2x-1$ místo $\\cos2x=\\cos^2x-\\sin^2x$?",
+            "a": "Když chceme mít ve výrazu jen kosinus — např. při substituci $u=\\cos x$."
+        },
+        {
+            "q": "Kdy je vhodné použít tvar $\\cos2x=1-2\\sin^2x$?",
+            "a": "Když chceme mít ve výrazu jen sinus — např. při substituci $u=\\sin x$."
+        }
+    ],
+    "fr": [
+        {
+            "q": "Que donne la formule $\\sin^2x+\\cos^2x=1$ ?",
+            "a": "La valeur $1$ pour la somme des carrés du sinus et du cosinus du même angle, pour tout $x$ réel."
+        },
+        {
+            "q": "D'où provient la formule $\\sin^2x+\\cos^2x=1$ ?",
+            "a": "De la définition du sinus et du cosinus sur le cercle trigonométrique et du théorème de Pythagore."
+        },
+        {
+            "q": "Quelle est la formule exprimant la relation entre $\\operatorname{tg}x$ et $\\operatorname{cotg}x$ ?",
+            "a": "$\\operatorname{tg}x\\cdot\\operatorname{cotg}x=1$."
+        },
+        {
+            "q": "Pour quels $x$ la formule $\\operatorname{tg}x\\cdot\\operatorname{cotg}x=1$ est-elle valable ?",
+            "a": "Pour $x\\neq k\\cdot\\dfrac{\\pi}{2}$, $k\\in\\mathbb{Z}$."
+        },
+        {
+            "q": "Comment exprime-t-on $\\operatorname{tg}x$ à partir de $\\operatorname{tg}x\\cdot\\operatorname{cotg}x=1$ ?",
+            "a": "$\\operatorname{tg}x=\\dfrac{1}{\\operatorname{cotg}x}$ (de même $\\operatorname{cotg}x=\\dfrac{1}{\\operatorname{tg}x}$)."
+        },
+        {
+            "q": "Que faut-il connaître en plus de $\\sin x$ (ou $\\cos x$) pour calculer l'autre fonction avec le bon signe à l'aide de $\\sin^2x+\\cos^2x=1$ ?",
+            "a": "Le quadrant dans lequel se trouve l'angle $x$."
+        },
+        {
+            "q": "Combien de valeurs possibles (au signe près) donne la formule $\\sin^2x=1-\\cos^2x$ pour $\\sin x$ ?",
+            "a": "Deux, différant par le signe ($\\pm$)."
+        },
+        {
+            "q": "À quoi sert souvent la formule $\\sin^2x+\\cos^2x=1$ dans la simplification d'expressions ?",
+            "a": "À remplacer le carré d'une fonction par une expression contenant le carré de l'autre fonction."
+        },
+        {
+            "q": "Quelle est la formule d'addition pour $\\sin(x+y)$ ?",
+            "a": "$\\sin(x+y)=\\sin x\\cos y+\\cos x\\sin y$."
+        },
+        {
+            "q": "Quelle est la formule d'addition pour $\\cos(x-y)$ ?",
+            "a": "$\\cos(x-y)=\\cos x\\cos y+\\sin x\\sin y$."
+        },
+        {
+            "q": "Comment obtient-on la formule pour $\\sin2x$ à partir de la formule d'addition ?",
+            "a": "En substituant $y=x$ dans la formule de $\\sin(x+y)$."
+        },
+        {
+            "q": "Quelle est la formule pour $\\sin2x$ ?",
+            "a": "$\\sin2x=2\\sin x\\cos x$."
+        },
+        {
+            "q": "Quelle est la formule de base pour $\\cos2x$ ?",
+            "a": "$\\cos2x=\\cos^2x-\\sin^2x$."
+        },
+        {
+            "q": "Quelles sont les deux autres formes équivalentes de la formule pour $\\cos2x$ ?",
+            "a": "$\\cos2x=2\\cos^2x-1=1-2\\sin^2x$."
+        },
+        {
+            "q": "Quelle est la formule de l'angle moitié $\\left|\\sin\\dfrac{x}{2}\\right|$ ?",
+            "a": "$\\left|\\sin\\dfrac{x}{2}\\right|=\\sqrt{\\dfrac{1-\\cos x}{2}}$."
+        },
+        {
+            "q": "Quelle est la première étape pour résoudre une équation trigonométrique par substitution, si la même fonction apparaît plusieurs fois ?",
+            "a": "Transformer l'équation pour qu'elle ne contienne qu'une seule fonction trigonométrique."
+        },
+        {
+            "q": "Pourquoi faut-il vérifier, après avoir résolu l'équation de substitution, que la racine appartient à l'ensemble des valeurs de la fonction ?",
+            "a": "Parce que, par exemple, $\\sin x=2$ ne correspondrait à aucun $x$ réel (l'ensemble des valeurs du sinus est $\\langle-1;1\\rangle$)."
+        },
+        {
+            "q": "Que signifie le fait qu'élever une équation trigonométrique au carré n'est pas une transformation équivalente ?",
+            "a": "Que des racines qui ne vérifient pas l'équation d'origine peuvent apparaître (solutions parasites)."
+        },
+        {
+            "q": "Que faut-il faire après avoir élevé une équation au carré ?",
+            "a": "Une vérification en substituant dans l'équation d'origine (non élevée au carré)."
+        },
+        {
+            "q": "Quelle est la dernière étape de la méthode générale de résolution par substitution ?",
+            "a": "Écrire l'ensemble de toutes les solutions $K$."
+        },
+        {
+            "q": "Vérifiez la formule pour $x=\\dfrac{\\pi}{4}$ : $\\sin^2\\dfrac{\\pi}{4}+\\cos^2\\dfrac{\\pi}{4}=$ ?",
+            "a": "$=1$ (car $\\left(\\dfrac{\\sqrt2}{2}\\right)^2+\\left(\\dfrac{\\sqrt2}{2}\\right)^2=\\dfrac12+\\dfrac12=1$)."
+        },
+        {
+            "q": "Calculez $\\operatorname{tg}\\dfrac{\\pi}{4}\\cdot\\operatorname{cotg}\\dfrac{\\pi}{4}$.",
+            "a": "$=1\\cdot1=1$."
+        },
+        {
+            "q": "$\\cos x=\\dfrac45$, $x$ dans le I. quadrant. Déterminez $\\sin x$.",
+            "a": "$\\sin x=\\dfrac35$."
+        },
+        {
+            "q": "$\\cos x=-\\dfrac{5}{13}$, $x$ dans le II. quadrant. Déterminez $\\sin x$.",
+            "a": "$\\sin x=\\dfrac{12}{13}$."
+        },
+        {
+            "q": "$\\sin x=\\dfrac12$, $x$ dans le II. quadrant. Déterminez $\\cos x$.",
+            "a": "$\\cos x=-\\dfrac{\\sqrt3}{2}$."
+        },
+        {
+            "q": "Simplifiez l'expression $4\\sin^2x-3\\cos^2x+3$.",
+            "a": "$=7\\sin^2x$."
+        },
+        {
+            "q": "Calculez la valeur exacte de $\\cos15°$ à l'aide de la formule d'addition ($45°-30°$).",
+            "a": "$\\cos15°=\\dfrac{\\sqrt6+\\sqrt2}{4}$."
+        },
+        {
+            "q": "Calculez la valeur exacte de $\\sin15°$ à l'aide de la formule d'addition.",
+            "a": "$\\sin15°=\\dfrac{\\sqrt6-\\sqrt2}{4}$."
+        },
+        {
+            "q": "Vérifiez la formule de l'angle double : $\\sin60°=2\\sin30°\\cos30°=$ ?",
+            "a": "$=\\dfrac{\\sqrt3}{2}$ (correspond à la valeur connue $\\sin60°$)."
+        },
+        {
+            "q": "Simplifiez l'expression $\\dfrac{1+\\cos2t}{\\sin2t}$.",
+            "a": "$=\\operatorname{cotg}t$."
+        },
+        {
+            "q": "Simplifiez l'expression $\\sin^2x-\\cos^2x$ à l'aide de la formule de l'angle double.",
+            "a": "$=-\\cos2x$."
+        },
+        {
+            "q": "Exprimez $\\cos^2x$ à l'aide de $\\cos2x$.",
+            "a": "$\\cos^2x=\\dfrac{1+\\cos2x}{2}$."
+        },
+        {
+            "q": "Résolvez dans $\\mathbb{R}$ l'équation $\\sin^2x+\\sin x-2=0$ (solution de base).",
+            "a": "Subs. $u=\\sin x$ : $(u+2)(u-1)=0$, $u=-2$ est rejeté, $\\sin x=1\\Rightarrow x=\\dfrac{\\pi}{2}+k\\cdot2\\pi$."
+        },
+        {
+            "q": "Résolvez dans $\\mathbb{R}$ l'équation $\\cos^2x-\\cos x=0$.",
+            "a": "$\\cos x(\\cos x-1)=0\\Rightarrow\\cos x=0$ ou $\\cos x=1$."
+        },
+        {
+            "q": "Résolvez dans $\\mathbb{R}$ l'équation $\\operatorname{tg}x=\\operatorname{cotg}x$ (solution de base).",
+            "a": "$\\operatorname{tg}^2x=1\\Rightarrow\\operatorname{tg}x=\\pm1\\Rightarrow x=\\dfrac{\\pi}{4}+k\\cdot\\dfrac{\\pi}{2}$."
+        },
+        {
+            "q": "Résolvez dans $\\mathbb{R}$ l'équation $\\sin x\\cdot\\cos x=\\dfrac12$.",
+            "a": "$\\sin2x=1\\Rightarrow x=\\dfrac{\\pi}{4}+k\\pi$."
+        },
+        {
+            "q": "Résolvez dans $\\mathbb{R}$ l'équation $\\sin2x+\\cos x=0$.",
+            "a": "$\\cos x(2\\sin x+1)=0\\Rightarrow\\cos x=0$ ou $\\sin x=-\\dfrac12$."
+        },
+        {
+            "q": "L'équation $\\cos x-\\sqrt3\\sin x=1$ donne après élévation au carré les candidats $\\sin x=0$ et $\\sin x=-\\dfrac{\\sqrt3}{2}$. Quels couples $(\\sin x;\\cos x)$ vérifient l'équation ?",
+            "a": "$(0;1)$ et $\\left(-\\dfrac{\\sqrt3}{2};-\\dfrac12\\right)$."
+        },
+        {
+            "q": "Quelle formule utilise-t-on pour calculer $\\sin(x-y)$ ?",
+            "a": "$\\sin(x-y)=\\sin x\\cos y-\\cos x\\sin y$."
+        },
+        {
+            "q": "Quelle formule utilise-t-on pour calculer $\\cos(x+y)$ ?",
+            "a": "$\\cos(x+y)=\\cos x\\cos y-\\sin x\\sin y$."
+        },
+        {
+            "q": "Pourquoi faut-il, en simplifiant une expression avec $\\operatorname{tg}x$, aussi la condition $\\cos x\\neq0$, même si $\\operatorname{tg}x$ n'apparaît qu'en cours de calcul ?",
+            "a": "Parce que les conditions d'existence doivent valoir pour toutes les fonctions utilisées à un moment quelconque, pas seulement dans l'expression d'origine."
+        },
+        {
+            "q": "Quelle est la formule de l'angle moitié $\\left|\\cos\\dfrac{x}{2}\\right|$ ?",
+            "a": "$\\left|\\cos\\dfrac{x}{2}\\right|=\\sqrt{\\dfrac{1+\\cos x}{2}}$."
+        },
+        {
+            "q": "Que signifie l'écriture $K=\\bigcup_{k\\in\\mathbb{Z}}\\{\\dots\\}$ à la fin de la résolution d'une équation trigonométrique ?",
+            "a": "La réunion de toutes les solutions pour tous les entiers $k$ (à cause de la périodicité)."
+        },
+        {
+            "q": "Quel type de transformation permet d'obtenir les formules de l'angle moitié ?",
+            "a": "Les exprimer à partir des formules de l'angle double (en substituant $x\\to\\dfrac{x}{2}$)."
+        },
+        {
+            "q": "Pourquoi résout-on une équation sous forme de produit séparément pour chaque facteur ?",
+            "a": "Parce qu'un produit est nul si et seulement si au moins un des facteurs est nul."
+        },
+        {
+            "q": "Simplifiez l'expression $\\dfrac{\\sin x\\cdot\\cos x}{1-\\sin^2x}$.",
+            "a": "$=\\operatorname{tg}x$ (cond. $\\cos x\\neq0$)."
+        },
+        {
+            "q": "Vérifiez que $\\cos^2x-\\sin^2x=1-2\\sin^2x$.",
+            "a": "En substituant $\\cos^2x=1-\\sin^2x$ : $(1-\\sin^2x)-\\sin^2x=1-2\\sin^2x$ ✓."
+        },
+        {
+            "q": "Vérifiez que $\\cos^2x-\\sin^2x=2\\cos^2x-1$.",
+            "a": "En substituant $\\sin^2x=1-\\cos^2x$ : $\\cos^2x-(1-\\cos^2x)=2\\cos^2x-1$ ✓."
+        },
+        {
+            "q": "Quand utiliser la forme $\\cos2x=2\\cos^2x-1$ plutôt que $\\cos2x=\\cos^2x-\\sin^2x$ ?",
+            "a": "Quand on veut n'avoir que le cosinus dans l'expression — par exemple lors de la substitution $u=\\cos x$."
+        },
+        {
+            "q": "Quand utiliser la forme $\\cos2x=1-2\\sin^2x$ ?",
+            "a": "Quand on veut n'avoir que le sinus dans l'expression — par exemple lors de la substitution $u=\\sin x$."
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

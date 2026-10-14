@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goniométrie 5 — Formules trigonométriques — Exercices</title>
+    <script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #7c3aed;
+        --secondary: #5b21b6;
+        --bg: #fafaf9;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #f5f3ff;
+        --translation: #64748b;
+    }
+    body {
+        font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+    }
+    .container { max-width: 900px; margin: 0 auto; }
+    .back-link { display: block; text-align: center; margin-bottom: 1rem; color: var(--translation); font-size: 0.9rem; text-decoration: none; }
+    .back-link:hover { color: var(--primary); }
+    h1 { text-align: center; color: var(--primary); font-size: 2.5rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 2.5rem; }
+    .exercise-card {
+        background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700; color: var(--primary); margin-bottom: 12px; font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;
+    }
+    .exercise-body { margin-bottom: 18px; font-size: 1.05rem; }
+    .button-group { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .btn { border: none; padding: 8px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+    .btn-translation { background: transparent; color: var(--translation); border: 1px solid var(--translation); }
+    .btn-translation:hover { background: var(--translation); color: #fff; }
+    .btn-solution { background: var(--primary); color: #fff; }
+    .btn-solution:hover { background: var(--secondary); }
+    .content-box { display: none; margin-top: 14px; padding: 15px; border-radius: 6px; font-size: 0.95rem; animation: fadeIn 0.3s ease-in; }
+    .translation-box { background: #f1f5f9; color: #475569; border-left: 4px solid var(--translation); font-style: italic; }
+    .solution-box { background: var(--accent); border-left: 4px solid var(--primary); }
+    .active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    footer { text-align: center; margin-top: 40px; padding: 20px; color: #94a3b8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="rozcestnik-goniometrie5.html" class="back-link">← Rozcestník</a>
+        <h1>Goniométrie 5</h1>
+        <p class="subtitle">Série de 10 exercices avec solutions et traductions — Formules trigonométriques</p>
+
+                        <!-- 1 -->
+        <div class="exercise-card">
+            <div class="exercise-header">1. Fonction manquante — III. quadrant</div>
+            <div class="exercise-body">
+                Sachant que $\sin x=-\dfrac35$ et que $x\in\left(\pi;\dfrac{3\pi}{2}\right)$, déterminez $\cos x$ et $\operatorname{tg}x$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr1',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol1',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr1" class="content-box translation-box">
+                Víte-li, že $\sin x=-\dfrac35$ a $x\in\left(\pi;\dfrac{3\pi}{2}\right)$, určete $\cos x$ a $\operatorname{tg}x$.
+            </div>
+            <div id="sol1" class="content-box solution-box">
+                $\cos^2x=1-\sin^2x=1-\dfrac{9}{25}=\dfrac{16}{25}$. Dans le III. quadrant, le cosinus est négatif : $\cos x=-\dfrac45$. Alors $\operatorname{tg}x=\dfrac{\sin x}{\cos x}=\dfrac{-3/5}{-4/5}=\dfrac34$.
+            </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="exercise-card">
+            <div class="exercise-header">2. Fonction manquante — IV. quadrant</div>
+            <div class="exercise-body">
+                Sachant que $\cos x=\dfrac{12}{13}$ et que $x\in\left(\dfrac{3\pi}{2};2\pi\right)$, déterminez $\sin x$ et $\operatorname{tg}x$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr2',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol2',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr2" class="content-box translation-box">
+                Víte-li, že $\cos x=\dfrac{12}{13}$ a $x\in\left(\dfrac{3\pi}{2};2\pi\right)$, určete $\sin x$ a $\operatorname{tg}x$.
+            </div>
+            <div id="sol2" class="content-box solution-box">
+                $\sin^2x=1-\dfrac{144}{169}=\dfrac{25}{169}$. Dans le IV. quadrant, le sinus est négatif : $\sin x=-\dfrac{5}{13}$. Alors $\operatorname{tg}x=\dfrac{-5/13}{12/13}=-\dfrac{5}{12}$.
+            </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="exercise-card">
+            <div class="exercise-header">3. Simplification avec l'angle double</div>
+            <div class="exercise-body">
+                Simplifiez l'expression $(\sin x+\cos x)^2-\sin2x$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr3',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol3',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr3" class="content-box translation-box">
+                Zjednodušte výraz $(\sin x+\cos x)^2-\sin2x$.
+            </div>
+            <div id="sol3" class="content-box solution-box">
+                $(\sin x+\cos x)^2=\sin^2x+2\sin x\cos x+\cos^2x=1+\sin2x$. Donc $(\sin x+\cos x)^2-\sin2x=1+\sin2x-\sin2x=1$.
+            </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="exercise-card">
+            <div class="exercise-header">4. Simplification avec tangente et cotangente</div>
+            <div class="exercise-body">
+                Simplifiez l'expression $(\operatorname{tg}x+\operatorname{cotg}x)\cdot\sin x\cos x$ et donnez les conditions d'existence.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr4',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol4',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr4" class="content-box translation-box">
+                Zjednodušte výraz $(\operatorname{tg}x+\operatorname{cotg}x)\cdot\sin x\cos x$ a zapište podmínky existence.
+            </div>
+            <div id="sol4" class="content-box solution-box">
+                $\left(\dfrac{\sin x}{\cos x}+\dfrac{\cos x}{\sin x}\right)\sin x\cos x=\sin^2x+\cos^2x=1$. Conditions : $\sin x\neq0$ et $\cos x\neq0$, soit $x\neq k\cdot\dfrac{\pi}{2}$, $k\in\mathbb{Z}$.
+            </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="exercise-card">
+            <div class="exercise-header">5. Valeur exacte — formule d'addition</div>
+            <div class="exercise-body">
+                Calculez la valeur exacte de $\cos75°$ à l'aide de $75°=45°+30°$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr5',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol5',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr5" class="content-box translation-box">
+                Vypočtěte přesnou hodnotu $\cos75°$ pomocí $75°=45°+30°$.
+            </div>
+            <div id="sol5" class="content-box solution-box">
+                $\cos75°=\cos45°\cos30°-\sin45°\sin30°=\dfrac{\sqrt2}{2}\cdot\dfrac{\sqrt3}{2}-\dfrac{\sqrt2}{2}\cdot\dfrac12=\dfrac{\sqrt6-\sqrt2}{4}$.
+            </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="exercise-card">
+            <div class="exercise-header">6. Valeur exacte — formule d'addition</div>
+            <div class="exercise-body">
+                Calculez la valeur exacte de $\sin105°$ à l'aide de $105°=60°+45°$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr6',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol6',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr6" class="content-box translation-box">
+                Vypočtěte přesnou hodnotu $\sin105°$ pomocí $105°=60°+45°$.
+            </div>
+            <div id="sol6" class="content-box solution-box">
+                $\sin105°=\sin60°\cos45°+\cos60°\sin45°=\dfrac{\sqrt3}{2}\cdot\dfrac{\sqrt2}{2}+\dfrac12\cdot\dfrac{\sqrt2}{2}=\dfrac{\sqrt6+\sqrt2}{4}$.
+            </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="exercise-card">
+            <div class="exercise-header">7. Angle double</div>
+            <div class="exercise-body">
+                Sachant que $\sin x=\dfrac35$ et que $x\in\left(0;\dfrac{\pi}{2}\right)$, calculez $\sin2x$ et $\cos2x$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr7',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol7',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr7" class="content-box translation-box">
+                Víte-li, že $\sin x=\dfrac35$ a $x\in\left(0;\dfrac{\pi}{2}\right)$, vypočtěte $\sin2x$ a $\cos2x$.
+            </div>
+            <div id="sol7" class="content-box solution-box">
+                Dans le I. quadrant, $\cos x=\sqrt{1-\dfrac{9}{25}}=\dfrac45$. Alors $\sin2x=2\sin x\cos x=2\cdot\dfrac35\cdot\dfrac45=\dfrac{24}{25}$ et $\cos2x=1-2\sin^2x=1-\dfrac{18}{25}=\dfrac{7}{25}$.
+            </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="exercise-card">
+            <div class="exercise-header">8. Équation — substitution</div>
+            <div class="exercise-body">
+                Résolvez dans $\mathbb{R}$ l'équation $2\cos^2x-3\cos x+1=0$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr8',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol8',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr8" class="content-box translation-box">
+                Řešte v $\mathbb{R}$ rovnici $2\cos^2x-3\cos x+1=0$.
+            </div>
+            <div id="sol8" class="content-box solution-box">
+                Substitution $\cos x=u$ : $2u^2-3u+1=0\Rightarrow(2u-1)(u-1)=0\Rightarrow u_1=\dfrac12,\ u_2=1$. Retour à $x$ : $\cos x=\dfrac12\Rightarrow x=\dfrac{\pi}{3}+k\cdot2\pi$ ou $x=\dfrac{5\pi}{3}+k\cdot2\pi$ ; $\cos x=1\Rightarrow x=k\cdot2\pi$. $K=\bigcup_{k\in\mathbb{Z}}\left\{\dfrac{\pi}{3}+k\cdot2\pi;\ \dfrac{5\pi}{3}+k\cdot2\pi;\ k\cdot2\pi\right\}$.
+            </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="exercise-card">
+            <div class="exercise-header">9. Équation — angle double</div>
+            <div class="exercise-body">
+                Résolvez dans $\mathbb{R}$ l'équation $\sin2x=\sin x$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr9',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol9',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr9" class="content-box translation-box">
+                Řešte v $\mathbb{R}$ rovnici $\sin2x=\sin x$.
+            </div>
+            <div id="sol9" class="content-box solution-box">
+                $2\sin x\cos x-\sin x=0\Rightarrow\sin x\cdot(2\cos x-1)=0$. $\sin x=0\Rightarrow x=k\pi$ ; $\cos x=\dfrac12\Rightarrow x=\dfrac{\pi}{3}+k\cdot2\pi$ ou $x=\dfrac{5\pi}{3}+k\cdot2\pi$. $K=\bigcup_{k\in\mathbb{Z}}\left\{k\pi;\ \dfrac{\pi}{3}+k\cdot2\pi;\ \dfrac{5\pi}{3}+k\cdot2\pi\right\}$.
+            </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="exercise-card">
+            <div class="exercise-header">10. Équation — réduction à une seule fonction</div>
+            <div class="exercise-body">
+                Résolvez dans $\mathbb{R}$ l'équation $2\sin^2x+3\cos x=0$.
+            </div>
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggle('tr10',this,'Traduction','Masquer')">Traduction</button>
+                <button class="btn btn-solution" onclick="toggle('sol10',this,'Solution','Masquer')">Solution</button>
+            </div>
+            <div id="tr10" class="content-box translation-box">
+                Řešte v $\mathbb{R}$ rovnici $2\sin^2x+3\cos x=0$.
+            </div>
+            <div id="sol10" class="content-box solution-box">
+                On substitue $\sin^2x=1-\cos^2x$ : $2-2\cos^2x+3\cos x=0\Rightarrow2\cos^2x-3\cos x-2=0\Rightarrow(2\cos x+1)(\cos x-2)=0$. $\cos x=2$ n'a pas de solution ; $\cos x=-\dfrac12\Rightarrow x=\dfrac{2\pi}{3}+k\cdot2\pi$ ou $x=\dfrac{4\pi}{3}+k\cdot2\pi$.
+            </div>
+        </div>
+
+<footer>
+            © 2026 – Mathématiques en Français – Exercices sur les formules trigonométriques
+        </footer>
+    </div>
+
+    <script>
+        function toggle(id, btn, openLabel, closeLabel) {
+            const el = document.getElementById(id);
+            const active = el.classList.toggle('active');
+            btn.textContent = active ? closeLabel : openLabel;
+        }
+    </script>
+
+</body>
+</html>

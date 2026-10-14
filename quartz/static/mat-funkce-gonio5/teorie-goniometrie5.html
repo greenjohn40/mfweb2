@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 5 — Goniometrické vzorce — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f8fafc; border-left: 4px solid #64748b; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+    .verdict-ok { background: #ecfdf5; border: 1px solid #6ee7b7; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Goniometrie 5 — Goniometrické vzorce</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-goniometrie5.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vzorce, které usnadní práci</h2>
+    <p>V minulé kapitole jsme se naučili řešit goniometrické rovnice a nerovnice v jejich základním tvaru. Ne každá rovnice ale hned takový tvar má — často je potřeba výraz nejprve upravit. K tomu slouží <b>goniometrické vzorce</b>: vztahy mezi hodnotami goniometrických funkcí téhož argumentu, nebo argumentů, které spolu souvisí (součet, dvojnásobek, polovina). V této kapitole si ukážeme základní vzorce, jejich použití při úpravě výrazů a při řešení složitějších rovnic.</p>
+</section>
+
+<section id="sec-a-vzorce" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Základní goniometrické vzorce</h2>
+    <div class="card text-center">
+        <p>Pro každé reálné číslo $x$ platí:</p>
+        $$\sin^2x+\cos^2x=1$$
+        <p class="text-sm mt-1">Vzorec plyne přímo z definice sinu a kosinu na jednotkové kružnici a z Pythagorovy věty (odvěsny $\sin x$, $\cos x$, přepona délky $1$).</p>
+    </div>
+    <p>Vyzkoušejte si to na posuvníku — ať zvolíte úhel $x$ jakýkoli, součet $\sin^2x+\cos^2x$ zůstává roven $1$:</p>
+    <div class="card">
+        <svg viewBox="0 0 240 240" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="15" y1="120" x2="225" y2="120" stroke="#57534e" stroke-width="1.5"/>
+<line x1="120" y1="225" x2="120" y2="15" stroke="#57534e" stroke-width="1.5"/>
+<circle cx="120" cy="120" r="90" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<line id="pyth-vline" x1="210" y1="120" x2="210" y2="120" stroke="#0d9488" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line id="pyth-hline" x1="210" y1="120" x2="120" y2="120" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line id="pyth-radius" x1="120" y1="120" x2="210" y2="120" stroke="#57534e" stroke-width="1.8"/>
+<circle id="pyth-point" cx="210" cy="120" r="5" fill="#7c3aed" stroke="white" stroke-width="1.5"/>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">x =</span>
+            <input type="range" id="slider-pyth" min="0" max="360" value="35" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="pyth-deg">35</span>°</span>
+        </div>
+        <div id="pyth-box" class="mt-2 p-3 rounded-lg text-center text-sm font-semibold verdict-ok">
+            <span id="pyth-verdict">$\sin^2x+\cos^2x=1$</span>
+        </div>
+    </div>
+    <div class="card text-center">
+        <p>Pro každé $x\in\mathbb{R}$, $k\in\mathbb{Z}$, $x\neq k\cdot\dfrac{\pi}{2}$ platí:</p>
+        $$\operatorname{tg}x\cdot\operatorname{cotg}x=1$$
+        <p class="text-sm mt-1">Vzorec plyne přímo z definic $\operatorname{tg}x=\dfrac{\sin x}{\cos x}$ a $\operatorname{cotg}x=\dfrac{\cos x}{\sin x}$ — jejich součin je $\dfrac{\sin x}{\cos x}\cdot\dfrac{\cos x}{\sin x}=1$.</p>
+    </div>
+    <p>Vlastní ověření obou vzorců pro úhel $x=\dfrac{\pi}{6}$:</p>
+    <div class="card">
+        <p class="text-sm">$\sin^2\dfrac{\pi}{6}+\cos^2\dfrac{\pi}{6}=\left(\dfrac12\right)^2+\left(\dfrac{\sqrt3}{2}\right)^2=\dfrac14+\dfrac34=1$</p>
+        <p class="text-sm mt-1">$\operatorname{tg}\dfrac{\pi}{6}\cdot\operatorname{cotg}\dfrac{\pi}{6}=\dfrac{\sqrt3}{3}\cdot\sqrt3=\dfrac{3}{3}=1$</p>
+    </div>
+</section>
+
+<section id="sec-a-dopocet" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Dopočet jedné funkce ze znalosti druhé</h2>
+    <p>Vzorec $\sin^2x+\cos^2x=1$ nám umožní ze známé hodnoty jedné funkce dopočítat druhou, aniž bychom znali přímo hodnotu $x$ — musíme ale znát kvadrant, ve kterém úhel $x$ leží, abychom vybrali správné znaménko.</p>
+    <div class="card">
+        <p class="mb-2">Určete hodnotu $\sin x$, víte-li, že $\cos x=\dfrac35$ a $x$ leží ve IV. kvadrantu.</p>
+        <p class="text-sm">$\sin^2x=1-\cos^2x=1-\dfrac{9}{25}=\dfrac{16}{25}\ \Rightarrow\ \sin x=\pm\dfrac45$</p>
+        <p class="text-sm mt-1">Ve IV. kvadrantu je sinus záporný, vyhovuje tedy jediné řešení:</p>
+        $$\sin x=-\frac45$$
+    </div>
+</section>
+
+<section id="sec-a-zjednoduseni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Zjednodušování výrazů pomocí základních vzorců</h2>
+    <p>Vzorec $\sin^2x+\cos^2x=1$ využíváme i k tomu, abychom nahradili druhou mocninu jedné funkce výrazem obsahujícím druhou mocninu druhé funkce — tj. $\sin^2x=1-\cos^2x$, případně $\cos^2x=1-\sin^2x$.</p>
+    <div class="card">
+        <p class="mb-2">Zjednodušte výraz $3\sin^2x-2\cos^2x+2$.</p>
+        <p class="text-sm">Dosadíme $\cos^2x=1-\sin^2x$:</p>
+        $$3\sin^2x-2(1-\sin^2x)+2=3\sin^2x-2+2\sin^2x+2=5\sin^2x$$
+    </div>
+    <div class="card">
+        <p class="mb-2">Zjednodušte výraz $\dfrac{3-3\cos x}{\sin^2x}$ a zapište podmínky existence.</p>
+        <p class="text-sm">Čitatel vytkneme, jmenovatele rozložíme podle vzorce $a^2-b^2=(a-b)(a+b)$ (kde $\sin^2x=1-\cos^2x=(1-\cos x)(1+\cos x)$):</p>
+        $$\frac{3\cdot(1-\cos x)}{(1-\cos x)\cdot(1+\cos x)}=\frac{3}{1+\cos x}$$
+        <p class="text-sm mt-1">Podm.: $\sin x\neq0\ \Rightarrow\ x\neq k\pi,\ k\in\mathbb{Z}$.</p>
+    </div>
+    <div class="card">
+        <p class="mb-2">Zjednodušte výraz $\dfrac{\cos^2x}{\sin^2x}\cdot\operatorname{tg}x$ a zapište podmínky existence.</p>
+        <p class="text-sm">Podíl nahradíme kotangentem a využijeme vzorec $\operatorname{tg}x\cdot\operatorname{cotg}x=1$:</p>
+        $$\operatorname{cotg}^2x\cdot\operatorname{tg}x=\operatorname{cotg}x\cdot(\operatorname{cotg}x\cdot\operatorname{tg}x)=\operatorname{cotg}x\cdot1=\operatorname{cotg}x$$
+        <p class="text-sm mt-1">Podm.: $\sin x\neq0$ (existence $\operatorname{cotg}x$ i zlomku) a $\cos x\neq0$ (existence $\operatorname{tg}x$), tedy $x\neq k\cdot\dfrac{\pi}{2},\ k\in\mathbb{Z}$.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Při stanovování podmínek existence nezapomeňte na podmínky <i>všech</i> funkcí, které se ve výrazu objeví — i těch, které vzniknou až během úpravy (např. tangens, který se ve výrazu původně nevyskytoval).
+    </div>
+</section>
+
+<section id="sec-b-soucet" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Součtové vzorce</h2>
+    <div class="card text-center">
+        <p>Pro všechna reálná čísla $x$, $y$ platí:</p>
+        $$\sin(x+y)=\sin x\cos y+\cos x\sin y\qquad\sin(x-y)=\sin x\cos y-\cos x\sin y$$
+        $$\cos(x+y)=\cos x\cos y-\sin x\sin y\qquad\cos(x-y)=\cos x\cos y+\sin x\sin y$$
+    </div>
+    <p>Součtové vzorce nám umožní vypočítat přesnou hodnotu goniometrické funkce i pro úhly, které nejsou přímo v tabulce, pokud je dokážeme vyjádřit jako součet či rozdíl dvou „tabulkových" úhlů.</p>
+    <div class="card">
+        <p class="mb-2">Vypočtěte přesnou hodnotu $\sin75°$.</p>
+        <p class="text-sm">Úhel $75°$ vyjádříme jako $45°+30°$:</p>
+        $$\sin75°=\sin(45°+30°)=\sin45°\cos30°+\cos45°\sin30°=\frac{\sqrt2}{2}\cdot\frac{\sqrt3}{2}+\frac{\sqrt2}{2}\cdot\frac12=\frac{\sqrt6+\sqrt2}{4}$$
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Se součtovými vzorci je spojován řecký matematik a astronom Klaudios Ptolemaios, který je použil při sestavování astronomických tabulek — bez kalkulaček tak dosáhl překvapivé přesnosti na čtyři desetinná místa.
+    </div>
+</section>
+
+<section id="sec-b-dvojnasobny" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vzorce pro dvojnásobný úhel</h2>
+    <p>Dosadíme-li do součtových vzorců $y=x$, dostaneme užitečný speciální případ — vzorce pro dvojnásobný úhel:</p>
+    <div class="card text-center">
+        $$\sin2x=2\sin x\cos x\qquad\qquad\cos2x=\cos^2x-\sin^2x$$
+        <p class="text-sm mt-1">Odvození pro sinus: $\sin2x=\sin(x+x)=\sin x\cos x+\cos x\sin x=2\sin x\cos x$.</p>
+    </div>
+    <p>Vlastní ověření: $\sin90°=\sin(2\cdot45°)=2\sin45°\cos45°=2\cdot\dfrac{\sqrt2}{2}\cdot\dfrac{\sqrt2}{2}=2\cdot\dfrac12=1$ — souhlasí se známou hodnotou $\sin90°=1$.</p>
+    <p>Vyzkoušejte si platnost vzorce pro $\sin(x+30°)$ na posuvníku — porovnejte hodnotu spočítanou přímo s hodnotou podle součtového vzorce (obě se musí shodovat):</p>
+    <div class="card">
+        <div class="flex items-center gap-3 mt-1 mb-2">
+            <span class="slider-label">x =</span>
+            <input type="range" id="slider-sum" min="0" max="360" value="40" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="sum-deg">40</span>°</span>
+        </div>
+        <p class="text-sm"><span id="sum-direct">$\sin(x+30°)\approx0{,}77$ (přímo)</span></p>
+        <p class="text-sm"><span id="sum-formula">$\sin x\cos30°+\cos x\sin30°\approx0{,}77$ (podle vzorce)</span></p>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Stejným postupem (dosazením $y=x$ do součtového vzorce pro kosinus a využitím $\sin^2x+\cos^2x=1$) lze odvodit i další tvary vzorce pro $\cos2x$: $\cos2x=2\cos^2x-1=1-2\sin^2x$.
+    </div>
+</section>
+
+<section id="sec-b-zjednoduseni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Zjednodušování výrazů s dvojnásobným úhlem</h2>
+    <div class="card">
+        <p class="mb-2">Zjednodušte výraz $\dfrac{1-\cos2t}{\sin2t}$.</p>
+        <p class="text-sm">V čitateli použijeme tvar $\cos2t=1-2\sin^2t$, ve jmenovateli vzorec pro dvojnásobný úhel:</p>
+        $$\frac{1-(1-2\sin^2t)}{2\sin t\cos t}=\frac{2\sin^2t}{2\sin t\cos t}=\frac{\sin t}{\cos t}=\operatorname{tg}t$$
+    </div>
+    <div class="card">
+        <p class="mb-2">Zjednodušte výraz $\cos^2w\cdot(1+\operatorname{tg}w)+\sin^2w\cdot(1+\operatorname{cotg}w)$.</p>
+        <p class="text-sm">Roznásobíme závorky a využijeme definiční vztahy pro tangens a kotangens:</p>
+        $$\cos^2w+\sin^2w+\cos^2w\cdot\frac{\sin w}{\cos w}+\sin^2w\cdot\frac{\cos w}{\sin w}=1+\cos w\sin w+\sin w\cos w=1+\sin2w$$
+        <p class="text-sm mt-1">Podm.: $\sin w\neq0$ a $\cos w\neq0$, tedy $w\neq k\cdot\dfrac{\pi}{2},\ k\in\mathbb{Z}$.</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Z vzorců pro dvojnásobný úhel lze odvodit i vzorce pro <b>poloviční úhel</b>:
+        $$\left|\sin\frac{x}{2}\right|=\sqrt{\frac{1-\cos x}{2}}\qquad\left|\cos\frac{x}{2}\right|=\sqrt{\frac{1+\cos x}{2}}$$
+        Existuje jich celá řada — ty uvedené v této kapitole jsou jen výběrem těch nejpoužívanějších.
+    </div>
+</section>
+
+<section id="sec-c-substituce" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Řešení goniometrických rovnic pomocí vzorců</h2>
+    <p>Po použití goniometrických vzorců se v rovnici může objevit vícekrát stejná goniometrická funkce téhož argumentu. Pokud rovnici nejde přímo řešit rozkladem na součin, pomůže substituce.</p>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+        <li>Rovnici upravíme tak, aby obsahovala jen jednu goniometrickou funkci (podle potřeby použijeme goniometrický vzorec).</li>
+        <li>Tuto funkci nahradíme novou neznámou $u$.</li>
+        <li>Rovnici s neznámou $u$ vyřešíme.</li>
+        <li>Vrátíme se k původní neznámé — do substituce dosadíme nalezené kořeny a vyřešíme základní goniometrickou rovnici.</li>
+        <li>Zapíšeme množinu všech řešení.</li>
+    </ol>
+    <div class="card">
+        <p class="mb-2">Řešte v $\mathbb{R}$ rovnici $\sin^2x-\sin x-2=0$.</p>
+        <p class="text-sm">Subs.: $\sin x=u$: $u^2-u-2=0\ \Rightarrow\ (u-2)(u+1)=0\ \Rightarrow\ u_1=2,\ u_2=-1$.</p>
+        <p class="text-sm mt-1">Návrat k neznámé $x$: $\sin x=2$ nemá řešení (obor hodnot sinu je $\langle-1;1\rangle$), zbývá $\sin x=-1$:</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{3\pi}{2}+k\cdot2\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-c-prevod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Rovnice vyžadující převod na jedinou funkci</h2>
+    <div class="card">
+        <p class="mb-2">Řešte v $\mathbb{R}$ rovnici $\sin^2x+\cos x=1$.</p>
+        <p class="text-sm">Dosadíme $\sin^2x=1-\cos^2x$:</p>
+        $$1-\cos^2x+\cos x=1\ \Rightarrow\ -\cos^2x+\cos x=0\ \Rightarrow\ \cos x\cdot(1-\cos x)=0$$
+        <p class="text-sm mt-1">$\cos x=0\ \Rightarrow\ x=\dfrac{\pi}{2}+k\pi$;&ensp; $\cos x=1\ \Rightarrow\ x=k\cdot2\pi$.</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{2}+k\pi\right\}\cup\bigcup_{k\in\mathbb{Z}}\{k\cdot2\pi\}$$
+    </div>
+    <div class="card">
+        <p class="mb-2">Řešte v $\mathbb{R}$ rovnici $\operatorname{tg}x+\operatorname{cotg}x=-2$.</p>
+        <p class="text-sm">Dosadíme $\operatorname{cotg}x=\dfrac{1}{\operatorname{tg}x}$ a zavedeme substituci $u=\operatorname{tg}x$:</p>
+        $$u+\frac1u=-2\ \ /\cdot u\qquad u^2+2u+1=0\qquad(u+1)^2=0\ \Rightarrow\ u=-1$$
+        <p class="text-sm mt-1">Návrat k $x$: $\operatorname{tg}x=-1$:</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{-\frac{\pi}{4}+k\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-c-dvojnasobny-rovnice" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Využití vzorce pro dvojnásobný úhel při řešení rovnic</h2>
+    <div class="card">
+        <p class="mb-2">Řešte v $\mathbb{R}$ rovnici $\sin x\cdot\cos x=-\dfrac12$.</p>
+        <p class="text-sm">Rovnici vynásobíme dvěma, levá strana pak odpovídá vzorci pro dvojnásobný úhel:</p>
+        $$2\sin x\cos x=-1\ \Rightarrow\ \sin2x=-1$$
+        <p class="text-sm mt-1">Subs.: $2x=u$: $\sin u=-1\ \Rightarrow\ u=\dfrac{3\pi}{2}+k\cdot2\pi$. Návrat k $x$ (dělením dvěma):</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{3\pi}{4}+k\pi\right\}$$
+    </div>
+    <div class="card">
+        <p class="mb-2">Řešte v $\mathbb{R}$ rovnici $\sin2x-\cos x=0$.</p>
+        <p class="text-sm">Výraz $\sin2x$ nahradíme podle vzorce a vytkneme $\cos x$ — rovnice přejde na součinový tvar:</p>
+        $$2\sin x\cos x-\cos x=0\ \Rightarrow\ \cos x\cdot(2\sin x-1)=0$$
+        <p class="text-sm mt-1">$\cos x=0\ \Rightarrow\ x=\dfrac{\pi}{2}+k\pi$;&ensp; $\sin x=\dfrac12\ \Rightarrow\ x=\dfrac{\pi}{6}+k\cdot2\pi$ nebo $x=\dfrac{5\pi}{6}+k\cdot2\pi$.</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{2}+k\pi;\ \frac{\pi}{6}+k\cdot2\pi;\ \frac{5\pi}{6}+k\cdot2\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-c-umocneni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Pozor na past: umocnění rovnice</h2>
+    <p>Rovnici obsahující součet $\sin x$ a $\cos x$ (bez dvojnásobného úhlu) lze někdy řešit izolováním jedné funkce a umocněním na druhou — tato úprava ale <b>není ekvivalentní</b> a může zavést zdánlivé kořeny. Po umocnění je vždy nutná zkouška.</p>
+    <div class="card">
+        <p class="mb-2">Řešte v $\mathbb{R}$ rovnici $\cos x-\sqrt3\sin x=1$.</p>
+        <p class="text-sm">Izolujeme kosinus a umocníme:</p>
+        $$\cos x=1+\sqrt3\sin x\ \ /^2\qquad\cos^2x=1+2\sqrt3\sin x+3\sin^2x$$
+        <p class="text-sm mt-1">Dosadíme $\cos^2x=1-\sin^2x$ a upravíme:</p>
+        $$1-\sin^2x=1+2\sqrt3\sin x+3\sin^2x\ \Rightarrow\ -4\sin^2x-2\sqrt3\sin x=0\ \Rightarrow\ -2\sin x\cdot(2\sin x+\sqrt3)=0$$
+        <p class="text-sm mt-1">Dostáváme dva kandidáty: $\sin x=0$ nebo $\sin x=-\dfrac{\sqrt3}{2}$. Umocnění ale mohlo přidat kořeny, které původní rovnici nevyhovují — <b>musíme provést zkoušku</b> u obou:</p>
+        <ul class="list-disc list-inside text-sm space-y-1">
+            <li>$\sin x=0\Rightarrow\cos x=\pm1$. Zkouška: pro $\cos x=1$ vyhovuje ($1-0=1$ ✓), pro $\cos x=-1$ nevyhovuje ($-1\neq1$).</li>
+            <li>$\sin x=-\dfrac{\sqrt3}{2}\Rightarrow\cos x=\pm\dfrac12$. Zkouška: pro $\cos x=-\dfrac12$ vyhovuje ($-\dfrac12+\dfrac32=1$ ✓), pro $\cos x=\dfrac12$ nevyhovuje.</li>
+        </ul>
+        <p class="text-sm mt-1">Vyhovují tedy jen dvě dvojice: $(\sin x;\cos x)=(0;1)$, tj. $x=k\cdot2\pi$, a $\left(-\dfrac{\sqrt3}{2};-\dfrac12\right)$, tj. $x=\dfrac{4\pi}{3}+k\cdot2\pi$:</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{k\cdot2\pi;\ \frac{4\pi}{3}+k\cdot2\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Pojem</th><th class="p-1 text-left">Klíčová myšlenka</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$\sin^2x+\cos^2x=1$</td><td class="p-1 text-left">dopočet jedné funkce ze druhé, zjednodušování výrazů</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$\operatorname{tg}x\cdot\operatorname{cotg}x=1$</td><td class="p-1 text-left">vzájemný převod tangens a kotangens</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">součtové vzorce</td><td class="p-1 text-left">$\sin(x\pm y)$, $\cos(x\pm y)$ — přesné hodnoty pro součty úhlů</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">dvojnásobný úhel</td><td class="p-1 text-left">$\sin2x=2\sin x\cos x$, $\cos2x=\cos^2x-\sin^2x$</td></tr>
+                <tr><td class="p-1 text-left">umocnění rovnice</td><td class="p-1 text-left">neekvivalentní úprava — vždy nutná zkouška</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Co bude dál:</b> Vzorce z této kapitoly nám budou chybět při odvození dvou klíčových vět pro obecné trojúhelníky — v navazující kapitole <i>Goniometrie 6 — Sinová a kosinová věta</i> si ukážeme, jak pomocí goniometrických funkcí počítat strany a úhly libovolného trojúhelníku, nejen pravoúhlého.
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="mt-4 space-y-10 hidden">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Des formules qui facilitent le travail</h2>
+    <p>Dans le chapitre précédent, nous avons appris à résoudre des équations et inéquations trigonométriques sous leur forme de base. Mais toute équation n'a pas d'emblée cette forme — il faut souvent d'abord transformer l'expression. C'est à cela que servent les <b>formules trigonométriques</b> : des relations entre les valeurs des fonctions trigonométriques d'un même argument, ou d'arguments liés entre eux (somme, double, moitié). Dans ce chapitre, nous verrons les formules de base, leur utilisation pour transformer des expressions et pour résoudre des équations plus complexes.</p>
+</section>
+
+<section id="sec-a-vzorce" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Formules trigonométriques de base</h2>
+    <div class="card text-center">
+        <p>Pour tout nombre réel $x$, on a :</p>
+        $$\sin^2x+\cos^2x=1$$
+        <p class="text-sm mt-1">Cette formule découle directement de la définition du sinus et du cosinus sur le cercle trigonométrique et du théorème de Pythagore (cathètes $\sin x$, $\cos x$, hypoténuse de longueur $1$).</p>
+    </div>
+    <p>Essayez-le avec le curseur — quel que soit l'angle $x$ choisi, la somme $\sin^2x+\cos^2x$ reste égale à $1$ :</p>
+    <div class="card">
+        <svg viewBox="0 0 240 240" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="15" y1="120" x2="225" y2="120" stroke="#57534e" stroke-width="1.5"/>
+<line x1="120" y1="225" x2="120" y2="15" stroke="#57534e" stroke-width="1.5"/>
+<circle cx="120" cy="120" r="90" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<line id="pyth-vline-fr" x1="210" y1="120" x2="210" y2="120" stroke="#0d9488" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line id="pyth-hline-fr" x1="210" y1="120" x2="120" y2="120" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="4,3"/>
+<line id="pyth-radius-fr" x1="120" y1="120" x2="210" y2="120" stroke="#57534e" stroke-width="1.8"/>
+<circle id="pyth-point-fr" cx="210" cy="120" r="5" fill="#7c3aed" stroke="white" stroke-width="1.5"/>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">x =</span>
+            <input type="range" id="slider-pyth-fr" min="0" max="360" value="35" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="pyth-deg-fr">35</span>°</span>
+        </div>
+        <div id="pyth-box-fr" class="mt-2 p-3 rounded-lg text-center text-sm font-semibold verdict-ok">
+            <span id="pyth-verdict-fr">$\sin^2x+\cos^2x=1$</span>
+        </div>
+    </div>
+    <div class="card text-center">
+        <p>Pour tout $x\in\mathbb{R}$, $k\in\mathbb{Z}$, $x\neq k\cdot\dfrac{\pi}{2}$, on a :</p>
+        $$\operatorname{tg}x\cdot\operatorname{cotg}x=1$$
+        <p class="text-sm mt-1">Cette formule découle directement des définitions $\operatorname{tg}x=\dfrac{\sin x}{\cos x}$ et $\operatorname{cotg}x=\dfrac{\cos x}{\sin x}$ — leur produit vaut $\dfrac{\sin x}{\cos x}\cdot\dfrac{\cos x}{\sin x}=1$.</p>
+    </div>
+    <p>Vérification personnelle des deux formules pour l'angle $x=\dfrac{\pi}{6}$ :</p>
+    <div class="card">
+        <p class="text-sm">$\sin^2\dfrac{\pi}{6}+\cos^2\dfrac{\pi}{6}=\left(\dfrac12\right)^2+\left(\dfrac{\sqrt3}{2}\right)^2=\dfrac14+\dfrac34=1$</p>
+        <p class="text-sm mt-1">$\operatorname{tg}\dfrac{\pi}{6}\cdot\operatorname{cotg}\dfrac{\pi}{6}=\dfrac{\sqrt3}{3}\cdot\sqrt3=\dfrac{3}{3}=1$</p>
+    </div>
+</section>
+
+<section id="sec-a-dopocet" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Calcul d'une fonction à partir de l'autre</h2>
+    <p>La formule $\sin^2x+\cos^2x=1$ permet de calculer la valeur d'une fonction à partir de la valeur connue de l'autre, sans connaître $x$ directement — il faut cependant connaître le quadrant dans lequel se trouve $x$, pour choisir le bon signe.</p>
+    <div class="card">
+        <p class="mb-2">Déterminez la valeur de $\sin x$, sachant que $\cos x=\dfrac35$ et que $x$ se trouve dans le IV. quadrant.</p>
+        <p class="text-sm">$\sin^2x=1-\cos^2x=1-\dfrac{9}{25}=\dfrac{16}{25}\ \Rightarrow\ \sin x=\pm\dfrac45$</p>
+        <p class="text-sm mt-1">Dans le IV. quadrant, le sinus est négatif, donc une seule solution convient :</p>
+        $$\sin x=-\frac45$$
+    </div>
+</section>
+
+<section id="sec-a-zjednoduseni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Simplification d'expressions à l'aide des formules de base</h2>
+    <p>La formule $\sin^2x+\cos^2x=1$ sert aussi à remplacer le carré d'une fonction par une expression contenant le carré de l'autre fonction — soit $\sin^2x=1-\cos^2x$, soit $\cos^2x=1-\sin^2x$.</p>
+    <div class="card">
+        <p class="mb-2">Simplifiez l'expression $3\sin^2x-2\cos^2x+2$.</p>
+        <p class="text-sm">On substitue $\cos^2x=1-\sin^2x$ :</p>
+        $$3\sin^2x-2(1-\sin^2x)+2=3\sin^2x-2+2\sin^2x+2=5\sin^2x$$
+    </div>
+    <div class="card">
+        <p class="mb-2">Simplifiez l'expression $\dfrac{3-3\cos x}{\sin^2x}$ et donnez les conditions d'existence.</p>
+        <p class="text-sm">On met le numérateur en facteur, et on factorise le dénominateur selon la formule $a^2-b^2=(a-b)(a+b)$ (où $\sin^2x=1-\cos^2x=(1-\cos x)(1+\cos x)$) :</p>
+        $$\frac{3\cdot(1-\cos x)}{(1-\cos x)\cdot(1+\cos x)}=\frac{3}{1+\cos x}$$
+        <p class="text-sm mt-1">Condition : $\sin x\neq0\ \Rightarrow\ x\neq k\pi,\ k\in\mathbb{Z}$.</p>
+    </div>
+    <div class="card">
+        <p class="mb-2">Simplifiez l'expression $\dfrac{\cos^2x}{\sin^2x}\cdot\operatorname{tg}x$ et donnez les conditions d'existence.</p>
+        <p class="text-sm">On remplace le quotient par la cotangente et on utilise la formule $\operatorname{tg}x\cdot\operatorname{cotg}x=1$ :</p>
+        $$\operatorname{cotg}^2x\cdot\operatorname{tg}x=\operatorname{cotg}x\cdot(\operatorname{cotg}x\cdot\operatorname{tg}x)=\operatorname{cotg}x\cdot1=\operatorname{cotg}x$$
+        <p class="text-sm mt-1">Condition : $\sin x\neq0$ (existence de $\operatorname{cotg}x$ et de la fraction) et $\cos x\neq0$ (existence de $\operatorname{tg}x$), soit $x\neq k\cdot\dfrac{\pi}{2},\ k\in\mathbb{Z}$.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Lorsque vous déterminez les conditions d'existence, n'oubliez pas les conditions de <i>toutes</i> les fonctions qui apparaissent dans l'expression — y compris celles qui n'apparaissent qu'après transformation (par exemple une tangente absente de l'expression d'origine).
+    </div>
+</section>
+
+<section id="sec-b-soucet" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Formules d'addition</h2>
+    <div class="card text-center">
+        <p>Pour tous nombres réels $x$, $y$, on a :</p>
+        $$\sin(x+y)=\sin x\cos y+\cos x\sin y\qquad\sin(x-y)=\sin x\cos y-\cos x\sin y$$
+        $$\cos(x+y)=\cos x\cos y-\sin x\sin y\qquad\cos(x-y)=\cos x\cos y+\sin x\sin y$$
+    </div>
+    <p>Les formules d'addition permettent de calculer la valeur exacte d'une fonction trigonométrique même pour un angle absent de la table, si on peut l'exprimer comme somme ou différence de deux angles « tabulés ».</p>
+    <div class="card">
+        <p class="mb-2">Calculez la valeur exacte de $\sin75°$.</p>
+        <p class="text-sm">On exprime $75°$ comme $45°+30°$ :</p>
+        $$\sin75°=\sin(45°+30°)=\sin45°\cos30°+\cos45°\sin30°=\frac{\sqrt2}{2}\cdot\frac{\sqrt3}{2}+\frac{\sqrt2}{2}\cdot\frac12=\frac{\sqrt6+\sqrt2}{4}$$
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Les formules d'addition sont associées au mathématicien et astronome grec Claude Ptolémée, qui les utilisa pour établir des tables astronomiques — sans calculatrice, il atteignit ainsi une précision surprenante de quatre décimales.
+    </div>
+</section>
+
+<section id="sec-b-dvojnasobny" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Formules de l'angle double</h2>
+    <p>En substituant $y=x$ dans les formules d'addition, on obtient un cas particulier très utile — les formules de l'angle double :</p>
+    <div class="card text-center">
+        $$\sin2x=2\sin x\cos x\qquad\qquad\cos2x=\cos^2x-\sin^2x$$
+        <p class="text-sm mt-1">Démonstration pour le sinus : $\sin2x=\sin(x+x)=\sin x\cos x+\cos x\sin x=2\sin x\cos x$.</p>
+    </div>
+    <p>Vérification personnelle : $\sin90°=\sin(2\cdot45°)=2\sin45°\cos45°=2\cdot\dfrac{\sqrt2}{2}\cdot\dfrac{\sqrt2}{2}=2\cdot\dfrac12=1$ — cela correspond à la valeur connue $\sin90°=1$.</p>
+    <p>Essayez de vérifier la formule pour $\sin(x+30°)$ avec le curseur — comparez la valeur calculée directement avec celle obtenue par la formule d'addition (les deux doivent coïncider) :</p>
+    <div class="card">
+        <div class="flex items-center gap-3 mt-1 mb-2">
+            <span class="slider-label">x =</span>
+            <input type="range" id="slider-sum-fr" min="0" max="360" value="40" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right"><span id="sum-deg-fr">40</span>°</span>
+        </div>
+        <p class="text-sm"><span id="sum-direct-fr">$\sin(x+30°)\approx0{,}77$ (directement)</span></p>
+        <p class="text-sm"><span id="sum-formula-fr">$\sin x\cos30°+\cos x\sin30°\approx0{,}77$ (par la formule)</span></p>
+    </div>
+    <div class="note-box note-link">
+        <b>Liens :</b> De la même façon (en substituant $y=x$ dans la formule d'addition du cosinus et en utilisant $\sin^2x+\cos^2x=1$), on peut aussi obtenir d'autres formes de la formule pour $\cos2x$ : $\cos2x=2\cos^2x-1=1-2\sin^2x$.
+    </div>
+</section>
+
+<section id="sec-b-zjednoduseni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Simplification d'expressions avec l'angle double</h2>
+    <div class="card">
+        <p class="mb-2">Simplifiez l'expression $\dfrac{1-\cos2t}{\sin2t}$.</p>
+        <p class="text-sm">Au numérateur, on utilise la forme $\cos2t=1-2\sin^2t$, au dénominateur la formule de l'angle double :</p>
+        $$\frac{1-(1-2\sin^2t)}{2\sin t\cos t}=\frac{2\sin^2t}{2\sin t\cos t}=\frac{\sin t}{\cos t}=\operatorname{tg}t$$
+    </div>
+    <div class="card">
+        <p class="mb-2">Simplifiez l'expression $\cos^2w\cdot(1+\operatorname{tg}w)+\sin^2w\cdot(1+\operatorname{cotg}w)$.</p>
+        <p class="text-sm">On développe les parenthèses et on utilise les relations de définition de la tangente et de la cotangente :</p>
+        $$\cos^2w+\sin^2w+\cos^2w\cdot\frac{\sin w}{\cos w}+\sin^2w\cdot\frac{\cos w}{\sin w}=1+\cos w\sin w+\sin w\cos w=1+\sin2w$$
+        <p class="text-sm mt-1">Condition : $\sin w\neq0$ et $\cos w\neq0$, soit $w\neq k\cdot\dfrac{\pi}{2},\ k\in\mathbb{Z}$.</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Des formules de l'angle double, on peut aussi déduire les formules de l'<b>angle moitié</b> :
+        $$\left|\sin\frac{x}{2}\right|=\sqrt{\frac{1-\cos x}{2}}\qquad\left|\cos\frac{x}{2}\right|=\sqrt{\frac{1+\cos x}{2}}$$
+        Il en existe un grand nombre — celles présentées dans ce chapitre ne sont qu'une sélection des plus utilisées.
+    </div>
+</section>
+
+<section id="sec-c-substituce" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Résolution d'équations trigonométriques à l'aide des formules</h2>
+    <p>Après application des formules trigonométriques, la même fonction trigonométrique du même argument peut apparaître plusieurs fois dans l'équation. Si l'équation ne peut pas être résolue directement en la factorisant, la substitution est utile.</p>
+    <ol class="list-decimal list-inside space-y-1 text-sm">
+        <li>On transforme l'équation pour qu'elle ne contienne qu'une seule fonction trigonométrique (en utilisant si besoin une formule trigonométrique).</li>
+        <li>On remplace cette fonction par une nouvelle inconnue $u$.</li>
+        <li>On résout l'équation pour $u$.</li>
+        <li>On revient à l'inconnue d'origine — on substitue les racines trouvées et on résout l'équation trigonométrique de base.</li>
+        <li>On écrit l'ensemble de toutes les solutions.</li>
+    </ol>
+    <div class="card">
+        <p class="mb-2">Résolvez dans $\mathbb{R}$ l'équation $\sin^2x-\sin x-2=0$.</p>
+        <p class="text-sm">Substitution : $\sin x=u$ : $u^2-u-2=0\ \Rightarrow\ (u-2)(u+1)=0\ \Rightarrow\ u_1=2,\ u_2=-1$.</p>
+        <p class="text-sm mt-1">Retour à $x$ : $\sin x=2$ n'a pas de solution (l'ensemble des valeurs du sinus est $\langle-1;1\rangle$), il reste $\sin x=-1$ :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{3\pi}{2}+k\cdot2\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-c-prevod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Équations nécessitant une réduction à une seule fonction</h2>
+    <div class="card">
+        <p class="mb-2">Résolvez dans $\mathbb{R}$ l'équation $\sin^2x+\cos x=1$.</p>
+        <p class="text-sm">On substitue $\sin^2x=1-\cos^2x$ :</p>
+        $$1-\cos^2x+\cos x=1\ \Rightarrow\ -\cos^2x+\cos x=0\ \Rightarrow\ \cos x\cdot(1-\cos x)=0$$
+        <p class="text-sm mt-1">$\cos x=0\ \Rightarrow\ x=\dfrac{\pi}{2}+k\pi$ ;&ensp; $\cos x=1\ \Rightarrow\ x=k\cdot2\pi$.</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{2}+k\pi\right\}\cup\bigcup_{k\in\mathbb{Z}}\{k\cdot2\pi\}$$
+    </div>
+    <div class="card">
+        <p class="mb-2">Résolvez dans $\mathbb{R}$ l'équation $\operatorname{tg}x+\operatorname{cotg}x=-2$.</p>
+        <p class="text-sm">On substitue $\operatorname{cotg}x=\dfrac{1}{\operatorname{tg}x}$ et on introduit la substitution $u=\operatorname{tg}x$ :</p>
+        $$u+\frac1u=-2\ \ /\cdot u\qquad u^2+2u+1=0\qquad(u+1)^2=0\ \Rightarrow\ u=-1$$
+        <p class="text-sm mt-1">Retour à $x$ : $\operatorname{tg}x=-1$ :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{-\frac{\pi}{4}+k\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-c-dvojnasobny-rovnice" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Utilisation de la formule de l'angle double pour résoudre des équations</h2>
+    <div class="card">
+        <p class="mb-2">Résolvez dans $\mathbb{R}$ l'équation $\sin x\cdot\cos x=-\dfrac12$.</p>
+        <p class="text-sm">On multiplie l'équation par deux ; le membre de gauche correspond alors à la formule de l'angle double :</p>
+        $$2\sin x\cos x=-1\ \Rightarrow\ \sin2x=-1$$
+        <p class="text-sm mt-1">Substitution : $2x=u$ : $\sin u=-1\ \Rightarrow\ u=\dfrac{3\pi}{2}+k\cdot2\pi$. Retour à $x$ (en divisant par deux) :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{3\pi}{4}+k\pi\right\}$$
+    </div>
+    <div class="card">
+        <p class="mb-2">Résolvez dans $\mathbb{R}$ l'équation $\sin2x-\cos x=0$.</p>
+        <p class="text-sm">On remplace $\sin2x$ par la formule et on met $\cos x$ en facteur — l'équation prend une forme de produit :</p>
+        $$2\sin x\cos x-\cos x=0\ \Rightarrow\ \cos x\cdot(2\sin x-1)=0$$
+        <p class="text-sm mt-1">$\cos x=0\ \Rightarrow\ x=\dfrac{\pi}{2}+k\pi$ ;&ensp; $\sin x=\dfrac12\ \Rightarrow\ x=\dfrac{\pi}{6}+k\cdot2\pi$ ou $x=\dfrac{5\pi}{6}+k\cdot2\pi$.</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{\pi}{2}+k\pi;\ \frac{\pi}{6}+k\cdot2\pi;\ \frac{5\pi}{6}+k\cdot2\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-c-umocneni" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Attention au piège : élever l'équation au carré</h2>
+    <p>Une équation contenant une somme de $\sin x$ et $\cos x$ (sans angle double) peut parfois se résoudre en isolant une fonction puis en élevant au carré — cette transformation n'est cependant <b>pas équivalente</b> et peut introduire des solutions parasites. Après avoir élevé au carré, une vérification est toujours nécessaire.</p>
+    <div class="card">
+        <p class="mb-2">Résolvez dans $\mathbb{R}$ l'équation $\cos x-\sqrt3\sin x=1$.</p>
+        <p class="text-sm">On isole le cosinus et on élève au carré :</p>
+        $$\cos x=1+\sqrt3\sin x\ \ /^2\qquad\cos^2x=1+2\sqrt3\sin x+3\sin^2x$$
+        <p class="text-sm mt-1">On substitue $\cos^2x=1-\sin^2x$ et on simplifie :</p>
+        $$1-\sin^2x=1+2\sqrt3\sin x+3\sin^2x\ \Rightarrow\ -4\sin^2x-2\sqrt3\sin x=0\ \Rightarrow\ -2\sin x\cdot(2\sin x+\sqrt3)=0$$
+        <p class="text-sm mt-1">On obtient deux candidats : $\sin x=0$ ou $\sin x=-\dfrac{\sqrt3}{2}$. Or élever au carré a pu introduire des solutions qui ne vérifient pas l'équation d'origine — <b>une vérification est nécessaire</b> pour les deux :</p>
+        <ul class="list-disc list-inside text-sm space-y-1">
+            <li>$\sin x=0\Rightarrow\cos x=\pm1$. Vérification : pour $\cos x=1$, c'est correct ($1-0=1$ ✓) ; pour $\cos x=-1$, ce n'est pas correct ($-1\neq1$).</li>
+            <li>$\sin x=-\dfrac{\sqrt3}{2}\Rightarrow\cos x=\pm\dfrac12$. Vérification : pour $\cos x=-\dfrac12$, c'est correct ($-\dfrac12+\dfrac32=1$ ✓) ; pour $\cos x=\dfrac12$, ce n'est pas correct.</li>
+        </ul>
+        <p class="text-sm mt-1">Seuls deux couples conviennent donc : $(\sin x;\cos x)=(0;1)$, soit $x=k\cdot2\pi$, et $\left(-\dfrac{\sqrt3}{2};-\dfrac12\right)$, soit $x=\dfrac{4\pi}{3}+k\cdot2\pi$ :</p>
+        $$K=\bigcup_{k\in\mathbb{Z}}\left\{k\cdot2\pi;\ \frac{4\pi}{3}+k\cdot2\pi\right\}$$
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Notion</th><th class="p-1 text-left">Idée clé</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$\sin^2x+\cos^2x=1$</td><td class="p-1 text-left">calcul d'une fonction à partir de l'autre, simplification d'expressions</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$\operatorname{tg}x\cdot\operatorname{cotg}x=1$</td><td class="p-1 text-left">passage réciproque entre tangente et cotangente</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">formules d'addition</td><td class="p-1 text-left">$\sin(x\pm y)$, $\cos(x\pm y)$ — valeurs exactes pour des sommes d'angles</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">angle double</td><td class="p-1 text-left">$\sin2x=2\sin x\cos x$, $\cos2x=\cos^2x-\sin^2x$</td></tr>
+                <tr><td class="p-1 text-left">élévation au carré</td><td class="p-1 text-left">transformation non équivalente — vérification toujours nécessaire</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Et ensuite :</b> Les formules de ce chapitre nous manqueront pour démontrer deux théorèmes clés valables pour tout triangle — dans le chapitre suivant, <i>Goniométrie 6 — Le théorème du sinus et du cosinus</i>, nous verrons comment calculer les côtés et les angles d'un triangle quelconque, pas seulement rectangle, à l'aide des fonctions trigonométriques.
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 5 — Formules trigonométriques' : 'Goniometrie 5 — Goniometrické vzorce';
+    document.title = czVisible ? 'Goniométrie 5 — Formules trigonométriques — Théorie' : 'Goniometrie 5 — Goniometrické vzorce — Teorie';
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+function fmtNum(x){
+    const r = Math.round(x*100)/100;
+    let s = r.toString().replace('.', ',');
+    if (s === '-0') s = '0';
+    return s;
+}
+
+// ---- interaktivni kruznice: sin^2x+cos^2x=1 ----
+function updatePyth(suffix){
+    suffix = suffix || '';
+    const deg = parseFloat(document.getElementById('slider-pyth'+suffix).value);
+    document.getElementById('pyth-deg'+suffix).textContent = deg;
+    const rad = deg*Math.PI/180;
+    const cx = 120+90*Math.cos(rad);
+    const cy = 120-90*Math.sin(rad);
+
+    document.getElementById('pyth-radius'+suffix).setAttribute('x2', cx.toFixed(1));
+    document.getElementById('pyth-radius'+suffix).setAttribute('y2', cy.toFixed(1));
+    document.getElementById('pyth-point'+suffix).setAttribute('cx', cx.toFixed(1));
+    document.getElementById('pyth-point'+suffix).setAttribute('cy', cy.toFixed(1));
+    const vline = document.getElementById('pyth-vline'+suffix);
+    vline.setAttribute('x1', cx.toFixed(1)); vline.setAttribute('y1', cy.toFixed(1));
+    vline.setAttribute('x2', cx.toFixed(1)); vline.setAttribute('y2', '120');
+    const hline = document.getElementById('pyth-hline'+suffix);
+    hline.setAttribute('x1', cx.toFixed(1)); hline.setAttribute('y1', cy.toFixed(1));
+    hline.setAttribute('x2', '120'); hline.setAttribute('y2', cy.toFixed(1));
+
+    const s = Math.sin(rad), c = Math.cos(rad);
+    const sumSq = s*s + c*c;
+    const verdictEl = document.getElementById('pyth-verdict'+suffix);
+    verdictEl.textContent = '$\\sin^2x+\\cos^2x=' + fmtNum(sumSq*100/100) + '$\u00A0\u00A0($\\sin x\\approx' + fmtNum(s) + ',\\ \\cos x\\approx' + fmtNum(c) + '$)';
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([verdictEl]);
+}
+
+// ---- interaktivni overeni souctoveho vzorce ----
+function updateSum(suffix){
+    suffix = suffix || '';
+    const deg = parseFloat(document.getElementById('slider-sum'+suffix).value);
+    document.getElementById('sum-deg'+suffix).textContent = deg;
+    const rad = deg*Math.PI/180;
+    const rad30 = 30*Math.PI/180;
+
+    const direct = Math.sin(rad + rad30);
+    const viaFormula = Math.sin(rad)*Math.cos(rad30) + Math.cos(rad)*Math.sin(rad30);
+
+    const directLabel = suffix.includes('fr') ? '(directement)' : '(přímo)';
+    const formulaLabel = suffix.includes('fr') ? '(par la formule)' : '(podle vzorce)';
+
+    const directEl = document.getElementById('sum-direct'+suffix);
+    const formulaEl = document.getElementById('sum-formula'+suffix);
+    directEl.textContent = '$\\sin(x+30°)\\approx' + fmtNum(direct) + '$ ' + directLabel;
+    formulaEl.textContent = '$\\sin x\\cos30°+\\cos x\\sin30°\\approx' + fmtNum(viaFormula) + '$ ' + formulaLabel;
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([directEl, formulaEl]);
+}
+
+// ---- Inicializace ----
+updatePyth(''); updatePyth('-fr');
+updateSum(''); updateSum('-fr');
+
+document.getElementById('slider-pyth').addEventListener('input', () => updatePyth(''));
+document.getElementById('slider-pyth-fr').addEventListener('input', () => updatePyth('-fr'));
+document.getElementById('slider-sum').addEventListener('input', () => updateSum(''));
+document.getElementById('slider-sum-fr').addEventListener('input', () => updateSum('-fr'));
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 5 — Goniometrické vzorce — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-goniometrie5.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Goniometrie 5 — Goniometrické vzorce · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniometrie 5 — Goniometrické vzorce</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Základní goniometrické vzorce</h2>
+<div class="def-box mb-3">
+    <p>Pro každé reálné číslo $x$ platí $\sin^2x+\cos^2x=1$. Pro každé $x\neq k\cdot\frac{\pi}{2}$, $k\in\mathbb{Z}$, platí $\operatorname{tg}x\cdot\operatorname{cotg}x=1$.</p>
+</div>
+<p class="mb-3">Ověření pro $x=\frac{\pi}{6}$: $\sin^2\frac{\pi}{6}+\cos^2\frac{\pi}{6}=\frac14+\frac34=1$; $\operatorname{tg}\frac{\pi}{6}\cdot\operatorname{cotg}\frac{\pi}{6}=\frac{\sqrt3}{3}\cdot\sqrt3=1$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Dopočet jedné funkce ze druhé</h2>
+<p class="mb-3">Ze znalosti jedné funkce a kvadrantu lze dopočítat druhou. <b>Příklad:</b> $\cos x=\frac35$, $x$ ve IV. kvadrantu $\Rightarrow\sin x=-\sqrt{1-\frac{9}{25}}=-\frac45$ (znaménko podle kvadrantu).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Zjednodušování výrazů pomocí základních vzorců</h2>
+<p class="mb-3"><b>Příklady:</b> $3\sin^2x-2\cos^2x+2=5\sin^2x$ (dosazením $\cos^2x=1-\sin^2x$); $\frac{3-3\cos x}{\sin^2x}=\frac{3}{1+\cos x}$ (podm. $\sin x\neq0$); $\frac{\cos^2x}{\sin^2x}\cdot\operatorname{tg}x=\operatorname{cotg}x$ (podm. $x\neq k\cdot\frac{\pi}{2}$).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Součtové vzorce</h2>
+<div class="def-box mb-3">
+    <p>$\sin(x\pm y)=\sin x\cos y\pm\cos x\sin y$;&ensp; $\cos(x\pm y)=\cos x\cos y\mp\sin x\sin y$.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $\sin75°=\sin(45°+30°)=\frac{\sqrt6+\sqrt2}{4}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Vzorce pro dvojnásobný úhel</h2>
+<div class="def-box mb-3">
+    <p>$\sin2x=2\sin x\cos x$;&ensp; $\cos2x=\cos^2x-\sin^2x=2\cos^2x-1=1-2\sin^2x$.</p>
+</div>
+<p class="mb-3"><b>Příklady zjednodušení:</b> $\frac{1-\cos2t}{\sin2t}=\operatorname{tg}t$; $\cos^2w(1+\operatorname{tg}w)+\sin^2w(1+\operatorname{cotg}w)=1+\sin2w$.</p>
+<p class="mb-3">Z nich lze odvodit i vzorce pro poloviční úhel: $\left|\sin\frac{x}{2}\right|=\sqrt{\frac{1-\cos x}{2}}$, $\left|\cos\frac{x}{2}\right|=\sqrt{\frac{1+\cos x}{2}}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Řešení rovnic substitucí</h2>
+<p class="mb-3">Postup: (1) upravit na jedinou funkci; (2) substituovat $u$; (3) vyřešit rovnici pro $u$; (4) vrátit se k původní neznámé; (5) zapsat $K$.</p>
+<p class="mb-3"><b>Příklad:</b> $\sin^2x-\sin x-2=0\Rightarrow(u-2)(u+1)=0$; $u=2$ se zamítá (mimo obor hodnot), zbývá $\sin x=-1\Rightarrow K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{3\pi}{2}+k\cdot2\pi\right\}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Rovnice s převodem na jednu funkci</h2>
+<p class="mb-3"><b>Příklady:</b> $\sin^2x+\cos x=1\Rightarrow\cos x=0$ nebo $\cos x=1$; $\operatorname{tg}x+\operatorname{cotg}x=-2\Rightarrow(\operatorname{tg}x+1)^2=0\Rightarrow\operatorname{tg}x=-1$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Rovnice využívající dvojnásobný úhel</h2>
+<p class="mb-3"><b>Příklady:</b> $\sin x\cos x=-\frac12\Rightarrow\sin2x=-1\Rightarrow x=\frac{3\pi}{4}+k\pi$; $\sin2x-\cos x=0\Rightarrow\cos x(2\sin x-1)=0$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Pozor na past: umocnění rovnice</h2>
+<div class="warn-box mb-3">
+    <p>Izolování funkce a umocnění není ekvivalentní úprava — může zavést zdánlivé kořeny. Po umocnění je vždy nutná zkouška dosazením do <i>původní</i> rovnice.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $\cos x-\sqrt3\sin x=1$ vede po umocnění na kandidáty $\sin x=0$ a $\sin x=-\frac{\sqrt3}{2}$; zkouškou vyhoví jen $(\sin x;\cos x)=(0;1)$ a $\left(-\frac{\sqrt3}{2};-\frac12\right)$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Pojem</th>
+            <th class="text-left py-1">Klíčová myšlenka</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\sin^2x+\cos^2x=1$</td><td class="py-1">dopočet funkce, zjednodušování výrazů</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">součtové vzorce</td><td class="py-1">přesné hodnoty pro součty úhlů</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">dvojnásobný úhel</td><td class="py-1">$\sin2x$, $\cos2x$ — řešení rovnic i úprava výrazů</td></tr>
+        <tr><td class="py-1 pr-2">umocnění rovnice</td><td class="py-1">vždy nutná zkouška</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniométrie 5 — Formules trigonométriques</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Formules trigonométriques de base</h2>
+<div class="def-box mb-3">
+    <p>Pour tout nombre réel $x$, $\sin^2x+\cos^2x=1$. Pour tout $x\neq k\cdot\frac{\pi}{2}$, $k\in\mathbb{Z}$, $\operatorname{tg}x\cdot\operatorname{cotg}x=1$.</p>
+</div>
+<p class="mb-3">Vérification pour $x=\frac{\pi}{6}$ : $\sin^2\frac{\pi}{6}+\cos^2\frac{\pi}{6}=\frac14+\frac34=1$ ; $\operatorname{tg}\frac{\pi}{6}\cdot\operatorname{cotg}\frac{\pi}{6}=\frac{\sqrt3}{3}\cdot\sqrt3=1$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Calcul d'une fonction à partir de l'autre</h2>
+<p class="mb-3">À partir d'une fonction connue et du quadrant, on peut calculer l'autre. <b>Exemple :</b> $\cos x=\frac35$, $x$ dans le IV. quadrant $\Rightarrow\sin x=-\sqrt{1-\frac{9}{25}}=-\frac45$ (signe selon le quadrant).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Simplification d'expressions à l'aide des formules de base</h2>
+<p class="mb-3"><b>Exemples :</b> $3\sin^2x-2\cos^2x+2=5\sin^2x$ (en substituant $\cos^2x=1-\sin^2x$) ; $\frac{3-3\cos x}{\sin^2x}=\frac{3}{1+\cos x}$ (cond. $\sin x\neq0$) ; $\frac{\cos^2x}{\sin^2x}\cdot\operatorname{tg}x=\operatorname{cotg}x$ (cond. $x\neq k\cdot\frac{\pi}{2}$).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Formules d'addition</h2>
+<div class="def-box mb-3">
+    <p>$\sin(x\pm y)=\sin x\cos y\pm\cos x\sin y$ ;&ensp; $\cos(x\pm y)=\cos x\cos y\mp\sin x\sin y$.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $\sin75°=\sin(45°+30°)=\frac{\sqrt6+\sqrt2}{4}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Formules de l'angle double</h2>
+<div class="def-box mb-3">
+    <p>$\sin2x=2\sin x\cos x$ ;&ensp; $\cos2x=\cos^2x-\sin^2x=2\cos^2x-1=1-2\sin^2x$.</p>
+</div>
+<p class="mb-3"><b>Exemples de simplification :</b> $\frac{1-\cos2t}{\sin2t}=\operatorname{tg}t$ ; $\cos^2w(1+\operatorname{tg}w)+\sin^2w(1+\operatorname{cotg}w)=1+\sin2w$.</p>
+<p class="mb-3">On peut en déduire les formules de l'angle moitié : $\left|\sin\frac{x}{2}\right|=\sqrt{\frac{1-\cos x}{2}}$, $\left|\cos\frac{x}{2}\right|=\sqrt{\frac{1+\cos x}{2}}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Résolution d'équations par substitution</h2>
+<p class="mb-3">Méthode : (1) réduire à une seule fonction ; (2) substituer $u$ ; (3) résoudre l'équation pour $u$ ; (4) revenir à l'inconnue d'origine ; (5) écrire $K$.</p>
+<p class="mb-3"><b>Exemple :</b> $\sin^2x-\sin x-2=0\Rightarrow(u-2)(u+1)=0$ ; $u=2$ est rejeté (hors de l'ensemble des valeurs), il reste $\sin x=-1\Rightarrow K=\bigcup_{k\in\mathbb{Z}}\left\{\frac{3\pi}{2}+k\cdot2\pi\right\}$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Équations nécessitant une réduction à une fonction</h2>
+<p class="mb-3"><b>Exemples :</b> $\sin^2x+\cos x=1\Rightarrow\cos x=0$ ou $\cos x=1$ ; $\operatorname{tg}x+\operatorname{cotg}x=-2\Rightarrow(\operatorname{tg}x+1)^2=0\Rightarrow\operatorname{tg}x=-1$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Équations utilisant l'angle double</h2>
+<p class="mb-3"><b>Exemples :</b> $\sin x\cos x=-\frac12\Rightarrow\sin2x=-1\Rightarrow x=\frac{3\pi}{4}+k\pi$ ; $\sin2x-\cos x=0\Rightarrow\cos x(2\sin x-1)=0$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Attention au piège : élever au carré</h2>
+<div class="warn-box mb-3">
+    <p>Isoler une fonction puis élever au carré n'est pas une transformation équivalente — cela peut introduire des solutions parasites. Après cette opération, une vérification dans l'équation <i>d'origine</i> est toujours nécessaire.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $\cos x-\sqrt3\sin x=1$ donne après élévation au carré les candidats $\sin x=0$ et $\sin x=-\frac{\sqrt3}{2}$ ; seuls $(\sin x;\cos x)=(0;1)$ et $\left(-\frac{\sqrt3}{2};-\frac12\right)$ vérifient l'équation d'origine.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Notion</th>
+            <th class="text-left py-1">Idée clé</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$\sin^2x+\cos^2x=1$</td><td class="py-1">calcul d'une fonction, simplification d'expressions</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">formules d'addition</td><td class="py-1">valeurs exactes pour des sommes d'angles</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">angle double</td><td class="py-1">$\sin2x$, $\cos2x$ — résolution d'équations et simplification</td></tr>
+        <tr><td class="py-1 pr-2">élévation au carré</td><td class="py-1">vérification toujours nécessaire</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 5 — Formules trigonométriques · Manuel' : 'Goniometrie 5 — Goniometrické vzorce · Příručka';
+    document.title = czVisible ? 'Goniométrie 5 — Formules trigonométriques — Manuel' : 'Goniometrie 5 — Goniometrické vzorce — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>
