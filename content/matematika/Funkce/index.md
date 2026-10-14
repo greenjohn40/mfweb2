@@ -29,3 +29,5 @@
 <br>
 <a href="/static/mat-funkce-goniom4/rozcestnik-goniometrie4.html" data-router-ignore>Goniometrické rovnice a nerovnice</a><p>
 <br>
+<a href="/static/mat-funkce-goniom5/rozcestnik-goniometrie5.html" data-router-ignore>Goniometrické vzorce</a><p>
+<br>
