@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 6 — Sinová a kosinová věta — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-goniometrie6.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Goniometrie 6 — Sinová a kosinová věta · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniometrie 6 — Sinová a kosinová věta</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Řešení obecného trojúhelníku, označení</h2>
+<p class="mb-3">Řešit trojúhelník znamená dopočítat všechny chybějící strany a úhly. Strany $a=|BC|$, $b=|CA|$, $c=|AB|$ leží proti vnitřním úhlům $\alpha$, $\beta$, $\gamma$ při vrcholech $A$, $B$, $C$. Platí $\alpha+\beta+\gamma=180°$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Sinová věta</h2>
+<div class="def-box mb-3">
+    <p>V každém trojúhelníku $ABC$ platí $\dfrac{a}{\sin\alpha}=\dfrac{b}{\sin\beta}=\dfrac{c}{\sin\gamma}=2R$, kde $R$ je poloměr kružnice opsané. Ekvivalentně $a:b:c=\sin\alpha:\sin\beta:\sin\gamma$.</p>
+</div>
+<p class="mb-3">Věta vyplývá ze vztahu $c=2R\sin\gamma$ (tětiva $AB$ a obvodový úhel $\gamma$) a analogických vztahů pro další strany.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Použití sinové věty</h2>
+<p class="mb-3">Používáme ji, známe-li dvojici „strana a protilehlý úhel“ a ještě jednu další veličinu (zadání usu, uus, ssu). Třetí úhel dopočteme ze součtu úhlů.</p>
+<p class="mb-3"><b>Příklad:</b> $b=6$, $\beta=48°$, $\gamma=72°$ $\Rightarrow$ $\alpha=60°$, $a=\dfrac{6\sin60°}{\sin48°}\approx6{,}99$, $c=\dfrac{6\sin72°}{\sin48°}\approx7{,}68$.</p>
+<p class="mb-3"><b>Příklad:</b> $b=9$, $\beta=50°$ $\Rightarrow$ $R=\dfrac{b}{2\sin\beta}=\dfrac{9}{2\sin50°}\approx5{,}87$.</p>
+<p class="mb-3"><b>Příklad:</b> $a=12$, $R=10$ $\Rightarrow$ $\sin\alpha=\dfrac{a}{2R}=0{,}6$, tedy $\alpha\approx36°52'$ nebo $\alpha\approx143°08'$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Úloha ssu: dvě strany a úhel proti jedné z nich</h2>
+<div class="warn-box mb-3">
+    <p>Pro $a$, $b$, $\alpha$ platí $\sin\beta=\dfrac{b\sin\alpha}{a}$. Rovnice $\sin\beta=k$ má v intervalu $(0°;180°)$ dvě řešení, $\beta$ a $180°-\beta$ (protože $\sin(180°-\beta)=\sin\beta$). Vyhovuje jen ta hodnota, pro kterou je $\alpha+\beta\lt180°$.</p>
+</div>
+<ul class="list-disc list-inside mb-3">
+    <li>$\sin\beta\gt1$: žádné řešení;</li>
+    <li>$\sin\beta=1$: $\beta=90°$, jedno řešení;</li>
+    <li>$\sin\beta\lt1$: jedno nebo dvě řešení podle podmínky $\alpha+\beta\lt180°$.</li>
+</ul>
+<p class="mb-3">Pro <b>ostrý</b> úhel $\alpha$: $a\lt b\sin\alpha$ — žádné řešení; $a=b\sin\alpha$ — jedno (pravoúhlý trojúhelník); $b\sin\alpha\lt a\lt b$ — dvě řešení; $a\ge b$ — jedno řešení.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Příklady úlohy ssu</h2>
+<p class="mb-3"><b>Příklad (dvě řešení):</b> $a=5$, $b=8$, $\alpha=30°$. Je $4\lt5\lt8$, $\sin\beta=0{,}8$, $\beta_1\approx53°08'$, $\beta_2\approx126°52'$. Dále $\gamma_1\approx96°52'$, $c_1\approx9{,}93$ a $\gamma_2\approx23°08'$, $c_2\approx3{,}93$.</p>
+<p class="mb-3"><b>Příklad (jedno řešení):</b> $a=9$, $b=5$, $\alpha=40°$. $\sin\beta\approx0{,}3571$, $\beta\approx20°55'$; hodnota $159°05'$ nevyhovuje ($40°+159°05'\gt180°$). Dále $\gamma\approx119°05'$, $c\approx12{,}24$.</p>
+<p class="mb-3"><b>Příklad (žádné řešení):</b> $a=2$, $b=6$, $\alpha=30°$. $\sin\beta=\dfrac{6\sin30°}{2}=1{,}5\gt1$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Kosinová věta</h2>
+<div class="def-box mb-3">
+    <p>$a^2=b^2+c^2-2bc\cos\alpha$;&ensp; $b^2=a^2+c^2-2ac\cos\beta$;&ensp; $c^2=a^2+b^2-2ab\cos\gamma$.</p>
+</div>
+<p class="mb-3">Úhel je vždy ten, který svírají zbylé dvě strany. Pro úhel ze tří stran: $\cos\alpha=\dfrac{b^2+c^2-a^2}{2bc}$. Pro $\gamma=90°$ je $\cos\gamma=0$ a věta přejde v Pythagorovu větu $c^2=a^2+b^2$. Je-li $\alpha$ ostrý, je $a^2\lt b^2+c^2$; je-li tupý, je $a^2\gt b^2+c^2$ (kosinus je záporný).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Příklady kosinové věty</h2>
+<p class="mb-3"><b>Příklady (sus):</b> $b=6$, $c=10$, $\alpha=120°$ $\Rightarrow$ $a^2=136+60=196$, $a=14$; $b=7$, $c=9$, $\alpha=38°$ $\Rightarrow$ $a\approx5{,}54$.</p>
+<p class="mb-3"><b>Příklad (sss):</b> $a=7$, $b=5$, $c=8$ $\Rightarrow$ $\cos\alpha=\dfrac{25+64-49}{80}=\dfrac12$, $\alpha=60°$.</p>
+<p class="mb-3"><b>Příklad (sss, tupý úhel):</b> $a=6$, $b=9$, $c=13$. Nejprve úhel proti nejdelší straně: $\cos\gamma=-\dfrac{52}{108}$, $\gamma\approx118°47'$. Zbylé úhly jsou ostré, takže sinová věta dává jediné řešení: $\alpha\approx23°52'$, $\beta\approx37°21'$.</p>
+<p class="mb-3"><b>Příklad:</b> $a=3$, $b=4$, $\gamma=90°$ $\Rightarrow$ $c^2=25$, $c=5$ (Pythagorova věta).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Kterou větu zvolit</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Zadáno</th>
+            <th class="text-left py-1">Použijeme</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">strana a dva úhly (usu, uus)</td><td class="py-1">sinovou větu</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">dvě strany a úhel proti jedné z nich (ssu)</td><td class="py-1">sinovou větu, pozor na dvě řešení</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">dvě strany a úhel mezi nimi (sus)</td><td class="py-1">kosinovou větu</td></tr>
+        <tr><td class="py-1 pr-2">tři strany (sss)</td><td class="py-1">kosinovou větu</td></tr>
+    </tbody>
+</table>
+<div class="warn-box mb-3">
+    <p>Úlohu ssu lze řešit i kosinovou větou: dostaneme kvadratickou rovnici pro třetí stranu. <b>Příklad:</b> $a=5$, $b=8$, $\alpha=30°$ vede na $c^2-8\sqrt3\,c+39=0$, tedy $c=4\sqrt3\pm3$, $c_1\approx9{,}93$, $c_2\approx3{,}93$ — dvě kladná řešení. Kalkulačku mějte nastavenou na stupně (DEG).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Pojem</th>
+            <th class="text-left py-1">Klíčová myšlenka</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">sinová věta</td><td class="py-1">$\dfrac{a}{\sin\alpha}=\dfrac{b}{\sin\beta}=\dfrac{c}{\sin\gamma}=2R$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">úloha ssu</td><td class="py-1">žádné, jedno nebo dvě řešení; podmínka $\alpha+\beta\lt180°$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">kosinová věta</td><td class="py-1">$a^2=b^2+c^2-2bc\cos\alpha$; $\cos\alpha=\dfrac{b^2+c^2-a^2}{2bc}$</td></tr>
+        <tr><td class="py-1 pr-2">$\gamma=90°$</td><td class="py-1">kosinová věta přejde v Pythagorovu větu</td></tr>
+    </tbody>
+</table>
+<p class="mb-3 text-sm">Navazuje kapitola <i>Goniometrie 7 — Užití sinové a kosinové věty</i>.</p>
+
+</main>
+</div>
+
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniométrie 6 — Le théorème du sinus et du cosinus</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Résoudre un triangle quelconque, notation</h2>
+<p class="mb-3">Résoudre un triangle, c'est calculer tous les côtés et tous les angles manquants. Les côtés $a=|BC|$, $b=|CA|$, $c=|AB|$ sont opposés aux angles intérieurs $\alpha$, $\beta$, $\gamma$ situés aux sommets $A$, $B$, $C$. On a $\alpha+\beta+\gamma=180°$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Théorème du sinus</h2>
+<div class="def-box mb-3">
+    <p>Dans tout triangle $ABC$, $\dfrac{a}{\sin\alpha}=\dfrac{b}{\sin\beta}=\dfrac{c}{\sin\gamma}=2R$, où $R$ est le rayon du cercle circonscrit. De manière équivalente, $a:b:c=\sin\alpha:\sin\beta:\sin\gamma$.</p>
+</div>
+<p class="mb-3">Le théorème découle de $c=2R\sin\gamma$ (corde $AB$ et angle inscrit $\gamma$) et des relations analogues pour les autres côtés.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Utilisation du théorème du sinus</h2>
+<p class="mb-3">On l'utilise quand on connaît un couple « côté et angle opposé » et une autre grandeur (cas ACA, AAC, CCA). Le troisième angle se déduit de la somme des angles.</p>
+<p class="mb-3"><b>Exemple :</b> $b=6$, $\beta=48°$, $\gamma=72°$ $\Rightarrow$ $\alpha=60°$, $a=\dfrac{6\sin60°}{\sin48°}\approx6{,}99$, $c=\dfrac{6\sin72°}{\sin48°}\approx7{,}68$.</p>
+<p class="mb-3"><b>Exemple :</b> $b=9$, $\beta=50°$ $\Rightarrow$ $R=\dfrac{b}{2\sin\beta}=\dfrac{9}{2\sin50°}\approx5{,}87$.</p>
+<p class="mb-3"><b>Exemple :</b> $a=12$, $R=10$ $\Rightarrow$ $\sin\alpha=\dfrac{a}{2R}=0{,}6$, donc $\alpha\approx36°52'$ ou $\alpha\approx143°08'$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Le cas CCA : deux côtés et un angle opposé à l'un d'eux</h2>
+<div class="warn-box mb-3">
+    <p>Pour $a$, $b$, $\alpha$, on a $\sin\beta=\dfrac{b\sin\alpha}{a}$. L'équation $\sin\beta=k$ a deux solutions dans l'intervalle $(0°;180°)$, $\beta$ et $180°-\beta$ (car $\sin(180°-\beta)=\sin\beta$). Seule convient la valeur pour laquelle $\alpha+\beta\lt180°$.</p>
+</div>
+<ul class="list-disc list-inside mb-3">
+    <li>$\sin\beta\gt1$ : aucune solution ;</li>
+    <li>$\sin\beta=1$ : $\beta=90°$, une solution ;</li>
+    <li>$\sin\beta\lt1$ : une ou deux solutions selon la condition $\alpha+\beta\lt180°$.</li>
+</ul>
+<p class="mb-3">Pour un angle $\alpha$ <b>aigu</b> : $a\lt b\sin\alpha$ — aucune solution ; $a=b\sin\alpha$ — une (triangle rectangle) ; $b\sin\alpha\lt a\lt b$ — deux solutions ; $a\ge b$ — une solution.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Exemples du cas CCA</h2>
+<p class="mb-3"><b>Exemple (deux solutions) :</b> $a=5$, $b=8$, $\alpha=30°$. On a $4\lt5\lt8$, $\sin\beta=0{,}8$, $\beta_1\approx53°08'$, $\beta_2\approx126°52'$. Puis $\gamma_1\approx96°52'$, $c_1\approx9{,}93$ et $\gamma_2\approx23°08'$, $c_2\approx3{,}93$.</p>
+<p class="mb-3"><b>Exemple (une solution) :</b> $a=9$, $b=5$, $\alpha=40°$. $\sin\beta\approx0{,}3571$, $\beta\approx20°55'$ ; la valeur $159°05'$ ne convient pas ($40°+159°05'\gt180°$). Puis $\gamma\approx119°05'$, $c\approx12{,}24$.</p>
+<p class="mb-3"><b>Exemple (aucune solution) :</b> $a=2$, $b=6$, $\alpha=30°$. $\sin\beta=\dfrac{6\sin30°}{2}=1{,}5\gt1$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Théorème du cosinus</h2>
+<div class="def-box mb-3">
+    <p>$a^2=b^2+c^2-2bc\cos\alpha$ ;&ensp; $b^2=a^2+c^2-2ac\cos\beta$ ;&ensp; $c^2=a^2+b^2-2ab\cos\gamma$.</p>
+</div>
+<p class="mb-3">L'angle est toujours celui que forment les deux autres côtés. Pour un angle à partir des trois côtés : $\cos\alpha=\dfrac{b^2+c^2-a^2}{2bc}$. Pour $\gamma=90°$, $\cos\gamma=0$ et le théorème devient le théorème de Pythagore $c^2=a^2+b^2$. Si $\alpha$ est aigu, $a^2\lt b^2+c^2$ ; s'il est obtus, $a^2\gt b^2+c^2$ (le cosinus est négatif).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Exemples du théorème du cosinus</h2>
+<p class="mb-3"><b>Exemples (CAC) :</b> $b=6$, $c=10$, $\alpha=120°$ $\Rightarrow$ $a^2=136+60=196$, $a=14$ ; $b=7$, $c=9$, $\alpha=38°$ $\Rightarrow$ $a\approx5{,}54$.</p>
+<p class="mb-3"><b>Exemple (CCC) :</b> $a=7$, $b=5$, $c=8$ $\Rightarrow$ $\cos\alpha=\dfrac{25+64-49}{80}=\dfrac12$, $\alpha=60°$.</p>
+<p class="mb-3"><b>Exemple (CCC, angle obtus) :</b> $a=6$, $b=9$, $c=13$. D'abord l'angle opposé au plus grand côté : $\cos\gamma=-\dfrac{52}{108}$, $\gamma\approx118°47'$. Les autres angles sont aigus, le théorème du sinus donne donc une seule solution : $\alpha\approx23°52'$, $\beta\approx37°21'$.</p>
+<p class="mb-3"><b>Exemple :</b> $a=3$, $b=4$, $\gamma=90°$ $\Rightarrow$ $c^2=25$, $c=5$ (théorème de Pythagore).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Quel théorème choisir</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Données</th>
+            <th class="text-left py-1">On utilise</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">un côté et deux angles (ACA, AAC)</td><td class="py-1">le théorème du sinus</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">deux côtés et un angle opposé à l'un d'eux (CCA)</td><td class="py-1">le théorème du sinus, attention aux deux solutions</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">deux côtés et l'angle compris (CAC)</td><td class="py-1">le théorème du cosinus</td></tr>
+        <tr><td class="py-1 pr-2">trois côtés (CCC)</td><td class="py-1">le théorème du cosinus</td></tr>
+    </tbody>
+</table>
+<div class="warn-box mb-3">
+    <p>Le cas CCA peut aussi se résoudre avec le théorème du cosinus : on obtient une équation du second degré pour le troisième côté. <b>Exemple :</b> $a=5$, $b=8$, $\alpha=30°$ conduit à $c^2-8\sqrt3\,c+39=0$, donc $c=4\sqrt3\pm3$, $c_1\approx9{,}93$, $c_2\approx3{,}93$ — deux solutions positives. Réglez la calculatrice en degrés (DEG).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Notion</th>
+            <th class="text-left py-1">Idée clé</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">théorème du sinus</td><td class="py-1">$\dfrac{a}{\sin\alpha}=\dfrac{b}{\sin\beta}=\dfrac{c}{\sin\gamma}=2R$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">cas CCA</td><td class="py-1">aucune, une ou deux solutions ; condition $\alpha+\beta\lt180°$</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">théorème du cosinus</td><td class="py-1">$a^2=b^2+c^2-2bc\cos\alpha$ ; $\cos\alpha=\dfrac{b^2+c^2-a^2}{2bc}$</td></tr>
+        <tr><td class="py-1 pr-2">$\gamma=90°$</td><td class="py-1">le théorème du cosinus devient le théorème de Pythagore</td></tr>
+    </tbody>
+</table>
+<p class="mb-3 text-sm">Suite : le chapitre <i>Goniométrie 7 — Applications des théorèmes du sinus et du cosinus</i>.</p>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 6 — Le théorème du sinus et du cosinus · Manuel' : 'Goniometrie 6 — Sinová a kosinová věta · Příručka';
+    document.title = czVisible ? 'Goniométrie 6 — Le théorème du sinus et du cosinus — Manuel' : 'Goniometrie 6 — Sinová a kosinová věta — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

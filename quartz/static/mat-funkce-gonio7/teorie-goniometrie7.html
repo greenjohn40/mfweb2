@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 7 — Užití sinové a kosinové věty — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f8fafc; border-left: 4px solid #64748b; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+    .verdict-ok { background: #ecfdf5; border: 1px solid #6ee7b7; }
+    svg text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #44403c; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Goniometrie 7 — Užití sinové a kosinové věty</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-goniometrie7.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Sinová a kosinová věta v praxi</h2>
+    <p>Poslední kapitola série ukazuje, k čemu jsou obě věty z minulé kapitoly dobré. Goniometrie se uplatňuje všude, kde potřebujeme zjistit vzdálenost, výšku nebo úhel, které nejde změřit přímo. Podíváme se na tři oblasti: <b>síly ve fyzice</b>, <b>vzdálenosti a výšky v terénu</b> a <b>výměru pozemku</b>.</p>
+    <div class="card">
+        <p class="text-sm font-semibold mb-1">Společný postup u slovní úlohy:</p>
+        <ol class="list-decimal list-inside space-y-1 text-sm">
+            <li>Nakreslíme <b>náčrt</b> a zavedeme označení.</li>
+            <li>Najdeme <b>trojúhelník</b>, ve kterém známe dost údajů.</li>
+            <li>Podle zadání (usu, uus, ssu, sus, sss) zvolíme <b>sinovou</b> nebo <b>kosinovou větu</b>.</li>
+            <li>Vypočteme a <b>napíšeme odpověď</b> slovy, s jednotkou.</li>
+        </ol>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Kterou větu zvolit, jsme shrnuli v tabulce v kapitole <i>Goniometrie 6</i>. Tady ji budeme jen používat — nejtěžší bývá správně sestrojit trojúhelník z textu úlohy.
+    </div>
+</section>
+
+<section id="sec-a-sily" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Skládání sil</h2>
+    <p>Síla je vektor: má velikost a směr. Působí-li na těleso v jednom bodě dvě různoběžné síly $F_1$ a $F_2$, které svírají úhel $\varphi$, můžeme je nahradit jedinou silou — <b>výslednicí</b> $F$. Je to úhlopříčka rovnoběžníku sil sestrojeného nad silami $F_1$, $F_2$.</p>
+    <div class="card">
+        <p class="text-sm">V trojúhelníku s vrcholy v počátku a koncích sil leží proti výslednici úhel $\beta=180°-\varphi$. Velikost výslednice dává <b>kosinová věta</b>, směr (úhel $\alpha$ mezi $F$ a $F_1$) <b>sinová věta</b>:</p>
+        $$F^2=F_1^2+F_2^2-2F_1F_2\cos\beta\qquad\frac{\sin\alpha}{F_2}=\frac{\sin\beta}{F}$$
+    </div>
+    <p>Na posuvníku měňte úhel $\varphi$ mezi silami $F_1=14$ N a $F_2=9$ N. Pro $\varphi=0°$ by se síly sčítaly, pro $\varphi=180°$ odčítaly:</p>
+    <div class="card">
+        <svg viewBox="0 0 300 220" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="fc-mk-t" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0d9488"/></marker><marker id="fc-mk-r" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker><marker id="fc-mk-v" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker></defs>
+<polygon id="fc-poly" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.08)" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3"/>
+<line id="fc-l1" x1="0" y1="0" x2="0" y2="0" stroke="#0d9488" stroke-width="2.5" marker-end="url(#fc-mk-t)"/>
+<line id="fc-l2" x1="0" y1="0" x2="0" y2="0" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#fc-mk-r)"/>
+<line id="fc-lF" x1="0" y1="0" x2="0" y2="0" stroke="#6d28d9" stroke-width="3.5" marker-end="url(#fc-mk-v)"/>
+<path id="fc-arc" d="M0,0" fill="none" stroke="#57534e" stroke-width="1.2"/>
+<text id="fc-tphi" fill="#57534e" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="600">φ</text>
+<text id="fc-t1" fill="#0d9488" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F<tspan dy="3" font-size="9">1</tspan></text>
+<text id="fc-t2" fill="#b91c1c" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F<tspan dy="3" font-size="9">2</tspan></text>
+<text id="fc-tF" fill="#6d28d9" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">φ =</span>
+            <input type="range" id="fc-phi" min="20" max="160" value="50" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fc-phi-v">50</span>°</span>
+        </div>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="fc-r1"></div><div id="fc-r2"></div><div id="fc-r3" class="font-semibold"></div><div id="fc-r4"></div>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Na těleso působí v jednom bodě síly $F_1=14$ N a $F_2=9$ N, které svírají úhel $\varphi=50°$. Určete velikost a směr výslednice.</p>
+        <p class="text-sm">Úhel proti výslednici je $\beta=180°-50°=130°$.</p>
+        $$F^2=14^2+9^2-2\cdot14\cdot9\cdot\cos130°\approx438{,}98\ \Rightarrow\ F\approx20{,}95\ \text{N}$$
+        $$\sin\alpha=\frac{F_2\sin\beta}{F}=\frac{9\cdot\sin130°}{20{,}95}\approx0{,}3291\ \Rightarrow\ \alpha\approx19°13'$$
+        <p class="text-sm mt-1">Druhá hodnota $180°-19°13'=160°47'$ nevyhovuje, protože $\alpha+\beta\lt180°$ musí platit. Výslednice má velikost přibližně $20{,}95$ N a svírá se silou $F_1$ úhel přibližně $19°13'$.</p>
+    </div>
+</section>
+
+<section id="sec-a-rozklad" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Rozklad síly na složky</h2>
+    <p>Opačná úloha: danou sílu $F$ chceme nahradit dvěma silami ve zvolených směrech. Z koncového bodu síly $F$ vedeme rovnoběžky s oběma směry a vznikne rovnoběžník. V trojúhelníku známe jednu stranu ($F$) a dva úhly, takže použijeme <b>sinovou větu</b>.</p>
+    <p>Síla $F=20$ N je zadána pevně. Posuvníky nastavujete úhly, které svírají směry složek se silou $F$:</p>
+    <div class="card">
+        <svg viewBox="0 0 300 220" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="fd-mk-t" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0d9488"/></marker><marker id="fd-mk-r" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker><marker id="fd-mk-v" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker></defs>
+<polygon id="fd-poly" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.08)" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3"/>
+<line id="fd-l1" x1="0" y1="0" x2="0" y2="0" stroke="#0d9488" stroke-width="2.5" marker-end="url(#fd-mk-t)"/>
+<line id="fd-l2" x1="0" y1="0" x2="0" y2="0" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#fd-mk-r)"/>
+<line id="fd-lF" x1="0" y1="0" x2="0" y2="0" stroke="#6d28d9" stroke-width="3.5" marker-end="url(#fd-mk-v)"/>
+<path id="fd-arc1" d="M0,0" fill="none" stroke="#0d9488" stroke-width="1.2"/>
+<path id="fd-arc2" d="M0,0" fill="none" stroke="#b91c1c" stroke-width="1.2"/>
+<text id="fd-t1" fill="#0d9488" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F<tspan dy="3" font-size="9">1</tspan></text>
+<text id="fd-t2" fill="#b91c1c" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F<tspan dy="3" font-size="9">2</tspan></text>
+<text id="fd-tF" fill="#6d28d9" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3">
+            <span class="slider-label w-24">směr 1</span>
+            <input type="range" id="fd-a1" min="15" max="60" value="35" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fd-a1-v">35</span>°</span>
+        </div>
+        <div class="flex items-center gap-3 mt-1 mb-2">
+            <span class="slider-label w-24">směr 2</span>
+            <input type="range" id="fd-a2" min="15" max="60" value="50" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fd-a2-v">50</span>°</span>
+        </div>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="fd-r1"></div><div id="fd-r2" class="font-semibold"></div><div id="fd-r3" class="font-semibold"></div>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Sílu $F=20$ N rozložte do dvou směrů, které s ní svírají úhly $35°$ a $50°$.</p>
+        <p class="text-sm">Třetí úhel trojúhelníku je $\gamma=180°-35°-50°=95°$ a leží proti síle $F$. Složka $F_1$ (směr $35°$) leží proti úhlu $50°$, složka $F_2$ (směr $50°$) proti úhlu $35°$:</p>
+        $$F_1=\frac{20\cdot\sin50°}{\sin95°}\approx15{,}38\ \text{N}\qquad F_2=\frac{20\cdot\sin35°}{\sin95°}\approx11{,}52\ \text{N}$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Kontrola rozumnosti:</b> Směr, který leží <b>blíž</b> k síle $F$, má větší složku ($15{,}38\gt11{,}52$). Kdyby vyšlo opačně, složky jsme zaměnili.
+    </div>
+</section>
+
+<section id="sec-b-pojmy" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Vzdálenosti a výšky v terénu</h2>
+    <p>Šířku řeky, výšku věže nebo vzdálenost dvou nepřístupných míst nezměříme pásmem. Změříme proto <b>základnu</b> (vzdálenost dvou přístupných bodů) a <b>úhly</b>, ostatní délky spočítáme z trojúhelníku.</p>
+    <div class="card">
+        <svg viewBox="0 0 340 170" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="85" x2="200" y2="85" stroke="#57534e" stroke-width="1.5" stroke-dasharray="5,4"/>
+<circle cx="30" cy="85" r="4" fill="#44403c"/>
+<text x="14" y="104" font-weight="700">O</text>
+<line x1="30" y1="85" x2="190" y2="35" stroke="#0d9488" stroke-width="2"/>
+<circle cx="190" cy="35" r="4" fill="#0d9488"/>
+<line x1="30" y1="85" x2="190" y2="135" stroke="#b91c1c" stroke-width="2"/>
+<circle cx="190" cy="135" r="4" fill="#b91c1c"/>
+<path d="M 78,85 A 48,48 0 0 0 76,70.7" fill="none" stroke="#0d9488" stroke-width="1.5"/>
+<path d="M 78,85 A 48,48 0 0 1 76,99.3" fill="none" stroke="#b91c1c" stroke-width="1.5"/>
+<text x="204" y="33" font-size="12" fill="#0d9488" font-weight="700">výškový úhel</text>
+<text x="204" y="48" font-size="11" fill="#57534e">cíl nahoře</text>
+<text x="204" y="133" font-size="12" fill="#b91c1c" font-weight="700">hloubkový úhel</text>
+<text x="204" y="148" font-size="11" fill="#57534e">cíl dole</text>
+</svg>
+        <ul class="list-disc list-inside text-sm space-y-1 mt-2">
+            <li><b>Výškový úhel</b> — úhel mezi vodorovnou rovinou a přímkou k pozorovanému bodu <b>nad</b> ní.</li>
+            <li><b>Hloubkový úhel</b> — úhel mezi vodorovnou rovinou a přímkou k pozorovanému bodu <b>pod</b> ní.</li>
+            <li><b>Zorný úhel</b> — úhel, který svírají paprsky vycházející z oka pozorovatele ke krajním bodům předmětu.</li>
+        </ul>
+    </div>
+</section>
+
+<section id="sec-b-vzdalenost" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Nepřístupná vzdálenost</h2>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Bod $C$ leží na druhém břehu řeky. Na našem břehu změříme základnu $|AB|=50$ m a úhly $\alpha=|\angle BAC|=62°$, $\beta=|\angle ABC|=71°$. Určete vzdálenosti $|AC|$ a $|BC|$.</p>
+        <p class="text-sm">Známe stranu a dva úhly (usu). Třetí úhel je $\gamma=180°-62°-71°=47°$ a leží proti základně:</p>
+        $$|BC|=\frac{50\cdot\sin62°}{\sin47°}\approx60{,}36\ \text{m}\qquad|AC|=\frac{50\cdot\sin71°}{\sin47°}\approx64{,}64\ \text{m}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Mezi místy $L$ a $M$ leží jezero. Z bodu $K$ změříme $|KL|=120$ m, $|KM|=85$ m a úhel $|\angle LKM|=62°$. Určete vzdálenost $|LM|$.</p>
+        <p class="text-sm">Známe dvě strany a úhel mezi nimi (sus), použijeme kosinovou větu:</p>
+        $$|LM|^2=120^2+85^2-2\cdot120\cdot85\cdot\cos62°\approx12\,047{,}8\ \Rightarrow\ |LM|\approx109{,}8\ \text{m}$$
+    </div>
+</section>
+
+<section id="sec-b-vyska" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Výška předmětu s nepřístupnou patou</h2>
+    <p>Chceme určit výšku věže, jejíž patu nemůžeme obejít. Zvolíme dva body $A$, $B$ na jedné přímce s patou $T$ a z obou změříme výškový úhel vrcholu $P$. Úhel při vrcholu je rozdíl $\alpha-\beta$ (vnější úhel trojúhelníku $ABP$ při vrcholu $A$ je $\alpha$). Pak sinová věta v $\triangle ABP$ dá $|AP|$ a z pravoúhlého trojúhelníku $ATP$ výšku $h=|AP|\sin\alpha$.</p>
+    <p class="text-sm">Věž na obrázku se nehýbe. Posuvníkem $\alpha$ posouváte bod $A$, posuvníkem $\beta$ bod $B$ po vodorovné přímce — mění se tedy vzdálenost $|AB|$, ale výška věže vyjde pořád stejná.</p>
+    <div class="card">
+        <svg viewBox="0 0 300 220" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line id="fh-gr" x1="0" y1="0" x2="0" y2="0" stroke="#57534e" stroke-width="1.5"/>
+<line id="fh-tw" x1="0" y1="0" x2="0" y2="0" stroke="#6d28d9" stroke-width="3"/>
+<line id="fh-lB" x1="0" y1="0" x2="0" y2="0" stroke="#0d9488" stroke-width="1.6" stroke-dasharray="5,3"/>
+<line id="fh-lA" x1="0" y1="0" x2="0" y2="0" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5,3"/>
+<path id="fh-arB" d="M0,0" fill="none" stroke="#0d9488" stroke-width="1.2"/>
+<path id="fh-arA" d="M0,0" fill="none" stroke="#b91c1c" stroke-width="1.2"/>
+<circle id="fh-pB" cx="0" cy="0" r="3.5" fill="#0d9488"/>
+<circle id="fh-pA" cx="0" cy="0" r="3.5" fill="#b91c1c"/>
+<text id="fh-tB" text-anchor="middle" font-weight="700" fill="#0d9488">B</text><text id="fh-tA" text-anchor="middle" font-weight="700" fill="#b91c1c">A</text>
+<text id="fh-tT" text-anchor="middle" font-weight="700">T</text><text id="fh-tP" text-anchor="middle" font-weight="700">P</text>
+<text id="fh-aB" text-anchor="middle" dominant-baseline="central" fill="#0d9488" font-weight="600">β</text><text id="fh-aA" text-anchor="middle" dominant-baseline="central" fill="#b91c1c" font-weight="600">α</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3">
+            <span class="slider-label w-8">α =</span>
+            <input type="range" id="fh-al" min="35" max="80" value="41" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fh-al-v">41</span>°</span>
+        </div>
+        <div class="flex items-center gap-3 mt-1 mb-2">
+            <span class="slider-label w-8">β =</span>
+            <input type="range" id="fh-be" min="20" max="60" value="28" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fh-be-v">28</span>°</span>
+        </div>
+        <p id="fh-warn" class="hidden text-sm text-amber-700 text-center">Úhel β musí být aspoň o 2° menší než α (bod B leží dál od věže než A) — upravte posuvníky.</p>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="fh-r1"></div><div id="fh-r2"></div><div id="fh-r3" class="font-semibold"></div>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Z bodu $A$ vidíme vrchol věže pod výškovým úhlem $41°$, z bodu $B$, který leží o $30$ m dál od věže na téže přímce, pod úhlem $28°$. Jak je věž vysoká?</p>
+        <p class="text-sm">V trojúhelníku $ABP$ je $|\angle ABP|=28°$, $|\angle BAP|=180°-41°=139°$, tedy $|\angle APB|=41°-28°=13°$:</p>
+        $$|AP|=\frac{30\cdot\sin28°}{\sin13°}\approx62{,}61\ \text{m}\qquad h=|AP|\cdot\sin41°\approx41{,}08\ \text{m}$$
+        <p class="text-sm mt-1">Věž je vysoká přibližně $41$ m.</p>
+    </div>
+</section>
+
+<section id="sec-b-hloubkove" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Hloubkové úhly z vyvýšeného místa</h2>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Pozorovatel stojí v bodě $K$ na kopci, který je o $90$ m výše než pata $P$ věže. Patu věže vidí pod hloubkovým úhlem $\varphi=30°$, vrchol $V$ pod hloubkovým úhlem $\omega=18°$. Určete výšku věže.</p>
+        <p class="text-sm">Označme $Q$ bod pod $K$ ve výšce paty věže. V pravoúhlém trojúhelníku $KQP$ je $|KP|=\dfrac{|KQ|}{\sin\varphi}=\dfrac{90}{\sin30°}=180$ m. V trojúhelníku $KPV$ je úhel při $K$ roven $\kappa=\varphi-\omega=12°$ a úhel při $V$ je $\nu=90°+\omega=108°$. Sinová věta dá výšku věže $|PV|$:</p>
+        $$|PV|=\frac{|KP|\cdot\sin\kappa}{\sin\nu}=\frac{180\cdot\sin12°}{\sin108°}\approx39{,}35\ \text{m}$$
+        <p class="text-sm mt-1">Věž je vysoká přibližně $39$ m.</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Metr byl v roce 1791 definován jako desetimiliontina čtvrtiny zemského poledníku. Délku jeho oblouku mezi Dunkerque a Barcelonou měřili francouzští astronomové Delambre a Méchain v letech 1792–1798 <b>triangulací</b>: změřili jednu základnu a řetěz úhlů a ostatní strany trojúhelníků počítali sinovou větou.
+    </div>
+</section>
+
+<section id="sec-c-vzorce" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Obsah trojúhelníku a výměra pozemku</h2>
+    <p>Výměru pozemku určujeme tak, že jej rozdělíme na trojúhelníky. Pro obsah trojúhelníku máme několik vzorců — volíme podle toho, co známe:</p>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Vzorec</th><th class="p-1 text-left">Známe</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$S=\dfrac12ab\sin\gamma$</td><td class="p-1 text-left">dvě strany a úhel mezi nimi</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$S=\sqrt{s(s-a)(s-b)(s-c)}$, $s=\dfrac{a+b+c}{2}$</td><td class="p-1 text-left">všechny tři strany (Heronův vzorec)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$S=\dfrac{abc}{4R}$</td><td class="p-1 text-left">tři strany a poloměr opsané kružnice</td></tr>
+                <tr><td class="p-1 text-left">$S=\varrho s$</td><td class="p-1 text-left">poloměr vepsané kružnice a polovina obvodu</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Určete obsah trojúhelníku se stranami $a=9$, $b=14$ a úhlem $\gamma=50°$ mezi nimi.</p>
+        $$S=\frac12\cdot9\cdot14\cdot\sin50°\approx48{,}26$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Trojúhelník má strany $13$, $14$, $15$. Určete $S$, poloměr $R$ kružnice opsané a poloměr $\varrho$ kružnice vepsané.</p>
+        <p class="text-sm">$s=\dfrac{13+14+15}{2}=21$:</p>
+        $$S=\sqrt{21\cdot8\cdot7\cdot6}=84\qquad R=\frac{abc}{4S}=\frac{13\cdot14\cdot15}{4\cdot84}=8{,}125\qquad\varrho=\frac{S}{s}=\frac{84}{21}=4$$
+    </div>
+</section>
+
+<section id="sec-c-pozemek" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Výměra čtyřúhelníkového pozemku</h2>
+    <p>Čtyřúhelník $ABCD$ rozdělíme úhlopříčkou $AC$ na dva trojúhelníky. Z trojúhelníku $ABC$ (strany $|AB|$, $|BC|$ a úhel $\beta$ mezi nimi) určíme obsah $S_1$ a kosinovou větou délku $|AC|$. V trojúhelníku $ACD$ pak známe všechny tři strany a obsah $S_2$ spočítáme Heronovým vzorcem. Úhel $\beta$ můžete měnit posuvníkem (rozměry v metrech):</p>
+    <div class="card">
+        <svg viewBox="0 0 300 230" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<polygon id="fp-p1" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.14)" stroke="#6d28d9" stroke-width="2"/>
+<polygon id="fp-p2" points="0,0 0,0 0,0" fill="rgba(192,38,211,0.14)" stroke="#c026d3" stroke-width="2"/>
+<line id="fp-ac" x1="0" y1="0" x2="0" y2="0" stroke="#44403c" stroke-width="1.4" stroke-dasharray="5,3"/>
+<text id="fp-tA" font-weight="700">A</text><text id="fp-tB" font-weight="700">B</text>
+<text id="fp-tC" font-weight="700">C</text><text id="fp-tD" font-weight="700">D</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label w-8">β =</span>
+            <input type="range" id="fp-be" min="50" max="115" value="110" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fp-be-v">110</span>°</span>
+        </div>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="fp-r1"></div><div id="fp-r2"></div><div id="fp-r3"></div><div id="fp-r4" class="font-semibold"></div>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Pozemek má tvar čtyřúhelníku $ABCD$, kde $|AB|=60$ m, $|BC|=45$ m, $|CD|=52$ m, $|DA|=38$ m a $\beta=|\angle ABC|=110°$. Určete jeho výměru.</p>
+        $$S_1=\frac12\cdot60\cdot45\cdot\sin110°\approx1\,268{,}59\ \text{m}^2\qquad|AC|=\sqrt{60^2+45^2-2\cdot60\cdot45\cdot\cos110°}\approx86{,}44\ \text{m}$$
+        <p class="text-sm mt-1">V trojúhelníku $ACD$ je $s=\dfrac{38+52+86{,}44}{2}=88{,}22$:</p>
+        $$S_2=\sqrt{88{,}22\cdot50{,}22\cdot36{,}22\cdot1{,}78}\approx534{,}44\ \text{m}^2$$
+        $$S=S_1+S_2\approx1\,803\ \text{m}^2$$
+        <p class="text-sm mt-1">Pozemek má výměru přibližně $1\,803$ m$^2$.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Obsah mnohoúhelníku je součtem obsahů trojúhelníků jen tehdy, když se trojúhelníky <b>nepřekrývají</b> a zcela <b>vyplňují</b> celý mnohoúhelník. U nekonvexního mnohoúhelníku proto úhlopříčku volíme uvnitř, případně obsah „vyříznuté“ části odečítáme. Při zaokrouhlování také nepočítejte dál se zaokrouhlenou hodnotou $|AC|$ — chyba se může v Heronově vzorci zvětšit (v mezivýsledcích si ponechte více desetinných míst).
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Úloha</th><th class="p-1 text-left">Postup</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">výslednice dvou sil</td><td class="p-1 text-left">kosinová věta pro $F$ s úhlem $\beta=180°-\varphi$, sinová věta pro směr</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">rozklad síly</td><td class="p-1 text-left">sinová věta v trojúhelníku ($F$ a dva úhly)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">nepřístupná vzdálenost</td><td class="p-1 text-left">základna a dva úhly (sinová věta) nebo dvě strany a úhel (kosinová věta)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">výška s nepřístupnou patou</td><td class="p-1 text-left">dva výškové úhly, $|AP|$ sinovou větou, $h=|AP|\sin\alpha$</td></tr>
+                <tr><td class="p-1 text-left">výměra pozemku</td><td class="p-1 text-left">rozdělit na trojúhelníky, obsahy z $\tfrac12ab\sin\gamma$ nebo Heronova vzorce</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="sec-souvislosti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Souvislosti: celá goniometrie na jednom místě</h2>
+    <div class="card">
+        <ol class="list-decimal list-inside space-y-1 text-sm">
+            <li><b>Oblouková míra a jednotková kružnice</b> — úhel jako délka oblouku, bod $(\cos x;\sin x)$ na kružnici.</li>
+            <li><b>Sinus a kosinus</b> — funkce úhlu libovolné velikosti, jejich grafy a vlastnosti.</li>
+            <li><b>Tangens a kotangens</b> — poměr sinu a kosinu, definiční obory.</li>
+            <li><b>Goniometrické rovnice a nerovnice</b> — základní řešení, substituce, nerovnice.</li>
+            <li><b>Goniometrické vzorce</b> — $\sin^2x+\cos^2x=1$, součtové vzorce, dvojnásobný úhel.</li>
+            <li><b>Sinová a kosinová věta</b> — řešení libovolného trojúhelníku.</li>
+            <li><b>Užití sinové a kosinové věty</b> — síly, vzdálenosti, výšky a výměry.</li>
+        </ol>
+        <p class="text-sm mt-3">Jedna myšlenka se táhne celou sérií: <b>jednotková kružnice</b>. Z ní plynou definice sinu a kosinu, všechny vzorce i důvod, proč se úhel $180°-\beta$ chová stejně jako $\beta$ — právě proto má úloha ssu někdy dvě řešení.</p>
+    </div>
+    <div class="note-box note-next">
+        <b>Kam dál:</b> Goniometrie dále využijeme v analytické geometrii, kde budeme zacházet s vektory a operacemi s nimi (7. díl učebnice), a v prostorové geometrii při výpočtech vzdáleností a odchylek v tělesech — v <i>stereometrii</i> (6. díl).
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="mt-4 space-y-10 hidden">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Les théorèmes du sinus et du cosinus en pratique</h2>
+    <p>Le dernier chapitre de la série montre à quoi servent les deux théorèmes du chapitre précédent. La trigonométrie s'utilise partout où il faut déterminer une distance, une hauteur ou un angle impossibles à mesurer directement. Nous verrons trois domaines : les <b>forces en physique</b>, les <b>distances et hauteurs sur le terrain</b> et l'<b>aire d'un terrain</b>.</p>
+    <div class="card">
+        <p class="text-sm font-semibold mb-1">Démarche commune pour un problème :</p>
+        <ol class="list-decimal list-inside space-y-1 text-sm">
+            <li>On fait un <b>croquis</b> et on introduit des notations.</li>
+            <li>On repère un <b>triangle</b> dans lequel on connaît assez de données.</li>
+            <li>Selon les données (ACA, AAC, CCA, CAC, CCC), on choisit le <b>théorème du sinus</b> ou du <b>cosinus</b>.</li>
+            <li>On calcule et on <b>rédige la réponse</b> en une phrase, avec l'unité.</li>
+        </ol>
+    </div>
+    <div class="note-box note-link">
+        <b>Liens :</b> Le choix du théorème est résumé dans le tableau du chapitre <i>Goniométrie 6</i>. Ici, nous ne ferons que l'appliquer — le plus difficile est souvent de construire le bon triangle à partir de l'énoncé.
+    </div>
+</section>
+
+<section id="sec-a-sily" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Composition de forces</h2>
+    <p>Une force est un vecteur : elle a une intensité et une direction. Si deux forces concourantes $F_1$ et $F_2$, formant un angle $\varphi$, agissent en un même point d'un corps, on peut les remplacer par une seule force — la <b>résultante</b> $F$. C'est la diagonale du parallélogramme des forces construit sur $F_1$ et $F_2$.</p>
+    <div class="card">
+        <p class="text-sm">Dans le triangle formé par l'origine et les extrémités des forces, l'angle opposé à la résultante est $\beta=180°-\varphi$. Le <b>théorème du cosinus</b> donne l'intensité de la résultante, le <b>théorème du sinus</b> sa direction (angle $\alpha$ entre $F$ et $F_1$) :</p>
+        $$F^2=F_1^2+F_2^2-2F_1F_2\cos\beta\qquad\frac{\sin\alpha}{F_2}=\frac{\sin\beta}{F}$$
+    </div>
+    <p>Avec le curseur, faites varier l'angle $\varphi$ entre les forces $F_1=14$ N et $F_2=9$ N. Pour $\varphi=0°$, les forces s'additionnent ; pour $\varphi=180°$, elles se soustraient :</p>
+    <div class="card">
+        <svg viewBox="0 0 300 220" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="fc-mk-t-fr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0d9488"/></marker><marker id="fc-mk-r-fr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker><marker id="fc-mk-v-fr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker></defs>
+<polygon id="fc-poly-fr" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.08)" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3"/>
+<line id="fc-l1-fr" x1="0" y1="0" x2="0" y2="0" stroke="#0d9488" stroke-width="2.5" marker-end="url(#fc-mk-t-fr)"/>
+<line id="fc-l2-fr" x1="0" y1="0" x2="0" y2="0" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#fc-mk-r-fr)"/>
+<line id="fc-lF-fr" x1="0" y1="0" x2="0" y2="0" stroke="#6d28d9" stroke-width="3.5" marker-end="url(#fc-mk-v-fr)"/>
+<path id="fc-arc-fr" d="M0,0" fill="none" stroke="#57534e" stroke-width="1.2"/>
+<text id="fc-tphi-fr" fill="#57534e" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="600">φ</text>
+<text id="fc-t1-fr" fill="#0d9488" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F<tspan dy="3" font-size="9">1</tspan></text>
+<text id="fc-t2-fr" fill="#b91c1c" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F<tspan dy="3" font-size="9">2</tspan></text>
+<text id="fc-tF-fr" fill="#6d28d9" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">φ =</span>
+            <input type="range" id="fc-phi-fr" min="20" max="160" value="50" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fc-phi-v-fr">50</span>°</span>
+        </div>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="fc-r1-fr"></div><div id="fc-r2-fr"></div><div id="fc-r3-fr" class="font-semibold"></div><div id="fc-r4-fr"></div>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Deux forces $F_1=14$ N et $F_2=9$ N, formant un angle $\varphi=50°$, agissent en un même point. Déterminez l'intensité et la direction de la résultante.</p>
+        <p class="text-sm">L'angle opposé à la résultante est $\beta=180°-50°=130°$.</p>
+        $$F^2=14^2+9^2-2\cdot14\cdot9\cdot\cos130°\approx438{,}98\ \Rightarrow\ F\approx20{,}95\ \text{N}$$
+        $$\sin\alpha=\frac{F_2\sin\beta}{F}=\frac{9\cdot\sin130°}{20{,}95}\approx0{,}3291\ \Rightarrow\ \alpha\approx19°13'$$
+        <p class="text-sm mt-1">La seconde valeur $180°-19°13'=160°47'$ ne convient pas, car on doit avoir $\alpha+\beta\lt180°$. La résultante a une intensité d'environ $20{,}95$ N et forme avec $F_1$ un angle d'environ $19°13'$.</p>
+    </div>
+</section>
+
+<section id="sec-a-rozklad" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Décomposition d'une force</h2>
+    <p>Problème inverse : on veut remplacer une force donnée $F$ par deux forces de directions imposées. De l'extrémité de $F$, on trace les parallèles aux deux directions, ce qui donne un parallélogramme. Dans le triangle, on connaît un côté ($F$) et deux angles : on utilise le <b>théorème du sinus</b>.</p>
+    <p>La force $F=20$ N est fixée. Les curseurs règlent les angles que forment les directions des composantes avec la force $F$ :</p>
+    <div class="card">
+        <svg viewBox="0 0 300 220" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="fd-mk-t-fr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0d9488"/></marker><marker id="fd-mk-r-fr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b91c1c"/></marker><marker id="fd-mk-v-fr" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#6d28d9"/></marker></defs>
+<polygon id="fd-poly-fr" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.08)" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4,3"/>
+<line id="fd-l1-fr" x1="0" y1="0" x2="0" y2="0" stroke="#0d9488" stroke-width="2.5" marker-end="url(#fd-mk-t-fr)"/>
+<line id="fd-l2-fr" x1="0" y1="0" x2="0" y2="0" stroke="#b91c1c" stroke-width="2.5" marker-end="url(#fd-mk-r-fr)"/>
+<line id="fd-lF-fr" x1="0" y1="0" x2="0" y2="0" stroke="#6d28d9" stroke-width="3.5" marker-end="url(#fd-mk-v-fr)"/>
+<path id="fd-arc1-fr" d="M0,0" fill="none" stroke="#0d9488" stroke-width="1.2"/>
+<path id="fd-arc2-fr" d="M0,0" fill="none" stroke="#b91c1c" stroke-width="1.2"/>
+<text id="fd-t1-fr" fill="#0d9488" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F<tspan dy="3" font-size="9">1</tspan></text>
+<text id="fd-t2-fr" fill="#b91c1c" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F<tspan dy="3" font-size="9">2</tspan></text>
+<text id="fd-tF-fr" fill="#6d28d9" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="700">F</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3">
+            <span class="slider-label w-24">direction 1</span>
+            <input type="range" id="fd-a1-fr" min="15" max="60" value="35" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fd-a1-v-fr">35</span>°</span>
+        </div>
+        <div class="flex items-center gap-3 mt-1 mb-2">
+            <span class="slider-label w-24">direction 2</span>
+            <input type="range" id="fd-a2-fr" min="15" max="60" value="50" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fd-a2-v-fr">50</span>°</span>
+        </div>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="fd-r1-fr"></div><div id="fd-r2-fr" class="font-semibold"></div><div id="fd-r3-fr" class="font-semibold"></div>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Décomposez la force $F=20$ N selon deux directions qui forment avec elle des angles de $35°$ et de $50°$.</p>
+        <p class="text-sm">Le troisième angle du triangle est $\gamma=180°-35°-50°=95°$, opposé à la force $F$. La composante $F_1$ (direction à $35°$) est opposée à l'angle de $50°$, la composante $F_2$ (direction à $50°$) à l'angle de $35°$ :</p>
+        $$F_1=\frac{20\cdot\sin50°}{\sin95°}\approx15{,}38\ \text{N}\qquad F_2=\frac{20\cdot\sin35°}{\sin95°}\approx11{,}52\ \text{N}$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Vérification de vraisemblance :</b> La direction la <b>plus proche</b> de la force $F$ a la plus grande composante ($15{,}38\gt11{,}52$). Si c'était l'inverse, on aurait permuté les composantes.
+    </div>
+</section>
+
+<section id="sec-b-pojmy" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Distances et hauteurs sur le terrain</h2>
+    <p>La largeur d'une rivière, la hauteur d'une tour ou la distance entre deux endroits inaccessibles ne se mesurent pas au mètre ruban. On mesure donc une <b>base</b> (distance entre deux points accessibles) et des <b>angles</b>, puis on calcule les autres longueurs à partir d'un triangle.</p>
+    <div class="card">
+        <svg viewBox="0 0 340 170" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="30" y1="85" x2="200" y2="85" stroke="#57534e" stroke-width="1.5" stroke-dasharray="5,4"/>
+<circle cx="30" cy="85" r="4" fill="#44403c"/>
+<text x="14" y="104" font-weight="700">O</text>
+<line x1="30" y1="85" x2="190" y2="35" stroke="#0d9488" stroke-width="2"/>
+<circle cx="190" cy="35" r="4" fill="#0d9488"/>
+<line x1="30" y1="85" x2="190" y2="135" stroke="#b91c1c" stroke-width="2"/>
+<circle cx="190" cy="135" r="4" fill="#b91c1c"/>
+<path d="M 78,85 A 48,48 0 0 0 76,70.7" fill="none" stroke="#0d9488" stroke-width="1.5"/>
+<path d="M 78,85 A 48,48 0 0 1 76,99.3" fill="none" stroke="#b91c1c" stroke-width="1.5"/>
+<text x="204" y="33" font-size="12" fill="#0d9488" font-weight="700">angle d'élévation</text>
+<text x="204" y="48" font-size="11" fill="#57534e">cible en haut</text>
+<text x="204" y="133" font-size="12" fill="#b91c1c" font-weight="700">angle de dépression</text>
+<text x="204" y="148" font-size="11" fill="#57534e">cible en bas</text>
+</svg>
+        <ul class="list-disc list-inside text-sm space-y-1 mt-2">
+            <li><b>Angle d'élévation</b> — angle entre le plan horizontal et la droite vers un point observé situé <b>au-dessus</b>.</li>
+            <li><b>Angle de dépression</b> — angle entre le plan horizontal et la droite vers un point observé situé <b>au-dessous</b>.</li>
+            <li><b>Angle de vue</b> (angle apparent) — angle formé par les rayons allant de l'œil de l'observateur aux extrémités d'un objet.</li>
+        </ul>
+    </div>
+</section>
+
+<section id="sec-b-vzdalenost" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Distance inaccessible</h2>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Le point $C$ se trouve sur l'autre rive d'une rivière. Sur notre rive, on mesure la base $|AB|=50$ m et les angles $\alpha=|\angle BAC|=62°$, $\beta=|\angle ABC|=71°$. Déterminez les distances $|AC|$ et $|BC|$.</p>
+        <p class="text-sm">On connaît un côté et deux angles (ACA). Le troisième angle est $\gamma=180°-62°-71°=47°$, opposé à la base :</p>
+        $$|BC|=\frac{50\cdot\sin62°}{\sin47°}\approx60{,}36\ \text{m}\qquad|AC|=\frac{50\cdot\sin71°}{\sin47°}\approx64{,}64\ \text{m}$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Un lac sépare les endroits $L$ et $M$. Depuis un point $K$, on mesure $|KL|=120$ m, $|KM|=85$ m et l'angle $|\angle LKM|=62°$. Déterminez la distance $|LM|$.</p>
+        <p class="text-sm">On connaît deux côtés et l'angle compris (CAC) : on utilise le théorème du cosinus.</p>
+        $$|LM|^2=120^2+85^2-2\cdot120\cdot85\cdot\cos62°\approx12\,047{,}8\ \Rightarrow\ |LM|\approx109{,}8\ \text{m}$$
+    </div>
+</section>
+
+<section id="sec-b-vyska" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Hauteur d'un objet dont le pied est inaccessible</h2>
+    <p>On veut déterminer la hauteur d'une tour dont on ne peut pas atteindre le pied. On choisit deux points $A$, $B$ alignés avec le pied $T$, et l'on mesure depuis chacun l'angle d'élévation du sommet $P$. L'angle au sommet est la différence $\alpha-\beta$ (l'angle extérieur du triangle $ABP$ en $A$ vaut $\alpha$). Le théorème du sinus dans $\triangle ABP$ donne $|AP|$, puis le triangle rectangle $ATP$ donne la hauteur $h=|AP|\sin\alpha$.</p>
+    <p class="text-sm">La tour du schéma ne bouge pas. Le curseur $\alpha$ déplace le point $A$, le curseur $\beta$ le point $B$ sur la droite horizontale — la distance $|AB|$ change donc, mais la hauteur de la tour reste la même.</p>
+    <div class="card">
+        <svg viewBox="0 0 300 220" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line id="fh-gr-fr" x1="0" y1="0" x2="0" y2="0" stroke="#57534e" stroke-width="1.5"/>
+<line id="fh-tw-fr" x1="0" y1="0" x2="0" y2="0" stroke="#6d28d9" stroke-width="3"/>
+<line id="fh-lB-fr" x1="0" y1="0" x2="0" y2="0" stroke="#0d9488" stroke-width="1.6" stroke-dasharray="5,3"/>
+<line id="fh-lA-fr" x1="0" y1="0" x2="0" y2="0" stroke="#b91c1c" stroke-width="1.6" stroke-dasharray="5,3"/>
+<path id="fh-arB-fr" d="M0,0" fill="none" stroke="#0d9488" stroke-width="1.2"/>
+<path id="fh-arA-fr" d="M0,0" fill="none" stroke="#b91c1c" stroke-width="1.2"/>
+<circle id="fh-pB-fr" cx="0" cy="0" r="3.5" fill="#0d9488"/>
+<circle id="fh-pA-fr" cx="0" cy="0" r="3.5" fill="#b91c1c"/>
+<text id="fh-tB-fr" text-anchor="middle" font-weight="700" fill="#0d9488">B</text><text id="fh-tA-fr" text-anchor="middle" font-weight="700" fill="#b91c1c">A</text>
+<text id="fh-tT-fr" text-anchor="middle" font-weight="700">T</text><text id="fh-tP-fr" text-anchor="middle" font-weight="700">P</text>
+<text id="fh-aB-fr" text-anchor="middle" dominant-baseline="central" fill="#0d9488" font-weight="600">β</text><text id="fh-aA-fr" text-anchor="middle" dominant-baseline="central" fill="#b91c1c" font-weight="600">α</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3">
+            <span class="slider-label w-8">α =</span>
+            <input type="range" id="fh-al-fr" min="35" max="80" value="41" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fh-al-v-fr">41</span>°</span>
+        </div>
+        <div class="flex items-center gap-3 mt-1 mb-2">
+            <span class="slider-label w-8">β =</span>
+            <input type="range" id="fh-be-fr" min="20" max="60" value="28" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fh-be-v-fr">28</span>°</span>
+        </div>
+        <p id="fh-warn-fr" class="hidden text-sm text-amber-700 text-center">L'angle β doit être inférieur d'au moins 2° à α (le point B est plus loin de la tour que A) — modifiez les curseurs.</p>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="fh-r1-fr"></div><div id="fh-r2-fr"></div><div id="fh-r3-fr" class="font-semibold"></div>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Depuis le point $A$, on voit le sommet d'une tour sous un angle d'élévation de $41°$, et depuis le point $B$, situé $30$ m plus loin sur la même droite, sous un angle de $28°$. Quelle est la hauteur de la tour ?</p>
+        <p class="text-sm">Dans le triangle $ABP$, on a $|\angle ABP|=28°$, $|\angle BAP|=180°-41°=139°$, donc $|\angle APB|=41°-28°=13°$ :</p>
+        $$|AP|=\frac{30\cdot\sin28°}{\sin13°}\approx62{,}61\ \text{m}\qquad h=|AP|\cdot\sin41°\approx41{,}08\ \text{m}$$
+        <p class="text-sm mt-1">La tour mesure environ $41$ m de haut.</p>
+    </div>
+</section>
+
+<section id="sec-b-hloubkove" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Angles de dépression depuis un point élevé</h2>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Un observateur se trouve en $K$, sur une colline située $90$ m plus haut que le pied $P$ d'une tour. Il voit le pied de la tour sous un angle de dépression $\varphi=30°$ et le sommet $V$ sous un angle de dépression $\omega=18°$. Déterminez la hauteur de la tour.</p>
+        <p class="text-sm">Soit $Q$ le point situé sous $K$, à la hauteur du pied de la tour. Dans le triangle rectangle $KQP$, $|KP|=\dfrac{|KQ|}{\sin\varphi}=\dfrac{90}{\sin30°}=180$ m. Dans le triangle $KPV$, l'angle en $K$ vaut $\kappa=\varphi-\omega=12°$ et l'angle en $V$ vaut $\nu=90°+\omega=108°$. Le théorème du sinus donne la hauteur $|PV|$ de la tour :</p>
+        $$|PV|=\frac{|KP|\cdot\sin\kappa}{\sin\nu}=\frac{180\cdot\sin12°}{\sin108°}\approx39{,}35\ \text{m}$$
+        <p class="text-sm mt-1">La tour mesure environ $39$ m de haut.</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> En 1791, le mètre a été défini comme la dix-millionième partie du quart du méridien terrestre. La longueur de l'arc entre Dunkerque et Barcelone a été mesurée par les astronomes français Delambre et Méchain de 1792 à 1798 par <b>triangulation</b> : ils ont mesuré une base et une chaîne d'angles, puis calculé les autres côtés des triangles avec le théorème du sinus.
+    </div>
+</section>
+
+<section id="sec-c-vzorce" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Aire d'un triangle et aire d'un terrain</h2>
+    <p>Pour déterminer l'aire d'un terrain, on le découpe en triangles. Il existe plusieurs formules pour l'aire d'un triangle — on choisit selon les données :</p>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Formule</th><th class="p-1 text-left">Données</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$S=\dfrac12ab\sin\gamma$</td><td class="p-1 text-left">deux côtés et l'angle compris</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$S=\sqrt{s(s-a)(s-b)(s-c)}$, $s=\dfrac{a+b+c}{2}$</td><td class="p-1 text-left">les trois côtés (formule de Héron)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$S=\dfrac{abc}{4R}$</td><td class="p-1 text-left">les trois côtés et le rayon du cercle circonscrit</td></tr>
+                <tr><td class="p-1 text-left">$S=\varrho s$</td><td class="p-1 text-left">le rayon du cercle inscrit et le demi-périmètre</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Déterminez l'aire d'un triangle de côtés $a=9$, $b=14$ et d'angle compris $\gamma=50°$.</p>
+        $$S=\frac12\cdot9\cdot14\cdot\sin50°\approx48{,}26$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Un triangle a pour côtés $13$, $14$, $15$. Déterminez $S$, le rayon $R$ du cercle circonscrit et le rayon $\varrho$ du cercle inscrit.</p>
+        <p class="text-sm">$s=\dfrac{13+14+15}{2}=21$ :</p>
+        $$S=\sqrt{21\cdot8\cdot7\cdot6}=84\qquad R=\frac{abc}{4S}=\frac{13\cdot14\cdot15}{4\cdot84}=8{,}125\qquad\varrho=\frac{S}{s}=\frac{84}{21}=4$$
+    </div>
+</section>
+
+<section id="sec-c-pozemek" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Aire d'un terrain quadrilatéral</h2>
+    <p>On découpe le quadrilatère $ABCD$ par la diagonale $AC$ en deux triangles. Dans le triangle $ABC$ (côtés $|AB|$, $|BC|$ et angle compris $\beta$), on obtient l'aire $S_1$ et, par le théorème du cosinus, la longueur $|AC|$. Dans le triangle $ACD$, on connaît alors les trois côtés et l'on calcule l'aire $S_2$ par la formule de Héron. Faites varier l'angle $\beta$ avec le curseur (dimensions en mètres) :</p>
+    <div class="card">
+        <svg viewBox="0 0 300 230" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<polygon id="fp-p1-fr" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.14)" stroke="#6d28d9" stroke-width="2"/>
+<polygon id="fp-p2-fr" points="0,0 0,0 0,0" fill="rgba(192,38,211,0.14)" stroke="#c026d3" stroke-width="2"/>
+<line id="fp-ac-fr" x1="0" y1="0" x2="0" y2="0" stroke="#44403c" stroke-width="1.4" stroke-dasharray="5,3"/>
+<text id="fp-tA-fr" font-weight="700">A</text><text id="fp-tB-fr" font-weight="700">B</text>
+<text id="fp-tC-fr" font-weight="700">C</text><text id="fp-tD-fr" font-weight="700">D</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label w-8">β =</span>
+            <input type="range" id="fp-be-fr" min="50" max="115" value="110" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="fp-be-v-fr">110</span>°</span>
+        </div>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="fp-r1-fr"></div><div id="fp-r2-fr"></div><div id="fp-r3-fr"></div><div id="fp-r4-fr" class="font-semibold"></div>
+        </div>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Un terrain a la forme d'un quadrilatère $ABCD$ avec $|AB|=60$ m, $|BC|=45$ m, $|CD|=52$ m, $|DA|=38$ m et $\beta=|\angle ABC|=110°$. Déterminez son aire.</p>
+        $$S_1=\frac12\cdot60\cdot45\cdot\sin110°\approx1\,268{,}59\ \text{m}^2\qquad|AC|=\sqrt{60^2+45^2-2\cdot60\cdot45\cdot\cos110°}\approx86{,}44\ \text{m}$$
+        <p class="text-sm mt-1">Dans le triangle $ACD$, on a $s=\dfrac{38+52+86{,}44}{2}=88{,}22$ :</p>
+        $$S_2=\sqrt{88{,}22\cdot50{,}22\cdot36{,}22\cdot1{,}78}\approx534{,}44\ \text{m}^2$$
+        $$S=S_1+S_2\approx1\,803\ \text{m}^2$$
+        <p class="text-sm mt-1">Le terrain a une aire d'environ $1\,803$ m$^2$.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> L'aire d'un polygone est la somme des aires des triangles seulement si ces triangles ne se <b>chevauchent pas</b> et <b>remplissent entièrement</b> le polygone. Pour un polygone non convexe, on choisit donc la diagonale à l'intérieur, ou l'on soustrait l'aire de la partie « découpée ». Lors des arrondis, ne continuez pas à calculer avec la valeur arrondie de $|AC|$ — l'erreur peut être amplifiée dans la formule de Héron (gardez plus de décimales dans les résultats intermédiaires).
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Problème</th><th class="p-1 text-left">Démarche</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">résultante de deux forces</td><td class="p-1 text-left">théorème du cosinus pour $F$ avec l'angle $\beta=180°-\varphi$, théorème du sinus pour la direction</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">décomposition d'une force</td><td class="p-1 text-left">théorème du sinus dans le triangle ($F$ et deux angles)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">distance inaccessible</td><td class="p-1 text-left">base et deux angles (théorème du sinus) ou deux côtés et l'angle compris (théorème du cosinus)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">hauteur au pied inaccessible</td><td class="p-1 text-left">deux angles d'élévation, $|AP|$ par le théorème du sinus, $h=|AP|\sin\alpha$</td></tr>
+                <tr><td class="p-1 text-left">aire d'un terrain</td><td class="p-1 text-left">découper en triangles, aires par $\tfrac12ab\sin\gamma$ ou la formule de Héron</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<section id="sec-souvislosti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Liens : toute la trigonométrie en un seul endroit</h2>
+    <div class="card">
+        <ol class="list-decimal list-inside space-y-1 text-sm">
+            <li><b>Mesure en radians et cercle trigonométrique</b> — l'angle comme longueur d'arc, le point $(\cos x;\sin x)$ sur le cercle.</li>
+            <li><b>Sinus et cosinus</b> — fonctions d'un angle quelconque, leurs graphiques et propriétés.</li>
+            <li><b>Tangente et cotangente</b> — rapport du sinus et du cosinus, ensembles de définition.</li>
+            <li><b>Équations et inéquations trigonométriques</b> — solution de base, substitution, inéquations.</li>
+            <li><b>Formules trigonométriques</b> — $\sin^2x+\cos^2x=1$, formules d'addition, angle double.</li>
+            <li><b>Théorème du sinus et du cosinus</b> — résolution d'un triangle quelconque.</li>
+            <li><b>Applications des théorèmes du sinus et du cosinus</b> — forces, distances, hauteurs et aires.</li>
+        </ol>
+        <p class="text-sm mt-3">Une idée traverse toute la série : le <b>cercle trigonométrique</b>. Il fournit les définitions du sinus et du cosinus, toutes les formules, et la raison pour laquelle l'angle $180°-\beta$ se comporte comme $\beta$ — c'est pourquoi le cas CCA a parfois deux solutions.</p>
+    </div>
+    <div class="note-box note-next">
+        <b>Et ensuite :</b> Nous utiliserons encore la trigonométrie en géométrie analytique, où l'on manipule des vecteurs et leurs opérations (tome 7 du manuel), et en géométrie dans l'espace, pour calculer des distances et des angles dans les solides — en <i>stéréométrie</i> (tome 6).
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 7 — Applications des théorèmes du sinus et du cosinus' : 'Goniometrie 7 — Užití sinové a kosinové věty';
+    document.title = czVisible ? 'Goniométrie 7 — Applications des théorèmes du sinus et du cosinus — Théorie' : 'Goniometrie 7 — Užití sinové a kosinové věty — Teorie';
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+// cislo -> retezec s desetinnou carkou pro TeX ({,} bez mezery)
+function tx(x, d){ if (d === undefined) d = 2; let s = x.toFixed(d); if (/^-0(\.0+)?$/.test(s)) s = s.slice(1); return s.replace('.', '{,}'); }
+function area(x){ const parts = x.toFixed(2).split('.'); parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\\,'); return parts[0] + '{,}' + parts[1]; }
+function dm(x){ let deg = Math.floor(x + 1e-9), m = Math.round((x - deg) * 60); if (m === 60){ deg += 1; m = 0; } return deg + '°' + String(m).padStart(2, '0') + "'"; }
+function typeset(els){ if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise(els); }
+function pts(arr){ return arr.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '); }
+function setLine(el, p, q){ el.setAttribute('x1', p[0].toFixed(1)); el.setAttribute('y1', p[1].toFixed(1)); el.setAttribute('x2', q[0].toFixed(1)); el.setAttribute('y2', q[1].toFixed(1)); }
+function setPt(el, p){ el.setAttribute('cx', p[0].toFixed(1)); el.setAttribute('cy', p[1].toFixed(1)); }
+function setTxt(el, p, dx, dy){ el.setAttribute('x', (p[0] + dx).toFixed(1)); el.setAttribute('y', (p[1] + dy).toFixed(1)); }
+function fit(wp, W, H, pad){
+    const xs = wp.map(p => p[0]), ys = wp.map(p => p[1]);
+    const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+    const s = Math.min((W - 2*pad) / Math.max(maxX - minX, 1e-9), (H - 2*pad) / Math.max(maxY - minY, 1e-9));
+    const ox = (W - s*(maxX - minX))/2 - s*minX;
+    const oy = (H - s*(maxY - minY))/2 + s*maxY;
+    return { P: p => [ox + s*p[0], oy - s*p[1]], s: s };
+}
+const RD = Math.PI / 180;
+
+// ---------- 1) skladani sil ----------
+function lab(el, p, dir, dist){ el.setAttribute('x', (p[0] + dir[0]*dist).toFixed(1)); el.setAttribute('y', (p[1] + dir[1]*dist).toFixed(1)); }
+function arcPath(c, r, a0, a1, sweep){
+    // a0, a1 ve stupnich, matematicky smer (y nahoru); v obrazovce y dolu
+    const P = a => [c[0] + r*Math.cos(a*RD), c[1] - r*Math.sin(a*RD)];
+    const p0 = P(a0), p1 = P(a1);
+    return 'M' + p0[0].toFixed(1) + ',' + p0[1].toFixed(1) + ' A' + r + ',' + r + ' 0 0 ' + sweep + ' ' + p1[0].toFixed(1) + ',' + p1[1].toFixed(1);
+}
+function updateFc(sfx){
+    const g = id => document.getElementById(id + sfx);
+    const F1 = 14, F2 = 9, s = 8;
+    const phi = +g('fc-phi').value;
+    g('fc-phi-v').textContent = phi;
+    const be = 180 - phi;
+    const O = [92, 165];
+    const W = (x, y) => [O[0] + s*x, O[1] - s*y];
+    const pA = W(F1, 0), pB = W(F2*Math.cos(phi*RD), F2*Math.sin(phi*RD));
+    const pR = W(F1 + F2*Math.cos(phi*RD), F2*Math.sin(phi*RD));
+    g('fc-poly').setAttribute('points', pts([O, pA, pR, pB]));
+    setLine(g('fc-l1'), O, pA); setLine(g('fc-l2'), O, pB); setLine(g('fc-lF'), O, pR);
+    lab(g('fc-t1'), pA, [1, 0], 18);
+    lab(g('fc-t2'), pB, [Math.cos(phi*RD), -Math.sin(phi*RD)], 18);
+    const ar = Math.atan2(pR[1] - O[1], pR[0] - O[0]);
+    lab(g('fc-tF'), pR, [Math.cos(ar), Math.sin(ar)], 18);
+    g('fc-arc').setAttribute('d', arcPath(O, 30, 0, phi, 0));
+    lab(g('fc-tphi'), O, [Math.cos(phi/2*RD), -Math.sin(phi/2*RD)], 44);
+    const F2s = F1*F1 + F2*F2 - 2*F1*F2*Math.cos(be*RD);
+    const Fv = Math.sqrt(F2s);
+    const sinA = F2*Math.sin(be*RD)/Fv;
+    const alpha = Math.atan2(F2*Math.sin(phi*RD), F1 + F2*Math.cos(phi*RD)) / RD;
+    g('fc-r1').textContent = '$\\varphi=' + phi + '°,\\ \\beta=180°-\\varphi=' + be + '°$';
+    g('fc-r2').textContent = '$F^2=14^2+9^2-2\\cdot14\\cdot9\\cdot\\cos' + be + '°\\approx' + tx(F2s) + '$';
+    g('fc-r3').textContent = '$F\\approx' + tx(Fv) + '\\ \\text{N}$';
+    g('fc-r4').textContent = '$\\sin\\alpha=\\dfrac{F_2\\sin\\beta}{F}\\approx' + tx(sinA) + '\\ \\Rightarrow\\ \\alpha\\approx' + dm(alpha) + '$';
+    typeset([g('fc-r1'), g('fc-r2'), g('fc-r3'), g('fc-r4')]);
+}
+
+// ---------- 2) rozklad sily ----------
+function updateFd(sfx){
+    const g = id => document.getElementById(id + sfx);
+    const FF = 20, s = 4.6;
+    const a1 = +g('fd-a1').value, a2 = +g('fd-a2').value;
+    g('fd-a1-v').textContent = a1; g('fd-a2-v').textContent = a2;
+    const ga = 180 - a1 - a2;
+    const F1 = FF*Math.sin(a2*RD)/Math.sin(ga*RD), F2 = FF*Math.sin(a1*RD)/Math.sin(ga*RD);
+    const O = [90, 110];
+    const W = (x, y) => [O[0] + s*x, O[1] - s*y];
+    const pR = W(FF, 0), p1 = W(F1*Math.cos(a1*RD), F1*Math.sin(a1*RD)), p2 = W(F2*Math.cos(a2*RD), -F2*Math.sin(a2*RD));
+    g('fd-poly').setAttribute('points', pts([O, p1, pR, p2]));
+    setLine(g('fd-lF'), O, pR); setLine(g('fd-l1'), O, p1); setLine(g('fd-l2'), O, p2);
+    lab(g('fd-tF'), pR, [1, 0], 18);
+    lab(g('fd-t1'), p1, [Math.cos(a1*RD), -Math.sin(a1*RD)], 18);
+    lab(g('fd-t2'), p2, [Math.cos(a2*RD), Math.sin(a2*RD)], 18);
+    g('fd-arc1').setAttribute('d', arcPath(O, 24, 0, a1, 0));
+    g('fd-arc2').setAttribute('d', arcPath(O, 32, 0, -a2, 1));
+    g('fd-r1').textContent = '$\\gamma=180°-' + a1 + '°-' + a2 + '°=' + ga + '°$';
+    g('fd-r2').textContent = '$F_1=\\dfrac{F\\sin' + a2 + '°}{\\sin' + ga + '°}\\approx' + tx(F1) + '\\ \\text{N}$';
+    g('fd-r3').textContent = '$F_2=\\dfrac{F\\sin' + a1 + '°}{\\sin' + ga + '°}\\approx' + tx(F2) + '\\ \\text{N}$';
+    typeset([g('fd-r1'), g('fd-r2'), g('fd-r3')]);
+}
+
+// ---------- 3) vyska s nepristupnou patou ----------
+function updateFh(sfx){
+    const g = id => document.getElementById(id + sfx);
+    const al = +g('fh-al').value, be = +g('fh-be').value;
+    g('fh-al-v').textContent = al; g('fh-be-v').textContent = be;
+    // pevna vez: vyska h0 tak, aby pro vychozi uhly 41 a 28 stupnu bylo |AB| = 30 m
+    const cot = x => 1/Math.tan(x*RD);
+    const h0 = 30 / (cot(28) - cot(41));
+    const s = 2.2, gy = 170, tx0 = 272;
+    const T = [tx0, gy], P = [tx0, gy - s*h0];
+    const A = [tx0 - s*h0*cot(al), gy], B = [tx0 - s*h0*cot(be), gy];
+    setLine(g('fh-gr'), [8, gy], [292, gy]);
+    setLine(g('fh-tw'), T, P); setLine(g('fh-lB'), B, P); setLine(g('fh-lA'), A, P);
+    setPt(g('fh-pB'), B); setPt(g('fh-pA'), A);
+    setTxt(g('fh-tB'), B, 0, 20); setTxt(g('fh-tA'), A, 0, 20); setTxt(g('fh-tT'), T, 0, 20); setTxt(g('fh-tP'), P, 0, -9);
+    g('fh-arA').setAttribute('d', arcPath(A, 24, 0, al, 0));
+    g('fh-arB').setAttribute('d', arcPath(B, 44, 0, be, 0));
+    lab(g('fh-aA'), A, [Math.cos(al/2*RD), -Math.sin(al/2*RD)], 36);
+    lab(g('fh-aB'), B, [Math.cos(be/2*RD), -Math.sin(be/2*RD)], 56);
+    const ok = be <= al - 2;
+    g('fh-warn').classList.toggle('hidden', ok);
+    ['fh-r1', 'fh-r2', 'fh-r3'].forEach(id => { g(id).classList.toggle('hidden', !ok); });
+    if (!ok) return;
+    const d = h0*(cot(be) - cot(al));
+    const AP = d*Math.sin(be*RD)/Math.sin((al - be)*RD);
+    g('fh-r1').textContent = '$|AB|\\approx' + tx(d, 1) + '\\ \\text{m},\\ \\angle APB=' + al + '°-' + be + '°=' + (al - be) + '°$';
+    g('fh-r2').textContent = '$|AP|=\\dfrac{|AB|\\cdot\\sin' + be + '°}{\\sin' + (al - be) + '°}\\approx' + tx(AP) + '\\ \\text{m}$';
+    g('fh-r3').textContent = '$h=|AP|\\cdot\\sin' + al + '°\\approx' + tx(AP*Math.sin(al*RD)) + '\\ \\text{m}$';
+    typeset([g('fh-r1'), g('fh-r2'), g('fh-r3')]);
+}
+
+// ---------- 4) pozemek ABCD ----------
+function updateFp(sfx){
+    const g = id => document.getElementById(id + sfx);
+    const be = +g('fp-be').value;
+    g('fp-be-v').textContent = be;
+    const AB = 60, BC = 45, CD = 52, DA = 38;
+    const AC = Math.sqrt(AB*AB + BC*BC - 2*AB*BC*Math.cos(be*RD));
+    const A = [0,0], B = [AB,0], C = [AB + BC*Math.cos((180 - be)*RD), BC*Math.sin((180 - be)*RD)];
+    const th = Math.atan2(C[1], C[0]);
+    const aA = Math.acos((DA*DA + AC*AC - CD*CD)/(2*DA*AC));
+    const D = [DA*Math.cos(th + aA), DA*Math.sin(th + aA)];
+    const f = fit([A, B, C, D], 300, 230, 28);
+    const pA = f.P(A), pB = f.P(B), pC = f.P(C), pD = f.P(D);
+    g('fp-p1').setAttribute('points', pts([pA, pB, pC]));
+    g('fp-p2').setAttribute('points', pts([pA, pC, pD]));
+    setLine(g('fp-ac'), pA, pC);
+    setTxt(g('fp-tA'), pA, -16, 14); setTxt(g('fp-tB'), pB, 6, 14); setTxt(g('fp-tC'), pC, 6, -4); setTxt(g('fp-tD'), pD, -14, -6);
+    const S1 = 0.5*AB*BC*Math.sin(be*RD);
+    const s = (DA + CD + AC)/2;
+    const S2 = Math.sqrt(s*(s - DA)*(s - CD)*(s - AC));
+    g('fp-r1').textContent = '$|AC|=\\sqrt{60^2+45^2-2\\cdot60\\cdot45\\cdot\\cos' + be + '°}\\approx' + tx(AC) + '\\ \\text{m}$';
+    g('fp-r2').textContent = '$S_1=\\tfrac12\\cdot60\\cdot45\\cdot\\sin' + be + '°\\approx' + area(S1) + '\\ \\text{m}^2$';
+    g('fp-r3').textContent = '$S_2=\\sqrt{s(s-38)(s-52)(s-|AC|)}\\approx' + area(S2) + '\\ \\text{m}^2$';
+    g('fp-r4').textContent = '$S=S_1+S_2\\approx' + area(S1 + S2) + '\\ \\text{m}^2$';
+    typeset([g('fp-r1'), g('fp-r2'), g('fp-r3'), g('fp-r4')]);
+}
+
+// ---- Inicializace ----
+['', '-fr'].forEach(sfx => {
+    updateFc(sfx); updateFd(sfx); updateFh(sfx); updateFp(sfx);
+    document.getElementById('fc-phi'+sfx).addEventListener('input', () => updateFc(sfx));
+    document.getElementById('fd-a1'+sfx).addEventListener('input', () => updateFd(sfx));
+    document.getElementById('fd-a2'+sfx).addEventListener('input', () => updateFd(sfx));
+    document.getElementById('fh-al'+sfx).addEventListener('input', () => updateFh(sfx));
+    document.getElementById('fh-be'+sfx).addEventListener('input', () => updateFh(sfx));
+    document.getElementById('fp-be'+sfx).addEventListener('input', () => updateFp(sfx));
+});
+
+</script>
+</body>
+</html>

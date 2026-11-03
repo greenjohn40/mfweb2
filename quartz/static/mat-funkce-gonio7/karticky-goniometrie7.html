@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Goniometrie 7 — Užití sinové a kosinové věty / Goniométrie 7 — Applications des théorèmes du sinus et du cosinus</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-goniometrie7.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Goniometrie 7</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Goniométrie 7 — Applications des théorèmes du sinus et du cosinus
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Jaký je společný postup u slovní úlohy s trojúhelníkem?",
+            "a": "Náčrt a označení → trojúhelník se známými údaji → volba sinové nebo kosinové věty → výpočet a odpověď slovy s jednotkou."
+        },
+        {
+            "q": "Kterou větu použijeme při zadání usu nebo uus?",
+            "a": "Sinovou větu."
+        },
+        {
+            "q": "Kterou větu použijeme při zadání sus nebo sss?",
+            "a": "Kosinovou větu."
+        },
+        {
+            "q": "Co je výslednice dvou sil?",
+            "a": "Jediná síla, která nahradí obě síly. Je to úhlopříčka rovnoběžníku sil."
+        },
+        {
+            "q": "Síly $F_1$, $F_2$ svírají úhel $\\varphi$. Jaký úhel leží proti výslednici v trojúhelníku sil?",
+            "a": "$\\beta=180°-\\varphi$."
+        },
+        {
+            "q": "Jak zní vzorec pro velikost výslednice?",
+            "a": "$F^2=F_1^2+F_2^2-2F_1F_2\\cos\\beta$, kde $\\beta=180°-\\varphi$."
+        },
+        {
+            "q": "Čím určíme směr výslednice?",
+            "a": "Sinovou větou: $\\dfrac{\\sin\\alpha}{F_2}=\\dfrac{\\sin\\beta}{F}$, kde $\\alpha$ je úhel mezi $F$ a $F_1$."
+        },
+        {
+            "q": "Jaká je výslednice sil $14$ N a $9$ N, které svírají $50°$?",
+            "a": "$F\\approx20{,}95$ N."
+        },
+        {
+            "q": "Pod jakým úhlem ke $F_1$ působí výslednice sil $14$ N a $9$ N svírajících $50°$?",
+            "a": "$\\alpha\\approx19°13'$."
+        },
+        {
+            "q": "Proč u směru výslednice vyhovuje jen jedna hodnota z $\\sin\\alpha=k$?",
+            "a": "Musí platit $\\alpha+\\beta\\lt180°$, druhé řešení $180°-\\alpha$ tuto podmínku porušuje."
+        },
+        {
+            "q": "Jaká je výslednice dvou sil, které svírají úhel $0°$?",
+            "a": "Součet jejich velikostí: $F=F_1+F_2$."
+        },
+        {
+            "q": "Jaká je výslednice dvou sil, které svírají úhel $180°$?",
+            "a": "Rozdíl jejich velikostí: $F=|F_1-F_2|$."
+        },
+        {
+            "q": "Co znamená rozložit sílu na složky?",
+            "a": "Nahradit sílu $F$ dvěma silami ve zvolených směrech, jejichž výslednice je $F$."
+        },
+        {
+            "q": "Kterou větu použijeme při rozkladu síly?",
+            "a": "Sinovou větu (známe stranu $F$ a dva úhly)."
+        },
+        {
+            "q": "Síla $F$ se rozkládá do směrů, které s ní svírají úhly $a_1$, $a_2$. Jak určíme třetí úhel trojúhelníku?",
+            "a": "$\\gamma=180°-a_1-a_2$; leží proti síle $F$."
+        },
+        {
+            "q": "Jak vypočteme složku $F_1$ při rozkladu síly?",
+            "a": "$F_1=\\dfrac{F\\sin a_2}{\\sin\\gamma}$ (složka $F_1$ leží proti úhlu $a_2$)."
+        },
+        {
+            "q": "Rozložte $F=20$ N do směrů $35°$ a $50°$. Jak velké jsou složky?",
+            "a": "$F_1\\approx15{,}38$ N (směr $35°$), $F_2\\approx11{,}52$ N (směr $50°$)."
+        },
+        {
+            "q": "Jak zkontrolujeme rozumnost výsledku rozkladu síly?",
+            "a": "Směr, který leží blíž k síle $F$, má větší složku. Jinak jsme složky zaměnili."
+        },
+        {
+            "q": "Co je výškový úhel?",
+            "a": "Úhel mezi vodorovnou rovinou a přímkou k pozorovanému bodu nad ní."
+        },
+        {
+            "q": "Co je hloubkový úhel?",
+            "a": "Úhel mezi vodorovnou rovinou a přímkou k pozorovanému bodu pod ní."
+        },
+        {
+            "q": "Co je zorný úhel?",
+            "a": "Úhel, který svírají paprsky z oka pozorovatele ke krajním bodům předmětu."
+        },
+        {
+            "q": "Známe základnu $|AB|$ a úhly $\\alpha$, $\\beta$. Jak určíme $|BC|$?",
+            "a": "$\\gamma=180°-\\alpha-\\beta$, $|BC|=\\dfrac{|AB|\\sin\\alpha}{\\sin\\gamma}$ (sinová věta)."
+        },
+        {
+            "q": "$|AB|=50$ m, $\\alpha=62°$, $\\beta=71°$. Jaké je $|BC|$?",
+            "a": "$\\gamma=47°$, $|BC|\\approx60{,}36$ m."
+        },
+        {
+            "q": "$|AB|=50$ m, $\\alpha=62°$, $\\beta=71°$. Jaké je $|AC|$?",
+            "a": "$|AC|\\approx64{,}64$ m."
+        },
+        {
+            "q": "Známe dvě vzdálenosti z bodu $K$ a úhel mezi nimi. Kterou větu použijeme?",
+            "a": "Kosinovou větu (zadání sus)."
+        },
+        {
+            "q": "$|KL|=120$ m, $|KM|=85$ m, $|\\angle LKM|=62°$. Jaká je $|LM|$?",
+            "a": "$|LM|\\approx109{,}8$ m."
+        },
+        {
+            "q": "Jak určíme výšku věže s nepřístupnou patou?",
+            "a": "Z bodů $A$, $B$ na jedné přímce s patou změříme výškové úhly $\\alpha$, $\\beta$ a vzdálenost $|AB|$."
+        },
+        {
+            "q": "Jak velký je úhel $\\angle APB$ při vrcholu $P$ věže?",
+            "a": "$|\\angle APB|=\\alpha-\\beta$ ($\\alpha$ je vnější úhel trojúhelníku $ABP$ při vrcholu $A$)."
+        },
+        {
+            "q": "Jak vypočteme $|AP|$ v úloze s nepřístupnou patou?",
+            "a": "$|AP|=\\dfrac{|AB|\\sin\\beta}{\\sin(\\alpha-\\beta)}$ (sinová věta)."
+        },
+        {
+            "q": "Jak získáme výšku věže $h$ z délky $|AP|$?",
+            "a": "Z pravoúhlého trojúhelníku $ATP$: $h=|AP|\\sin\\alpha$."
+        },
+        {
+            "q": "$|AB|=30$ m, $\\alpha=41°$, $\\beta=28°$. Jak je věž vysoká?",
+            "a": "$|AP|\\approx62{,}61$ m, $h\\approx41{,}08$ m."
+        },
+        {
+            "q": "Který z bodů $A$, $B$ leží blíž k věži a pod jakým úhlem z něj věž vidíme?",
+            "a": "Blíž leží $A$ a věž z něj vidíme pod větším úhlem: $\\alpha\\gt\\beta$."
+        },
+        {
+            "q": "Pozorovatel v bodě $K$ je o $90$ m výše než pata věže a vidí ji pod hloubkovým úhlem $30°$. Jaká je $|KP|$?",
+            "a": "$|KP|=\\dfrac{90}{\\sin30°}=180$ m."
+        },
+        {
+            "q": "Pata věže je vidět pod hloubkovým úhlem $\\varphi$, vrchol pod $\\omega\\lt\\varphi$. Jaký je úhel při $K$ v trojúhelníku $KPV$?",
+            "a": "$\\kappa=\\varphi-\\omega$."
+        },
+        {
+            "q": "Jaký je úhel při vrcholu $V$ věže v trojúhelníku $KPV$?",
+            "a": "$\\nu=90°+\\omega$."
+        },
+        {
+            "q": "$\\varphi=30°$, $\\omega=18°$, $|KP|=180$ m. Jak vysoká je věž $|PV|$?",
+            "a": "$|PV|=\\dfrac{180\\sin12°}{\\sin108°}\\approx39{,}35$ m."
+        },
+        {
+            "q": "Jak spočítáme obsah trojúhelníku ze dvou stran a úhlu mezi nimi?",
+            "a": "$S=\\dfrac12ab\\sin\\gamma$."
+        },
+        {
+            "q": "Jak zní Heronův vzorec?",
+            "a": "$S=\\sqrt{s(s-a)(s-b)(s-c)}$, $s=\\dfrac{a+b+c}{2}$."
+        },
+        {
+            "q": "Jak obsah trojúhelníku vyjádříme pomocí poloměru kružnice opsané?",
+            "a": "$S=\\dfrac{abc}{4R}$."
+        },
+        {
+            "q": "Jak obsah trojúhelníku vyjádříme pomocí poloměru kružnice vepsané?",
+            "a": "$S=\\varrho s$, kde $s$ je polovina obvodu."
+        },
+        {
+            "q": "Jaký je obsah trojúhelníku s $a=9$, $b=14$, $\\gamma=50°$?",
+            "a": "$S=\\dfrac12\\cdot9\\cdot14\\cdot\\sin50°\\approx48{,}26$."
+        },
+        {
+            "q": "Trojúhelník má strany $13$, $14$, $15$. Jaký je jeho obsah?",
+            "a": "$s=21$, $S=\\sqrt{21\\cdot8\\cdot7\\cdot6}=84$."
+        },
+        {
+            "q": "Trojúhelník $13$, $14$, $15$ má $S=84$. Jaké jsou $R$ a $\\varrho$?",
+            "a": "$R=\\dfrac{13\\cdot14\\cdot15}{4\\cdot84}=8{,}125$, $\\varrho=\\dfrac{84}{21}=4$."
+        },
+        {
+            "q": "Jak určíme výměru čtyřúhelníkového pozemku?",
+            "a": "Rozdělíme jej úhlopříčkou na dva trojúhelníky a sečteme jejich obsahy."
+        },
+        {
+            "q": "Pozemek $ABCD$: $|AB|=60$, $|BC|=45$, $\\beta=110°$. Jak vypočteme úhlopříčku $|AC|$?",
+            "a": "Kosinovou větou: $|AC|=\\sqrt{60^2+45^2-2\\cdot60\\cdot45\\cdot\\cos110°}\\approx86{,}44$ m."
+        },
+        {
+            "q": "Jak spočítáme obsah druhého trojúhelníku $ACD$, když známe všechny jeho strany?",
+            "a": "Heronovým vzorcem."
+        },
+        {
+            "q": "Jaká je výměra pozemku z příkladu ($60$, $45$, $52$, $38$ m, $\\beta=110°$)?",
+            "a": "$S=S_1+S_2\\approx1\\,268{,}59+534{,}44\\approx1\\,803$ m$^2$."
+        },
+        {
+            "q": "Kdy je obsah mnohoúhelníku součtem obsahů trojúhelníků?",
+            "a": "Když se trojúhelníky nepřekrývají a celý mnohoúhelník vyplňují."
+        },
+        {
+            "q": "Proč nepočítat dál se zaokrouhlenou hodnotou $|AC|$?",
+            "a": "Chyba se může v Heronově vzorci zvětšit. V mezivýsledcích ponecháme více desetinných míst."
+        },
+        {
+            "q": "Jak se jmenuje princip měření, kterým Delambre a Méchain určili délku poledníku?",
+            "a": "Triangulace: změřili základnu a řetěz úhlů, další strany trojúhelníků počítali sinovou větou."
+        }
+    ],
+    "fr": [
+        {
+            "q": "Quelle est la démarche commune pour un problème avec un triangle ?",
+            "a": "Croquis et notation → triangle aux données connues → choix du théorème du sinus ou du cosinus → calcul et réponse rédigée avec l'unité."
+        },
+        {
+            "q": "Quel théorème utilise-t-on dans les cas ACA ou AAC ?",
+            "a": "Le théorème du sinus."
+        },
+        {
+            "q": "Quel théorème utilise-t-on dans les cas CAC ou CCC ?",
+            "a": "Le théorème du cosinus."
+        },
+        {
+            "q": "Qu'est-ce que la résultante de deux forces ?",
+            "a": "La force unique qui remplace les deux forces. C'est la diagonale du parallélogramme des forces."
+        },
+        {
+            "q": "Les forces $F_1$, $F_2$ forment un angle $\\varphi$. Quel angle est opposé à la résultante dans le triangle des forces ?",
+            "a": "$\\beta=180°-\\varphi$."
+        },
+        {
+            "q": "Quelle est la formule de l'intensité de la résultante ?",
+            "a": "$F^2=F_1^2+F_2^2-2F_1F_2\\cos\\beta$, où $\\beta=180°-\\varphi$."
+        },
+        {
+            "q": "Comment détermine-t-on la direction de la résultante ?",
+            "a": "Avec le théorème du sinus : $\\dfrac{\\sin\\alpha}{F_2}=\\dfrac{\\sin\\beta}{F}$, où $\\alpha$ est l'angle entre $F$ et $F_1$."
+        },
+        {
+            "q": "Quelle est la résultante de forces de $14$ N et $9$ N formant $50°$ ?",
+            "a": "$F\\approx20{,}95$ N."
+        },
+        {
+            "q": "Quel angle la résultante de forces de $14$ N et $9$ N formant $50°$ fait-elle avec $F_1$ ?",
+            "a": "$\\alpha\\approx19°13'$."
+        },
+        {
+            "q": "Pourquoi une seule valeur de $\\sin\\alpha=k$ convient-elle pour la direction de la résultante ?",
+            "a": "Il faut $\\alpha+\\beta\\lt180°$ ; la seconde solution $180°-\\alpha$ ne respecte pas cette condition."
+        },
+        {
+            "q": "Quelle est la résultante de deux forces formant un angle de $0°$ ?",
+            "a": "La somme de leurs intensités : $F=F_1+F_2$."
+        },
+        {
+            "q": "Quelle est la résultante de deux forces formant un angle de $180°$ ?",
+            "a": "La différence de leurs intensités : $F=|F_1-F_2|$."
+        },
+        {
+            "q": "Que signifie décomposer une force ?",
+            "a": "Remplacer la force $F$ par deux forces de directions choisies, dont la résultante est $F$."
+        },
+        {
+            "q": "Quel théorème utilise-t-on pour décomposer une force ?",
+            "a": "Le théorème du sinus (on connaît le côté $F$ et deux angles)."
+        },
+        {
+            "q": "La force $F$ est décomposée selon des directions formant les angles $a_1$, $a_2$ avec elle. Comment obtient-on le troisième angle ?",
+            "a": "$\\gamma=180°-a_1-a_2$ ; il est opposé à la force $F$."
+        },
+        {
+            "q": "Comment calcule-t-on la composante $F_1$ ?",
+            "a": "$F_1=\\dfrac{F\\sin a_2}{\\sin\\gamma}$ (la composante $F_1$ est opposée à l'angle $a_2$)."
+        },
+        {
+            "q": "Décomposez $F=20$ N selon des directions de $35°$ et $50°$. Quelles sont les composantes ?",
+            "a": "$F_1\\approx15{,}38$ N (direction à $35°$), $F_2\\approx11{,}52$ N (direction à $50°$)."
+        },
+        {
+            "q": "Comment vérifier la vraisemblance d'une décomposition ?",
+            "a": "La direction la plus proche de $F$ a la plus grande composante. Sinon, on a permuté les composantes."
+        },
+        {
+            "q": "Qu'est-ce que l'angle d'élévation ?",
+            "a": "L'angle entre le plan horizontal et la droite vers un point observé situé au-dessus."
+        },
+        {
+            "q": "Qu'est-ce que l'angle de dépression ?",
+            "a": "L'angle entre le plan horizontal et la droite vers un point observé situé au-dessous."
+        },
+        {
+            "q": "Qu'est-ce que l'angle de vue ?",
+            "a": "L'angle formé par les rayons allant de l'œil de l'observateur aux extrémités de l'objet."
+        },
+        {
+            "q": "On connaît la base $|AB|$ et les angles $\\alpha$, $\\beta$. Comment obtient-on $|BC|$ ?",
+            "a": "$\\gamma=180°-\\alpha-\\beta$, $|BC|=\\dfrac{|AB|\\sin\\alpha}{\\sin\\gamma}$ (théorème du sinus)."
+        },
+        {
+            "q": "$|AB|=50$ m, $\\alpha=62°$, $\\beta=71°$. Que vaut $|BC|$ ?",
+            "a": "$\\gamma=47°$, $|BC|\\approx60{,}36$ m."
+        },
+        {
+            "q": "$|AB|=50$ m, $\\alpha=62°$, $\\beta=71°$. Que vaut $|AC|$ ?",
+            "a": "$|AC|\\approx64{,}64$ m."
+        },
+        {
+            "q": "On connaît deux distances depuis le point $K$ et l'angle compris. Quel théorème utilise-t-on ?",
+            "a": "Le théorème du cosinus (cas CAC)."
+        },
+        {
+            "q": "$|KL|=120$ m, $|KM|=85$ m, $|\\angle LKM|=62°$. Que vaut $|LM|$ ?",
+            "a": "$|LM|\\approx109{,}8$ m."
+        },
+        {
+            "q": "Comment détermine-t-on la hauteur d'une tour dont le pied est inaccessible ?",
+            "a": "On mesure, depuis deux points $A$, $B$ alignés avec le pied, les angles d'élévation $\\alpha$, $\\beta$ et la distance $|AB|$."
+        },
+        {
+            "q": "Que vaut l'angle $\\angle APB$ au sommet $P$ de la tour ?",
+            "a": "$|\\angle APB|=\\alpha-\\beta$ ($\\alpha$ est l'angle extérieur du triangle $ABP$ en $A$)."
+        },
+        {
+            "q": "Comment calcule-t-on $|AP|$ quand le pied est inaccessible ?",
+            "a": "$|AP|=\\dfrac{|AB|\\sin\\beta}{\\sin(\\alpha-\\beta)}$ (théorème du sinus)."
+        },
+        {
+            "q": "Comment obtient-on la hauteur $h$ à partir de $|AP|$ ?",
+            "a": "Dans le triangle rectangle $ATP$ : $h=|AP|\\sin\\alpha$."
+        },
+        {
+            "q": "$|AB|=30$ m, $\\alpha=41°$, $\\beta=28°$. Quelle est la hauteur de la tour ?",
+            "a": "$|AP|\\approx62{,}61$ m, $h\\approx41{,}08$ m."
+        },
+        {
+            "q": "Lequel des points $A$, $B$ est le plus proche de la tour, et sous quel angle y voit-on la tour ?",
+            "a": "Le point $A$ est le plus proche et l'angle y est plus grand : $\\alpha\\gt\\beta$."
+        },
+        {
+            "q": "Un observateur en $K$ est $90$ m plus haut que le pied de la tour et le voit sous un angle de dépression de $30°$. Que vaut $|KP|$ ?",
+            "a": "$|KP|=\\dfrac{90}{\\sin30°}=180$ m."
+        },
+        {
+            "q": "Le pied de la tour est vu sous l'angle de dépression $\\varphi$, le sommet sous $\\omega\\lt\\varphi$. Que vaut l'angle en $K$ dans $KPV$ ?",
+            "a": "$\\kappa=\\varphi-\\omega$."
+        },
+        {
+            "q": "Que vaut l'angle au sommet $V$ de la tour dans le triangle $KPV$ ?",
+            "a": "$\\nu=90°+\\omega$."
+        },
+        {
+            "q": "$\\varphi=30°$, $\\omega=18°$, $|KP|=180$ m. Quelle est la hauteur $|PV|$ de la tour ?",
+            "a": "$|PV|=\\dfrac{180\\sin12°}{\\sin108°}\\approx39{,}35$ m."
+        },
+        {
+            "q": "Comment calcule-t-on l'aire d'un triangle à partir de deux côtés et de l'angle compris ?",
+            "a": "$S=\\dfrac12ab\\sin\\gamma$."
+        },
+        {
+            "q": "Quelle est la formule de Héron ?",
+            "a": "$S=\\sqrt{s(s-a)(s-b)(s-c)}$, $s=\\dfrac{a+b+c}{2}$."
+        },
+        {
+            "q": "Comment exprime-t-on l'aire d'un triangle avec le rayon du cercle circonscrit ?",
+            "a": "$S=\\dfrac{abc}{4R}$."
+        },
+        {
+            "q": "Comment exprime-t-on l'aire d'un triangle avec le rayon du cercle inscrit ?",
+            "a": "$S=\\varrho s$, où $s$ est le demi-périmètre."
+        },
+        {
+            "q": "Quelle est l'aire du triangle avec $a=9$, $b=14$, $\\gamma=50°$ ?",
+            "a": "$S=\\dfrac12\\cdot9\\cdot14\\cdot\\sin50°\\approx48{,}26$."
+        },
+        {
+            "q": "Un triangle a pour côtés $13$, $14$, $15$. Quelle est son aire ?",
+            "a": "$s=21$, $S=\\sqrt{21\\cdot8\\cdot7\\cdot6}=84$."
+        },
+        {
+            "q": "Le triangle $13$, $14$, $15$ a $S=84$. Que valent $R$ et $\\varrho$ ?",
+            "a": "$R=\\dfrac{13\\cdot14\\cdot15}{4\\cdot84}=8{,}125$, $\\varrho=\\dfrac{84}{21}=4$."
+        },
+        {
+            "q": "Comment détermine-t-on l'aire d'un terrain quadrilatéral ?",
+            "a": "On le découpe par une diagonale en deux triangles et l'on additionne leurs aires."
+        },
+        {
+            "q": "Terrain $ABCD$ : $|AB|=60$, $|BC|=45$, $\\beta=110°$. Comment calcule-t-on la diagonale $|AC|$ ?",
+            "a": "Avec le théorème du cosinus : $|AC|=\\sqrt{60^2+45^2-2\\cdot60\\cdot45\\cdot\\cos110°}\\approx86{,}44$ m."
+        },
+        {
+            "q": "Comment calcule-t-on l'aire du second triangle $ACD$ dont on connaît tous les côtés ?",
+            "a": "Avec la formule de Héron."
+        },
+        {
+            "q": "Quelle est l'aire du terrain de l'exemple ($60$, $45$, $52$, $38$ m, $\\beta=110°$) ?",
+            "a": "$S=S_1+S_2\\approx1\\,268{,}59+534{,}44\\approx1\\,803$ m$^2$."
+        },
+        {
+            "q": "Quand l'aire d'un polygone est-elle la somme des aires des triangles ?",
+            "a": "Quand les triangles ne se chevauchent pas et remplissent entièrement le polygone."
+        },
+        {
+            "q": "Pourquoi ne pas continuer à calculer avec la valeur arrondie de $|AC|$ ?",
+            "a": "L'erreur peut s'amplifier dans la formule de Héron. On garde plus de décimales dans les résultats intermédiaires."
+        },
+        {
+            "q": "Comment s'appelle la méthode par laquelle Delambre et Méchain ont mesuré le méridien ?",
+            "a": "La triangulation : ils ont mesuré une base et une chaîne d'angles, puis calculé les autres côtés des triangles avec le théorème du sinus."
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

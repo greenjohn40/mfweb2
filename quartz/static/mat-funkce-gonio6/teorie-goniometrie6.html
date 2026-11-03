@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 6 — Sinová a kosinová věta — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f8fafc; border-left: 4px solid #64748b; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+    .verdict-ok { background: #ecfdf5; border: 1px solid #6ee7b7; }
+    svg text { font-family: 'Inter', sans-serif; font-size: 13px; fill: #44403c; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Goniometrie 6 — Sinová a kosinová věta</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-goniometrie6.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Řešení obecného trojúhelníku</h2>
+    <p>V pravoúhlém trojúhelníku si vystačíme s definicemi goniometrických funkcí a s Pythagorovou větou. Co když ale trojúhelník žádný pravý úhel nemá? K tomu slouží dvě věty — <b>sinová</b> a <b>kosinová</b>. Obě propojují strany s úhly libovolného trojúhelníku a umožňují dopočítat chybějící strany a úhly. Říkáme, že <b>řešíme trojúhelník</b>.</p>
+    <div class="card">
+        <svg viewBox="0 0 270 190" class="w-full max-w-xs mx-auto" xmlns="http://www.w3.org/2000/svg">
+<polygon points="40,150 230,150 150,35" fill="rgba(124,58,237,0.08)" stroke="#6d28d9" stroke-width="2"/>
+<text x="26" y="158" text-anchor="middle" font-weight="700">A</text>
+<text x="244" y="158" text-anchor="middle" font-weight="700">B</text>
+<text x="150" y="21" text-anchor="middle" font-weight="700">C</text>
+<text x="204" y="86" font-style="italic" fill="#b91c1c">a</text>
+<text x="88" y="86" font-style="italic" fill="#b91c1c">b</text>
+<text x="135" y="168" font-style="italic" fill="#b91c1c">c</text>
+<text x="62" y="141" fill="#0d9488" font-weight="600">α</text>
+<text x="200" y="141" fill="#0d9488" font-weight="600">β</text>
+<text x="144" y="64" fill="#0d9488" font-weight="600">γ</text>
+</svg>
+        <p class="text-sm mt-2 text-center">Označení: strany $a=|BC|$, $b=|CA|$, $c=|AB|$ leží vždy <b>proti</b> vnitřním úhlům $\alpha$, $\beta$, $\gamma$ při vrcholech $A$, $B$, $C$. Platí $\alpha+\beta+\gamma=180°$.</p>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Využijeme hlavně vztah $\sin(180°-x)=\sin x$ z kapitoly o sinu a kosinu — právě on je příčinou toho, že úloha se dvěma stranami a úhlem může mít dvě řešení (část B).
+    </div>
+</section>
+
+<section id="sec-a-veta" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Sinová věta a poloměr kružnice opsané</h2>
+    <div class="card text-center">
+        <p>V každém trojúhelníku $ABC$ platí:</p>
+        $$\frac{a}{\sin\alpha}=\frac{b}{\sin\beta}=\frac{c}{\sin\gamma}=2R$$
+        <p class="text-sm mt-1">kde $R$ je poloměr kružnice trojúhelníku opsané. Poměr strany a sinu protilehlého úhlu je tedy u všech tří stran stejný. Ekvivalentně: $a:b:c=\sin\alpha:\sin\beta:\sin\gamma$.</p>
+    </div>
+    <p>Proč vzorec platí: tětiva $AB$ kružnice o poloměru $R$ je vidět z bodu $C$ pod úhlem $\gamma$ a z věty o obvodovém a středovém úhlu plyne $c=2R\sin\gamma$. Stejně pro zbylé dvě strany.</p>
+    <p>Vyzkoušejte to na posuvnících — úhly $\alpha$ a $\beta$ měníte, strana $c=10$ zůstává pevná. Všechny tři poměry vycházejí stejně a rovnají se průměru $2R$ kružnice opsané:</p>
+    <div class="card">
+        <div id="sin-wrap" class="transition-opacity">
+        <svg viewBox="0 0 300 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<circle id="sin-circ" cx="150" cy="150" r="100" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<line id="sin-rad" x1="150" y1="150" x2="100" y2="150" stroke="#0d9488" stroke-width="1.3" stroke-dasharray="4,3"/>
+<circle id="sin-o" cx="150" cy="150" r="2.5" fill="#0d9488"/>
+<polygon id="sin-tri" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.10)" stroke="#6d28d9" stroke-width="2"/>
+<text id="sin-tA" text-anchor="middle" dominant-baseline="central" font-weight="700">A</text>
+<text id="sin-tB" text-anchor="middle" dominant-baseline="central" font-weight="700">B</text>
+<text id="sin-tC" text-anchor="middle" dominant-baseline="central" font-weight="700">C</text>
+<text id="sin-la" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">a</text>
+<text id="sin-lb" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">b</text>
+<text id="sin-lc" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">c</text>
+<text id="sin-tR" font-style="italic" fill="#0d9488">R</text>
+</svg>
+        </div>
+        <div class="flex items-center gap-3 mt-3">
+            <span class="slider-label w-8">α =</span>
+            <input type="range" id="sin-al" min="30" max="100" value="50" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="sin-al-v">50</span>°</span>
+        </div>
+        <div class="flex items-center gap-3 mt-1 mb-2">
+            <span class="slider-label w-8">β =</span>
+            <input type="range" id="sin-be" min="30" max="100" value="70" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="sin-be-v">70</span>°</span>
+        </div>
+        <p id="sin-warn" class="hidden text-sm text-amber-700 text-center">Součet α + β musí být menší než 160° (úhel γ aspoň 20°) — upravte posuvníky.</p>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="sin-r1"></div>
+            <div id="sin-r2"></div>
+            <div id="sin-r3"></div>
+            <div id="sin-r4" class="font-semibold"></div>
+        </div>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> První jasné vyslovení sinové věty pro rovinné trojúhelníky se obvykle připisuje perskému učenci Nasír ad-Dínovi at-Túsímu ze 13. století. Praktické využití měl už dávno předtím — v astronomii a později v zeměměřictví při <i>triangulaci</i>.
+    </div>
+</section>
+
+<section id="sec-a-priklady" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Použití sinové věty</h2>
+    <p>Sinovou větu používáme, když známe dvojici „strana a protilehlý úhel“ a ještě jednu další veličinu. Chybějící třetí úhel dopočteme ze součtu úhlů.</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> V trojúhelníku $ABC$ je $b=6$, $\beta=48°$, $\gamma=72°$. Určete $\alpha$, $a$, $c$.</p>
+        <p class="text-sm">Úhel $\alpha=180°-48°-72°=60°$. Strana $b$ a úhel $\beta$ tvoří známou dvojici:</p>
+        $$a=\frac{6\cdot\sin60°}{\sin48°}\approx6{,}99\qquad c=\frac{6\cdot\sin72°}{\sin48°}\approx7{,}68$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> V trojúhelníku $ABC$ je $b=9$ a $\beta=50°$. Určete poloměr $R$ kružnice opsané.</p>
+        <p class="text-sm">Z rovnosti $\dfrac{b}{\sin\beta}=2R$ plyne:</p>
+        $$R=\frac{b}{2\sin\beta}=\frac{9}{2\sin50°}\approx5{,}87$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Strana $a=12$ a poloměr kružnice opsané je $R=10$. Určete úhel $\alpha$.</p>
+        <p class="text-sm">Z $\dfrac{a}{\sin\alpha}=2R$ dostaneme $\sin\alpha=\dfrac{a}{2R}=\dfrac{12}{20}=0{,}6$. V intervalu $(0°;180°)$ má tato rovnice dvě řešení:</p>
+        $$\alpha\approx36°52'\qquad\text{nebo}\qquad\alpha=180°-36°52'=143°08'$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Rovnice $\sin\alpha=k$ má pro $0\lt k\lt1$ v intervalu $(0°;180°)$ <b>dvě</b> řešení, $\alpha$ a $180°-\alpha$. Počítáme-li z sinové věty úhel, musíme proto vždy ověřit, zda obě hodnoty vyhovují trojúhelníku — to je námět části B.
+    </div>
+</section>
+
+<section id="sec-b-ssa" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Nejednoznačnost úlohy „dvě strany a úhel proti jedné z nich“</h2>
+    <p>Jsou dány strany $a$, $b$ a úhel $\alpha$ <b>proti straně $a$</b>. Ze sinové věty dostaneme</p>
+    $$\sin\beta=\frac{b\sin\alpha}{a}.$$
+    <ul class="list-disc list-inside text-sm space-y-1">
+        <li>Je-li pravá strana větší než $1$, úloha <b>nemá řešení</b>.</li>
+        <li>Je-li rovna $1$, je $\beta=90°$ a řešení je <b>jedno</b> (pravoúhlý trojúhelník).</li>
+        <li>Je-li menší než $1$, máme dvě kandidáty $\beta_1$ a $\beta_2=180°-\beta_1$. <b>Vyhovuje jen ten, pro který platí $\alpha+\beta\lt180°$.</b></li>
+    </ul>
+    <div class="card overflow-x-auto">
+        <p class="text-sm mb-2">Pro <b>ostrý</b> úhel $\alpha$ se to dá shrnout podle velikosti strany $a$:</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Vztah $a$ a $b$</th><th class="p-1 text-left">Počet řešení</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$a\lt b\sin\alpha$</td><td class="p-1 text-left">žádné</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$a=b\sin\alpha$</td><td class="p-1 text-left">jedno (pravoúhlý trojúhelník)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$b\sin\alpha\lt a\lt b$</td><td class="p-1 text-left">dvě</td></tr>
+                <tr><td class="p-1 text-left">$a\ge b$</td><td class="p-1 text-left">jedno</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p>Na obrázku je pevně $\alpha=30°$ a $b=8$. Posuvníkem měníte délku strany $a$ — kružnice o poloměru $a$ se středem v $C$ protíná polopřímku z $A$ v žádném, jednom nebo dvou bodech $B$:</p>
+    <div class="card">
+        <svg viewBox="0 0 300 230" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="205" x2="292" y2="205" stroke="#57534e" stroke-width="1.5"/>
+<circle id="ssa-circ" cx="150" cy="150" r="60" fill="none" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="5,4"/>
+<polygon id="ssa-tri1" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.12)" stroke="#6d28d9" stroke-width="2"/>
+<polygon id="ssa-tri2" points="0,0 0,0 0,0" fill="rgba(192,38,211,0.12)" stroke="#c026d3" stroke-width="2"/>
+<circle id="ssa-p1" cx="0" cy="0" r="4" fill="#6d28d9"/>
+<circle id="ssa-p2" cx="0" cy="0" r="4" fill="#c026d3"/>
+<text id="ssa-t1" x="0" y="0">B<tspan dy="3" font-size="9">1</tspan></text>
+<text id="ssa-t2" x="0" y="0">B<tspan dy="3" font-size="9">2</tspan></text>
+<circle cx="28" cy="205" r="3.5" fill="#44403c"/>
+<circle cx="125" cy="149" r="3.5" fill="#44403c"/>
+<text x="12" y="222" font-weight="700">A</text>
+<text x="120" y="139" font-weight="700">C</text>
+<text x="46" y="222" fill="#0d9488" font-weight="600">α = 30°</text>
+<text x="52" y="168" font-style="italic" fill="#b91c1c">b = 8</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">a =</span>
+            <input type="range" id="ssa-a" min="2" max="10" value="6" step="0.5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="ssa-a-v">6,0</span></span>
+        </div>
+        <div class="p-2 text-center text-sm space-y-1">
+            <div id="ssa-r1"></div>
+            <div id="ssa-r2"></div>
+        </div>
+        <div id="ssa-box" class="mt-2 p-3 rounded-lg text-center text-sm font-semibold verdict-ok">
+            <span id="ssa-verdict"></span>
+        </div>
+    </div>
+</section>
+
+<section id="sec-b-priklady" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Příklady na dvě, jedno a žádné řešení</h2>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Řešte trojúhelník $ABC$, je-li $a=5$, $b=8$, $\alpha=30°$.</p>
+        <p class="text-sm">Platí $b\sin\alpha=4\lt5\lt8=b$, očekáváme tedy dvě řešení.</p>
+        $$\sin\beta=\frac{8\cdot\sin30°}{5}=0{,}8\ \Rightarrow\ \beta_1\approx53°08',\quad\beta_2=180°-\beta_1\approx126°52'$$
+        <p class="text-sm mt-1">Oba úhly vyhovují ($30°+126°52'\lt180°$). Dopočteme $\gamma$ a $c$:</p>
+        <ul class="list-disc list-inside text-sm space-y-1">
+            <li>$\gamma_1\approx96°52'$, $c_1=\dfrac{5\sin\gamma_1}{\sin30°}\approx9{,}93$</li>
+            <li>$\gamma_2\approx23°08'$, $c_2=\dfrac{5\sin\gamma_2}{\sin30°}\approx3{,}93$</li>
+        </ul>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Řešte trojúhelník $ABC$, je-li $a=9$, $b=5$, $\alpha=40°$.</p>
+        $$\sin\beta=\frac{5\cdot\sin40°}{9}\approx0{,}3571\ \Rightarrow\ \beta_1\approx20°55',\quad\beta_2\approx159°05'$$
+        <p class="text-sm mt-1">Úhel $\beta_2$ nevyhovuje, protože $40°+159°05'\gt180°$ (a také $a\gt b$). Řešení je jediné:</p>
+        $$\gamma=180°-40°-20°55'\approx119°05'\qquad c=\frac{9\cdot\sin119°05'}{\sin40°}\approx12{,}24$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Řešte trojúhelník $ABC$, je-li $a=2$, $b=6$, $\alpha=30°$.</p>
+        $$\sin\beta=\frac{6\cdot\sin30°}{2}=1{,}5\gt1$$
+        <p class="text-sm mt-1">Sinus nemůže být větší než $1$, úloha <b>nemá řešení</b>. (Strana $a=2$ je kratší než $b\sin\alpha=3$ — „nedosáhne“ k polopřímce.)</p>
+    </div>
+</section>
+
+<section id="sec-c-veta" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Kosinová věta</h2>
+    <div class="card text-center">
+        <p>V každém trojúhelníku $ABC$ platí:</p>
+        $$a^2=b^2+c^2-2bc\cos\alpha$$
+        $$b^2=a^2+c^2-2ac\cos\beta$$
+        $$c^2=a^2+b^2-2ab\cos\gamma$$
+        <p class="text-sm mt-1">Čtverec strany je součet čtverců zbylých dvou stran minus dvojnásobek jejich součinu a kosinu úhlu, který <b>svírají</b>.</p>
+    </div>
+    <p>Úpravou první rovnice získáme vzorec pro úhel, známe-li všechny tři strany:</p>
+    $$\cos\alpha=\frac{b^2+c^2-a^2}{2bc}$$
+    <p>Pro $\gamma=90°$ je $\cos\gamma=0$ a třetí rovnice přejde na $c^2=a^2+b^2$ — <b>Pythagorova věta je zvláštní případ kosinové věty</b>. Zkuste to na posuvníku, kde jsou strany $b=6$ a $c=10$ pevné a mění se úhel $\alpha$ mezi nimi:</p>
+    <div class="card">
+        <svg viewBox="0 0 300 130" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<polygon id="cos-tri" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.10)" stroke="#6d28d9" stroke-width="2"/>
+<text id="cos-tA" text-anchor="middle" dominant-baseline="central" font-weight="700">A</text>
+<text id="cos-tB" text-anchor="middle" dominant-baseline="central" font-weight="700">B</text>
+<text id="cos-tC" text-anchor="middle" dominant-baseline="central" font-weight="700">C</text>
+<text id="cos-la" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">a</text>
+<text id="cos-lb" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">b</text>
+<text id="cos-lc" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">c</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">α =</span>
+            <input type="range" id="cos-al" min="10" max="170" value="60" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="cos-al-v">60</span>°</span>
+        </div>
+        <div class="p-2 text-center text-sm space-y-1">
+            <div id="cos-r1"></div>
+            <div id="cos-r2" class="font-semibold"></div>
+        </div>
+        <div id="cos-box" class="mt-2 p-3 rounded-lg text-center text-sm font-semibold verdict-ok">
+            <span id="cos-verdict"></span>
+        </div>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Geometrickou podobu kosinové věty najdeme už v Euklidových <i>Základech</i> (tvrzení II.12 a II.13). Ve francouzštině se věta nazývá <i>théorème d'Al-Kashi</i> podle perského matematika Džamšída al-Káší z 15. století.
+    </div>
+</section>
+
+<section id="sec-c-priklady" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Použití kosinové věty</h2>
+    <p>Kosinovou větu použijeme, známe-li <b>dvě strany a úhel mezi nimi</b> (hledáme třetí stranu), nebo <b>všechny tři strany</b> (hledáme úhel).</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Určete stranu $a$, je-li $b=6$, $c=10$, $\alpha=120°$.</p>
+        $$a^2=6^2+10^2-2\cdot6\cdot10\cdot\cos120°=136-120\cdot\left(-\frac12\right)=196\ \Rightarrow\ a=14$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Určete stranu $a$, je-li $b=7$, $c=9$, $\alpha=38°$.</p>
+        $$a^2=49+81-2\cdot7\cdot9\cdot\cos38°\approx30{,}71\ \Rightarrow\ a\approx5{,}54$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Určete úhel $\alpha$, jsou-li strany $a=7$, $b=5$, $c=8$.</p>
+        $$\cos\alpha=\frac{b^2+c^2-a^2}{2bc}=\frac{25+64-49}{2\cdot5\cdot8}=\frac{40}{80}=\frac12\ \Rightarrow\ \alpha=60°$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Řešte trojúhelník o stranách $a=6$, $b=9$, $c=13$.</p>
+        <p class="text-sm">Začneme úhlem proti <b>nejdelší</b> straně:</p>
+        $$\cos\gamma=\frac{36+81-169}{2\cdot6\cdot9}=-\frac{52}{108}\approx-0{,}4815\ \Rightarrow\ \gamma\approx118°47'$$
+        <p class="text-sm mt-1">Tupý úhel může být v trojúhelníku jen jeden, zbylé dva jsou tedy ostré a sinová věta už nedává dvě možnosti:</p>
+        $$\sin\alpha=\frac{6\cdot\sin\gamma}{13}\approx0{,}4045\ \Rightarrow\ \alpha\approx23°52'\qquad\beta=180°-\gamma-\alpha\approx37°21'$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Určete stranu $c$, je-li $a=3$, $b=4$, $\gamma=90°$.</p>
+        $$c^2=9+16-2\cdot3\cdot4\cdot\cos90°=25-0\ \Rightarrow\ c=5$$
+        <p class="text-sm mt-1">Kosinová věta zde splývá s Pythagorovou větou.</p>
+    </div>
+</section>
+
+<section id="sec-c-volba" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kterou větu zvolit</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Zadáno</th><th class="p-1 text-left">Použijeme</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">strana a dva úhly (usu, uus)</td><td class="p-1 text-left">sinovou větu</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">dvě strany a úhel proti jedné z nich (ssu)</td><td class="p-1 text-left">sinovou větu — pozor na dvě řešení</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">dvě strany a úhel mezi nimi (sus)</td><td class="p-1 text-left">kosinovou větu</td></tr>
+                <tr><td class="p-1 text-left">tři strany (sss)</td><td class="p-1 text-left">kosinovou větu</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p>Úlohu ssu lze řešit i kosinovou větou. Dvojznačnost se pak projeví jako <b>dva kladné kořeny kvadratické rovnice</b>:</p>
+    <div class="card">
+        <p class="mb-2"><b>Příklad:</b> Pro $a=5$, $b=8$, $\alpha=30°$ zapíšeme kosinovou větu $a^2=b^2+c^2-2bc\cos\alpha$ jako rovnici pro neznámou $c$:</p>
+        $$25=64+c^2-16c\cos30°\ \Rightarrow\ c^2-8\sqrt3\,c+39=0$$
+        $$D=192-156=36\ \Rightarrow\ c=\frac{8\sqrt3\pm6}{2}=4\sqrt3\pm3$$
+        <p class="text-sm mt-1">Dostáváme $c_1\approx9{,}93$ a $c_2\approx3{,}93$ — tytéž dvě řešení jako výše pomocí sinové věty.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Před počítáním zkontrolujte, zda je kalkulačka nastavena na stupně (DEG), ne na radiány. A při určování úhlu kosinovou větou nezapomeňte, že záporný kosinus znamená úhel <b>tupý</b>.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Pojem</th><th class="p-1 text-left">Klíčová myšlenka</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">sinová věta</td><td class="p-1 text-left">$\dfrac{a}{\sin\alpha}=\dfrac{b}{\sin\beta}=\dfrac{c}{\sin\gamma}=2R$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">úloha ssu</td><td class="p-1 text-left">$\sin\beta=\dfrac{b\sin\alpha}{a}$ — žádné, jedno nebo dvě řešení</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">kosinová věta</td><td class="p-1 text-left">$a^2=b^2+c^2-2bc\cos\alpha$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">úhel ze tří stran</td><td class="p-1 text-left">$\cos\alpha=\dfrac{b^2+c^2-a^2}{2bc}$</td></tr>
+                <tr><td class="p-1 text-left">$\gamma=90°$</td><td class="p-1 text-left">kosinová věta přejde v Pythagorovu větu</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Co bude dál:</b> V poslední kapitole série, <i>Goniometrie 7 — Užití sinové a kosinové věty</i>, použijeme obě věty v praktických úlohách — při výpočtech vzdáleností, výšek a dalších veličin v trojúhelnících.
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="mt-4 space-y-10 hidden">
+
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résoudre un triangle quelconque</h2>
+    <p>Dans un triangle rectangle, les définitions des fonctions trigonométriques et le théorème de Pythagore nous suffisent. Mais que faire si le triangle n'a pas d'angle droit ? Deux théorèmes y répondent — le <b>théorème du sinus</b> et le <b>théorème du cosinus</b>. Tous deux relient les côtés et les angles d'un triangle quelconque et permettent de calculer les côtés et les angles manquants. On dit que l'on <b>résout le triangle</b>.</p>
+    <div class="card">
+        <svg viewBox="0 0 270 190" class="w-full max-w-xs mx-auto" xmlns="http://www.w3.org/2000/svg">
+<polygon points="40,150 230,150 150,35" fill="rgba(124,58,237,0.08)" stroke="#6d28d9" stroke-width="2"/>
+<text x="26" y="158" text-anchor="middle" font-weight="700">A</text>
+<text x="244" y="158" text-anchor="middle" font-weight="700">B</text>
+<text x="150" y="21" text-anchor="middle" font-weight="700">C</text>
+<text x="204" y="86" font-style="italic" fill="#b91c1c">a</text>
+<text x="88" y="86" font-style="italic" fill="#b91c1c">b</text>
+<text x="135" y="168" font-style="italic" fill="#b91c1c">c</text>
+<text x="62" y="141" fill="#0d9488" font-weight="600">α</text>
+<text x="200" y="141" fill="#0d9488" font-weight="600">β</text>
+<text x="144" y="64" fill="#0d9488" font-weight="600">γ</text>
+</svg>
+        <p class="text-sm mt-2 text-center">Notation : les côtés $a=|BC|$, $b=|CA|$, $c=|AB|$ sont toujours <b>opposés</b> aux angles intérieurs $\alpha$, $\beta$, $\gamma$ situés aux sommets $A$, $B$, $C$. On a $\alpha+\beta+\gamma=180°$.</p>
+    </div>
+    <div class="note-box note-link">
+        <b>Liens :</b> Nous utiliserons surtout la relation $\sin(180°-x)=\sin x$ du chapitre sur le sinus et le cosinus — c'est elle qui explique pourquoi un problème donnant deux côtés et un angle peut avoir deux solutions (partie B).
+    </div>
+</section>
+
+<section id="sec-a-veta" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">A. Théorème du sinus et rayon du cercle circonscrit</h2>
+    <div class="card text-center">
+        <p>Dans tout triangle $ABC$, on a :</p>
+        $$\frac{a}{\sin\alpha}=\frac{b}{\sin\beta}=\frac{c}{\sin\gamma}=2R$$
+        <p class="text-sm mt-1">où $R$ est le rayon du cercle circonscrit au triangle. Le rapport d'un côté au sinus de l'angle opposé est donc le même pour les trois côtés. De manière équivalente : $a:b:c=\sin\alpha:\sin\beta:\sin\gamma$.</p>
+    </div>
+    <p>Pourquoi la formule est vraie : la corde $AB$ d'un cercle de rayon $R$ est vue depuis le point $C$ sous l'angle $\gamma$, et le théorème de l'angle inscrit et de l'angle au centre donne $c=2R\sin\gamma$. De même pour les deux autres côtés.</p>
+    <p>Essayez avec les curseurs — vous modifiez les angles $\alpha$ et $\beta$, le côté $c=10$ reste fixe. Les trois rapports sont toujours égaux et valent le diamètre $2R$ du cercle circonscrit :</p>
+    <div class="card">
+        <div id="sin-wrap-fr" class="transition-opacity">
+        <svg viewBox="0 0 300 300" class="w-full max-w-sm mx-auto" xmlns="http://www.w3.org/2000/svg">
+<circle id="sin-circ-fr" cx="150" cy="150" r="100" fill="none" stroke="#c4b5fd" stroke-width="1.5"/>
+<line id="sin-rad-fr" x1="150" y1="150" x2="100" y2="150" stroke="#0d9488" stroke-width="1.3" stroke-dasharray="4,3"/>
+<circle id="sin-o-fr" cx="150" cy="150" r="2.5" fill="#0d9488"/>
+<polygon id="sin-tri-fr" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.10)" stroke="#6d28d9" stroke-width="2"/>
+<text id="sin-tA-fr" text-anchor="middle" dominant-baseline="central" font-weight="700">A</text>
+<text id="sin-tB-fr" text-anchor="middle" dominant-baseline="central" font-weight="700">B</text>
+<text id="sin-tC-fr" text-anchor="middle" dominant-baseline="central" font-weight="700">C</text>
+<text id="sin-la-fr" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">a</text>
+<text id="sin-lb-fr" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">b</text>
+<text id="sin-lc-fr" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">c</text>
+<text id="sin-tR-fr" font-style="italic" fill="#0d9488">R</text>
+</svg>
+        </div>
+        <div class="flex items-center gap-3 mt-3">
+            <span class="slider-label w-8">α =</span>
+            <input type="range" id="sin-al-fr" min="30" max="100" value="50" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="sin-al-v-fr">50</span>°</span>
+        </div>
+        <div class="flex items-center gap-3 mt-1 mb-2">
+            <span class="slider-label w-8">β =</span>
+            <input type="range" id="sin-be-fr" min="30" max="100" value="70" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="sin-be-v-fr">70</span>°</span>
+        </div>
+        <p id="sin-warn-fr" class="hidden text-sm text-amber-700 text-center">La somme α + β doit être inférieure à 160° (angle γ d'au moins 20°) — modifiez les curseurs.</p>
+        <div class="mt-2 p-3 rounded-lg text-center text-sm verdict-ok space-y-1">
+            <div id="sin-r1-fr"></div>
+            <div id="sin-r2-fr"></div>
+            <div id="sin-r3-fr"></div>
+            <div id="sin-r4-fr" class="font-semibold"></div>
+        </div>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> La première formulation claire du théorème du sinus pour les triangles plans est généralement attribuée au savant persan Nasir al-Din al-Tusi (XIIIe siècle). Il était utilisé bien avant en astronomie, puis en géodésie pour la <i>triangulation</i>.
+    </div>
+</section>
+
+<section id="sec-a-priklady" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Utilisation du théorème du sinus</h2>
+    <p>On utilise le théorème du sinus lorsqu'on connaît un couple « côté et angle opposé » et une autre grandeur. Le troisième angle se déduit de la somme des angles.</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Dans le triangle $ABC$, on a $b=6$, $\beta=48°$, $\gamma=72°$. Déterminez $\alpha$, $a$, $c$.</p>
+        <p class="text-sm">L'angle $\alpha=180°-48°-72°=60°$. Le côté $b$ et l'angle $\beta$ forment le couple connu :</p>
+        $$a=\frac{6\cdot\sin60°}{\sin48°}\approx6{,}99\qquad c=\frac{6\cdot\sin72°}{\sin48°}\approx7{,}68$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Dans le triangle $ABC$, on a $b=9$ et $\beta=50°$. Déterminez le rayon $R$ du cercle circonscrit.</p>
+        <p class="text-sm">De l'égalité $\dfrac{b}{\sin\beta}=2R$ on déduit :</p>
+        $$R=\frac{b}{2\sin\beta}=\frac{9}{2\sin50°}\approx5{,}87$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Le côté $a=12$ et le rayon du cercle circonscrit est $R=10$. Déterminez l'angle $\alpha$.</p>
+        <p class="text-sm">De $\dfrac{a}{\sin\alpha}=2R$ on obtient $\sin\alpha=\dfrac{a}{2R}=\dfrac{12}{20}=0{,}6$. Dans l'intervalle $(0°;180°)$, cette équation a deux solutions :</p>
+        $$\alpha\approx36°52'\qquad\text{ou}\qquad\alpha=180°-36°52'=143°08'$$
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> L'équation $\sin\alpha=k$ a, pour $0\lt k\lt1$, <b>deux</b> solutions dans l'intervalle $(0°;180°)$ : $\alpha$ et $180°-\alpha$. Quand on calcule un angle avec le théorème du sinus, il faut donc toujours vérifier si les deux valeurs conviennent au triangle — c'est le sujet de la partie B.
+    </div>
+</section>
+
+<section id="sec-b-ssa" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">B. Le cas ambigu : deux côtés et un angle opposé à l'un d'eux</h2>
+    <p>On donne les côtés $a$, $b$ et l'angle $\alpha$ <b>opposé au côté $a$</b>. Le théorème du sinus donne</p>
+    $$\sin\beta=\frac{b\sin\alpha}{a}.$$
+    <ul class="list-disc list-inside text-sm space-y-1">
+        <li>Si le membre de droite est supérieur à $1$, le problème <b>n'a pas de solution</b>.</li>
+        <li>S'il est égal à $1$, alors $\beta=90°$ et il y a <b>une seule solution</b> (triangle rectangle).</li>
+        <li>S'il est inférieur à $1$, on a deux candidats $\beta_1$ et $\beta_2=180°-\beta_1$. <b>Seul convient celui pour lequel $\alpha+\beta\lt180°$.</b></li>
+    </ul>
+    <div class="card overflow-x-auto">
+        <p class="text-sm mb-2">Pour un angle $\alpha$ <b>aigu</b>, on peut résumer selon la longueur du côté $a$ :</p>
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Relation entre $a$ et $b$</th><th class="p-1 text-left">Nombre de solutions</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$a\lt b\sin\alpha$</td><td class="p-1 text-left">aucune</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$a=b\sin\alpha$</td><td class="p-1 text-left">une (triangle rectangle)</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">$b\sin\alpha\lt a\lt b$</td><td class="p-1 text-left">deux</td></tr>
+                <tr><td class="p-1 text-left">$a\ge b$</td><td class="p-1 text-left">une</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p>Sur la figure, on a fixé $\alpha=30°$ et $b=8$. Le curseur modifie la longueur du côté $a$ — le cercle de rayon $a$ centré en $C$ coupe la demi-droite issue de $A$ en zéro, un ou deux points $B$ :</p>
+    <div class="card">
+        <svg viewBox="0 0 300 230" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<line x1="10" y1="205" x2="292" y2="205" stroke="#57534e" stroke-width="1.5"/>
+<circle id="ssa-circ-fr" cx="150" cy="150" r="60" fill="none" stroke="#c4b5fd" stroke-width="1.5" stroke-dasharray="5,4"/>
+<polygon id="ssa-tri1-fr" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.12)" stroke="#6d28d9" stroke-width="2"/>
+<polygon id="ssa-tri2-fr" points="0,0 0,0 0,0" fill="rgba(192,38,211,0.12)" stroke="#c026d3" stroke-width="2"/>
+<circle id="ssa-p1-fr" cx="0" cy="0" r="4" fill="#6d28d9"/>
+<circle id="ssa-p2-fr" cx="0" cy="0" r="4" fill="#c026d3"/>
+<text id="ssa-t1-fr" x="0" y="0">B<tspan dy="3" font-size="9">1</tspan></text>
+<text id="ssa-t2-fr" x="0" y="0">B<tspan dy="3" font-size="9">2</tspan></text>
+<circle cx="28" cy="205" r="3.5" fill="#44403c"/>
+<circle cx="125" cy="149" r="3.5" fill="#44403c"/>
+<text x="12" y="222" font-weight="700">A</text>
+<text x="120" y="139" font-weight="700">C</text>
+<text x="46" y="222" fill="#0d9488" font-weight="600">α = 30°</text>
+<text x="52" y="168" font-style="italic" fill="#b91c1c">b = 8</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">a =</span>
+            <input type="range" id="ssa-a-fr" min="2" max="10" value="6" step="0.5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="ssa-a-v-fr">6,0</span></span>
+        </div>
+        <div class="p-2 text-center text-sm space-y-1">
+            <div id="ssa-r1-fr"></div>
+            <div id="ssa-r2-fr"></div>
+        </div>
+        <div id="ssa-box-fr" class="mt-2 p-3 rounded-lg text-center text-sm font-semibold verdict-ok">
+            <span id="ssa-verdict-fr"></span>
+        </div>
+    </div>
+</section>
+
+<section id="sec-b-priklady" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Exemples : deux, une et aucune solution</h2>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Résolvez le triangle $ABC$ avec $a=5$, $b=8$, $\alpha=30°$.</p>
+        <p class="text-sm">On a $b\sin\alpha=4\lt5\lt8=b$, on s'attend donc à deux solutions.</p>
+        $$\sin\beta=\frac{8\cdot\sin30°}{5}=0{,}8\ \Rightarrow\ \beta_1\approx53°08',\quad\beta_2=180°-\beta_1\approx126°52'$$
+        <p class="text-sm mt-1">Les deux angles conviennent ($30°+126°52'\lt180°$). On calcule $\gamma$ et $c$ :</p>
+        <ul class="list-disc list-inside text-sm space-y-1">
+            <li>$\gamma_1\approx96°52'$, $c_1=\dfrac{5\sin\gamma_1}{\sin30°}\approx9{,}93$</li>
+            <li>$\gamma_2\approx23°08'$, $c_2=\dfrac{5\sin\gamma_2}{\sin30°}\approx3{,}93$</li>
+        </ul>
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Résolvez le triangle $ABC$ avec $a=9$, $b=5$, $\alpha=40°$.</p>
+        $$\sin\beta=\frac{5\cdot\sin40°}{9}\approx0{,}3571\ \Rightarrow\ \beta_1\approx20°55',\quad\beta_2\approx159°05'$$
+        <p class="text-sm mt-1">L'angle $\beta_2$ ne convient pas, car $40°+159°05'\gt180°$ (et aussi $a\gt b$). La solution est unique :</p>
+        $$\gamma=180°-40°-20°55'\approx119°05'\qquad c=\frac{9\cdot\sin119°05'}{\sin40°}\approx12{,}24$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Résolvez le triangle $ABC$ avec $a=2$, $b=6$, $\alpha=30°$.</p>
+        $$\sin\beta=\frac{6\cdot\sin30°}{2}=1{,}5\gt1$$
+        <p class="text-sm mt-1">Un sinus ne peut pas dépasser $1$, le problème <b>n'a pas de solution</b>. (Le côté $a=2$ est plus court que $b\sin\alpha=3$ — il « n'atteint pas » la demi-droite.)</p>
+    </div>
+</section>
+
+<section id="sec-c-veta" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">C. Théorème du cosinus</h2>
+    <div class="card text-center">
+        <p>Dans tout triangle $ABC$, on a :</p>
+        $$a^2=b^2+c^2-2bc\cos\alpha$$
+        $$b^2=a^2+c^2-2ac\cos\beta$$
+        $$c^2=a^2+b^2-2ab\cos\gamma$$
+        <p class="text-sm mt-1">Le carré d'un côté est égal à la somme des carrés des deux autres côtés moins le double de leur produit multiplié par le cosinus de l'angle qu'ils <b>forment</b>.</p>
+    </div>
+    <p>En transformant la première égalité, on obtient une formule pour l'angle quand on connaît les trois côtés :</p>
+    $$\cos\alpha=\frac{b^2+c^2-a^2}{2bc}$$
+    <p>Pour $\gamma=90°$, on a $\cos\gamma=0$ et la troisième égalité devient $c^2=a^2+b^2$ — <b>le théorème de Pythagore est un cas particulier du théorème du cosinus</b>. Essayez avec le curseur : les côtés $b=6$ et $c=10$ sont fixes et c'est l'angle $\alpha$ qui varie :</p>
+    <div class="card">
+        <svg viewBox="0 0 300 130" class="w-full max-w-md mx-auto" xmlns="http://www.w3.org/2000/svg">
+<polygon id="cos-tri-fr" points="0,0 0,0 0,0" fill="rgba(124,58,237,0.10)" stroke="#6d28d9" stroke-width="2"/>
+<text id="cos-tA-fr" text-anchor="middle" dominant-baseline="central" font-weight="700">A</text>
+<text id="cos-tB-fr" text-anchor="middle" dominant-baseline="central" font-weight="700">B</text>
+<text id="cos-tC-fr" text-anchor="middle" dominant-baseline="central" font-weight="700">C</text>
+<text id="cos-la-fr" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">a</text>
+<text id="cos-lb-fr" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">b</text>
+<text id="cos-lc-fr" text-anchor="middle" dominant-baseline="central" font-style="italic" fill="#b91c1c">c</text>
+</svg>
+        <div class="flex items-center gap-3 mt-3 mb-2">
+            <span class="slider-label">α =</span>
+            <input type="range" id="cos-al-fr" min="10" max="170" value="60" step="5" class="flex-grow">
+            <span class="font-mono text-sm w-12 text-right"><span id="cos-al-v-fr">60</span>°</span>
+        </div>
+        <div class="p-2 text-center text-sm space-y-1">
+            <div id="cos-r1-fr"></div>
+            <div id="cos-r2-fr" class="font-semibold"></div>
+        </div>
+        <div id="cos-box-fr" class="mt-2 p-3 rounded-lg text-center text-sm font-semibold verdict-ok">
+            <span id="cos-verdict-fr"></span>
+        </div>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> On trouve déjà une forme géométrique du théorème du cosinus dans les <i>Éléments</i> d'Euclide (propositions II.12 et II.13). En France, on l'appelle aussi <i>théorème d'Al-Kashi</i>, du nom du mathématicien persan Jamshid al-Kashi (XVe siècle).
+    </div>
+</section>
+
+<section id="sec-c-priklady" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Utilisation du théorème du cosinus</h2>
+    <p>On utilise le théorème du cosinus lorsqu'on connaît <b>deux côtés et l'angle compris</b> (on cherche le troisième côté) ou <b>les trois côtés</b> (on cherche un angle).</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Déterminez le côté $a$, sachant que $b=6$, $c=10$, $\alpha=120°$.</p>
+        $$a^2=6^2+10^2-2\cdot6\cdot10\cdot\cos120°=136-120\cdot\left(-\frac12\right)=196\ \Rightarrow\ a=14$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Déterminez le côté $a$, sachant que $b=7$, $c=9$, $\alpha=38°$.</p>
+        $$a^2=49+81-2\cdot7\cdot9\cdot\cos38°\approx30{,}71\ \Rightarrow\ a\approx5{,}54$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Déterminez l'angle $\alpha$, sachant que $a=7$, $b=5$, $c=8$.</p>
+        $$\cos\alpha=\frac{b^2+c^2-a^2}{2bc}=\frac{25+64-49}{2\cdot5\cdot8}=\frac{40}{80}=\frac12\ \Rightarrow\ \alpha=60°$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Résolvez le triangle de côtés $a=6$, $b=9$, $c=13$.</p>
+        <p class="text-sm">On commence par l'angle opposé au <b>plus grand</b> côté :</p>
+        $$\cos\gamma=\frac{36+81-169}{2\cdot6\cdot9}=-\frac{52}{108}\approx-0{,}4815\ \Rightarrow\ \gamma\approx118°47'$$
+        <p class="text-sm mt-1">Un triangle ne peut avoir qu'un seul angle obtus, les deux autres sont donc aigus et le théorème du sinus ne donne plus deux possibilités :</p>
+        $$\sin\alpha=\frac{6\cdot\sin\gamma}{13}\approx0{,}4045\ \Rightarrow\ \alpha\approx23°52'\qquad\beta=180°-\gamma-\alpha\approx37°21'$$
+    </div>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Déterminez le côté $c$, sachant que $a=3$, $b=4$, $\gamma=90°$.</p>
+        $$c^2=9+16-2\cdot3\cdot4\cdot\cos90°=25-0\ \Rightarrow\ c=5$$
+        <p class="text-sm mt-1">Le théorème du cosinus coïncide ici avec le théorème de Pythagore.</p>
+    </div>
+</section>
+
+<section id="sec-c-volba" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Quel théorème choisir</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Données</th><th class="p-1 text-left">On utilise</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">un côté et deux angles (ACA, AAC)</td><td class="p-1 text-left">le théorème du sinus</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">deux côtés et un angle opposé à l'un d'eux (CCA)</td><td class="p-1 text-left">le théorème du sinus — attention aux deux solutions</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">deux côtés et l'angle compris (CAC)</td><td class="p-1 text-left">le théorème du cosinus</td></tr>
+                <tr><td class="p-1 text-left">trois côtés (CCC)</td><td class="p-1 text-left">le théorème du cosinus</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p>Le cas CCA peut aussi se résoudre avec le théorème du cosinus. L'ambiguïté apparaît alors sous la forme de <b>deux racines positives d'une équation du second degré</b> :</p>
+    <div class="card">
+        <p class="mb-2"><b>Exemple :</b> Pour $a=5$, $b=8$, $\alpha=30°$, on écrit le théorème du cosinus $a^2=b^2+c^2-2bc\cos\alpha$ comme une équation d'inconnue $c$ :</p>
+        $$25=64+c^2-16c\cos30°\ \Rightarrow\ c^2-8\sqrt3\,c+39=0$$
+        $$D=192-156=36\ \Rightarrow\ c=\frac{8\sqrt3\pm6}{2}=4\sqrt3\pm3$$
+        <p class="text-sm mt-1">On obtient $c_1\approx9{,}93$ et $c_2\approx3{,}93$ — les mêmes deux solutions que ci-dessus avec le théorème du sinus.</p>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Avant de calculer, vérifiez que la calculatrice est en degrés (DEG) et non en radians. Et quand on détermine un angle avec le théorème du cosinus, n'oubliez pas qu'un cosinus négatif signifie un angle <b>obtus</b>.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm text-center">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Notion</th><th class="p-1 text-left">Idée clé</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">théorème du sinus</td><td class="p-1 text-left">$\dfrac{a}{\sin\alpha}=\dfrac{b}{\sin\beta}=\dfrac{c}{\sin\gamma}=2R$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">cas CCA</td><td class="p-1 text-left">$\sin\beta=\dfrac{b\sin\alpha}{a}$ — aucune, une ou deux solutions</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">théorème du cosinus</td><td class="p-1 text-left">$a^2=b^2+c^2-2bc\cos\alpha$</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1 text-left">angle à partir de trois côtés</td><td class="p-1 text-left">$\cos\alpha=\dfrac{b^2+c^2-a^2}{2bc}$</td></tr>
+                <tr><td class="p-1 text-left">$\gamma=90°$</td><td class="p-1 text-left">le théorème du cosinus devient le théorème de Pythagore</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-next">
+        <b>Et ensuite :</b> Dans le dernier chapitre de la série, <i>Goniométrie 7 — Applications des théorèmes du sinus et du cosinus</i>, nous utiliserons les deux théorèmes dans des problèmes pratiques — calculs de distances, de hauteurs et d'autres grandeurs dans des triangles.
+    </div>
+</section>
+
+</div>
+
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 6 — Le théorème du sinus et du cosinus' : 'Goniometrie 6 — Sinová a kosinová věta';
+    document.title = czVisible ? 'Goniométrie 6 — Le théorème du sinus et du cosinus — Théorie' : 'Goniometrie 6 — Sinová a kosinová věta — Teorie';
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+// cislo -> retezec s desetinnou carkou pro TeX ({,} bez mezery)
+function tex(x, d){
+    if (d === undefined) d = 2;
+    let s = x.toFixed(d);
+    if (/^-0(\.0+)?$/.test(s)) s = s.slice(1);
+    return s.replace('.', '{,}');
+}
+function typeset(els){
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise(els);
+}
+function place(el, p, g, dist){
+    const dx = p[0]-g[0], dy = p[1]-g[1];
+    const L = Math.hypot(dx, dy) || 1;
+    el.setAttribute('x', (p[0] + dx/L*dist).toFixed(1));
+    el.setAttribute('y', (p[1] + dy/L*dist).toFixed(1));
+}
+function pts(arr){ return arr.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' '); }
+
+// ---------- 1) sinova veta + kruznice opsana ----------
+function updateSin(sfx){
+    const g = id => document.getElementById(id + sfx);
+    const al = +g('sin-al').value, be = +g('sin-be').value;
+    g('sin-al-v').textContent = al;
+    g('sin-be-v').textContent = be;
+    const ga = 180 - al - be;
+    if (ga < 20){
+        g('sin-warn').classList.remove('hidden');
+        g('sin-wrap').classList.add('opacity-40');
+        return;
+    }
+    g('sin-warn').classList.add('hidden');
+    g('sin-wrap').classList.remove('opacity-40');
+    const rd = Math.PI/180, c = 10;
+    const a = c*Math.sin(al*rd)/Math.sin(ga*rd);
+    const b = c*Math.sin(be*rd)/Math.sin(ga*rd);
+    const R = c/(2*Math.sin(ga*rd));
+    const A = [0,0], B = [c,0], C = [b*Math.cos(al*rd), b*Math.sin(al*rd)];
+    const O = [c/2, R*Math.cos(ga*rd)];
+    const minX = Math.min(0, C[0], O[0]-R), maxX = Math.max(c, C[0], O[0]+R);
+    const minY = Math.min(0, C[1], O[1]-R), maxY = Math.max(C[1], O[1]+R);
+    const W = 300, H = 300, pad = 24;
+    const s = Math.min((W-2*pad)/(maxX-minX), (H-2*pad)/(maxY-minY));
+    const ox = (W - s*(maxX-minX))/2 - s*minX;
+    const oy = (H - s*(maxY-minY))/2 + s*maxY;
+    const P = p => [ox + s*p[0], oy - s*p[1]];
+    const pA = P(A), pB = P(B), pC = P(C), pO = P(O);
+    g('sin-tri').setAttribute('points', pts([pA,pB,pC]));
+    g('sin-circ').setAttribute('cx', pO[0].toFixed(1));
+    g('sin-circ').setAttribute('cy', pO[1].toFixed(1));
+    g('sin-circ').setAttribute('r', (s*R).toFixed(1));
+    g('sin-o').setAttribute('cx', pO[0].toFixed(1));
+    g('sin-o').setAttribute('cy', pO[1].toFixed(1));
+    const rad = g('sin-rad');
+    rad.setAttribute('x1', pO[0].toFixed(1)); rad.setAttribute('y1', pO[1].toFixed(1));
+    rad.setAttribute('x2', pA[0].toFixed(1)); rad.setAttribute('y2', pA[1].toFixed(1));
+    const G = [(pA[0]+pB[0]+pC[0])/3, (pA[1]+pB[1]+pC[1])/3];
+    place(g('sin-tA'), pA, G, 13); place(g('sin-tB'), pB, G, 13); place(g('sin-tC'), pC, G, 13);
+    const mid = (p,q) => [(p[0]+q[0])/2, (p[1]+q[1])/2];
+    place(g('sin-la'), mid(pB,pC), G, 11);
+    place(g('sin-lb'), mid(pC,pA), G, 11);
+    place(g('sin-lc'), mid(pA,pB), G, 11);
+    g('sin-tR').setAttribute('x', ((pO[0]+pA[0])/2 + 4).toFixed(1));
+    g('sin-tR').setAttribute('y', ((pO[1]+pA[1])/2 - 4).toFixed(1));
+
+    const e1 = g('sin-r1'), e2 = g('sin-r2'), e3 = g('sin-r3'), e4 = g('sin-r4');
+    e1.textContent = '$\\alpha=' + al + '°,\\ \\beta=' + be + '°,\\ \\gamma=' + ga + '°$';
+    e2.textContent = '$a\\approx' + tex(a) + ',\\ b\\approx' + tex(b) + ',\\ c=10$';
+    const k = a/Math.sin(al*rd);
+    e3.textContent = '$\\dfrac{a}{\\sin\\alpha}\\approx' + tex(k) + '\\quad\\dfrac{b}{\\sin\\beta}\\approx' + tex(b/Math.sin(be*rd)) + '\\quad\\dfrac{c}{\\sin\\gamma}\\approx' + tex(c/Math.sin(ga*rd)) + '$';
+    e4.textContent = '$2R\\approx' + tex(2*R) + '\\ \\Rightarrow\\ R\\approx' + tex(R) + '$';
+    typeset([e1,e2,e3,e4]);
+}
+
+// ---------- 2) nejednoznacnost SSA ----------
+function updateSsa(sfx){
+    const FR = sfx === '-fr';
+    const g = id => document.getElementById(id + sfx);
+    const al = 30, b = 8, rd = Math.PI/180;
+    const a = +g('ssa-a').value;
+    g('ssa-a-v').textContent = a.toFixed(1).replace('.', ',');
+    const Cx = b*Math.cos(al*rd), Cy = b*Math.sin(al*rd);
+    const s = 14, ox = 28, oy = 205;
+    const P = (x,y) => [ox + s*x, oy - s*y];
+    const pC = P(Cx, Cy), pA = P(0,0);
+    g('ssa-circ').setAttribute('cx', pC[0].toFixed(1));
+    g('ssa-circ').setAttribute('cy', pC[1].toFixed(1));
+    g('ssa-circ').setAttribute('r', (s*a).toFixed(1));
+    const disc = a*a - Cy*Cy;
+    let xs = [];
+    if (disc > -1e-9){
+        const d = Math.sqrt(Math.max(0, disc));
+        if (d < 1e-6) xs = [Cx]; else xs = [Cx + d, Cx - d];
+    }
+    xs = xs.filter(x => x > 1e-6);
+    ['1','2'].forEach((n, i) => {
+        const tri = g('ssa-tri' + n), pt = g('ssa-p' + n), tx = g('ssa-t' + n);
+        if (i < xs.length){
+            const pB = P(xs[i], 0);
+            tri.setAttribute('points', pts([pA, pB, pC]));
+            tri.classList.remove('hidden');
+            pt.setAttribute('cx', pB[0].toFixed(1)); pt.setAttribute('cy', pB[1].toFixed(1));
+            pt.classList.remove('hidden');
+            tx.setAttribute('x', (pB[0] - 4).toFixed(1)); tx.setAttribute('y', (pB[1] + 18).toFixed(1));
+            tx.classList.remove('hidden');
+        } else {
+            tri.classList.add('hidden'); pt.classList.add('hidden'); tx.classList.add('hidden');
+        }
+    });
+    const sinB = b*Math.sin(al*rd)/a;
+    g('ssa-r1').textContent = '$\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}=\\dfrac{8\\cdot\\sin30°}{' + tex(a,1) + '}\\approx' + tex(sinB) + '$';
+    let sols = '';
+    xs.forEach((x, i) => {
+        const beta = Math.acos((x - Cx)/a)/rd;
+        sols += (i ? '\\qquad ' : '') + 'B_' + (i+1) + ':\\ \\beta\\approx' + tex(beta,1) + '°,\\ c\\approx' + tex(x);
+    });
+    g('ssa-r2').textContent = xs.length ? '$' + sols + '$' : '';
+    let verdict, cls;
+    if (a < Cy - 1e-9){
+        verdict = FR ? 'Aucune solution : $\\sin\\beta\\gt1$.' : 'Žádné řešení: $\\sin\\beta\\gt1$.';
+        cls = 'bg-red-50 border border-red-200';
+    } else if (Math.abs(a - Cy) < 1e-9){
+        verdict = FR ? 'Une seule solution : triangle rectangle, $\\beta=90°$.' : 'Právě jedno řešení: pravoúhlý trojúhelník, $\\beta=90°$.';
+        cls = 'bg-teal-50 border border-teal-200';
+    } else if (xs.length === 2){
+        verdict = FR ? 'Deux solutions : $\\beta$ et $180°-\\beta$ conviennent toutes les deux.' : 'Dvě řešení: vyhovuje $\\beta$ i $180°-\\beta$.';
+        cls = 'bg-violet-50 border border-violet-200';
+    } else {
+        verdict = FR ? 'Une seule solution : $180°-\\beta$ ne convient pas ($\\alpha+\\beta\\ge180°$).' : 'Právě jedno řešení: $180°-\\beta$ nevyhovuje ($\\alpha+\\beta\\ge180°$).';
+        cls = 'bg-teal-50 border border-teal-200';
+    }
+    const box = g('ssa-box');
+    box.className = 'mt-2 p-3 rounded-lg text-center text-sm font-semibold ' + cls;
+    g('ssa-verdict').textContent = verdict;
+    typeset([g('ssa-r1'), g('ssa-r2'), g('ssa-verdict')]);
+}
+
+// ---------- 3) kosinova veta ----------
+function updateCos(sfx){
+    const FR = sfx === '-fr';
+    const g = id => document.getElementById(id + sfx);
+    const al = +g('cos-al').value, b = 6, c = 10, rd = Math.PI/180;
+    g('cos-al-v').textContent = al;
+    const a2 = b*b + c*c - 2*b*c*Math.cos(al*rd);
+    const a = Math.sqrt(a2);
+    const s = 16, ox = 116, oy = 110;
+    const P = p => [ox + s*p[0], oy - s*p[1]];
+    const pA = P([0,0]), pB = P([c,0]), pC = P([b*Math.cos(al*rd), b*Math.sin(al*rd)]);
+    g('cos-tri').setAttribute('points', pts([pA,pB,pC]));
+    const G = [(pA[0]+pB[0]+pC[0])/3, (pA[1]+pB[1]+pC[1])/3];
+    place(g('cos-tA'), pA, G, 13); place(g('cos-tB'), pB, G, 13); place(g('cos-tC'), pC, G, 13);
+    const mid = (p,q) => [(p[0]+q[0])/2, (p[1]+q[1])/2];
+    place(g('cos-la'), mid(pB,pC), G, 11);
+    place(g('cos-lb'), mid(pC,pA), G, 11);
+    place(g('cos-lc'), mid(pA,pB), G, 11);
+    const cosv = Math.cos(al*rd);
+    const sign = cosv < 0 ? '+' : '-';
+    g('cos-r1').textContent = '$a^2=6^2+10^2-2\\cdot6\\cdot10\\cdot\\cos' + al + '°\\approx' + tex(a2) + '$';
+    g('cos-r2').textContent = '$a\\approx' + tex(a) + '$';
+    let rel, cls;
+    if (al === 90){
+        rel = FR ? '$\\alpha=90°$ : $\\cos\\alpha=0$, donc $a^2=b^2+c^2$ — c\'est le théorème de Pythagore.' : '$\\alpha=90°$: $\\cos\\alpha=0$, tedy $a^2=b^2+c^2$ — Pythagorova věta.';
+        cls = 'bg-teal-50 border border-teal-200';
+    } else if (al < 90){
+        rel = FR ? '$\\alpha$ aigu : $\\cos\\alpha\\gt0$, donc $a^2\\lt b^2+c^2=136$.' : '$\\alpha$ ostrý: $\\cos\\alpha\\gt0$, tedy $a^2\\lt b^2+c^2=136$.';
+        cls = 'bg-violet-50 border border-violet-200';
+    } else {
+        rel = FR ? '$\\alpha$ obtus : $\\cos\\alpha\\lt0$, donc $a^2\\gt b^2+c^2=136$.' : '$\\alpha$ tupý: $\\cos\\alpha\\lt0$, tedy $a^2\\gt b^2+c^2=136$.';
+        cls = 'bg-amber-50 border border-amber-200';
+    }
+    g('cos-box').className = 'mt-2 p-3 rounded-lg text-center text-sm font-semibold ' + cls;
+    g('cos-verdict').textContent = rel;
+    typeset([g('cos-r1'), g('cos-r2'), g('cos-verdict')]);
+}
+
+// ---- Inicializace ----
+['', '-fr'].forEach(sfx => {
+    updateSin(sfx); updateSsa(sfx); updateCos(sfx);
+    document.getElementById('sin-al'+sfx).addEventListener('input', () => updateSin(sfx));
+    document.getElementById('sin-be'+sfx).addEventListener('input', () => updateSin(sfx));
+    document.getElementById('ssa-a'+sfx).addEventListener('input', () => updateSsa(sfx));
+    document.getElementById('cos-al'+sfx).addEventListener('input', () => updateCos(sfx));
+});
+
+</script>
+</body>
+</html>

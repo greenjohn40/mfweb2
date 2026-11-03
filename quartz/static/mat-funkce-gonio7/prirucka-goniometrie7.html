@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goniometrie 7 — Užití sinové a kosinové věty — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-goniometrie7.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Goniometrie 7 — Užití sinové a kosinové věty · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- ============================================================ -->
+<!-- CZ CONTENT -->
+<!-- ============================================================ -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniometrie 7 — Užití sinové a kosinové věty</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Společný postup</h2>
+<p class="mb-3">U slovní úlohy nakreslíme náčrt a zavedeme označení, najdeme trojúhelník se známými údaji, podle zadání (usu, uus, ssu, sus, sss) zvolíme sinovou nebo kosinovou větu, vypočteme a napíšeme odpověď slovy s jednotkou.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Skládání sil</h2>
+<div class="def-box mb-3">
+    <p>Dvě různoběžné síly $F_1$, $F_2$ svírající úhel $\varphi$ nahradíme výslednicí $F$ (úhlopříčka rovnoběžníku sil). Úhel proti výslednici v trojúhelníku sil je $\beta=180°-\varphi$.</p>
+    <p>$F^2=F_1^2+F_2^2-2F_1F_2\cos\beta$, &ensp; $\dfrac{\sin\alpha}{F_2}=\dfrac{\sin\beta}{F}$ ($\alpha$ je úhel mezi $F$ a $F_1$).</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $F_1=14$ N, $F_2=9$ N, $\varphi=50°$. Pak $\beta=130°$, $F^2=14^2+9^2-2\cdot14\cdot9\cdot\cos130°\approx438{,}98$, $F\approx20{,}95$ N; $\sin\alpha=\dfrac{9\sin130°}{20{,}95}\approx0{,}3291$, $\alpha\approx19°13'$ (hodnota $160°47'$ nevyhovuje, protože $\alpha+\beta\lt180°$).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Rozklad síly na složky</h2>
+<p class="mb-3">Danou sílu $F$ nahradíme dvěma silami ve zvolených směrech, které s ní svírají úhly $a_1$, $a_2$. V trojúhelníku známe stranu $F$ a dva úhly; třetí úhel je $\gamma=180°-a_1-a_2$ a leží proti $F$. Sinová věta: $F_1=\dfrac{F\sin a_2}{\sin\gamma}$, $F_2=\dfrac{F\sin a_1}{\sin\gamma}$.</p>
+<p class="mb-3"><b>Příklad:</b> $F=20$ N, $a_1=35°$, $a_2=50°$. Pak $\gamma=95°$, $F_1=\dfrac{20\sin50°}{\sin95°}\approx15{,}38$ N, $F_2=\dfrac{20\sin35°}{\sin95°}\approx11{,}52$ N.</p>
+<div class="warn-box mb-3">
+    <p>Kontrola rozumnosti: směr, který leží blíž k síle $F$, má větší složku ($15{,}38\gt11{,}52$). Vyjde-li to opačně, složky jsme zaměnili.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Výškový, hloubkový a zorný úhel</h2>
+<ul class="list-disc list-inside mb-3">
+    <li><b>výškový úhel</b> — úhel mezi vodorovnou rovinou a přímkou k bodu <b>nad</b> ní;</li>
+    <li><b>hloubkový úhel</b> — úhel mezi vodorovnou rovinou a přímkou k bodu <b>pod</b> ní;</li>
+    <li><b>zorný úhel</b> — úhel, který svírají paprsky z oka pozorovatele ke krajním bodům předmětu.</li>
+</ul>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Nepřístupná vzdálenost</h2>
+<p class="mb-3">Změříme základnu mezi dvěma přístupnými body a úhly, ostatní délky dopočteme z trojúhelníku.</p>
+<p class="mb-3"><b>Příklad (usu):</b> $|AB|=50$ m, $\alpha=62°$, $\beta=71°$. Pak $\gamma=47°$, $|BC|=\dfrac{50\sin62°}{\sin47°}\approx60{,}36$ m, $|AC|=\dfrac{50\sin71°}{\sin47°}\approx64{,}64$ m.</p>
+<p class="mb-3"><b>Příklad (sus):</b> $|KL|=120$ m, $|KM|=85$ m, $|\angle LKM|=62°$. Pak $|LM|^2=120^2+85^2-2\cdot120\cdot85\cdot\cos62°\approx12\,047{,}8$, $|LM|\approx109{,}8$ m.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Výška předmětu s nepřístupnou patou</h2>
+<p class="mb-3">Body $A$, $B$ zvolíme na jedné přímce s patou $T$ ($B$ je od věže dál než $A$) a změříme výškové úhly $\alpha$ (z $A$) a $\beta$ (z $B$). V trojúhelníku $ABP$ je $|\angle APB|=\alpha-\beta$, sinová věta dá $|AP|=\dfrac{|AB|\sin\beta}{\sin(\alpha-\beta)}$ a z pravoúhlého trojúhelníku $ATP$ je $h=|AP|\sin\alpha$.</p>
+<p class="mb-3"><b>Příklad:</b> $|AB|=30$ m, $\alpha=41°$, $\beta=28°$. Pak $|\angle APB|=13°$, $|AP|=\dfrac{30\sin28°}{\sin13°}\approx62{,}61$ m, $h=62{,}61\cdot\sin41°\approx41{,}08$ m.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Hloubkové úhly z vyvýšeného místa</h2>
+<p class="mb-3"><b>Příklad:</b> Pozorovatel v bodě $K$ je o $90$ m výše než pata $P$ věže, patu vidí pod hloubkovým úhlem $\varphi=30°$ a vrchol $V$ pod $\omega=18°$. Pak $|KP|=\dfrac{90}{\sin30°}=180$ m; v trojúhelníku $KPV$ je $\kappa=\varphi-\omega=12°$, $\nu=90°+\omega=108°$ a $|PV|=\dfrac{180\sin12°}{\sin108°}\approx39{,}35$ m.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Obsah trojúhelníku</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Vzorec</th>
+            <th class="text-left py-1">Známe</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$S=\dfrac12ab\sin\gamma$</td><td class="py-1">dvě strany a úhel mezi nimi</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$S=\sqrt{s(s-a)(s-b)(s-c)}$, $s=\dfrac{a+b+c}{2}$</td><td class="py-1">tři strany (Heronův vzorec)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$S=\dfrac{abc}{4R}$</td><td class="py-1">tři strany a poloměr opsané kružnice</td></tr>
+        <tr><td class="py-1 pr-2">$S=\varrho s$</td><td class="py-1">poloměr vepsané kružnice a polovina obvodu</td></tr>
+    </tbody>
+</table>
+<p class="mb-3"><b>Příklad:</b> $a=9$, $b=14$, $\gamma=50°$ $\Rightarrow$ $S=\dfrac12\cdot9\cdot14\cdot\sin50°\approx48{,}26$.</p>
+<p class="mb-3"><b>Příklad:</b> strany $13$, $14$, $15$: $s=21$, $S=\sqrt{21\cdot8\cdot7\cdot6}=84$, $R=\dfrac{13\cdot14\cdot15}{4\cdot84}=8{,}125$, $\varrho=\dfrac{84}{21}=4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Výměra pozemku</h2>
+<p class="mb-3">Čtyřúhelník rozdělíme úhlopříčkou na dva trojúhelníky; jejich obsahy sečteme.</p>
+<p class="mb-3"><b>Příklad:</b> $|AB|=60$ m, $|BC|=45$ m, $|CD|=52$ m, $|DA|=38$ m, $\beta=110°$. $S_1=\dfrac12\cdot60\cdot45\cdot\sin110°\approx1\,268{,}59$ m$^2$, $|AC|\approx86{,}44$ m, $s=88{,}22$, $S_2\approx534{,}44$ m$^2$, $S=S_1+S_2\approx1\,803$ m$^2$.</p>
+<div class="warn-box mb-3">
+    <p>Obsah mnohoúhelníku je součtem obsahů trojúhelníků jen tehdy, když se trojúhelníky nepřekrývají a celý mnohoúhelník vyplňují. V mezivýsledcích si ponechte více desetinných míst.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Úloha</th>
+            <th class="text-left py-1">Postup</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">výslednice sil</td><td class="py-1">kosinová věta ($\beta=180°-\varphi$), sinová věta pro směr</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">rozklad síly</td><td class="py-1">sinová věta ($F$ a dva úhly)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">nepřístupná vzdálenost</td><td class="py-1">usu: sinová věta; sus: kosinová věta</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">výška s nepřístupnou patou</td><td class="py-1">$|\angle APB|=\alpha-\beta$, $|AP|$ sinovou větou, $h=|AP|\sin\alpha$</td></tr>
+        <tr><td class="py-1 pr-2">výměra pozemku</td><td class="py-1">rozdělit na trojúhelníky, $\tfrac12ab\sin\gamma$ nebo Heronův vzorec</td></tr>
+    </tbody>
+</table>
+<p class="mb-3 text-sm">Tím je série o goniometrii u konce. Souvislosti a další směřování najdete na konci teorie k této kapitole.</p>
+
+</main>
+</div>
+
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Goniométrie 7 — Applications des théorèmes du sinus et du cosinus</h1>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Démarche commune</h2>
+<p class="mb-3">Pour un problème, on fait un croquis et on introduit des notations, on repère un triangle aux données connues, on choisit selon les données (ACA, AAC, CCA, CAC, CCC) le théorème du sinus ou du cosinus, on calcule et on rédige la réponse en une phrase avec l'unité.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Composition de forces</h2>
+<div class="def-box mb-3">
+    <p>Deux forces concourantes $F_1$, $F_2$ formant un angle $\varphi$ sont remplacées par leur résultante $F$ (diagonale du parallélogramme des forces). L'angle opposé à la résultante dans le triangle des forces est $\beta=180°-\varphi$.</p>
+    <p>$F^2=F_1^2+F_2^2-2F_1F_2\cos\beta$, &ensp; $\dfrac{\sin\alpha}{F_2}=\dfrac{\sin\beta}{F}$ ($\alpha$ est l'angle entre $F$ et $F_1$).</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $F_1=14$ N, $F_2=9$ N, $\varphi=50°$. Alors $\beta=130°$, $F^2=14^2+9^2-2\cdot14\cdot9\cdot\cos130°\approx438{,}98$, $F\approx20{,}95$ N ; $\sin\alpha=\dfrac{9\sin130°}{20{,}95}\approx0{,}3291$, $\alpha\approx19°13'$ (la valeur $160°47'$ ne convient pas, car $\alpha+\beta\lt180°$).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Décomposition d'une force</h2>
+<p class="mb-3">On remplace une force $F$ par deux forces de directions données, formant avec elle des angles $a_1$, $a_2$. Dans le triangle, on connaît le côté $F$ et deux angles ; le troisième angle est $\gamma=180°-a_1-a_2$, opposé à $F$. Théorème du sinus : $F_1=\dfrac{F\sin a_2}{\sin\gamma}$, $F_2=\dfrac{F\sin a_1}{\sin\gamma}$.</p>
+<p class="mb-3"><b>Exemple :</b> $F=20$ N, $a_1=35°$, $a_2=50°$. Alors $\gamma=95°$, $F_1=\dfrac{20\sin50°}{\sin95°}\approx15{,}38$ N, $F_2=\dfrac{20\sin35°}{\sin95°}\approx11{,}52$ N.</p>
+<div class="warn-box mb-3">
+    <p>Vérification de vraisemblance : la direction la plus proche de la force $F$ a la plus grande composante ($15{,}38\gt11{,}52$). Si c'est l'inverse, on a permuté les composantes.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Angle d'élévation, angle de dépression, angle de vue</h2>
+<ul class="list-disc list-inside mb-3">
+    <li><b>angle d'élévation</b> — angle entre le plan horizontal et la droite vers un point situé <b>au-dessus</b> ;</li>
+    <li><b>angle de dépression</b> — angle entre le plan horizontal et la droite vers un point situé <b>au-dessous</b> ;</li>
+    <li><b>angle de vue</b> — angle formé par les rayons allant de l'œil de l'observateur aux extrémités d'un objet.</li>
+</ul>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Distance inaccessible</h2>
+<p class="mb-3">On mesure une base entre deux points accessibles et des angles, puis on calcule les autres longueurs dans le triangle.</p>
+<p class="mb-3"><b>Exemple (ACA) :</b> $|AB|=50$ m, $\alpha=62°$, $\beta=71°$. Alors $\gamma=47°$, $|BC|=\dfrac{50\sin62°}{\sin47°}\approx60{,}36$ m, $|AC|=\dfrac{50\sin71°}{\sin47°}\approx64{,}64$ m.</p>
+<p class="mb-3"><b>Exemple (CAC) :</b> $|KL|=120$ m, $|KM|=85$ m, $|\angle LKM|=62°$. Alors $|LM|^2=120^2+85^2-2\cdot120\cdot85\cdot\cos62°\approx12\,047{,}8$, $|LM|\approx109{,}8$ m.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Hauteur d'un objet dont le pied est inaccessible</h2>
+<p class="mb-3">On choisit $A$, $B$ alignés avec le pied $T$ ($B$ est plus loin de la tour que $A$) et l'on mesure les angles d'élévation $\alpha$ (depuis $A$) et $\beta$ (depuis $B$). Dans le triangle $ABP$, $|\angle APB|=\alpha-\beta$ ; le théorème du sinus donne $|AP|=\dfrac{|AB|\sin\beta}{\sin(\alpha-\beta)}$ et le triangle rectangle $ATP$ donne $h=|AP|\sin\alpha$.</p>
+<p class="mb-3"><b>Exemple :</b> $|AB|=30$ m, $\alpha=41°$, $\beta=28°$. Alors $|\angle APB|=13°$, $|AP|=\dfrac{30\sin28°}{\sin13°}\approx62{,}61$ m, $h=62{,}61\cdot\sin41°\approx41{,}08$ m.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Angles de dépression depuis un point élevé</h2>
+<p class="mb-3"><b>Exemple :</b> L'observateur en $K$ est $90$ m plus haut que le pied $P$ d'une tour ; il voit le pied sous un angle de dépression $\varphi=30°$ et le sommet $V$ sous $\omega=18°$. Alors $|KP|=\dfrac{90}{\sin30°}=180$ m ; dans le triangle $KPV$, $\kappa=\varphi-\omega=12°$, $\nu=90°+\omega=108°$ et $|PV|=\dfrac{180\sin12°}{\sin108°}\approx39{,}35$ m.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Aire d'un triangle</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Formule</th>
+            <th class="text-left py-1">Données</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$S=\dfrac12ab\sin\gamma$</td><td class="py-1">deux côtés et l'angle compris</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$S=\sqrt{s(s-a)(s-b)(s-c)}$, $s=\dfrac{a+b+c}{2}$</td><td class="py-1">les trois côtés (formule de Héron)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">$S=\dfrac{abc}{4R}$</td><td class="py-1">les trois côtés et le rayon du cercle circonscrit</td></tr>
+        <tr><td class="py-1 pr-2">$S=\varrho s$</td><td class="py-1">le rayon du cercle inscrit et le demi-périmètre</td></tr>
+    </tbody>
+</table>
+<p class="mb-3"><b>Exemple :</b> $a=9$, $b=14$, $\gamma=50°$ $\Rightarrow$ $S=\dfrac12\cdot9\cdot14\cdot\sin50°\approx48{,}26$.</p>
+<p class="mb-3"><b>Exemple :</b> côtés $13$, $14$, $15$ : $s=21$, $S=\sqrt{21\cdot8\cdot7\cdot6}=84$, $R=\dfrac{13\cdot14\cdot15}{4\cdot84}=8{,}125$, $\varrho=\dfrac{84}{21}=4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Aire d'un terrain</h2>
+<p class="mb-3">On découpe le quadrilatère par une diagonale en deux triangles ; on additionne leurs aires.</p>
+<p class="mb-3"><b>Exemple :</b> $|AB|=60$ m, $|BC|=45$ m, $|CD|=52$ m, $|DA|=38$ m, $\beta=110°$. $S_1=\dfrac12\cdot60\cdot45\cdot\sin110°\approx1\,268{,}59$ m$^2$, $|AC|\approx86{,}44$ m, $s=88{,}22$, $S_2\approx534{,}44$ m$^2$, $S=S_1+S_2\approx1\,803$ m$^2$.</p>
+<div class="warn-box mb-3">
+    <p>L'aire d'un polygone est la somme des aires des triangles seulement si ceux-ci ne se chevauchent pas et remplissent entièrement le polygone. Gardez plus de décimales dans les résultats intermédiaires.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900">
+            <th class="text-left py-1 pr-2">Problème</th>
+            <th class="text-left py-1">Démarche</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">résultante de forces</td><td class="py-1">théorème du cosinus ($\beta=180°-\varphi$), théorème du sinus pour la direction</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">décomposition d'une force</td><td class="py-1">théorème du sinus ($F$ et deux angles)</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">distance inaccessible</td><td class="py-1">ACA : théorème du sinus ; CAC : théorème du cosinus</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">hauteur au pied inaccessible</td><td class="py-1">$|\angle APB|=\alpha-\beta$, $|AP|$ par le théorème du sinus, $h=|AP|\sin\alpha$</td></tr>
+        <tr><td class="py-1 pr-2">aire d'un terrain</td><td class="py-1">découper en triangles, $\tfrac12ab\sin\gamma$ ou formule de Héron</td></tr>
+    </tbody>
+</table>
+<p class="mb-3 text-sm">Ainsi s'achève la série sur la trigonométrie. Les liens et la suite se trouvent à la fin de la théorie de ce chapitre.</p>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Goniométrie 7 — Applications des théorèmes du sinus et du cosinus · Manuel' : 'Goniometrie 7 — Užití sinové a kosinové věty · Příručka';
+    document.title = czVisible ? 'Goniométrie 7 — Applications des théorèmes du sinus et du cosinus — Manuel' : 'Goniometrie 7 — Užití sinové a kosinové věty — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

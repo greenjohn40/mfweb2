@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Goniometrie 6 — Sinová a kosinová věta (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-goniometrie6.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Goniometrie 6</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické a 6 výpočetních úloh (sinová věta, úloha ssu, kosinová věta).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+// ======== TEORETICKE OTAZKY ========
+// o[i] = [cs, fr]; ci = index spravne odpovedi; kazda moznost ma v CZ i FR stejnou pozici.
+const theoryPool = [
+  { id: 't1', type: 'concept', ci: 0,
+    cs: { q: "Která rovnost vyjadřuje sinovou větu v trojúhelníku $ABC$?",
+          h: "Každá strana se dělí sinem protilehlého úhlu.",
+          e: "Sinová věta: $\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\sin\\beta}=\\dfrac{c}{\\sin\\gamma}$. Každou stranu dělíme sinem úhlu, který leží proti ní." },
+    fr: { q: "Quelle égalité exprime le théorème du sinus dans le triangle $ABC$ ?",
+          h: "Chaque côté divisé par le sinus de l'angle opposé.",
+          e: "Théorème du sinus : $\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\sin\\beta}=\\dfrac{c}{\\sin\\gamma}$. On divise chaque côté par le sinus de l'angle qui lui est opposé." },
+    o: [ ["$\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\sin\\beta}$", "$\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\sin\\beta}$"],
+         ["$\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\cos\\beta}$", "$\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\cos\\beta}$"],
+         ["$a\\sin\\alpha=b\\sin\\beta$", "$a\\sin\\alpha=b\\sin\\beta$"],
+         ["$\\dfrac{a}{\\sin\\beta}=\\dfrac{b}{\\sin\\alpha}$", "$\\dfrac{a}{\\sin\\beta}=\\dfrac{b}{\\sin\\alpha}$"] ] },
+
+  { id: 't2', type: 'concept', ci: 1,
+    cs: { q: "Čemu je v sinové větě rovna společná hodnota poměrů $\\dfrac{a}{\\sin\\alpha}$, $\\dfrac{b}{\\sin\\beta}$, $\\dfrac{c}{\\sin\\gamma}$?",
+          h: "Souvisí s kružnicí opsanou trojúhelníku.",
+          e: "Společná hodnota je rovna $2R$, tedy průměru kružnice trojúhelníku opsané." },
+    fr: { q: "À quoi est égale, dans le théorème du sinus, la valeur commune des rapports $\\dfrac{a}{\\sin\\alpha}$, $\\dfrac{b}{\\sin\\beta}$, $\\dfrac{c}{\\sin\\gamma}$ ?",
+          h: "Cela concerne le cercle circonscrit au triangle.",
+          e: "La valeur commune est égale à $2R$, c'est-à-dire au diamètre du cercle circonscrit au triangle." },
+    o: [ ["poloměru kružnice opsané", "au rayon du cercle circonscrit"],
+         ["průměru kružnice opsané", "au diamètre du cercle circonscrit"],
+         ["poloměru kružnice vepsané", "au rayon du cercle inscrit"],
+         ["obsahu trojúhelníku", "à l'aire du triangle"] ] },
+
+  { id: 't3', type: 'concept', ci: 2,
+    cs: { q: "Která rovnost je kosinová věta pro stranu $a$ trojúhelníku $ABC$?",
+          h: "V kosinové větě pro $a$ vystupuje úhel proti straně $a$.",
+          e: "Kosinová věta pro stranu $a$: $a^2=b^2+c^2-2bc\\cos\\alpha$ — úhel $\\alpha$ leží proti straně $a$ a svírají ho strany $b$ a $c$." },
+    fr: { q: "Quelle égalité est le théorème du cosinus pour le côté $a$ du triangle $ABC$ ?",
+          h: "Dans le théorème du cosinus pour $a$ intervient l'angle opposé au côté $a$.",
+          e: "Théorème du cosinus pour le côté $a$ : $a^2=b^2+c^2-2bc\\cos\\alpha$ — l'angle $\\alpha$ est opposé à $a$ et formé par les côtés $b$ et $c$." },
+    o: [ ["$a^2=b^2+c^2-2bc\\cos\\beta$", "$a^2=b^2+c^2-2bc\\cos\\beta$"],
+         ["$a^2=b^2+c^2+2bc\\cos\\alpha$", "$a^2=b^2+c^2+2bc\\cos\\alpha$"],
+         ["$a^2=b^2+c^2-2bc\\cos\\alpha$", "$a^2=b^2+c^2-2bc\\cos\\alpha$"],
+         ["$a=b+c-2\\cos\\alpha$", "$a=b+c-2\\cos\\alpha$"] ] },
+
+  { id: 't4', type: 'concept', ci: 0,
+    cs: { q: "U které úlohy použijeme jako první krok kosinovou větu?",
+          h: "Sinová věta potřebuje dvojici „strana a protilehlý úhel“.",
+          e: "Při zadání dvou stran a úhlu mezi nimi (sus) nemáme žádnou dvojici „strana a protilehlý úhel“, proto začínáme kosinovou větou. Při zadání usu a uus naopak začínáme sinovou větou." },
+    fr: { q: "Dans quel cas utilise-t-on le théorème du cosinus comme première étape ?",
+          h: "Le théorème du sinus nécessite un couple « côté et angle opposé ».",
+          e: "Avec deux côtés et l'angle compris (CAC), on n'a aucun couple « côté et angle opposé » : on commence donc par le théorème du cosinus. Avec ACA et AAC, on commence au contraire par le théorème du sinus." },
+    o: [ ["dvě strany a úhel jimi sevřený", "deux côtés et l'angle compris"],
+         ["jedna strana a dva úhly", "un côté et deux angles"],
+         ["strana, protilehlý úhel a další úhel", "un côté, son angle opposé et un autre angle"],
+         ["tři úhly", "les trois angles"] ] },
+
+  { id: 't5', type: 'concept', ci: 3,
+    cs: { q: "Kolik trojúhelníků může mít úloha se zadáním dvou stran $a$, $b$ a úhlu $\\alpha$ proti straně $a$?",
+          h: "Rovnice $\\sin\\beta=k$ má v intervalu $(0°;180°)$ někdy dvě řešení.",
+          e: "Podle hodnoty $\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}$ a podmínky $\\alpha+\\beta\\lt180°$ může mít úloha žádné, jedno nebo dvě řešení." },
+    fr: { q: "Combien de triangles peut avoir un problème où l'on donne deux côtés $a$, $b$ et l'angle $\\alpha$ opposé au côté $a$ ?",
+          h: "L'équation $\\sin\\beta=k$ a parfois deux solutions dans l'intervalle $(0°;180°)$.",
+          e: "Selon la valeur de $\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}$ et la condition $\\alpha+\\beta\\lt180°$, le problème peut avoir aucune, une ou deux solutions." },
+    o: [ ["vždy právě jeden", "toujours exactement un"],
+         ["vždy právě dva", "toujours exactement deux"],
+         ["nejvýše jeden", "au plus un"],
+         ["žádný, jeden, nebo dva", "aucun, un ou deux"] ] },
+
+  { id: 't6', type: 'concept', ci: 1,
+    cs: { q: "Do jakého tvaru přejde kosinová věta $c^2=a^2+b^2-2ab\\cos\\gamma$ pro $\\gamma=90°$?",
+          h: "Kolik je $\\cos90°$?",
+          e: "Pro $\\gamma=90°$ je $\\cos\\gamma=0$, tedy $c^2=a^2+b^2$ — Pythagorova věta." },
+    fr: { q: "Quelle forme prend le théorème du cosinus $c^2=a^2+b^2-2ab\\cos\\gamma$ pour $\\gamma=90°$ ?",
+          h: "Combien vaut $\\cos90°$ ?",
+          e: "Pour $\\gamma=90°$, on a $\\cos\\gamma=0$, donc $c^2=a^2+b^2$ — le théorème de Pythagore." },
+    o: [ ["$c^2=a^2+b^2-2ab$", "$c^2=a^2+b^2-2ab$"],
+         ["$c^2=a^2+b^2$", "$c^2=a^2+b^2$"],
+         ["$c^2=a^2-b^2$", "$c^2=a^2-b^2$"],
+         ["$c=a+b$", "$c=a+b$"] ] },
+
+  { id: 't7', type: 'concept', ci: 2,
+    cs: { q: "Co plyne o úhlu $\\alpha$ trojúhelníku, je-li $b^2+c^2-a^2\\lt0$?",
+          h: "Dosaď do $\\cos\\alpha=\\dfrac{b^2+c^2-a^2}{2bc}$ a uvaž znaménko.",
+          e: "Jmenovatel $2bc$ je kladný a čitatel záporný, takže $\\cos\\alpha\\lt0$ a úhel $\\alpha$ je tupý." },
+    fr: { q: "Que peut-on dire de l'angle $\\alpha$ du triangle si $b^2+c^2-a^2\\lt0$ ?",
+          h: "Remplace dans $\\cos\\alpha=\\dfrac{b^2+c^2-a^2}{2bc}$ et regarde le signe.",
+          e: "Le dénominateur $2bc$ est positif et le numérateur est négatif, donc $\\cos\\alpha\\lt0$ et l'angle $\\alpha$ est obtus." },
+    o: [ ["je ostrý", "il est aigu"],
+         ["je pravý", "il est droit"],
+         ["je tupý", "il est obtus"],
+         ["nelze rozhodnout", "on ne peut pas conclure"] ] },
+
+  { id: 't8', type: 'concept', ci: 0,
+    cs: { q: "Proč má rovnice $\\sin\\beta=k$ pro $0\\lt k\\lt1$ v intervalu $(0°;180°)$ dvě řešení?",
+          h: "Zkus porovnat $\\sin\\beta$ a $\\sin(180°-\\beta)$.",
+          e: "Platí $\\sin(180°-\\beta)=\\sin\\beta$, proto vyhovuje úhel $\\beta$ i úhel $180°-\\beta$. Vztah $\\sin(\\beta+180°)=\\sin\\beta$ naopak neplatí — je to $-\\sin\\beta$." },
+    fr: { q: "Pourquoi l'équation $\\sin\\beta=k$ avec $0\\lt k\\lt1$ a-t-elle deux solutions dans l'intervalle $(0°;180°)$ ?",
+          h: "Essaie de comparer $\\sin\\beta$ et $\\sin(180°-\\beta)$.",
+          e: "On a $\\sin(180°-\\beta)=\\sin\\beta$, donc l'angle $\\beta$ et l'angle $180°-\\beta$ conviennent. La relation $\\sin(\\beta+180°)=\\sin\\beta$ est fausse — on a $-\\sin\\beta$." },
+    o: [ ["Protože $\\sin(180°-\\beta)=\\sin\\beta$", "Parce que $\\sin(180°-\\beta)=\\sin\\beta$"],
+         ["Protože $\\sin(\\beta+180°)=\\sin\\beta$", "Parce que $\\sin(\\beta+180°)=\\sin\\beta$"],
+         ["Protože sinus je lichá funkce", "Parce que le sinus est une fonction impaire"],
+         ["Protože $\\sin\\beta=\\cos\\beta$", "Parce que $\\sin\\beta=\\cos\\beta$"] ] }
+];
+
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+const RAD = Math.PI / 180;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+function r2(x) { return Math.round(x * 100) / 100; }
+// zobrazeni cisla s desetinnou carkou (obycejny text)
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', ',');
+}
+// cislo do TeXu: desetinna carka bez mezery
+function tx(x) { return fmt(x).replace(',', '{,}'); }
+function tx2(x) { return x.toFixed(2).replace('.', '{,}'); }
+// dosazeni @klic@ -> hodnota
+function T(str, d) {
+    return str.replace(/@(\w+)@/g, (m, k) => {
+        if (d[k] === undefined) return m;
+        return typeof d[k] === 'number' ? tx(d[k]) : d[k];
+    });
+}
+// cislene moznosti: prvni je spravna (ci = 0), ostatni jsou unikatni, kladne
+function numOptions(correct, extras, spread, unit, dec) {
+    dec = dec === undefined ? 2 : dec;
+    unit = unit || '';
+    const m = Math.pow(10, dec);
+    const f = x => Math.round(x * m) / m;
+    const ok = v => isFinite(v) && v > 0 && (unit !== '°' || v < 180);
+    const c = f(correct);
+    const set = [c];
+    extras.forEach(x => { const v = f(x); if (ok(v) && !set.includes(v)) set.push(v); });
+    let guard = 0;
+    while (set.length < 4 && guard < 500) {
+        const v = f(c + (randInt(1, 40) / 20) * spread * (Math.random() < 0.5 ? -1 : 1));
+        if (ok(v) && !set.includes(v)) set.push(v);
+        guard++;
+    }
+    const strs = set.slice(0, 4).map(v => fmt(v) + unit);
+    return { opts: strs, ci: 0 };
+}
+
+// ======== VYPOCETNI SABLONY ========
+// make() vraci { cs:{q,h,e}, fr:{q,h,e}, optsCs:[...], optsFr:[...], ci }  (moznosti jsou v obou jazycich na stejnych pozicich)
+const M3_ENTRIES = [
+    { a: 7, b: 5, c: 8, ang: 60 }, { a: 7, b: 3, c: 8, ang: 60 },
+    { a: 13, b: 7, c: 15, ang: 60 }, { a: 13, b: 8, c: 15, ang: 60 },
+    { a: 7, b: 3, c: 5, ang: 120 }, { a: 13, b: 7, c: 8, ang: 120 },
+    { a: 14, b: 6, c: 10, ang: 120 }
+];
+const M4_ENTRIES = [
+    [5, 8, 30], [9, 5, 40], [2, 6, 30], [4, 8, 30], [8, 8, 30],
+    [7, 9, 40], [3, 8, 25], [10, 6, 50], [6, 10, 45]
+];
+const M5_ENTRIES = [
+    [5, 6, 10], [6, 8, 10], [6, 8, 9], [4, 5, 7], [7, 8, 9],
+    [5, 12, 13], [9, 12, 15], [4, 6, 8], [7, 9, 11]
+];
+
+const mathPool = [
+    { id: 'm1', type: 'math', make: () => {
+        const b = randInt(4, 12), be = randChoice([30, 35, 40, 45, 50, 55, 60]);
+        let al; do { al = randChoice([25, 35, 45, 55, 65, 75, 80]); } while (al === be);
+        const corr = r2(b * Math.sin(al * RAD) / Math.sin(be * RAD));
+        const o = numOptions(corr, [b * Math.sin(be * RAD) / Math.sin(al * RAD), b * Math.sin(al * RAD), b * Math.cos(al * RAD) / Math.cos(be * RAD)], 0.6);
+        const d = { b: b, be: be, al: al, corr: corr };
+        return {
+            cs: { q: T("V trojúhelníku $ABC$ je $b=@b@$, $\\beta=@be@°$ a $\\alpha=@al@°$. Určete délku strany $a$ (zaokrouhlete na setiny).", d),
+                  h: "Použij sinovou větu $\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\sin\\beta}$.",
+                  e: T("$a=\\dfrac{b\\sin\\alpha}{\\sin\\beta}=\\dfrac{@b@\\cdot\\sin @al@°}{\\sin @be@°}\\approx@corr@$.", d) },
+            fr: { q: T("Dans le triangle $ABC$, on a $b=@b@$, $\\beta=@be@°$ et $\\alpha=@al@°$. Déterminez la longueur du côté $a$ (arrondie au centième).", d),
+                  h: "Utilise le théorème du sinus $\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\sin\\beta}$.",
+                  e: T("$a=\\dfrac{b\\sin\\alpha}{\\sin\\beta}=\\dfrac{@b@\\cdot\\sin @al@°}{\\sin @be@°}\\approx@corr@$.", d) },
+            optsCs: o.opts, optsFr: o.opts, ci: o.ci };
+    } },
+
+    { id: 'm2', type: 'math', make: () => {
+        const b = randInt(4, 12), c = randInt(4, 12), al = randChoice([30, 40, 50, 60, 70, 80, 100, 110, 120, 130]);
+        const a2 = r2(b * b + c * c - 2 * b * c * Math.cos(al * RAD));
+        const corr = r2(Math.sqrt(b * b + c * c - 2 * b * c * Math.cos(al * RAD)));
+        const o = numOptions(corr, [Math.sqrt(b * b + c * c + 2 * b * c * Math.cos(al * RAD)), a2, Math.sqrt(b * b + c * c)], 0.8);
+        const d = { b: b, c: c, al: al, a2: a2, corr: corr };
+        return {
+            cs: { q: T("V trojúhelníku $ABC$ je $b=@b@$, $c=@c@$ a $\\alpha=@al@°$. Určete délku strany $a$ (zaokrouhlete na setiny).", d),
+                  h: "Použij kosinovou větu $a^2=b^2+c^2-2bc\\cos\\alpha$ a nezapomeň na odmocninu.",
+                  e: T("$a^2=@b@^2+@c@^2-2\\cdot@b@\\cdot@c@\\cdot\\cos @al@°\\approx@a2@$, tedy $a\\approx@corr@$.", d) },
+            fr: { q: T("Dans le triangle $ABC$, on a $b=@b@$, $c=@c@$ et $\\alpha=@al@°$. Déterminez la longueur du côté $a$ (arrondie au centième).", d),
+                  h: "Utilise le théorème du cosinus $a^2=b^2+c^2-2bc\\cos\\alpha$ et n'oublie pas la racine carrée.",
+                  e: T("$a^2=@b@^2+@c@^2-2\\cdot@b@\\cdot@c@\\cdot\\cos @al@°\\approx@a2@$, donc $a\\approx@corr@$.", d) },
+            optsCs: o.opts, optsFr: o.opts, ci: o.ci };
+    } },
+
+    { id: 'm3', type: 'math', make: () => {
+        const e = randChoice(M3_ENTRIES);
+        const cosv = e.ang === 60 ? "\\dfrac12" : "-\\dfrac12";
+        const o = numOptions(e.ang, [180 - e.ang, 90, 45, 30], 15, '°', 0);
+        const d = { a: e.a, b: e.b, c: e.c, ang: e.ang, cosv: cosv };
+        return {
+            cs: { q: T("Strany trojúhelníku $ABC$ mají délky $a=@a@$, $b=@b@$, $c=@c@$. Určete velikost úhlu $\\alpha$ (ve stupních).", d),
+                  h: "Použij $\\cos\\alpha=\\dfrac{b^2+c^2-a^2}{2bc}$.",
+                  e: T("$\\cos\\alpha=\\dfrac{@b@^2+@c@^2-@a@^2}{2\\cdot@b@\\cdot@c@}=@cosv@$, tedy $\\alpha=@ang@°$.", d) },
+            fr: { q: T("Les côtés du triangle $ABC$ mesurent $a=@a@$, $b=@b@$, $c=@c@$. Déterminez la mesure de l'angle $\\alpha$ (en degrés).", d),
+                  h: "Utilise $\\cos\\alpha=\\dfrac{b^2+c^2-a^2}{2bc}$.",
+                  e: T("$\\cos\\alpha=\\dfrac{@b@^2+@c@^2-@a@^2}{2\\cdot@b@\\cdot@c@}=@cosv@$, donc $\\alpha=@ang@°$.", d) },
+            optsCs: o.opts, optsFr: o.opts, ci: o.ci };
+    } },
+
+    { id: 'm4', type: 'math', make: () => {
+        const [a, b, al] = randChoice(M4_ENTRIES);
+        const s = b * Math.sin(al * RAD);
+        const sb = s / a;
+        let n, whyCs, whyFr;
+        const d = { a: a, b: b, al: al, sb: tx2(sb) };
+        if (a < s - 1e-9) {
+            n = 0;
+            whyCs = T("Vychází $\\sin\\beta=\\dfrac{@b@\\sin @al@°}{@a@}\\approx@sb@\\gt1$, což není možné — žádný trojúhelník neexistuje.", d);
+            whyFr = T("On obtient $\\sin\\beta=\\dfrac{@b@\\sin @al@°}{@a@}\\approx@sb@\\gt1$, ce qui est impossible — aucun triangle n'existe.", d);
+        } else if (Math.abs(a - s) < 1e-9) {
+            n = 1;
+            whyCs = T("Vychází $\\sin\\beta=1$, tedy $\\beta=90°$ — existuje jediný (pravoúhlý) trojúhelník.", d);
+            whyFr = T("On obtient $\\sin\\beta=1$, donc $\\beta=90°$ — il existe un seul triangle (rectangle).", d);
+        } else if (a < b) {
+            n = 2;
+            whyCs = T("Je $b\\sin\\alpha\\lt a\\lt b$ ($\\sin\\beta\\approx@sb@\\lt1$), vyhovuje úhel $\\beta$ i $180°-\\beta$ — existují dva trojúhelníky.", d);
+            whyFr = T("On a $b\\sin\\alpha\\lt a\\lt b$ ($\\sin\\beta\\approx@sb@\\lt1$), l'angle $\\beta$ et l'angle $180°-\\beta$ conviennent — il existe deux triangles.", d);
+        } else {
+            n = 1;
+            whyCs = T("Je $a\\ge b$ ($\\sin\\beta\\approx@sb@$), druhý úhel $180°-\\beta$ nevyhovuje, protože $\\alpha+(180°-\\beta)\\ge180°$ — existuje jediný trojúhelník.", d);
+            whyFr = T("On a $a\\ge b$ ($\\sin\\beta\\approx@sb@$), le second angle $180°-\\beta$ ne convient pas, car $\\alpha+(180°-\\beta)\\ge180°$ — il n'existe qu'un seul triangle.", d);
+        }
+        return {
+            cs: { q: T("Kolik různých trojúhelníků $ABC$ existuje, je-li $a=@a@$, $b=@b@$ a $\\alpha=@al@°$?", d),
+                  h: "Spočítej $\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}$ a zvaž, zda vyhovuje i úhel $180°-\\beta$.", e: whyCs },
+            fr: { q: T("Combien de triangles $ABC$ distincts existe-t-il avec $a=@a@$, $b=@b@$ et $\\alpha=@al@°$ ?", d),
+                  h: "Calcule $\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}$ et vérifie si l'angle $180°-\\beta$ convient aussi.", e: whyFr },
+            optsCs: ["$0$", "$1$", "$2$", "nekonečně mnoho"],
+            optsFr: ["$0$", "$1$", "$2$", "une infinité"],
+            ci: n };
+    } },
+
+    { id: 'm5', type: 'math', make: () => {
+        const [a, b, c] = randChoice(M5_ENTRIES);
+        const c2 = c * c, s2 = a * a + b * b;
+        let ci, relCs, relFr;
+        const d = { a: a, b: b, c: c, c2: c2, s2: s2 };
+        if (c2 > s2) { ci = 2; relCs = T("Je $c^2=@c2@$ a $a^2+b^2=@s2@$. Protože $c^2\\gt a^2+b^2$, je $\\cos\\gamma\\lt0$ a trojúhelník je tupoúhlý.", d);
+                       relFr = T("On a $c^2=@c2@$ et $a^2+b^2=@s2@$. Comme $c^2\\gt a^2+b^2$, on a $\\cos\\gamma\\lt0$ : le triangle est obtusangle.", d); }
+        else if (c2 === s2) { ci = 1; relCs = T("Je $c^2=@c2@=a^2+b^2$, tedy $\\cos\\gamma=0$ a trojúhelník je pravoúhlý (Pythagorova věta).", d);
+                              relFr = T("On a $c^2=@c2@=a^2+b^2$, donc $\\cos\\gamma=0$ : le triangle est rectangle (théorème de Pythagore).", d); }
+        else { ci = 0; relCs = T("Je $c^2=@c2@$ a $a^2+b^2=@s2@$. Protože $c^2\\lt a^2+b^2$, je $\\cos\\gamma\\gt0$; i nejdelší úhel je ostrý, trojúhelník je ostroúhlý.", d);
+               relFr = T("On a $c^2=@c2@$ et $a^2+b^2=@s2@$. Comme $c^2\\lt a^2+b^2$, on a $\\cos\\gamma\\gt0$ ; même le plus grand angle est aigu : le triangle est acutangle.", d); }
+        return {
+            cs: { q: T("Trojúhelník má strany $@a@$, $@b@$, $@c@$. Jaký je to trojúhelník?", d),
+                  h: "Porovnej $c^2$ s $a^2+b^2$ pro nejdelší stranu $c$ (kosinová věta).", e: relCs },
+            fr: { q: T("Un triangle a pour côtés $@a@$, $@b@$, $@c@$. De quel type de triangle s'agit-il ?", d),
+                  h: "Compare $c^2$ et $a^2+b^2$ pour le plus grand côté $c$ (théorème du cosinus).", e: relFr },
+            optsCs: ["ostroúhlý", "pravoúhlý", "tupoúhlý", "nelze určit"],
+            optsFr: ["acutangle", "rectangle", "obtusangle", "impossible à déterminer"],
+            ci: ci };
+    } },
+
+    { id: 'm6', type: 'math', make: () => {
+        const a = randInt(6, 15), al = randChoice([35, 40, 50, 55, 65, 70]);
+        const corr = r2(a / (2 * Math.sin(al * RAD)));
+        const o = numOptions(corr, [a / Math.sin(al * RAD), a / (2 * Math.cos(al * RAD)), a / (4 * Math.sin(al * RAD))], 0.8);
+        const d = { a: a, al: al, corr: corr };
+        return {
+            cs: { q: T("V trojúhelníku $ABC$ je $a=@a@$ a $\\alpha=@al@°$. Určete poloměr $R$ kružnice opsané (zaokrouhlete na setiny).", d),
+                  h: "Použij $\\dfrac{a}{\\sin\\alpha}=2R$.",
+                  e: T("$R=\\dfrac{a}{2\\sin\\alpha}=\\dfrac{@a@}{2\\sin @al@°}\\approx@corr@$.", d) },
+            fr: { q: T("Dans le triangle $ABC$, on a $a=@a@$ et $\\alpha=@al@°$. Déterminez le rayon $R$ du cercle circonscrit (arrondi au centième).", d),
+                  h: "Utilise $\\dfrac{a}{\\sin\\alpha}=2R$.",
+                  e: T("$R=\\dfrac{a}{2\\sin\\alpha}=\\dfrac{@a@}{2\\sin @al@°}\\approx@corr@$.", d) },
+            optsCs: o.opts, optsFr: o.opts, ci: o.ci };
+    } }
+];
+
+function theoryToMade(t) {
+    return { cs: { q: t.cs.q, h: t.cs.h, e: t.cs.e }, fr: { q: t.fr.q, h: t.fr.h, e: t.fr.e },
+             optsCs: t.o.map(x => x[0]), optsFr: t.o.map(x => x[1]), ci: t.ci };
+}
+
+// Jedno sdilene promichani poradi moznosti pro CZ i FR verzi
+function prepareQuestion(template, lang) {
+    const m = template.make ? template.make() : theoryToMade(template);
+    const n = m.optsCs.length;
+    const order = shuffleArray([...Array(n).keys()]);
+    const oCs = order.map(i => m.optsCs[i]);
+    const oFr = order.map(i => m.optsFr[i]);
+    const ci = order.indexOf(m.ci);
+    const cs = { q: m.cs.q, h: m.cs.h, e: m.cs.e, o: oCs, a: oCs[ci], ci: ci };
+    const fr = { q: m.fr.q, h: m.fr.h, e: m.fr.e, o: oFr, a: oFr[ci], ci: ci };
+    const main = lang === 'cs' ? cs : fr;
+    const other = lang === 'cs' ? fr : cs;
+    return Object.assign({}, main, { type: template.type, lang: lang, translation: other, id: template.id, ci: ci });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+
+// ======== RIZENI KVIZU ========
+let currentQuestionIndex = 0;
+let score = 0;
+let sessionQuestions = [];
+let userAnswers = [];
+let translationUsedCount = 0;
+let hintUsedCount = 0;
+let isTranslated = false;
+let hintShown = false;
+let answeredIndex = null;
+let answeredCorrect = false;
+
+function startQuiz() {
+    sessionQuestions = generateBalancedQuiz();
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers = [];
+    translationUsedCount = 0;
+    hintUsedCount = 0;
+    document.getElementById('score-text').textContent = 'Body: 0';
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    showQuestion();
+}
+
+function restartQuiz() {
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('start-screen').classList.remove('hidden');
+}
+
+function showQuestion() {
+    const q = sessionQuestions[currentQuestionIndex];
+    isTranslated = false;
+    hintShown = false;
+    answeredIndex = null;
+    answeredCorrect = false;
+
+    const transBtn = document.getElementById('translate-btn');
+    if (q.lang === 'cs') transBtn.classList.add('hidden-el'); else transBtn.classList.remove('hidden-el');
+
+    document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+    document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+    document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+    document.getElementById('hint-box').classList.add('hidden');
+    document.getElementById('hint-btn').classList.remove('hidden');
+    document.getElementById('next-btn').classList.add('hidden');
+    document.getElementById('feedback-area').classList.add('hidden');
+
+    renderContent();
+}
+
+function renderContent() {
+    const q = sessionQuestions[currentQuestionIndex];
+    const data = isTranslated ? q.translation : q;
+
+    document.getElementById('question-title').innerHTML = data.q;
+    document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+    const grid = document.getElementById('options-grid');
+    grid.innerHTML = '';
+    data.o.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl font-medium fade-in";
+        btn.innerHTML = opt;
+        btn.dataset.optText = opt;
+        btn.dataset.idx = idx;
+        if (answeredIndex === null) {
+            btn.classList.add('hover:bg-slate-50', 'hover:border-violet-300');
+            btn.onclick = () => checkAnswer(idx);
+        } else {
+            btn.disabled = true;
+            if (idx === q.ci) btn.classList.add('correct');
+            else if (idx === answeredIndex) btn.classList.add('wrong');
+        }
+        grid.appendChild(btn);
+    });
+
+    const hb = document.getElementById('hint-box');
+    if (hintShown) { hb.innerHTML = data.h; hb.classList.remove('hidden'); }
+
+    const fe = document.getElementById('feedback-explanation');
+    if (answeredIndex !== null) fe.innerHTML = data.e;
+
+    if (window.MathJax && MathJax.typesetPromise) {
+        const nodes = [document.getElementById('question-title'), grid, hb];
+        if (answeredIndex !== null) nodes.push(fe);
+        MathJax.typesetPromise(nodes).catch(err => console.warn('MathJax error:', err));
+    }
+}
+
+function toggleTranslation() {
+    if (!isTranslated) translationUsedCount++;
+    isTranslated = !isTranslated;
+    renderContent();
+}
+
+function showHint() {
+    hintUsedCount++;
+    hintShown = true;
+    document.getElementById('hint-btn').classList.add('hidden');
+    renderContent();
+}
+
+function checkAnswer(selectedIndex) {
+    if (answeredIndex !== null) return;
+    const q = sessionQuestions[currentQuestionIndex];
+    answeredIndex = selectedIndex;
+    answeredCorrect = (selectedIndex === q.ci);
+    if (answeredCorrect) score++;
+
+    document.getElementById('feedback-status').textContent = answeredCorrect ? "Správně!" : "Chyba";
+    document.getElementById('feedback-status').className = answeredCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+    const fa = document.getElementById('feedback-area');
+    fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${answeredCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+    fa.classList.remove('hidden');
+
+    userAnswers.push({ type: q.type, correct: answeredCorrect });
+    document.getElementById('score-text').textContent = `Body: ${score}`;
+    document.getElementById('next-btn').classList.remove('hidden');
+    renderContent();
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+}
+
+function finishQuiz() {
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+    const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+    document.getElementById('final-score').textContent = `${p}%`;
+    document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+    generateOwnAnalysis(p);
+}
+
+function generateOwnAnalysis(percent) {
+    const stats = userAnswers.reduce((acc, curr) => {
+        acc[curr.type].total++;
+        if (curr.correct) acc[curr.type].correct++;
+        return acc;
+    }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+    const theoryCorrect = stats.concept.correct, theoryTotal = stats.concept.total;
+    const mathCorrect = stats.math.correct, mathTotal = stats.math.total;
+    const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+    const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+    let overallMsg, overallIcon;
+    if (percent >= 85) { overallMsg = "Výborně! Sinová i kosinová věta ti jdou skvěle, a to i francouzsky."; overallIcon = "🏆"; }
+    else if (percent >= 70) { overallMsg = "Dobrá práce! Obě věty umíš, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+    else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji zopakovat, kdy použít kterou větu a jak pracovat s úlohou ssu."; overallIcon = "📚"; }
+    else { overallMsg = "Je potřeba více trénovat – zaměř se na znění sinové a kosinové věty a na výběr správné věty podle zadání."; overallIcon = "🔍"; }
+
+    let strengths = [], weaknesses = [];
+    if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – znáš obě věty, kružnici opsanou i podmínky pro počet řešení.");
+    else weaknesses.push("Teorie ti dělá potíže – zopakuj si znění obou vět a to, proč má úloha ssu někdy dvě řešení ($\\sin(180°-\\beta)=\\sin\\beta$).");
+    if (mathPercent >= 70) strengths.push("Výpočty stran, úhlů a poloměru kružnice opsané ti jdou velmi dobře!");
+    else weaknesses.push("Ve výpočtech chybuješ – procvič si dosazování do sinové a kosinové věty a určování počtu trojúhelníků v úloze ssu.");
+    if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+    let recommendations = [];
+    if (weaknesses.length > 0) {
+        recommendations.push("Zaměř se na opakování – projdi si příručku a vzorové příklady v sekci Úlohy, zejména tři případy úlohy ssu (dvě, jedno, žádné řešení).");
+    } else {
+        recommendations.push("Skvělá práce! Kapitolu o sinové a kosinové větě máš zvládnutou – můžeš test zkusit znovu s jinými čísly nebo přejít na kapitolu Goniometrie 7 — Užití sinové a kosinové věty.");
+    }
+    if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení znění vět a postupů.");
+
+    let frenchMsg, frenchIcon;
+    if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+    else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na odborné termíny (théorème du sinus, théorème du cosinus, cercle circonscrit)."; frenchIcon = "📖"; }
+    else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+    const analysisItems = [
+        { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+        { icon: "📊", title: "Teorie vs. výpočty", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent} %) – Výpočty: ${mathCorrect}/${mathTotal} (${mathPercent} %)` },
+        { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+        { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+        { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+        { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x z otázek)` },
+        { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+    ];
+
+    document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+        <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+            <span class="text-2xl">${item.icon}</span>
+            <div>
+                <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+            </div>
+        </div>
+    `).join('');
+    if (window.MathJax && MathJax.typesetPromise) {
+        MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+    }
+}
+
+    </script>
+</body>
+</html>

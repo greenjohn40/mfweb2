@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Goniometrie 6 — Sinová a kosinová věta / Goniométrie 6 — Le théorème du sinus et du cosinus</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-goniometrie6.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Goniometrie 6</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Goniométrie 6 — Le théorème du sinus et du cosinus
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Co znamená „řešit trojúhelník“?",
+            "a": "Dopočítat všechny chybějící strany a úhly trojúhelníku."
+        },
+        {
+            "q": "Kolik je součet vnitřních úhlů trojúhelníku?",
+            "a": "$180°$, tedy $\\alpha+\\beta+\\gamma=180°$."
+        },
+        {
+            "q": "Proti kterému úhlu leží strana $a$?",
+            "a": "Proti úhlu $\\alpha$ při vrcholu $A$."
+        },
+        {
+            "q": "Jak označujeme strany trojúhelníku $ABC$?",
+            "a": "$a=|BC|$, $b=|CA|$, $c=|AB|$."
+        },
+        {
+            "q": "Jak zní sinová věta?",
+            "a": "$\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\sin\\beta}=\\dfrac{c}{\\sin\\gamma}=2R$."
+        },
+        {
+            "q": "Co znamená $R$ v sinové větě?",
+            "a": "Poloměr kružnice trojúhelníku opsané."
+        },
+        {
+            "q": "Jaký poměr délek stran udává sinová věta?",
+            "a": "$a:b:c=\\sin\\alpha:\\sin\\beta:\\sin\\gamma$."
+        },
+        {
+            "q": "Jak ze sinové věty vyjádříme stranu $a$, známe-li $b$, $\\alpha$, $\\beta$?",
+            "a": "$a=\\dfrac{b\\sin\\alpha}{\\sin\\beta}$."
+        },
+        {
+            "q": "Jak ze sinové věty vyjádříme $\\sin\\beta$, známe-li $a$, $b$, $\\alpha$?",
+            "a": "$\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}$."
+        },
+        {
+            "q": "Jak vypočítáme poloměr kružnice opsané ze strany $a$ a úhlu $\\alpha$?",
+            "a": "$R=\\dfrac{a}{2\\sin\\alpha}$."
+        },
+        {
+            "q": "Čemu je rovna strana $c$ vyjádřená pomocí $R$ a $\\gamma$?",
+            "a": "$c=2R\\sin\\gamma$."
+        },
+        {
+            "q": "Kdy je sinová věta přímo použitelná?",
+            "a": "Známe-li dvojici „strana a protilehlý úhel“ a ještě jednu další veličinu."
+        },
+        {
+            "q": "Jak dopočítáme třetí úhel trojúhelníku, známe-li $\\alpha$ a $\\beta$?",
+            "a": "$\\gamma=180°-\\alpha-\\beta$."
+        },
+        {
+            "q": "Jakou větu použijeme, je-li zadána strana a dva úhly?",
+            "a": "Sinovou větu (po dopočtení třetího úhlu)."
+        },
+        {
+            "q": "Je dáno $a=12$ a $R=10$. Čemu je rovno $\\sin\\alpha$?",
+            "a": "$\\sin\\alpha=\\dfrac{a}{2R}=\\dfrac{12}{20}=0{,}6$."
+        },
+        {
+            "q": "Proč může mít úhel určený ze sinové věty dvě hodnoty?",
+            "a": "Protože $\\sin\\alpha=\\sin(180°-\\alpha)$."
+        },
+        {
+            "q": "Jaká dvě řešení má rovnice $\\sin\\alpha=k$ v intervalu $(0°;180°)$, je-li $0\\lt k\\lt1$?",
+            "a": "$\\alpha$ a $180°-\\alpha$."
+        },
+        {
+            "q": "Co je úloha ssu („dvě strany a úhel proti jedné z nich“)?",
+            "a": "Jsou dány dvě strany a úhel ležící proti jedné z těchto stran, např. $a$, $b$, $\\alpha$."
+        },
+        {
+            "q": "Jaký vzorec je klíčový u úlohy ssu se zadáním $a$, $b$, $\\alpha$?",
+            "a": "$\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}$."
+        },
+        {
+            "q": "Co plyne z $\\sin\\beta\\gt1$?",
+            "a": "Úloha nemá řešení."
+        },
+        {
+            "q": "Co plyne z $\\sin\\beta=1$?",
+            "a": "$\\beta=90°$, existuje právě jeden (pravoúhlý) trojúhelník."
+        },
+        {
+            "q": "Jaká podmínka musí platit, aby druhý úhel $180°-\\beta_1$ vyhovoval?",
+            "a": "$\\alpha+(180°-\\beta_1)\\lt180°$."
+        },
+        {
+            "q": "Kolik řešení má úloha ssu pro ostrý úhel $\\alpha$ a $a\\lt b\\sin\\alpha$?",
+            "a": "Žádné."
+        },
+        {
+            "q": "Kolik řešení má úloha ssu pro ostrý úhel $\\alpha$ a $a=b\\sin\\alpha$?",
+            "a": "Jedno (pravoúhlý trojúhelník, $\\beta=90°$)."
+        },
+        {
+            "q": "Kolik řešení má úloha ssu pro ostrý úhel $\\alpha$ a $b\\sin\\alpha\\lt a\\lt b$?",
+            "a": "Dvě."
+        },
+        {
+            "q": "Kolik řešení má úloha ssu pro ostrý úhel $\\alpha$ a $a\\ge b$?",
+            "a": "Jedno."
+        },
+        {
+            "q": "Proč pro $a\\ge b$ (a ostrý $\\alpha$) druhý úhel $180°-\\beta_1$ nevyhovuje?",
+            "a": "Protože $\\beta_1\\le\\alpha$, a tedy $\\alpha+(180°-\\beta_1)\\ge180°$."
+        },
+        {
+            "q": "Kolik trojúhelníků existuje pro $a=5$, $b=8$, $\\alpha=30°$?",
+            "a": "Dva, protože $b\\sin\\alpha=4\\lt5\\lt8=b$."
+        },
+        {
+            "q": "Kolik trojúhelníků existuje pro $a=9$, $b=5$, $\\alpha=40°$?",
+            "a": "Jeden, protože $a\\gt b$."
+        },
+        {
+            "q": "Kolik trojúhelníků existuje pro $a=2$, $b=6$, $\\alpha=30°$?",
+            "a": "Žádný, protože $\\sin\\beta=1{,}5\\gt1$."
+        },
+        {
+            "q": "Čemu je rovno $\\sin\\beta$ pro $a=5$, $b=8$, $\\alpha=30°$?",
+            "a": "$\\sin\\beta=\\dfrac{8\\cdot\\sin30°}{5}=0{,}8$."
+        },
+        {
+            "q": "Jak zní kosinová věta pro stranu $a$?",
+            "a": "$a^2=b^2+c^2-2bc\\cos\\alpha$."
+        },
+        {
+            "q": "Jak zní kosinová věta pro stranu $b$?",
+            "a": "$b^2=a^2+c^2-2ac\\cos\\beta$."
+        },
+        {
+            "q": "Jak zní kosinová věta pro stranu $c$?",
+            "a": "$c^2=a^2+b^2-2ab\\cos\\gamma$."
+        },
+        {
+            "q": "Který úhel vystupuje v kosinové větě pro stranu $a$?",
+            "a": "Úhel $\\alpha$ proti straně $a$, tedy úhel sevřený stranami $b$ a $c$."
+        },
+        {
+            "q": "Jak z kosinové věty vyjádříme $\\cos\\alpha$?",
+            "a": "$\\cos\\alpha=\\dfrac{b^2+c^2-a^2}{2bc}$."
+        },
+        {
+            "q": "Čím je kosinová věta pro $\\gamma=90°$?",
+            "a": "Pythagorovou větou: $c^2=a^2+b^2$."
+        },
+        {
+            "q": "Co říká záporný kosinus úhlu v trojúhelníku?",
+            "a": "Úhel je tupý."
+        },
+        {
+            "q": "Jaký je vztah mezi $a^2$ a $b^2+c^2$, je-li $\\alpha$ ostrý?",
+            "a": "$a^2\\lt b^2+c^2$, protože $\\cos\\alpha\\gt0$."
+        },
+        {
+            "q": "Jaký je vztah mezi $a^2$ a $b^2+c^2$, je-li $\\alpha$ tupý?",
+            "a": "$a^2\\gt b^2+c^2$, protože $\\cos\\alpha\\lt0$."
+        },
+        {
+            "q": "Kterou větu použijeme, známe-li dvě strany a úhel mezi nimi (sus)?",
+            "a": "Kosinovou větu."
+        },
+        {
+            "q": "Kterou větu použijeme, známe-li všechny tři strany (sss)?",
+            "a": "Kosinovou větu."
+        },
+        {
+            "q": "Vypočtěte $a$, je-li $b=6$, $c=10$, $\\alpha=120°$.",
+            "a": "$a^2=36+100-120\\cdot\\left(-\\dfrac12\\right)=196$, tedy $a=14$."
+        },
+        {
+            "q": "Vypočtěte $\\alpha$, je-li $a=7$, $b=5$, $c=8$.",
+            "a": "$\\cos\\alpha=\\dfrac{25+64-49}{80}=\\dfrac12$, tedy $\\alpha=60°$."
+        },
+        {
+            "q": "Vypočtěte $c$, je-li $a=3$, $b=4$, $\\gamma=90°$.",
+            "a": "$c^2=9+16-0=25$, tedy $c=5$."
+        },
+        {
+            "q": "Který úhel počítáme jako první, známe-li tři strany, a proč?",
+            "a": "Úhel proti nejdelší straně. Zbylé dva úhly jsou pak ostré, takže sinová věta nedává dvě možnosti."
+        },
+        {
+            "q": "Jak se projeví nejednoznačnost úlohy ssu při řešení kosinovou větou?",
+            "a": "Vznikne kvadratická rovnice pro třetí stranu, která má dva kladné kořeny."
+        },
+        {
+            "q": "Jakou kvadratickou rovnici dostaneme pro $c$ při $a=5$, $b=8$, $\\alpha=30°$?",
+            "a": "$c^2-8\\sqrt3\\,c+39=0$ s kořeny $c=4\\sqrt3\\pm3$."
+        },
+        {
+            "q": "Která věta se hodí pro zadání usu a uus?",
+            "a": "Sinová věta."
+        },
+        {
+            "q": "Jaké nastavení kalkulačky je nutné při práci se stupni?",
+            "a": "Režim DEG (stupně), ne RAD (radiány)."
+        }
+    ],
+    "fr": [
+        {
+            "q": "Que signifie « résoudre un triangle » ?",
+            "a": "Calculer tous les côtés et tous les angles manquants du triangle."
+        },
+        {
+            "q": "Quelle est la somme des angles intérieurs d'un triangle ?",
+            "a": "$180°$, donc $\\alpha+\\beta+\\gamma=180°$."
+        },
+        {
+            "q": "Quel angle est opposé au côté $a$ ?",
+            "a": "L'angle $\\alpha$ au sommet $A$."
+        },
+        {
+            "q": "Comment note-t-on les côtés du triangle $ABC$ ?",
+            "a": "$a=|BC|$, $b=|CA|$, $c=|AB|$."
+        },
+        {
+            "q": "Comment s'énonce le théorème du sinus ?",
+            "a": "$\\dfrac{a}{\\sin\\alpha}=\\dfrac{b}{\\sin\\beta}=\\dfrac{c}{\\sin\\gamma}=2R$."
+        },
+        {
+            "q": "Que représente $R$ dans le théorème du sinus ?",
+            "a": "Le rayon du cercle circonscrit au triangle."
+        },
+        {
+            "q": "Quel rapport entre les côtés le théorème du sinus donne-t-il ?",
+            "a": "$a:b:c=\\sin\\alpha:\\sin\\beta:\\sin\\gamma$."
+        },
+        {
+            "q": "Comment exprime-t-on $a$ avec le théorème du sinus, si l'on connaît $b$, $\\alpha$, $\\beta$ ?",
+            "a": "$a=\\dfrac{b\\sin\\alpha}{\\sin\\beta}$."
+        },
+        {
+            "q": "Comment exprime-t-on $\\sin\\beta$, si l'on connaît $a$, $b$, $\\alpha$ ?",
+            "a": "$\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}$."
+        },
+        {
+            "q": "Comment calcule-t-on le rayon du cercle circonscrit à partir de $a$ et $\\alpha$ ?",
+            "a": "$R=\\dfrac{a}{2\\sin\\alpha}$."
+        },
+        {
+            "q": "À quoi est égal le côté $c$ exprimé avec $R$ et $\\gamma$ ?",
+            "a": "$c=2R\\sin\\gamma$."
+        },
+        {
+            "q": "Quand le théorème du sinus est-il directement utilisable ?",
+            "a": "Quand on connaît un couple « côté et angle opposé » et une autre grandeur."
+        },
+        {
+            "q": "Comment calcule-t-on le troisième angle, si l'on connaît $\\alpha$ et $\\beta$ ?",
+            "a": "$\\gamma=180°-\\alpha-\\beta$."
+        },
+        {
+            "q": "Quel théorème utilise-t-on quand on donne un côté et deux angles ?",
+            "a": "Le théorème du sinus (après avoir calculé le troisième angle)."
+        },
+        {
+            "q": "On donne $a=12$ et $R=10$. À quoi est égal $\\sin\\alpha$ ?",
+            "a": "$\\sin\\alpha=\\dfrac{a}{2R}=\\dfrac{12}{20}=0{,}6$."
+        },
+        {
+            "q": "Pourquoi un angle déterminé par le théorème du sinus peut-il avoir deux valeurs ?",
+            "a": "Parce que $\\sin\\alpha=\\sin(180°-\\alpha)$."
+        },
+        {
+            "q": "Quelles sont les deux solutions de $\\sin\\alpha=k$ dans $(0°;180°)$ si $0\\lt k\\lt1$ ?",
+            "a": "$\\alpha$ et $180°-\\alpha$."
+        },
+        {
+            "q": "Qu'est-ce que le cas CCA (« deux côtés et un angle opposé à l'un d'eux ») ?",
+            "a": "On donne deux côtés et l'angle opposé à l'un d'eux, par exemple $a$, $b$, $\\alpha$."
+        },
+        {
+            "q": "Quelle formule est essentielle dans le cas CCA avec $a$, $b$, $\\alpha$ ?",
+            "a": "$\\sin\\beta=\\dfrac{b\\sin\\alpha}{a}$."
+        },
+        {
+            "q": "Que déduit-on de $\\sin\\beta\\gt1$ ?",
+            "a": "Le problème n'a pas de solution."
+        },
+        {
+            "q": "Que déduit-on de $\\sin\\beta=1$ ?",
+            "a": "$\\beta=90°$, il existe un seul triangle (rectangle)."
+        },
+        {
+            "q": "Quelle condition doit être vraie pour que le second angle $180°-\\beta_1$ convienne ?",
+            "a": "$\\alpha+(180°-\\beta_1)\\lt180°$."
+        },
+        {
+            "q": "Combien de solutions le cas CCA a-t-il pour $\\alpha$ aigu et $a\\lt b\\sin\\alpha$ ?",
+            "a": "Aucune."
+        },
+        {
+            "q": "Combien de solutions le cas CCA a-t-il pour $\\alpha$ aigu et $a=b\\sin\\alpha$ ?",
+            "a": "Une (triangle rectangle, $\\beta=90°$)."
+        },
+        {
+            "q": "Combien de solutions le cas CCA a-t-il pour $\\alpha$ aigu et $b\\sin\\alpha\\lt a\\lt b$ ?",
+            "a": "Deux."
+        },
+        {
+            "q": "Combien de solutions le cas CCA a-t-il pour $\\alpha$ aigu et $a\\ge b$ ?",
+            "a": "Une."
+        },
+        {
+            "q": "Pourquoi, pour $a\\ge b$ (et $\\alpha$ aigu), le second angle $180°-\\beta_1$ ne convient-il pas ?",
+            "a": "Parce que $\\beta_1\\le\\alpha$, donc $\\alpha+(180°-\\beta_1)\\ge180°$."
+        },
+        {
+            "q": "Combien de triangles existe-t-il pour $a=5$, $b=8$, $\\alpha=30°$ ?",
+            "a": "Deux, car $b\\sin\\alpha=4\\lt5\\lt8=b$."
+        },
+        {
+            "q": "Combien de triangles existe-t-il pour $a=9$, $b=5$, $\\alpha=40°$ ?",
+            "a": "Un seul, car $a\\gt b$."
+        },
+        {
+            "q": "Combien de triangles existe-t-il pour $a=2$, $b=6$, $\\alpha=30°$ ?",
+            "a": "Aucun, car $\\sin\\beta=1{,}5\\gt1$."
+        },
+        {
+            "q": "À quoi est égal $\\sin\\beta$ pour $a=5$, $b=8$, $\\alpha=30°$ ?",
+            "a": "$\\sin\\beta=\\dfrac{8\\cdot\\sin30°}{5}=0{,}8$."
+        },
+        {
+            "q": "Comment s'énonce le théorème du cosinus pour le côté $a$ ?",
+            "a": "$a^2=b^2+c^2-2bc\\cos\\alpha$."
+        },
+        {
+            "q": "Comment s'énonce le théorème du cosinus pour le côté $b$ ?",
+            "a": "$b^2=a^2+c^2-2ac\\cos\\beta$."
+        },
+        {
+            "q": "Comment s'énonce le théorème du cosinus pour le côté $c$ ?",
+            "a": "$c^2=a^2+b^2-2ab\\cos\\gamma$."
+        },
+        {
+            "q": "Quel angle intervient dans le théorème du cosinus pour le côté $a$ ?",
+            "a": "L'angle $\\alpha$ opposé à $a$, c'est-à-dire l'angle formé par les côtés $b$ et $c$."
+        },
+        {
+            "q": "Comment exprime-t-on $\\cos\\alpha$ à partir du théorème du cosinus ?",
+            "a": "$\\cos\\alpha=\\dfrac{b^2+c^2-a^2}{2bc}$."
+        },
+        {
+            "q": "Que devient le théorème du cosinus pour $\\gamma=90°$ ?",
+            "a": "Le théorème de Pythagore : $c^2=a^2+b^2$."
+        },
+        {
+            "q": "Que signifie un cosinus négatif pour un angle du triangle ?",
+            "a": "L'angle est obtus."
+        },
+        {
+            "q": "Quelle relation y a-t-il entre $a^2$ et $b^2+c^2$ si $\\alpha$ est aigu ?",
+            "a": "$a^2\\lt b^2+c^2$, car $\\cos\\alpha\\gt0$."
+        },
+        {
+            "q": "Quelle relation y a-t-il entre $a^2$ et $b^2+c^2$ si $\\alpha$ est obtus ?",
+            "a": "$a^2\\gt b^2+c^2$, car $\\cos\\alpha\\lt0$."
+        },
+        {
+            "q": "Quel théorème utilise-t-on pour deux côtés et l'angle compris (CAC) ?",
+            "a": "Le théorème du cosinus."
+        },
+        {
+            "q": "Quel théorème utilise-t-on quand on connaît les trois côtés (CCC) ?",
+            "a": "Le théorème du cosinus."
+        },
+        {
+            "q": "Calculez $a$ pour $b=6$, $c=10$, $\\alpha=120°$.",
+            "a": "$a^2=36+100-120\\cdot\\left(-\\dfrac12\\right)=196$, donc $a=14$."
+        },
+        {
+            "q": "Calculez $\\alpha$ pour $a=7$, $b=5$, $c=8$.",
+            "a": "$\\cos\\alpha=\\dfrac{25+64-49}{80}=\\dfrac12$, donc $\\alpha=60°$."
+        },
+        {
+            "q": "Calculez $c$ pour $a=3$, $b=4$, $\\gamma=90°$.",
+            "a": "$c^2=9+16-0=25$, donc $c=5$."
+        },
+        {
+            "q": "Quel angle calcule-t-on en premier quand on connaît les trois côtés, et pourquoi ?",
+            "a": "L'angle opposé au plus grand côté. Les deux autres sont alors aigus, donc le théorème du sinus ne donne pas deux possibilités."
+        },
+        {
+            "q": "Comment l'ambiguïté du cas CCA apparaît-elle avec le théorème du cosinus ?",
+            "a": "On obtient une équation du second degré pour le troisième côté, qui a deux racines positives."
+        },
+        {
+            "q": "Quelle équation du second degré obtient-on pour $c$ avec $a=5$, $b=8$, $\\alpha=30°$ ?",
+            "a": "$c^2-8\\sqrt3\\,c+39=0$ de racines $c=4\\sqrt3\\pm3$."
+        },
+        {
+            "q": "Quel théorème convient pour les cas ACA et AAC ?",
+            "a": "Le théorème du sinus."
+        },
+        {
+            "q": "Quel réglage de la calculatrice faut-il pour travailler en degrés ?",
+            "a": "Le mode DEG (degrés) et non RAD (radians)."
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>
