@@ -31,7 +31,7 @@
 <br>
 <a href="/static/mat-funkce-gonio5/rozcestnik-goniometrie5.html" data-router-ignore>Goniometrické vzorce</a>
 <br>
-<a href="/static/mat-funkce-gonio6/rozcestnik-goniometrie6.html" data-router-ignore>Trigonometrie</a>
+<a href="/static/mat-funkce-gonio6/rozcestnik-goniometrie6.html" data-router-ignore>Sinová a kosinová věta</a>
 <br>
 <a href="/static/mat-funkce-gonio7/rozcestnik-goniometrie7.html" data-router-ignore>Užití sinové a kosinové věty</a>
 <br>
