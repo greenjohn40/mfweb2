@@ -27,7 +27,11 @@
 <br>
 <a href="/static/mat-funkce-goniom3/rozcestnik-goniometrie3.html" data-router-ignore>Tangens, kotangens</a>
 <br>
-<a href="/static/mat-funkce-goniom4/rozcestnik-goniometrie4.html" data-router-ignore>Goniometrické rovnice a nerovnice</a><p>
+<a href="/static/mat-funkce-goniom4/rozcestnik-goniometrie4.html" data-router-ignore>Goniometrické rovnice a nerovnice</a>
 <br>
-<a href="/static/mat-funkce-gonio5/rozcestnik-goniometrie5.html" data-router-ignore>Goniometrické vzorce</a><p>
+<a href="/static/mat-funkce-gonio5/rozcestnik-goniometrie5.html" data-router-ignore>Goniometrické vzorce</a>
+<br>
+<a href="/static/mat-funkce-gonio6/rozcestnik-goniometrie6.html" data-router-ignore>Trigonometrie</a>
+<br>
+<a href="/static/mat-funkce-gonio7/rozcestnik-goniometrie7.html" data-router-ignore>Užití sinové a kosinové věty</a>
 <br>
