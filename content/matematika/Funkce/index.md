@@ -13,7 +13,7 @@
   
 <h4>KVADRATICKÁ FUNKCE</h4>
 <a href="/static/mat-funkce-kvadrat1/rozcestnik-kvadraticka.html" data-router-ignore>Kvadratická funkce</a><br>
-<a href="/static/mat-funkce-kvadraticka2/rozcestnik-graficke-reseni.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a><p>
+<a href="/static/mat-funkce-kvadrat2/rozcestnik-kvadraticke-graficky.html" data-router-ignore>Grafické řešení rovnic a nerovnic</a><p>
 <br>
 
 <h4>LOGARITMICKÁ FUNKCE</h4>
