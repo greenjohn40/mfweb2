@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards: Kvadratická funkce / Fonction quadratique</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-kvadraticka.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Kvadratická funkce</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Fonction quadratique
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Jak zní předpis kvadratické funkce v obecném tvaru?",
+            "a": "$y=ax^2+bx+c$, kde $a,b,c\\in\\mathbb{R}$ a $a\\neq0$"
+        },
+        {
+            "q": "Proč musí v definici kvadratické funkce platit $a\\neq0$?",
+            "a": "pro $a=0$ by vznikla lineární funkce, jejímž grafem je přímka"
+        },
+        {
+            "q": "Jaký je definiční obor kvadratické funkce?",
+            "a": "$\\mathbb{R}$"
+        },
+        {
+            "q": "Jak se nazývají členy $ax^2$, $bx$ a $c$?",
+            "a": "kvadratický, lineární a absolutní člen"
+        },
+        {
+            "q": "Urči koeficienty $a$, $b$, $c$ funkce $y=-x^2+3x$.",
+            "a": "$a=-1$, $b=3$, $c=0$"
+        },
+        {
+            "q": "Jaký vrchol má parabola $y=x^2$?",
+            "a": "$V[0;0]$"
+        },
+        {
+            "q": "Co je osa paraboly?",
+            "a": "svislá přímka procházející vrcholem, podle které je parabola souměrná"
+        },
+        {
+            "q": "Proč body paraboly nespojujeme úsečkami?",
+            "a": "parabola je hladká křivka; u vrcholu by vznikla špička, kterou parabola nemá"
+        },
+        {
+            "q": "Jak je otevřená parabola pro $a\\gt0$ a pro $a\\lt0$?",
+            "a": "pro $a\\gt0$ nahoru, pro $a\\lt0$ dolů"
+        },
+        {
+            "q": "Jaká je parabola $y=ax^2$ pro $|a|\\gt1$ ve srovnání s $y=x^2$?",
+            "a": "užší"
+        },
+        {
+            "q": "Jaká je parabola $y=ax^2$ pro $0\\lt|a|\\lt1$ ve srovnání s $y=x^2$?",
+            "a": "širší"
+        },
+        {
+            "q": "Jak spolu souvisí grafy $y=ax^2$ a $y=-ax^2$?",
+            "a": "jsou souměrné podle osy $x$"
+        },
+        {
+            "q": "Jakou hodnotu má funkce $y=\\frac13x^2$ v bodě $x=6$?",
+            "a": "$12$"
+        },
+        {
+            "q": "Jak zní vrcholový tvar předpisu kvadratické funkce?",
+            "a": "$y=a(x-m)^2+n$, vrchol $V[m;n]$"
+        },
+        {
+            "q": "Jak posouvá graf číslo $m$ ve vrcholovém tvaru?",
+            "a": "ve směru osy $x$ o $|m|$: pro $m\\gt0$ doprava, pro $m\\lt0$ doleva"
+        },
+        {
+            "q": "Jak posouvá graf číslo $n$ ve vrcholovém tvaru?",
+            "a": "ve směru osy $y$ o $|n|$: pro $n\\gt0$ nahoru, pro $n\\lt0$ dolů"
+        },
+        {
+            "q": "Jaký vrchol má parabola $y=4(x+5)^2-1$?",
+            "a": "$V[-5;-1]$"
+        },
+        {
+            "q": "Jaký vrchol má parabola $y=-\\frac12(x-2)^2+7$?",
+            "a": "$V[2;7]$"
+        },
+        {
+            "q": "Graf $y=x^2$ posuneme o $3$ doleva a o $4$ nahoru. Jaký je nový předpis?",
+            "a": "$y=(x+3)^2+4$"
+        },
+        {
+            "q": "Ovlivňuje koeficient $a$ polohu vrcholu ve vrcholovém tvaru?",
+            "a": "ne, určuje jen směr otevření a „šířku“ paraboly"
+        },
+        {
+            "q": "Jak určíme průsečík grafu s osou $y$?",
+            "a": "dosadíme $x=0$"
+        },
+        {
+            "q": "Jak určíme průsečíky grafu s osou $x$?",
+            "a": "řešíme rovnici $y=0$"
+        },
+        {
+            "q": "Jaké průsečíky s osou $x$ má $y=-2(x-1)^2+8$?",
+            "a": "$[-1;0]$ a $[3;0]$"
+        },
+        {
+            "q": "Jak zní součinový tvar předpisu kvadratické funkce?",
+            "a": "$y=a(x-x_1)(x-x_2)$"
+        },
+        {
+            "q": "Co přímo vyčteme ze součinového tvaru?",
+            "a": "průsečíky s osou $x$: $[x_1;0]$ a $[x_2;0]$"
+        },
+        {
+            "q": "Kde leží vrchol paraboly vzhledem k průsečíkům s osou $x$?",
+            "a": "přesně uprostřed: $m=\\dfrac{x_1+x_2}{2}$"
+        },
+        {
+            "q": "Jaký vrchol má parabola $y=(x-1)(x-5)$?",
+            "a": "$V[3;-4]$"
+        },
+        {
+            "q": "Lze funkci $y=x^2+1$ zapsat v součinovém tvaru?",
+            "a": "ne, její graf osu $x$ neprotíná"
+        },
+        {
+            "q": "Jaký průsečík s osou $y$ má graf $y=ax^2+bx+c$?",
+            "a": "$P_y[0;c]$"
+        },
+        {
+            "q": "Jakým vzorcem vypočítáme první souřadnici vrcholu z obecného tvaru?",
+            "a": "$m=-\\dfrac{b}{2a}$"
+        },
+        {
+            "q": "Jaký vrchol má parabola $y=x^2+4x-5$?",
+            "a": "$V[-2;-9]$"
+        },
+        {
+            "q": "Jaký vrchol má parabola $y=-x^2+6x-5$?",
+            "a": "$V[3;4]$"
+        },
+        {
+            "q": "Ze kterého vzorce vychází úprava na čtverec?",
+            "a": "$(x+p)^2=x^2+2px+p^2$"
+        },
+        {
+            "q": "Uprav na čtverec: $x^2-6x+7$.",
+            "a": "$(x-3)^2-2$"
+        },
+        {
+            "q": "Uprav na čtverec: $x^2+8x+10$.",
+            "a": "$(x+4)^2-6$"
+        },
+        {
+            "q": "Uprav na čtverec: $-2x^2+8x-3$.",
+            "a": "$-2(x-2)^2+5$"
+        },
+        {
+            "q": "Na co se nesmí zapomenout při úpravě na čtverec pro $a\\neq1$?",
+            "a": "vynásobit koeficientem $a$ i číslo odečtené uvnitř závorky"
+        },
+        {
+            "q": "Jaký je obor hodnot funkce $y=a(x-m)^2+n$ pro $a\\gt0$?",
+            "a": "$\\langle n;\\infty)$"
+        },
+        {
+            "q": "Jaký je obor hodnot funkce $y=a(x-m)^2+n$ pro $a\\lt0$?",
+            "a": "$(-\\infty;n\\rangle$"
+        },
+        {
+            "q": "Na kterém intervalu je funkce $y=a(x-m)^2+n$ s $a\\gt0$ rostoucí?",
+            "a": "na $\\langle m;\\infty)$"
+        },
+        {
+            "q": "Kde má kvadratická funkce extrém a jaký?",
+            "a": "ve vrcholu ($x=m$): pro $a\\gt0$ minimum $n$, pro $a\\lt0$ maximum $n$"
+        },
+        {
+            "q": "Kdy je kvadratická funkce sudá?",
+            "a": "právě když $b=0$, tj. vrchol leží na ose $y$"
+        },
+        {
+            "q": "Je kvadratická funkce prostá?",
+            "a": "ne, každou hodnotu kromě extrému nabývá ve dvou bodech"
+        },
+        {
+            "q": "Proč graf $y=2(x-2)^2+3$ neprotíná osu $x$?",
+            "a": "vrchol $[2;3]$ leží nad osou $x$ a parabola je otevřená nahoru"
+        },
+        {
+            "q": "Co stačí znát kromě vrcholu k určení předpisu kvadratické funkce?",
+            "a": "jeden další bod grafu"
+        },
+        {
+            "q": "Parabola má vrchol $V[-2;1]$ a prochází bodem $[0;-7]$. Jaký je její předpis?",
+            "a": "$y=-2(x+2)^2+1$"
+        },
+        {
+            "q": "Kolik bodů (s různými $x$, neležících na přímce) jednoznačně určuje parabolu?",
+            "a": "tři"
+        },
+        {
+            "q": "Jak sestrojíme graf funkce $y=|ax^2+bx+c|$?",
+            "a": "část grafu pod osou $x$ překlopíme souměrně podle osy $x$ nad ni"
+        },
+        {
+            "q": "Ve kterém bodě má graf $y=|x^2-4x|$ nejvyšší bod překlopeného oblouku?",
+            "a": "v bodě $[2;4]$"
+        },
+        {
+            "q": "Míček má výšku $h=-5t^2+20t$. Jaká je největší výška a kdy?",
+            "a": "$20$ m v čase $t=2$ s"
+        }
+    ],
+    "fr": [
+        {
+            "q": "Quelle est l'expression d'une fonction quadratique sous forme développée ?",
+            "a": "$y=ax^2+bx+c$, où $a,b,c\\in\\mathbb{R}$ et $a\\neq0$"
+        },
+        {
+            "q": "Pourquoi faut-il $a\\neq0$ dans la définition d'une fonction quadratique ?",
+            "a": "pour $a=0$, on obtiendrait une fonction affine, dont la courbe est une droite"
+        },
+        {
+            "q": "Quel est l'ensemble de définition d'une fonction quadratique ?",
+            "a": "$\\mathbb{R}$"
+        },
+        {
+            "q": "Comment s'appellent les termes $ax^2$, $bx$ et $c$ ?",
+            "a": "terme du second degré, terme du premier degré et terme constant"
+        },
+        {
+            "q": "Détermine les coefficients $a$, $b$, $c$ de la fonction $y=-x^2+3x$.",
+            "a": "$a=-1$, $b=3$, $c=0$"
+        },
+        {
+            "q": "Quel est le sommet de la parabole $y=x^2$ ?",
+            "a": "$V[0;0]$"
+        },
+        {
+            "q": "Qu'est-ce que l'axe de symétrie d'une parabole ?",
+            "a": "la droite verticale passant par le sommet, par rapport à laquelle la parabole est symétrique"
+        },
+        {
+            "q": "Pourquoi ne relie-t-on pas les points d'une parabole par des segments ?",
+            "a": "la parabole est une courbe lisse ; au sommet apparaîtrait une pointe qu'elle n'a pas"
+        },
+        {
+            "q": "Dans quel sens est tournée la parabole pour $a\\gt0$ et pour $a\\lt0$ ?",
+            "a": "vers le haut pour $a\\gt0$, vers le bas pour $a\\lt0$"
+        },
+        {
+            "q": "Comment est la parabole $y=ax^2$ pour $|a|\\gt1$, comparée à celle de $y=x^2$ ?",
+            "a": "plus étroite"
+        },
+        {
+            "q": "Comment est la parabole $y=ax^2$ pour $0\\lt|a|\\lt1$, comparée à celle de $y=x^2$ ?",
+            "a": "plus large"
+        },
+        {
+            "q": "Quel lien y a-t-il entre les courbes de $y=ax^2$ et de $y=-ax^2$ ?",
+            "a": "elles sont symétriques par rapport à l'axe des abscisses"
+        },
+        {
+            "q": "Quelle est la valeur de la fonction $y=\\frac13x^2$ en $x=6$ ?",
+            "a": "$12$"
+        },
+        {
+            "q": "Quelle est la forme canonique d'une fonction quadratique ?",
+            "a": "$y=a(x-m)^2+n$, sommet $V[m;n]$"
+        },
+        {
+            "q": "Comment le nombre $m$ de la forme canonique déplace-t-il la courbe ?",
+            "a": "parallèlement à l'axe des abscisses de $|m|$ : vers la droite pour $m\\gt0$, vers la gauche pour $m\\lt0$"
+        },
+        {
+            "q": "Comment le nombre $n$ de la forme canonique déplace-t-il la courbe ?",
+            "a": "parallèlement à l'axe des ordonnées de $|n|$ : vers le haut pour $n\\gt0$, vers le bas pour $n\\lt0$"
+        },
+        {
+            "q": "Quel est le sommet de la parabole $y=4(x+5)^2-1$ ?",
+            "a": "$V[-5;-1]$"
+        },
+        {
+            "q": "Quel est le sommet de la parabole $y=-\\frac12(x-2)^2+7$ ?",
+            "a": "$V[2;7]$"
+        },
+        {
+            "q": "On déplace la courbe de $y=x^2$ de $3$ vers la gauche et de $4$ vers le haut. Quelle est la nouvelle expression ?",
+            "a": "$y=(x+3)^2+4$"
+        },
+        {
+            "q": "Le coefficient $a$ influence-t-il la position du sommet dans la forme canonique ?",
+            "a": "non, il ne détermine que le sens d'ouverture et la « largeur » de la parabole"
+        },
+        {
+            "q": "Comment détermine-t-on le point d'intersection de la courbe avec l'axe des ordonnées ?",
+            "a": "on pose $x=0$"
+        },
+        {
+            "q": "Comment détermine-t-on les points d'intersection de la courbe avec l'axe des abscisses ?",
+            "a": "on résout l'équation $y=0$"
+        },
+        {
+            "q": "Quels sont les points d'intersection de $y=-2(x-1)^2+8$ avec l'axe des abscisses ?",
+            "a": "$[-1;0]$ et $[3;0]$"
+        },
+        {
+            "q": "Quelle est la forme factorisée d'une fonction quadratique ?",
+            "a": "$y=a(x-x_1)(x-x_2)$"
+        },
+        {
+            "q": "Que lit-on directement dans la forme factorisée ?",
+            "a": "les points d'intersection avec l'axe des abscisses : $[x_1;0]$ et $[x_2;0]$"
+        },
+        {
+            "q": "Où se trouve le sommet de la parabole par rapport aux points d'intersection avec l'axe des abscisses ?",
+            "a": "exactement au milieu : $m=\\dfrac{x_1+x_2}{2}$"
+        },
+        {
+            "q": "Quel est le sommet de la parabole $y=(x-1)(x-5)$ ?",
+            "a": "$V[3;-4]$"
+        },
+        {
+            "q": "Peut-on écrire la fonction $y=x^2+1$ sous forme factorisée ?",
+            "a": "non, sa courbe ne coupe pas l'axe des abscisses"
+        },
+        {
+            "q": "Quel est le point d'intersection de la courbe de $y=ax^2+bx+c$ avec l'axe des ordonnées ?",
+            "a": "$P_y[0;c]$"
+        },
+        {
+            "q": "Par quelle formule calcule-t-on la première coordonnée du sommet à partir de la forme développée ?",
+            "a": "$m=-\\dfrac{b}{2a}$"
+        },
+        {
+            "q": "Quel est le sommet de la parabole $y=x^2+4x-5$ ?",
+            "a": "$V[-2;-9]$"
+        },
+        {
+            "q": "Quel est le sommet de la parabole $y=-x^2+6x-5$ ?",
+            "a": "$V[3;4]$"
+        },
+        {
+            "q": "Sur quelle identité repose la mise sous forme canonique ?",
+            "a": "$(x+p)^2=x^2+2px+p^2$"
+        },
+        {
+            "q": "Mets sous forme canonique : $x^2-6x+7$.",
+            "a": "$(x-3)^2-2$"
+        },
+        {
+            "q": "Mets sous forme canonique : $x^2+8x+10$.",
+            "a": "$(x+4)^2-6$"
+        },
+        {
+            "q": "Mets sous forme canonique : $-2x^2+8x-3$.",
+            "a": "$-2(x-2)^2+5$"
+        },
+        {
+            "q": "Que ne faut-il pas oublier lors de la mise sous forme canonique pour $a\\neq1$ ?",
+            "a": "multiplier par $a$ aussi le nombre retranché à l'intérieur de la parenthèse"
+        },
+        {
+            "q": "Quel est l'ensemble image de la fonction $y=a(x-m)^2+n$ pour $a\\gt0$ ?",
+            "a": "$\\langle n;\\infty)$"
+        },
+        {
+            "q": "Quel est l'ensemble image de la fonction $y=a(x-m)^2+n$ pour $a\\lt0$ ?",
+            "a": "$(-\\infty;n\\rangle$"
+        },
+        {
+            "q": "Sur quel intervalle la fonction $y=a(x-m)^2+n$ avec $a\\gt0$ est-elle croissante ?",
+            "a": "sur $\\langle m;\\infty)$"
+        },
+        {
+            "q": "Où la fonction quadratique atteint-elle son extremum et lequel ?",
+            "a": "au sommet ($x=m$) : minimum $n$ pour $a\\gt0$, maximum $n$ pour $a\\lt0$"
+        },
+        {
+            "q": "Quand une fonction quadratique est-elle paire ?",
+            "a": "si et seulement si $b=0$, c'est-à-dire si le sommet est sur l'axe des ordonnées"
+        },
+        {
+            "q": "Une fonction quadratique est-elle injective ?",
+            "a": "non, elle prend chaque valeur, sauf l'extremum, en deux points"
+        },
+        {
+            "q": "Pourquoi la courbe de $y=2(x-2)^2+3$ ne coupe-t-elle pas l'axe des abscisses ?",
+            "a": "le sommet $[2;3]$ est au-dessus de l'axe et la parabole est tournée vers le haut"
+        },
+        {
+            "q": "Que faut-il connaître, en plus du sommet, pour déterminer l'expression d'une fonction quadratique ?",
+            "a": "un autre point de la courbe"
+        },
+        {
+            "q": "Une parabole de sommet $V[-2;1]$ passe par le point $[0;-7]$. Quelle est son expression ?",
+            "a": "$y=-2(x+2)^2+1$"
+        },
+        {
+            "q": "Combien de points (d'abscisses différentes, non alignés) déterminent une parabole de manière unique ?",
+            "a": "trois"
+        },
+        {
+            "q": "Comment trace-t-on la courbe de $y=|ax^2+bx+c|$ ?",
+            "a": "on retourne au-dessus de l'axe des abscisses, par symétrie, la partie de la courbe située en dessous"
+        },
+        {
+            "q": "Quel est le point le plus haut de l'arc retourné de la courbe de $y=|x^2-4x|$ ?",
+            "a": "le point $[2;4]$"
+        },
+        {
+            "q": "Une balle est à la hauteur $h=-5t^2+20t$. Quelle est la hauteur maximale et quand ?",
+            "a": "$20$ m à l'instant $t=2$ s"
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

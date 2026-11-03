@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kvíz: Kvadratická funkce (CLIL)</title>
+    <script>
+        (function() {
+            var originalWarn = console.warn;
+            console.warn = function() {
+                if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+                originalWarn.apply(console, arguments);
+            };
+        })();
+    </script>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+            chtml: { scale: 0.85 },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .option-btn { transition: all 0.2s; }
+        .correct { background-color: #10b981 !important; color: white; border-color: #059669; }
+        .wrong { background-color: #ef4444 !important; color: white; border-color: #dc2626; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-el { display: none !important; }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen font-sans text-slate-900">
+
+    <div id="app" class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-violet-700">
+            <a href="rozcestnik-kvadraticka.html" class="text-violet-600 hover:text-violet-800 text-sm block mb-4">← Rozcestník</a>
+            <h1 class="text-3xl font-bold text-violet-800 mb-4">Matematický kvíz: Kvadratická funkce</h1>
+            <p class="text-slate-600 mb-8 leading-relaxed">
+                Kombinace matematiky a francouzštiny (CLIL).<br>
+                <span class="text-sm italic text-violet-600">Test obsahuje 4 teoretické otázky a 6 úloh (vrchol paraboly, průsečíky s osami, úprava na čtverec, vlastnosti funkce, předpis z vrcholu a bodu).</span>
+            </p>
+            <button onclick="startQuiz()" class="bg-violet-700 hover:bg-violet-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+                Spustit test
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden bg-white p-6 rounded-2xl shadow-xl">
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div>
+                    <span id="progress-text" class="font-mono text-xs text-slate-400 uppercase tracking-widest block">Otázka 1 / 10</span>
+                    <span id="type-tag" class="text-[10px] font-bold text-slate-500 uppercase tracking-tighter bg-slate-100 px-2 py-0.5 rounded"></span>
+                </div>
+                <div class="text-right">
+                    <span id="lang-tag" class="inline-block text-[10px] font-bold px-2 py-0.5 rounded mb-1 uppercase tracking-tighter"></span>
+                    <div id="score-text" class="font-bold text-violet-700 text-sm">Body: 0</div>
+                </div>
+            </div>
+
+            <div id="question-container" class="mb-8 min-h-[300px]">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 id="question-title" class="text-xl font-bold leading-snug text-slate-900">Načítání...</h2>
+                    <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 ml-4 bg-violet-50 hover:bg-violet-100 text-violet-700 text-[10px] font-bold py-2 px-3 rounded-lg border border-violet-200 transition-all uppercase shadow-sm">
+                        🔄 Přeložit / Traduire
+                    </button>
+                </div>
+
+                <div id="options-grid" class="grid grid-cols-1 gap-3"></div>
+
+                <div id="feedback-area" class="hidden mt-6 p-4 rounded-xl border-2">
+                    <p id="feedback-status" class="font-bold mb-1"></p>
+                    <p id="feedback-explanation" class="text-sm italic opacity-90"></p>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center border-t pt-6">
+                <button id="hint-btn" onclick="showHint()" class="text-amber-600 text-sm font-semibold hover:text-amber-700 transition-colors">
+                    💡 Nápověda
+                </button>
+                <div id="hint-box" class="hidden text-sm italic text-slate-500 max-w-[65%] text-right bg-slate-50 p-2 rounded"></div>
+                <button id="next-btn" onclick="nextQuestion()" class="hidden bg-violet-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-violet-800 transition-all">
+                    Další otázka
+                </button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-violet-700">
+                <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+                <div class="flex justify-center items-baseline gap-4 my-6">
+                    <div id="final-score" class="text-6xl font-black text-violet-700">0%</div>
+                    <div id="final-grade" class="text-2xl font-bold text-slate-400">Známka: -</div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        ⭐ Analýza tvého výkonu
+                    </h3>
+                    <div id="ai-analysis" class="grid grid-cols-1 gap-3 text-left">
+                    </div>
+                </div>
+
+                <button onclick="restartQuiz()" class="w-full mt-8 bg-slate-800 text-white px-10 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit test znovu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const TOTAL_QUESTIONS = 10;
+const N_THEORY = 4;
+const N_MATH = 6;
+
+function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+function randChoice(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function fmt(x) {
+    if (typeof x !== 'number') return x;
+    if (Number.isInteger(x)) return x.toString();
+    return x.toFixed(2).replace(/\.?0+$/, '').replace('.', '{,}');
+}
+function tex(x) { return '$' + fmt(x) + '$'; }
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// ======== TEORETICKE OTAZKY ========
+const theoryPool = [
+    {
+        "id": "t1",
+        "type": "concept",
+        "cs": {
+            "q": "Která z následujících funkcí je kvadratická?",
+            "o": [
+                "$y=3-2x^2$",
+                "$y=4x-1$",
+                "$y=\\dfrac{2}{x^2}$",
+                "$y=x^3-x^2$"
+            ],
+            "h": "Hledej předpis tvaru ax² + bx + c s nenulovým koeficientem u x².",
+            "e": "Funkce $y=3-2x^2$ má tvar $y=ax^2+bx+c$ s $a=-2\\neq0$, $b=0$, $c=3$. Funkce $y=4x-1$ je lineární, $y=\\frac{2}{x^2}$ má proměnnou ve jmenovateli a $y=x^3-x^2$ obsahuje třetí mocninu.",
+            "a": "$y=3-2x^2$"
+        },
+        "fr": {
+            "q": "Laquelle des fonctions suivantes est une fonction quadratique ?",
+            "o": [
+                "$y=3-2x^2$",
+                "$y=4x-1$",
+                "$y=\\dfrac{2}{x^2}$",
+                "$y=x^3-x^2$"
+            ],
+            "h": "Cherche une expression de la forme ax² + bx + c avec un coefficient de x² non nul.",
+            "e": "La fonction $y=3-2x^2$ est de la forme $y=ax^2+bx+c$ avec $a=-2\\neq0$, $b=0$, $c=3$. La fonction $y=4x-1$ est affine, $y=\\frac{2}{x^2}$ a la variable au dénominateur et $y=x^3-x^2$ contient une puissance trois.",
+            "a": "$y=3-2x^2$"
+        }
+    },
+    {
+        "id": "t2",
+        "type": "concept",
+        "cs": {
+            "q": "Co platí pro graf funkce $y=ax^2$, je-li $|a|\\gt1$?",
+            "o": [
+                "je užší než graf $y=x^2$",
+                "je širší než graf $y=x^2$",
+                "jeho vrchol neleží v počátku",
+                "je vždy otevřený dolů"
+            ],
+            "h": "Porovnej hodnoty funkcí pro stejné x, například pro x = 2.",
+            "e": "Pro $|a|\\gt1$ rostou absolutní hodnoty funkčních hodnot rychleji než u $y=x^2$, parabola je proto užší. Vrchol zůstává v $[0;0]$ a směr otevření určuje znaménko $a$.",
+            "a": "je užší než graf $y=x^2$"
+        },
+        "fr": {
+            "q": "Que peut-on dire de la courbe de $y=ax^2$ lorsque $|a|\\gt1$ ?",
+            "o": [
+                "elle est plus étroite que celle de $y=x^2$",
+                "elle est plus large que celle de $y=x^2$",
+                "son sommet n'est pas à l'origine",
+                "elle est toujours tournée vers le bas"
+            ],
+            "h": "Compare les valeurs des fonctions pour un même x, par exemple x = 2.",
+            "e": "Pour $|a|\\gt1$, les valeurs absolues des valeurs de la fonction croissent plus vite que pour $y=x^2$, la parabole est donc plus étroite. Le sommet reste en $[0;0]$ et le sens d'ouverture dépend du signe de $a$.",
+            "a": "elle est plus étroite que celle de $y=x^2$"
+        }
+    },
+    {
+        "id": "t3",
+        "type": "concept",
+        "cs": {
+            "q": "Jaký vrchol má parabola $y=(x+3)^2-1$?",
+            "o": [
+                "$V[-3;-1]$",
+                "$V[3;-1]$",
+                "$V[-1;-3]$",
+                "$V[3;1]$"
+            ],
+            "h": "Vrcholový tvar je y = a(x − m)² + n, v závorce je rozdíl.",
+            "e": "Protože $x+3=x-(-3)$, je $m=-3$ a $n=-1$, tedy $V[-3;-1]$. Graf vznikne z $y=x^2$ posunutím o $3$ doleva a o $1$ dolů.",
+            "a": "$V[-3;-1]$"
+        },
+        "fr": {
+            "q": "Quel est le sommet de la parabole $y=(x+3)^2-1$ ?",
+            "o": [
+                "$V[-3;-1]$",
+                "$V[3;-1]$",
+                "$V[-1;-3]$",
+                "$V[3;1]$"
+            ],
+            "h": "La forme canonique est y = a(x − m)² + n, la parenthèse contient une différence.",
+            "e": "Comme $x+3=x-(-3)$, on a $m=-3$ et $n=-1$, donc $V[-3;-1]$. La courbe s'obtient à partir de $y=x^2$ par une translation de $3$ vers la gauche et de $1$ vers le bas.",
+            "a": "$V[-3;-1]$"
+        }
+    },
+    {
+        "id": "t4",
+        "type": "concept",
+        "cs": {
+            "q": "Jakým vzorcem vypočítáme první souřadnici vrcholu paraboly $y=ax^2+bx+c$?",
+            "o": [
+                "$m=-\\dfrac{b}{2a}$",
+                "$m=\\dfrac{b}{2a}$",
+                "$m=-\\dfrac{2a}{b}$",
+                "$m=-\\dfrac{c}{a}$"
+            ],
+            "h": "Vrchol leží uprostřed mezi kořeny, jejichž součet je −b/a.",
+            "e": "Podle Viètových vztahů je $x_1+x_2=-\\frac ba$, střed mezi kořeny je tedy $m=-\\frac{b}{2a}$. Vzorec platí pro každou parabolu, i když osu $x$ neprotíná.",
+            "a": "$m=-\\dfrac{b}{2a}$"
+        },
+        "fr": {
+            "q": "Par quelle formule calcule-t-on la première coordonnée du sommet de la parabole $y=ax^2+bx+c$ ?",
+            "o": [
+                "$m=-\\dfrac{b}{2a}$",
+                "$m=\\dfrac{b}{2a}$",
+                "$m=-\\dfrac{2a}{b}$",
+                "$m=-\\dfrac{c}{a}$"
+            ],
+            "h": "Le sommet est au milieu des racines, dont la somme vaut −b/a.",
+            "e": "D'après les relations de Viète, $x_1+x_2=-\\frac ba$, le milieu des racines est donc $m=-\\frac{b}{2a}$. La formule est valable pour toute parabole, même si elle ne coupe pas l'axe des abscisses.",
+            "a": "$m=-\\dfrac{b}{2a}$"
+        }
+    },
+    {
+        "id": "t5",
+        "type": "concept",
+        "cs": {
+            "q": "Jaký je obor hodnot funkce $y=a(x-m)^2+n$ pro $a\\lt0$?",
+            "o": [
+                "$(-\\infty;n\\rangle$",
+                "$\\langle n;\\infty)$",
+                "$\\mathbb{R}$",
+                "$(-\\infty;m\\rangle$"
+            ],
+            "h": "Parabola je otevřená dolů; nejvyšší bod je vrchol.",
+            "e": "Pro $a\\lt0$ je vrchol $V[m;n]$ nejvyšším bodem grafu, funkce tedy nabývá všech hodnot menších nebo rovných $n$: $H=(-\\infty;n\\rangle$.",
+            "a": "$(-\\infty;n\\rangle$"
+        },
+        "fr": {
+            "q": "Quel est l'ensemble image de la fonction $y=a(x-m)^2+n$ pour $a\\lt0$ ?",
+            "o": [
+                "$(-\\infty;n\\rangle$",
+                "$\\langle n;\\infty)$",
+                "$\\mathbb{R}$",
+                "$(-\\infty;m\\rangle$"
+            ],
+            "h": "La parabole est tournée vers le bas ; le point le plus haut est le sommet.",
+            "e": "Pour $a\\lt0$, le sommet $V[m;n]$ est le point le plus haut de la courbe, la fonction prend donc toutes les valeurs inférieures ou égales à $n$ : l'ensemble image est $(-\\infty;n\\rangle$.",
+            "a": "$(-\\infty;n\\rangle$"
+        }
+    },
+    {
+        "id": "t6",
+        "type": "concept",
+        "cs": {
+            "q": "Kde leží vrchol paraboly $y=a(x-x_1)(x-x_2)$?",
+            "o": [
+                "na přímce $x=\\frac{x_1+x_2}{2}$, uprostřed mezi průsečíky s osou $x$",
+                "v průsečíku grafu s osou $y$",
+                "v bodě $[x_1;x_2]$",
+                "vždy na ose $x$"
+            ],
+            "h": "Parabola je souměrná podle své osy.",
+            "e": "Průsečíky $[x_1;0]$ a $[x_2;0]$ jsou souměrné podle osy paraboly, vrchol proto leží uprostřed: $m=\\frac{x_1+x_2}{2}$. Druhou souřadnici dopočítáme dosazením.",
+            "a": "na přímce $x=\\frac{x_1+x_2}{2}$, uprostřed mezi průsečíky s osou $x$"
+        },
+        "fr": {
+            "q": "Où se trouve le sommet de la parabole $y=a(x-x_1)(x-x_2)$ ?",
+            "o": [
+                "sur la droite $x=\\frac{x_1+x_2}{2}$, au milieu des points d'intersection avec l'axe des abscisses",
+                "au point d'intersection de la courbe avec l'axe des ordonnées",
+                "au point $[x_1;x_2]$",
+                "toujours sur l'axe des abscisses"
+            ],
+            "h": "La parabole est symétrique par rapport à son axe.",
+            "e": "Les points $[x_1;0]$ et $[x_2;0]$ sont symétriques par rapport à l'axe de la parabole, le sommet est donc au milieu : $m=\\frac{x_1+x_2}{2}$. On calcule la seconde coordonnée en remplaçant $x$ par $m$.",
+            "a": "sur la droite $x=\\frac{x_1+x_2}{2}$, au milieu des points d'intersection avec l'axe des abscisses"
+        }
+    },
+    {
+        "id": "t7",
+        "type": "concept",
+        "cs": {
+            "q": "Jak získáme graf funkce $y=|ax^2+bx+c|$ z grafu funkce $y=ax^2+bx+c$?",
+            "o": [
+                "část grafu pod osou $x$ překlopíme souměrně podle osy $x$",
+                "část grafu vlevo od osy $y$ překlopíme podle osy $y$",
+                "celý graf posuneme nahoru o $|c|$",
+                "celý graf překlopíme podle osy $x$"
+            ],
+            "h": "Absolutní hodnota mění jen záporné funkční hodnoty.",
+            "e": "Absolutní hodnota ponechá nezáporné hodnoty beze změny a záporné změní na opačné. Proto se překlopí jen ta část grafu, která leží pod osou $x$.",
+            "a": "část grafu pod osou $x$ překlopíme souměrně podle osy $x$"
+        },
+        "fr": {
+            "q": "Comment obtient-on la courbe de $y=|ax^2+bx+c|$ à partir de celle de $y=ax^2+bx+c$ ?",
+            "o": [
+                "on retourne la partie de la courbe située sous l'axe des abscisses par symétrie par rapport à cet axe",
+                "on retourne la partie de la courbe située à gauche de l'axe des ordonnées par symétrie par rapport à cet axe",
+                "on déplace toute la courbe de $|c|$ vers le haut",
+                "on retourne toute la courbe par rapport à l'axe des abscisses"
+            ],
+            "h": "La valeur absolue ne modifie que les valeurs négatives de la fonction.",
+            "e": "La valeur absolue laisse inchangées les valeurs positives ou nulles et change les valeurs négatives en leurs opposées. On ne retourne donc que la partie de la courbe située sous l'axe des abscisses.",
+            "a": "on retourne la partie de la courbe située sous l'axe des abscisses par symétrie par rapport à cet axe"
+        }
+    },
+    {
+        "id": "t8",
+        "type": "concept",
+        "cs": {
+            "q": "Jaký průsečík s osou $y$ má graf funkce $y=ax^2+bx+c$?",
+            "o": [
+                "$[0;c]$",
+                "$[c;0]$",
+                "$[0;b]$",
+                "$[0;a]$"
+            ],
+            "h": "Na ose y je x = 0.",
+            "e": "Dosazením $x=0$ dostaneme $y=a\\cdot0+b\\cdot0+c=c$, průsečík je tedy $P_y[0;c]$.",
+            "a": "$[0;c]$"
+        },
+        "fr": {
+            "q": "Quel est le point d'intersection de la courbe de $y=ax^2+bx+c$ avec l'axe des ordonnées ?",
+            "o": [
+                "$[0;c]$",
+                "$[c;0]$",
+                "$[0;b]$",
+                "$[0;a]$"
+            ],
+            "h": "Sur l'axe des ordonnées, x = 0.",
+            "e": "En posant $x=0$, on obtient $y=a\\cdot0+b\\cdot0+c=c$, le point d'intersection est donc $P_y[0;c]$.",
+            "a": "$[0;c]$"
+        }
+    }
+];
+
+// ======== VYPOCETNI ULOHY ========
+function sgnTerm(k, body, first){
+    // člen k·body se znaménkem; body je '' pro absolutní člen
+    if (k === 0) return '';
+    let coef;
+    if (body === '') coef = String(Math.abs(k));
+    else coef = Math.abs(k) === 1 ? '' : String(Math.abs(k));
+    if (first) return (k < 0 ? '-' : '') + coef + body;
+    return (k < 0 ? '-' : '+') + coef + body;
+}
+function polyTex(a, b, c){
+    let s = sgnTerm(a, 'x^2', true) + sgnTerm(b, 'x', false) + sgnTerm(c, '', false);
+    return s === '' ? '0' : s;
+}
+function bracket(m){ return m === 0 ? 'x' : '(x' + (m > 0 ? '-' : '+') + Math.abs(m) + ')'; }
+function vertTex(a, m, n){
+    const lead = a === 1 ? '' : a === -1 ? '-' : String(a);
+    return lead + bracket(m) + '^2' + (n === 0 ? '' : (n > 0 ? '+' : '-') + Math.abs(n));
+}
+function prodTex(a, x1, x2){
+    const lead = a === 1 ? '' : a === -1 ? '-' : String(a);
+    if (x1 === 0) return lead + 'x' + bracket(x2);
+    if (x2 === 0) return lead + 'x' + bracket(x1);
+    return lead + bracket(x1) + bracket(x2);
+}
+function ptTex(prefix, x, y){ return '$' + prefix + '[' + x + ';' + y + ']$'; }
+function buildIntOptions(correct, extras, spread, allowZero){
+    const ok = v => Number.isInteger(v) && (allowZero || v !== 0);
+    const set = new Set([tex(correct)]);
+    extras.filter(ok).forEach(x => { if (set.size < 4) set.add(tex(x)); });
+    let guard = 0;
+    while (set.size < 4 && guard < 300){
+        const cand = correct + randInt(1, spread) * (Math.random() < 0.5 ? 1 : -1);
+        if (ok(cand)) set.add(tex(cand));
+        guard++;
+    }
+    return [...set];
+}
+
+const M2_OPTS_CS = ['$0$', '$1$', '$2$', 'nekonečně mnoho'];
+const M2_OPTS_FR = ['$0$', '$1$', '$2$', 'une infinité'];
+const M6_OPTS_CS = ['ano', 'ne', 'nelze rozhodnout', 'jen pro kladná $x$'];
+const M6_OPTS_FR = ['oui', 'non', 'impossible à décider', 'seulement pour les $x$ positifs'];
+
+const mathPool = [
+    { id: 'm1', type: 'math',
+        cs: { q: "Urči vrchol paraboly, která je grafem funkce $y={F}$.",
+              h: "První souřadnici vrcholu spočítej ze vzorce m = −b/(2a), druhou dosazením.",
+              e: "{eCs}" },
+        fr: { q: "Détermine le sommet de la parabole représentant la fonction $y={F}$.",
+              h: "Calcule la première coordonnée du sommet par la formule m = −b/(2a), puis la seconde en remplaçant x par m.",
+              e: "{eFr}" },
+        params: () => {
+            let a, m, n, b, c, guard = 0;
+            do {
+                a = randChoice([-2, -1, 1, 2, 3]); m = randInt(-4, 4); n = randInt(-6, 6);
+                b = -2 * a * m; c = a * m * m + n; guard++;
+            } while ((m === 0 || Math.abs(c) > 30 || c === 0) && guard < 100);
+            const F = polyTex(a, b, c);
+            const eCs = 'Platí $m=-\\dfrac{' + b + '}{2\\cdot' + (a < 0 ? '(' + a + ')' : a) + '}=' + m + '$ a dosazením $n=' + n + '$. Vrchol je $V[' + m + ';' + n + ']$, předpis lze zapsat jako $y=' + vertTex(a, m, n) + '$.';
+            const eFr = 'On a $m=-\\dfrac{' + b + '}{2\\cdot' + (a < 0 ? '(' + a + ')' : a) + '}=' + m + '$ et en remplaçant, $n=' + n + '$. Le sommet est $V[' + m + ';' + n + ']$, l\'expression s\'écrit $y=' + vertTex(a, m, n) + '$.';
+            return { a, m, n, b, c, F, eCs, eFr };
+        },
+        solve: (p) => ({ correct: ptTex('V', p.m, p.n) }),
+        wrongOptions: (p, sol) => {
+            const set = new Set([sol.correct]);
+            [ptTex('V', -p.m, p.n), ptTex('V', p.m, p.c), ptTex('V', -p.m, -p.n), ptTex('V', p.n, p.m), ptTex('V', p.m, -p.n), ptTex('V', p.m + 1, p.n)]
+                .forEach(x => { if (set.size < 4) set.add(x); });
+            return [...set];
+        } },
+
+    { id: 'm2', type: 'math', category: true,
+        cs: { q: "Kolik průsečíků s osou $x$ má graf funkce $y={F}$?",
+              h: "Rozhoduje poloha vrcholu vůči ose x a směr otevření paraboly.",
+              e: "{expl}" },
+        fr: { q: "Combien de points d'intersection avec l'axe des abscisses la courbe de la fonction $y={F}$ a-t-elle ?",
+              h: "Ce qui compte, c'est la position du sommet par rapport à l'axe des abscisses et le sens d'ouverture de la parabole.",
+              e: "{expl}" },
+        params: () => {
+            const a = randChoice([-3, -2, -1, 1, 2, 3]), m = randInt(-4, 4);
+            const kind = randInt(0, 2);
+            let n = kind === 1 ? 0 : randInt(1, 6) * (kind === 2 ? -Math.sign(a) : Math.sign(a));
+            const F = vertTex(a, m, n);
+            const V = 'V[' + m + ';' + n + ']';
+            const dirCs = a > 0 ? 'otevřená nahoru' : 'otevřená dolů';
+            const dirFr = a > 0 ? 'tournée vers le haut' : 'tournée vers le bas';
+            let eCs, eFr;
+            if (n === 0) {
+                eCs = 'Vrchol $' + V + '$ leží na ose $x$, parabola se osy dotýká v jediném bodě.';
+                eFr = 'Le sommet $' + V + '$ est sur l\'axe des abscisses, la parabole touche l\'axe en un seul point.';
+            } else if (kind === 2) {
+                eCs = 'Vrchol $' + V + '$ leží ' + (n > 0 ? 'nad' : 'pod') + ' osou $x$ a parabola je ' + dirCs + ', proto osu $x$ protne ve dvou bodech.';
+                eFr = 'Le sommet $' + V + '$ est ' + (n > 0 ? 'au-dessus de' : 'au-dessous de') + ' l\'axe des abscisses et la parabole est ' + dirFr + ', elle coupe donc l\'axe en deux points.';
+            } else {
+                eCs = 'Vrchol $' + V + '$ leží ' + (n > 0 ? 'nad' : 'pod') + ' osou $x$ a parabola je ' + dirCs + ', proto osu $x$ neprotne.';
+                eFr = 'Le sommet $' + V + '$ est ' + (n > 0 ? 'au-dessus de' : 'au-dessous de') + ' l\'axe des abscisses et la parabole est ' + dirFr + ', elle ne coupe donc pas l\'axe.';
+            }
+            return { a, m, n, F, kind, eCs, eFr };
+        },
+        solve: (p) => ({ idx: p.kind === 0 ? 0 : p.kind === 1 ? 1 : 2, explCs: p.eCs, explFr: p.eFr }),
+        optionsCs: M2_OPTS_CS, optionsFr: M2_OPTS_FR },
+
+    { id: 'm3', type: 'math',
+        cs: { q: "Urči druhou souřadnici $n$ vrcholu paraboly $y={F}$.",
+              h: "Vrchol leží uprostřed mezi průsečíky s osou x; jeho první souřadnici dosaď do předpisu.",
+              e: "{eCs}" },
+        fr: { q: "Détermine la seconde coordonnée $n$ du sommet de la parabole $y={F}$.",
+              h: "Le sommet est au milieu des points d'intersection avec l'axe des abscisses ; remplace x par sa première coordonnée.",
+              e: "{eFr}" },
+        params: () => {
+            const a = randChoice([-2, -1, 1, 2]);
+            const x1 = randInt(-6, 3), x2 = x1 + 2 * randInt(1, 4);
+            const m = (x1 + x2) / 2, n = a * (m - x1) * (m - x2);
+            const F = prodTex(a, x1, x2);
+            const diff = (mm, xx) => xx === 0 ? (mm < 0 ? '(' + mm + ')' : String(mm)) : '(' + mm + (xx < 0 ? '+' : '-') + Math.abs(xx) + ')';
+            const calc = (a === 1 ? '' : a === -1 ? '-' : a + '\\cdot') + diff(m, x1) + '\\cdot' + diff(m, x2);
+            const eCs = 'Průsečíky s osou $x$ jsou $' + x1 + '$ a $' + x2 + '$, takže $m=\\dfrac{' + x1 + (x2 < 0 ? '+(' + x2 + ')' : '+' + x2) + '}{2}=' + m + '$. Pak $n=' + calc + '=' + n + '$.';
+            const eFr = 'Les points d\'intersection avec l\'axe des abscisses sont $' + x1 + '$ et $' + x2 + '$, donc $m=\\dfrac{' + x1 + (x2 < 0 ? '+(' + x2 + ')' : '+' + x2) + '}{2}=' + m + '$. Alors $n=' + calc + '=' + n + '$.';
+            return { a, x1, x2, m, n, F, eCs, eFr };
+        },
+        solve: (p) => ({ res: p.n, correct: tex(p.n) }),
+        wrongOptions: (p, sol) => buildIntOptions(sol.res, [-p.n, p.a * p.x1 * p.x2, p.m, p.n + p.a], 4, true) },
+
+    { id: 'm4', type: 'math',
+        cs: { q: "Výraz ${T}$ upravíme na tvar $(x+p)^2+q$. Jaké je číslo $q$?",
+              h: "Polovina koeficientu u x je p; přičti a odečti p².",
+              e: "{eCs}" },
+        fr: { q: "On met l'expression ${T}$ sous la forme $(x+p)^2+q$. Quelle est la valeur de $q$ ?",
+              h: "La moitié du coefficient de x est p ; ajoute et retranche p².",
+              e: "{eFr}" },
+        params: () => {
+            const p = randChoice([-5, -4, -3, -2, -1, 1, 2, 3, 4, 5]);
+            const b = 2 * p, c = randInt(-9, 9);
+            const q = c - p * p;
+            const T = polyTex(1, b, c);
+            const sq = '(x' + (p > 0 ? '+' : '-') + Math.abs(p) + ')^2';
+            const core = polyTex(1, b, p * p);
+            const eCs = 'Zde $p=' + p + '$, tedy $' + T + '=(' + core + ')-' + (p * p) + (c === 0 ? '' : (c > 0 ? '+' : '-') + Math.abs(c)) + '=' + sq + (q === 0 ? '' : (q > 0 ? '+' : '-') + Math.abs(q)) + '$, takže $q=' + q + '$.';
+            const eFr = 'Ici $p=' + p + '$, donc $' + T + '=(' + core + ')-' + (p * p) + (c === 0 ? '' : (c > 0 ? '+' : '-') + Math.abs(c)) + '=' + sq + (q === 0 ? '' : (q > 0 ? '+' : '-') + Math.abs(q)) + '$, d\'où $q=' + q + '$.';
+            return { p, b, c, q, T, eCs, eFr };
+        },
+        solve: (pp) => ({ res: pp.q, correct: tex(pp.q) }),
+        wrongOptions: (pp, sol) => buildIntOptions(sol.res, [pp.c + pp.p * pp.p, pp.c - pp.b, pp.p * pp.p - pp.c], 3, true) },
+
+    { id: 'm5', type: 'math',
+        cs: { q: "Parabola s vrcholem $V[{m};{n}]$ prochází bodem $[{px};{py}]$. Urči koeficient $a$ jejího vrcholového tvaru.",
+              h: "Dosaď vrchol do tvaru y = a(x − m)² + n a pak souřadnice bodu.",
+              e: "{eCs}" },
+        fr: { q: "Une parabole de sommet $V[{m};{n}]$ passe par le point $[{px};{py}]$. Détermine le coefficient $a$ de sa forme canonique.",
+              h: "Remplace le sommet dans y = a(x − m)² + n, puis les coordonnées du point.",
+              e: "{eFr}" },
+        params: () => {
+            const a = randChoice([-3, -2, -1, 1, 2, 3]);
+            const m = randInt(-3, 3), n = randInt(-5, 5), d = randChoice([-2, -1, 1, 2]);
+            const px = m + d, py = n + a * d * d;
+            const lhs = 'y=a' + bracket(m) + '^2' + (n === 0 ? '' : (n > 0 ? '+' : '-') + Math.abs(n));
+            const sub = py + '=a\\cdot' + (d < 0 ? '(' + d + ')' : d) + '^2' + (n === 0 ? '' : (n > 0 ? '+' : '-') + Math.abs(n));
+            const step = (py - n) + '=' + (d * d === 1 ? '' : d * d) + 'a';
+            const eCs = 'Vrcholový tvar: $' + lhs + '$. Dosazením bodu: $' + sub + '$, tedy $' + step + '$ a $a=' + a + '$. Předpis je $y=' + vertTex(a, m, n) + '$.';
+            const eFr = 'Forme canonique : $' + lhs + '$. En remplaçant le point : $' + sub + '$, donc $' + step + '$ et $a=' + a + '$. L\'expression est $y=' + vertTex(a, m, n) + '$.';
+            return { a, m, n, d, px, py, eCs, eFr };
+        },
+        solve: (p) => ({ res: p.a, correct: tex(p.a) }),
+        wrongOptions: (p, sol) => buildIntOptions(sol.res, [-p.a, p.py - p.n, (p.py + p.n) / (p.d * p.d), p.a * p.d], 3, false) },
+
+    { id: 'm6', type: 'math', category: true,
+        cs: { q: "Je funkce $y={F}$ rostoucí na intervalu ${I}$?",
+              h: "Urči vrchol a směr otevření; funkce roste na jedné straně od vrcholu.",
+              e: "{expl}" },
+        fr: { q: "La fonction $y={F}$ est-elle croissante sur l'intervalle ${I}$ ?",
+              h: "Détermine le sommet et le sens d'ouverture ; la fonction croît d'un seul côté du sommet.",
+              e: "{expl}" },
+        params: () => {
+            const a = randChoice([-2, -1, 1, 2]), m = randInt(-3, 3), n = randInt(-4, 4);
+            const right = Math.random() < 0.5;
+            const k = m + randChoice([-2, -1, 0, 1, 2]);
+            const I = right ? '\\langle ' + k + ';\\infty)' : '(-\\infty;' + k + '\\rangle';
+            const valid = right ? (a > 0 && k >= m) : (a < 0 && k <= m);
+            const F = vertTex(a, m, n);
+            const incr = a > 0 ? '\\langle ' + m + ';\\infty)' : '(-\\infty;' + m + '\\rangle';
+            const eCs = 'Vrchol je $V[' + m + ';' + n + ']$ a parabola je otevřená ' + (a > 0 ? 'nahoru' : 'dolů') + ', funkce je tedy rostoucí právě na $' + incr + '$. Interval $' + I + '$ ' + (valid ? 'je' : 'není') + ' částí tohoto intervalu, odpověď je ' + (valid ? 'ano.' : 'ne.');
+            const eFr = 'Le sommet est $V[' + m + ';' + n + ']$ et la parabole est tournée vers ' + (a > 0 ? 'le haut' : 'le bas') + ', la fonction est donc croissante exactement sur $' + incr + '$. L\'intervalle $' + I + '$ ' + (valid ? 'est' : 'n\'est pas') + ' contenu dans cet intervalle, la réponse est ' + (valid ? 'oui.' : 'non.');
+            return { a, m, n, k, F, I, valid, eCs, eFr };
+        },
+        solve: (p) => ({ idx: p.valid ? 0 : 1, explCs: p.eCs, explFr: p.eFr }),
+        optionsCs: M6_OPTS_CS, optionsFr: M6_OPTS_FR }
+];
+
+function fillTemplate(text, dict) {
+    return text.replace(/\{(\w+)\}/g, (_, k) => (typeof dict[k] === 'number' ? fmt(dict[k]) : dict[k]));
+}
+
+function prepareQuestion(template, lang) {
+    const other = lang === 'cs' ? 'fr' : 'cs';
+    let q = JSON.parse(JSON.stringify(template[lang]));
+    let tr = JSON.parse(JSON.stringify(template[other]));
+
+    if (template.type === 'math') {
+        const p = template.params();
+        const sol = template.solve(p);
+        if (template.category) {
+            const dictCs = Object.assign({}, p, { expl: sol.explCs });
+            const dictFr = Object.assign({}, p, { expl: sol.explFr });
+            const dict = { cs: dictCs, fr: dictFr };
+            const opts = { cs: template.optionsCs, fr: template.optionsFr };
+            q.q = fillTemplate(template[lang].q, dict[lang]);
+            q.e = fillTemplate(template[lang].e, dict[lang]);
+            q.o = [...opts[lang]];
+            q.a = opts[lang][sol.idx];
+            tr.q = fillTemplate(template[other].q, dict[other]);
+            tr.e = fillTemplate(template[other].e, dict[other]);
+            tr.o = [...opts[other]];
+            tr.a = opts[other][sol.idx];
+        } else {
+            const options = template.wrongOptions(p, sol);
+            const dict = Object.assign({}, p, sol);
+            [q, tr].forEach(obj => {
+                obj.q = fillTemplate(obj.q, dict);
+                obj.e = fillTemplate(obj.e, dict);
+                obj.a = sol.correct;
+                obj.o = [...options];
+            });
+        }
+    }
+
+    // jedno sdilene promichani poradi moznosti pro obe jazykove verze
+    const order = shuffleArray([...Array(q.o.length).keys()]);
+    q.o = order.map(i => q.o[i]);
+    tr.o = order.map(i => tr.o[i]);
+
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+}
+
+function generateBalancedQuiz() {
+    const sTheory = shuffleArray([...theoryPool]);
+    const sMath = shuffleArray([...mathPool]);
+
+    const selected = [];
+    for (let i = 0; i < N_THEORY; i++) {
+        selected.push(prepareQuestion(sTheory[i % sTheory.length], i % 2 === 0 ? 'fr' : 'cs'));
+    }
+    for (let i = 0; i < N_MATH; i++) {
+        selected.push(prepareQuestion(sMath[i % sMath.length], i % 2 === 0 ? 'cs' : 'fr'));
+    }
+    return shuffleArray(selected);
+}
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let sessionQuestions = [];
+        let userAnswers = [];
+        let translationUsedCount = 0;
+        let hintUsedCount = 0;
+        let isTranslated = false;
+        let answeredIndex = null;
+        let answeredCorrect = null;
+
+        function startQuiz() {
+            sessionQuestions = generateBalancedQuiz();
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers = [];
+            translationUsedCount = 0;
+            hintUsedCount = 0;
+            document.getElementById('score-text').textContent = 'Body: 0';
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function restartQuiz() {
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+
+        function showQuestion() {
+            const q = sessionQuestions[currentQuestionIndex];
+            isTranslated = false;
+            answeredIndex = null;
+            answeredCorrect = null;
+
+            const transBtn = document.getElementById('translate-btn');
+            if (q.lang === 'cs') {
+                transBtn.classList.add('hidden-el');
+            } else {
+                transBtn.classList.remove('hidden-el');
+            }
+
+            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Úloha' : 'Teorie';
+            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+            document.getElementById('hint-box').classList.add('hidden');
+            document.getElementById('hint-btn').classList.remove('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            document.getElementById('feedback-area').classList.add('hidden');
+
+            renderContent();
+        }
+
+        function renderContent() {
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+
+            document.getElementById('question-title').innerHTML = data.q;
+            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+            const grid = document.getElementById('options-grid');
+            grid.innerHTML = '';
+            data.o.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
+                btn.innerHTML = opt;
+                btn.dataset.optText = opt;
+                btn.dataset.idx = idx;
+                if (answeredIndex !== null) {
+                    btn.disabled = true;
+                    if (opt === data.a) btn.classList.add('correct');
+                    else if (idx === answeredIndex) btn.classList.add('wrong');
+                } else {
+                    btn.onclick = () => checkAnswer(btn, idx);
+                }
+                grid.appendChild(btn);
+            });
+
+            if (!document.getElementById('hint-box').classList.contains('hidden')) {
+                document.getElementById('hint-box').innerHTML = data.h;
+            }
+            if (answeredIndex !== null) {
+                document.getElementById('feedback-explanation').innerHTML = data.e;
+            }
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box'), document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function toggleTranslation() {
+            if (!isTranslated) translationUsedCount++;
+            isTranslated = !isTranslated;
+            renderContent();
+        }
+
+        function showHint() {
+            hintUsedCount++;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const hb = document.getElementById('hint-box');
+            hb.innerHTML = data.h;
+            hb.classList.remove('hidden');
+            document.getElementById('hint-btn').classList.add('hidden');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        function checkAnswer(btn, idx) {
+            if (answeredIndex !== null) return;
+            const q = sessionQuestions[currentQuestionIndex];
+            const data = isTranslated ? q.translation : q;
+            const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            const selected = data.o[idx];
+            const isCorrect = (selected === data.a);
+            answeredIndex = idx;
+            answeredCorrect = isCorrect;
+            if (isCorrect) { btn.classList.add('correct'); score++; }
+            else {
+                btn.classList.add('wrong');
+                allBtns.forEach(b => { if (b.dataset.optText === data.a) b.classList.add('correct'); });
+            }
+
+            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
+            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+            document.getElementById('feedback-explanation').innerHTML = data.e;
+
+            const fa = document.getElementById('feedback-area');
+            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+            fa.classList.remove('hidden');
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
+            }
+
+            userAnswers.push({ type: q.type, correct: isCorrect, id: q.id });
+            document.getElementById('score-text').textContent = `Body: ${score}`;
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            const p = Math.round((score / TOTAL_QUESTIONS) * 100);
+            document.getElementById('final-score').textContent = `${p}%`;
+            document.getElementById('final-grade').textContent = `Známka: ${p >= 85 ? "1" : p >= 70 ? "2" : p >= 50 ? "3" : p >= 30 ? "4" : "5"}`;
+            generateOwnAnalysis(p);
+        }
+
+        function generateOwnAnalysis(percent) {
+            const stats = userAnswers.reduce((acc, curr) => {
+                acc[curr.type].total++;
+                if (curr.correct) acc[curr.type].correct++;
+                return acc;
+            }, { concept: { total: 0, correct: 0 }, math: { total: 0, correct: 0 } });
+
+            const theoryCorrect = stats.concept.correct;
+            const theoryTotal = stats.concept.total;
+            const mathCorrect = stats.math.correct;
+            const mathTotal = stats.math.total;
+            const theoryPercent = theoryTotal > 0 ? Math.round((theoryCorrect / theoryTotal) * 100) : 0;
+            const mathPercent = mathTotal > 0 ? Math.round((mathCorrect / mathTotal) * 100) : 0;
+
+            const wrongIds = userAnswers.filter(a => !a.correct).map(a => a.id);
+            const graphWrong = wrongIds.some(id => ['t1', 't2', 't3', 'm2'].includes(id));
+            const formsWrong = wrongIds.some(id => ['t4', 't6', 't8', 'm1', 'm3', 'm4'].includes(id));
+            const propWrong = wrongIds.some(id => ['t5', 'm6'].includes(id));
+            const extraWrong = wrongIds.some(id => ['t7', 'm5'].includes(id));
+
+            let overallMsg, overallIcon;
+            if (percent >= 85) { overallMsg = "Výborně! S parabolou, jejím vrcholem i vlastnostmi kvadratické funkce pracuješ jistě, a to i francouzsky."; overallIcon = "🏆"; }
+            else if (percent >= 70) { overallMsg = "Dobrá práce! Kvadratickou funkci zvládáš, ale ještě je co zlepšovat."; overallIcon = "💪"; }
+            else if (percent >= 50) { overallMsg = "Základní přehled máš, ale doporučuji si zopakovat čtení vrcholu z jednotlivých tvarů předpisu a úpravu na čtverec."; overallIcon = "📚"; }
+            else { overallMsg = "Je potřeba více trénovat – začni vlivem koeficientů na tvar paraboly a vrcholovým tvarem předpisu."; overallIcon = "🔍"; }
+
+            let strengths = [], weaknesses = [];
+            if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš pojmům jako vrchol, osa paraboly, obor hodnot či vrcholový tvar.");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definici kvadratické funkce, vliv koeficientu $a$ na tvar paraboly a tři tvary předpisu.");
+            if (mathPercent >= 70) strengths.push("Výpočty vrcholu, průsečíků a úprava na čtverec ti jdou velmi dobře!");
+            else weaknesses.push("Ve výpočtech chybuješ – procvič si vzorec m = −b/(2a), dosazování do předpisu a úpravu na čtverec.");
+            if (graphWrong) weaknesses.push("Chyby se objevily u tvaru a polohy paraboly (část A).");
+            if (formsWrong) weaknesses.push("Chyby se objevily u práce se třemi tvary předpisu a úpravy na čtverec (část B).");
+            if (propWrong) weaknesses.push("Chyby se objevily u vlastností funkce – oboru hodnot a monotonie (část B).");
+            if (extraWrong) weaknesses.push("Chyby se objevily u určení předpisu z vrcholu a u funkce s absolutní hodnotou (část C).");
+            if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
+
+            let recommendations = [];
+            if (weaknesses.length > 0) {
+                recommendations.push("Vyzkoušej si v teorii posuvníky a, m, n a kalkulačku paraboly z obecného tvaru; pak se vrať k řešeným úlohám.");
+            } else {
+                recommendations.push("Skvělá práce! Kapitolu o kvadratické funkci máš zvládnutou – můžeš si test zopakovat s jinými zadáními a pak pokračovat kapitolou Grafické řešení kvadratických rovnic a nerovnic.");
+            }
+            if (percent < 50) recommendations.push("Doporučuji použít kartičky k procvičení pojmů a vzorců.");
+
+            let frenchMsg, frenchIcon;
+            if (translationUsedCount <= 1) { frenchMsg = "Skvěle rozumíš francouzským zadáním – překlad jsi použil/a jen výjimečně."; frenchIcon = "🇫🇷"; }
+            else if (translationUsedCount <= 3) { frenchMsg = "Francouzština ti dělá mírné potíže – zkus si zvykat na termíny jako sommet, forme canonique, axe des abscisses nebo ensemble image."; frenchIcon = "📖"; }
+            else { frenchMsg = "Hodně jsi spoléhal/a na překlad. Zkus si nejprve přečíst francouzské zadání a teprve pak přeložit."; frenchIcon = "🔁"; }
+
+            const analysisItems = [
+                { icon: overallIcon, title: "Celkové hodnocení", desc: overallMsg },
+                { icon: "📊", title: "Teorie vs. úlohy", desc: `Teorie: ${theoryCorrect}/${theoryTotal} (${theoryPercent}%) – Úlohy: ${mathCorrect}/${mathTotal} (${mathPercent}%)` },
+                { icon: "🎯", title: "Silné stránky", desc: strengths.length ? strengths.join(" ") : "Zatím nejsou zřetelné – zaměř se na systematické procvičování." },
+                { icon: "⚠️", title: "Slabé stránky", desc: weaknesses.length ? weaknesses.join(" ") : "Žádné výrazné slabiny – skvělá práce!" },
+                { icon: "💡", title: "Doporučení", desc: recommendations.join(" ") },
+                { icon: frenchIcon, title: "Práce s francouzštinou", desc: `${frenchMsg} (překlad použit ${translationUsedCount}x)` },
+                { icon: "🧠", title: "Použití nápověd", desc: `Nápovědu jsi využil/a ${hintUsedCount}x. ${hintUsedCount > 3 ? "Zkus se více spolehnout na vlastní úvahu." : "Dobře, že jsi nápovědu používal/a uvážlivě."}` }
+            ];
+
+            document.getElementById('ai-analysis').innerHTML = analysisItems.map(item => `
+                <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+                    <span class="text-2xl">${item.icon}</span>
+                    <div>
+                        <h4 class="font-bold text-sm text-slate-800">${item.title}</h4>
+                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([document.getElementById('ai-analysis')]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+    </script>
+
+</body>
+</html>

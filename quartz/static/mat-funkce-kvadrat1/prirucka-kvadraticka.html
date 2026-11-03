@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kvadratická funkce — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-kvadraticka.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Kvadratická funkce · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- CZ CONTENT -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Kvadratická funkce</h1>
+<p class="mb-3">Grafem kvadratické funkce je parabola. Příručka shrnuje definici, vliv koeficientů na tvar a polohu paraboly, sestrojení grafu ze tří tvarů předpisu, úpravu na čtverec, vlastnosti funkce a několik doplňujících úloh. Body zapisujeme ve tvaru $[x;y]$, průsečík grafu s osou $y$ značíme $P_y$, průsečíky s osou $x$ značíme $P_x$ a vrchol paraboly $V$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Definice</h2>
+<div class="def-box mb-3">
+    <p>Kvadratická funkce je každá funkce určená předpisem $y=ax^2+bx+c$, kde $a$, $b$, $c$ jsou reálná čísla a $a\neq0$. Jejím definičním oborem je $\mathbb{R}$.</p>
+</div>
+<p class="mb-3">Člen $ax^2$ je kvadratický, $bx$ lineární a $c$ absolutní. Koeficienty $b$ a $c$ mohou být nulové.</p>
+<p class="mb-3"><b>Příklad:</b> $y=-x^2+3x$ je kvadratická funkce ($a=-1$, $b=3$, $c=0$), funkce $y=5x-2$ kvadratická není.</p>
+<div class="warn-box mb-3">
+    <p>Pro $a=0$ by zbyla lineární funkce $y=bx+c$, jejímž grafem je přímka.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Graf funkce $y=x^2$</h2>
+<p class="mb-3">Graf sestrojíme z tabulky hodnot, do níž zařadíme i desetinná čísla blízko nuly: $x=-2;\,-1;\,-0{,}5;\,0;\,0{,}5;\,1;\,2$ dává $y=4;\,1;\,0{,}25;\,0;\,0{,}25;\,1;\,4$. Body spojíme hladkou křivkou, parabolou. Její nejnižší bod $V[0;0]$ je vrchol, svislá přímka vrcholem (zde osa $y$) je osa paraboly.</p>
+<div class="warn-box mb-3">
+    <p>Parabola je ve vrcholu zaoblená, nikdy nemá špičku. Body proto nespojujeme úsečkami.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Vliv koeficientu $a$</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>$a\gt0$: parabola otevřená nahoru, vrchol je nejnižší bod; $a\lt0$: otevřená dolů, vrchol je nejvyšší bod.</li>
+        <li>$|a|\gt1$: parabola užší než $y=x^2$; $0\lt|a|\lt1$: parabola širší.</li>
+        <li>Grafy $y=ax^2$ a $y=-ax^2$ jsou souměrné podle osy $x$.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Příklad:</b> pro $x=3$ dává $y=3x^2$ hodnotu $27$, $y=x^2$ hodnotu $9$, $y=\frac13x^2$ hodnotu $3$ a $y=-\frac13x^2$ hodnotu $-3$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Posunutí paraboly a vrcholový tvar</h2>
+<div class="def-box mb-3">
+    <p>Vrcholový tvar: $y=a(x-m)^2+n$, vrchol $V[m;n]$. Číslo $m$ posouvá graf funkce $y=ax^2$ ve směru osy $x$ (pro $m\gt0$ doprava), číslo $n$ ve směru osy $y$ (pro $n\gt0$ nahoru).</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $y=\frac12(x+3)^2-2$ vznikne z $y=\frac12x^2$ posunutím o $3$ doleva a o $2$ dolů, vrchol je $V[-3;-2]$.</p>
+<div class="warn-box mb-3">
+    <p>Závorka $(x+3)$ znamená $m=-3$, tedy posun doleva. Znaménko $n$ se čte přímo.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Graf z vrcholového tvaru</h2>
+<ol class="list-decimal list-inside space-y-1 mb-3">
+    <li>Přečteme vrchol $V[m;n]$.</li>
+    <li>Podle znaménka $a$ určíme směr otevření.</li>
+    <li>Vypočítáme průsečíky s osami: $P_y$ dosazením $x=0$, $P_x$ řešením rovnice $y=0$.</li>
+    <li>Body zakreslíme a vedeme jimi parabolu souměrnou podle přímky $x=m$.</li>
+</ol>
+<p class="mb-3"><b>Příklad:</b> $y=-2(x-1)^2+8$: $V[1;8]$, otevřená dolů, $P_y[0;6]$; z $(x-1)^2=4$ plyne $x-1=\pm2$, tedy $P_x$ jsou $[-1;0]$ a $[3;0]$. Ze souměrnosti leží na grafu i bod $[2;6]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Graf ze součinového tvaru</h2>
+<div class="def-box mb-3">
+    <p>Součinový tvar: $y=a(x-x_1)(x-x_2)$. Průsečíky s osou $x$ jsou $[x_1;0]$ a $[x_2;0]$, vrchol leží uprostřed: $m=\dfrac{x_1+x_2}{2}$, druhou souřadnici $n$ získáme dosazením $x=m$.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $y=(x-1)(x-5)$: $P_x$ jsou $[1;0]$ a $[5;0]$, $m=3$, $n=(3-1)(3-5)=-4$, $V[3;-4]$, $P_y[0;5]$.</p>
+<div class="warn-box mb-3">
+    <p>Součinový tvar existuje jen tehdy, když graf osu $x$ protíná nebo se jí dotýká (např. $y=x^2+1$ takto zapsat nelze).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Graf z obecného tvaru</h2>
+<div class="def-box mb-3">
+    <p>Obecný tvar: $y=ax^2+bx+c$. Platí $P_y[0;c]$ a $m=-\dfrac{b}{2a}$; $n$ dopočítáme dosazením $x=m$. Průsečíky s osou $x$ jsou řešení rovnice $ax^2+bx+c=0$.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> $y=x^2+4x-5$: $P_y[0;-5]$, $m=-\frac42=-2$, $n=4-8-5=-9$, $V[-2;-9]$; z rozkladu $(x+5)(x-1)=0$ jsou $P_x$ body $[-5;0]$ a $[1;0]$.</p>
+<p class="mb-3">Vzorec pro $m$ souvisí s Viètovými vztahy: $x_1+x_2=-\frac ba$, střed kořenů je tedy $-\frac{b}{2a}$. Platí ale i pro parabolu, která osu $x$ neprotíná.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Úprava na čtverec</h2>
+<p class="mb-3">Pro $a=1$ zapíšeme lineární člen jako $2px$, přičteme a odečteme $p^2$ a využijeme vzorec $(x+p)^2=x^2+2px+p^2$.</p>
+<p class="mb-3"><b>Příklad:</b> $x^2-6x+7=(x^2-6x+9)-9+7=(x-3)^2-2$, vrchol $V[3;-2]$.</p>
+<p class="mb-3">Pro $a\neq1$ nejprve vytkneme $a$ z kvadratického a lineárního členu, upravíme závorku a závorku roznásobíme.</p>
+<p class="mb-3"><b>Příklad:</b> $-2x^2+8x-3=-2(x^2-4x)-3=-2\left[(x-2)^2-4\right]-3=-2(x-2)^2+5$, vrchol $V[2;5]$.</p>
+<div class="warn-box mb-3">
+    <p>Po vytknutí musí být koeficientem $a$ vynásobeno i odečtené číslo v závorce ($-2\cdot(-4)=+8$).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Vlastnosti kvadratické funkce $y=a(x-m)^2+n$</h2>
+<ul class="list-disc list-inside space-y-1 mb-3">
+    <li>Definiční obor: $\mathbb{R}$.</li>
+    <li>Obor hodnot: $\langle n;\infty)$ pro $a\gt0$, $(-\infty;n\rangle$ pro $a\lt0$.</li>
+    <li>Monotonie pro $a\gt0$: klesající na $(-\infty;m\rangle$, rostoucí na $\langle m;\infty)$; pro $a\lt0$ naopak.</li>
+    <li>Omezenost: pro $a\gt0$ zdola omezená, shora neomezená; pro $a\lt0$ shora omezená, zdola neomezená.</li>
+    <li>Extrém: ve vrcholu, tj. v bodě $x=m$; pro $a\gt0$ minimum $n$, pro $a\lt0$ maximum $n$.</li>
+    <li>Parita: sudá právě pro $m=0$ (tj. $b=0$), jinak ani sudá, ani lichá. Funkce není prostá ani periodická.</li>
+</ul>
+<p class="mb-3"><b>Příklad:</b> $y=2x^2-8x+11=2(x-2)^2+3$: obor hodnot $\langle3;\infty)$, klesající na $(-\infty;2\rangle$, rostoucí na $\langle2;\infty)$, minimum $3$ v bodě $x=2$. Graf osu $x$ neprotíná, $P_y[0;11]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Předpis z vrcholu a bodu</h2>
+<p class="mb-3">Do vrcholového tvaru dosadíme souřadnice vrcholu, pak souřadnice daného bodu a vypočítáme $a$.</p>
+<p class="mb-3"><b>Příklad:</b> $V[-2;1]$, bod $[0;-7]$: $-7=a(0+2)^2+1$, tedy $a=-2$ a $y=-2(x+2)^2+1=-2x^2-8x-7$.</p>
+<p class="mb-3">Známe-li tři body grafu (s různými $x$, neležící na přímce), dosadíme je do obecného tvaru a řešíme soustavu tří rovnic pro $a$, $b$, $c$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Funkce s absolutní hodnotou $y=|ax^2+bx+c|$</h2>
+<ol class="list-decimal list-inside space-y-1 mb-3">
+    <li>Sestrojíme graf funkce bez absolutní hodnoty.</li>
+    <li>Část grafu na ose $x$ a nad ní ponecháme.</li>
+    <li>Část grafu pod osou $x$ překlopíme souměrně podle osy $x$.</li>
+</ol>
+<p class="mb-3"><b>Příklad:</b> $y=|x^2-4x|$: parabola $y=(x-2)^2-4$ má průsečíky $[0;0]$, $[4;0]$; oblouk mezi nimi překlopíme, vrchol $[2;-4]$ přejde v bod $[2;4]$.</p>
+<div class="warn-box mb-3">
+    <p>Graf funkce s absolutní hodnotou má v bodech na ose $x$ špičky; nejde už o kvadratickou funkci.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">12. Hledání maxima v praxi</h2>
+<p class="mb-3"><b>Příklad:</b> míček má v čase $t$ (s) výšku $h=-5t^2+20t$ (m). Úpravou $h=-5(t-2)^2+20$: nejvýše je za $2$ s ve výšce $20$ m, na zem dopadne za $4$ s.</p>
+<p class="mb-3"><b>Příklad:</b> obdélník s obvodem $20$ cm a stranou $x$ má obsah $S=x(10-x)$. Nulové body $0$ a $10$, vrchol pro $x=5$: největší obsah $25\ \text{cm}^2$ má čtverec.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">13. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900"><th class="text-left py-1 pr-2">Tvar</th><th class="text-left py-1 pr-2">Přímo vyčteme</th><th class="text-left py-1">Dopočítáme</th></tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">vrcholový $a(x-m)^2+n$</td><td class="py-1 pr-2">$V[m;n]$, směr otevření</td><td class="py-1">průsečíky s osami</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">součinový $a(x-x_1)(x-x_2)$</td><td class="py-1 pr-2">$[x_1;0]$, $[x_2;0]$</td><td class="py-1">$m=\frac{x_1+x_2}{2}$, pak $n$</td></tr>
+        <tr><td class="py-1 pr-2">obecný $ax^2+bx+c$</td><td class="py-1 pr-2">$P_y[0;c]$</td><td class="py-1">$m=-\frac{b}{2a}$, pak $n$; průsečíky s osou $x$</td></tr>
+    </tbody>
+</table>
+<p class="mb-3">V následující kapitole <i>Grafické řešení kvadratických rovnic a nerovnic</i> budeme kořeny rovnice $ax^2+bx+c=0$ číst jako průsečíky paraboly s osou $x$ a řešení nerovnic jako ta $x$, pro která leží graf nad osou $x$, nebo pod ní.</p>
+
+</main>
+</div>
+
+<!-- FR CONTENT -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Fonction quadratique</h1>
+<p class="mb-3">La courbe représentative d'une fonction quadratique est une parabole. Ce manuel résume la définition, l'influence des coefficients sur la forme et la position de la parabole, le tracé de la courbe à partir de trois écritures de la fonction, la mise sous forme canonique, les propriétés de la fonction et quelques problèmes complémentaires. Les points sont notés $[x;y]$, le point d'intersection de la courbe avec l'axe des ordonnées est noté $P_y$, les points d'intersection avec l'axe des abscisses $P_x$ et le sommet de la parabole $V$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Définition</h2>
+<div class="def-box mb-3">
+    <p>On appelle fonction quadratique toute fonction définie par $y=ax^2+bx+c$, où $a$, $b$, $c$ sont des nombres réels et $a\neq0$. Son ensemble de définition est $\mathbb{R}$.</p>
+</div>
+<p class="mb-3">Le terme $ax^2$ est le terme du second degré, $bx$ le terme du premier degré et $c$ le terme constant. Les coefficients $b$ et $c$ peuvent être nuls.</p>
+<p class="mb-3"><b>Exemple :</b> $y=-x^2+3x$ est une fonction quadratique ($a=-1$, $b=3$, $c=0$), la fonction $y=5x-2$ ne l'est pas.</p>
+<div class="warn-box mb-3">
+    <p>Pour $a=0$, il resterait la fonction affine $y=bx+c$, dont la courbe est une droite.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Courbe de la fonction $y=x^2$</h2>
+<p class="mb-3">On construit la courbe à partir d'un tableau de valeurs qui contient aussi des nombres décimaux proches de zéro : $x=-2;\,-1;\,-0{,}5;\,0;\,0{,}5;\,1;\,2$ donne $y=4;\,1;\,0{,}25;\,0;\,0{,}25;\,1;\,4$. On relie les points par une courbe lisse, la parabole. Son point le plus bas $V[0;0]$ est le sommet, la droite verticale passant par le sommet (ici l'axe des ordonnées) est l'axe de symétrie de la parabole.</p>
+<div class="warn-box mb-3">
+    <p>Au sommet, la parabole est arrondie, elle n'a jamais de pointe. On ne relie donc pas les points par des segments.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Influence du coefficient $a$</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>$a\gt0$ : parabole tournée vers le haut, le sommet est le point le plus bas ; $a\lt0$ : tournée vers le bas, le sommet est le point le plus haut.</li>
+        <li>$|a|\gt1$ : parabole plus étroite que $y=x^2$ ; $0\lt|a|\lt1$ : parabole plus large.</li>
+        <li>Les courbes de $y=ax^2$ et de $y=-ax^2$ sont symétriques par rapport à l'axe des abscisses.</li>
+    </ul>
+</div>
+<p class="mb-3"><b>Exemple :</b> pour $x=3$, $y=3x^2$ donne la valeur $27$, $y=x^2$ la valeur $9$, $y=\frac13x^2$ la valeur $3$ et $y=-\frac13x^2$ la valeur $-3$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Translation de la parabole et forme canonique</h2>
+<div class="def-box mb-3">
+    <p>Forme canonique : $y=a(x-m)^2+n$, sommet $V[m;n]$. Le nombre $m$ déplace la courbe de $y=ax^2$ parallèlement à l'axe des abscisses (vers la droite pour $m\gt0$), le nombre $n$ parallèlement à l'axe des ordonnées (vers le haut pour $n\gt0$).</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $y=\frac12(x+3)^2-2$ s'obtient à partir de $y=\frac12x^2$ par une translation de $3$ vers la gauche et de $2$ vers le bas, le sommet est $V[-3;-2]$.</p>
+<div class="warn-box mb-3">
+    <p>La parenthèse $(x+3)$ signifie $m=-3$, donc une translation vers la gauche. Le signe de $n$ se lit directement.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Courbe à partir de la forme canonique</h2>
+<ol class="list-decimal list-inside space-y-1 mb-3">
+    <li>On lit le sommet $V[m;n]$.</li>
+    <li>D'après le signe de $a$, on détermine le sens d'ouverture.</li>
+    <li>On calcule les points d'intersection avec les axes : $P_y$ en posant $x=0$, $P_x$ en résolvant l'équation $y=0$.</li>
+    <li>On place les points et on trace la parabole symétrique par rapport à la droite $x=m$.</li>
+</ol>
+<p class="mb-3"><b>Exemple :</b> $y=-2(x-1)^2+8$ : $V[1;8]$, tournée vers le bas, $P_y[0;6]$ ; de $(x-1)^2=4$, on tire $x-1=\pm2$, donc les points $P_x$ sont $[-1;0]$ et $[3;0]$. Par symétrie, le point $[2;6]$ appartient aussi à la courbe.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Courbe à partir de la forme factorisée</h2>
+<div class="def-box mb-3">
+    <p>Forme factorisée : $y=a(x-x_1)(x-x_2)$. Les points d'intersection avec l'axe des abscisses sont $[x_1;0]$ et $[x_2;0]$, le sommet est au milieu : $m=\dfrac{x_1+x_2}{2}$, on obtient la seconde coordonnée $n$ en remplaçant $x$ par $m$.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $y=(x-1)(x-5)$ : les points $P_x$ sont $[1;0]$ et $[5;0]$, $m=3$, $n=(3-1)(3-5)=-4$, $V[3;-4]$, $P_y[0;5]$.</p>
+<div class="warn-box mb-3">
+    <p>La forme factorisée n'existe que si la courbe coupe l'axe des abscisses ou le touche (par exemple, $y=x^2+1$ ne peut pas s'écrire ainsi).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Courbe à partir de la forme développée</h2>
+<div class="def-box mb-3">
+    <p>Forme développée : $y=ax^2+bx+c$. On a $P_y[0;c]$ et $m=-\dfrac{b}{2a}$ ; on calcule $n$ en remplaçant $x$ par $m$. Les points d'intersection avec l'axe des abscisses sont les solutions de l'équation $ax^2+bx+c=0$.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> $y=x^2+4x-5$ : $P_y[0;-5]$, $m=-\frac42=-2$, $n=4-8-5=-9$, $V[-2;-9]$ ; d'après la factorisation $(x+5)(x-1)=0$, les points $P_x$ sont $[-5;0]$ et $[1;0]$.</p>
+<p class="mb-3">La formule de $m$ est liée aux relations de Viète : $x_1+x_2=-\frac ba$, le milieu des racines est donc $-\frac{b}{2a}$. Elle reste cependant valable pour une parabole qui ne coupe pas l'axe des abscisses.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Mise sous forme canonique</h2>
+<p class="mb-3">Pour $a=1$, on écrit le terme du premier degré sous la forme $2px$, on ajoute et on retranche $p^2$ et on utilise l'identité $(x+p)^2=x^2+2px+p^2$.</p>
+<p class="mb-3"><b>Exemple :</b> $x^2-6x+7=(x^2-6x+9)-9+7=(x-3)^2-2$, sommet $V[3;-2]$.</p>
+<p class="mb-3">Pour $a\neq1$, on met d'abord $a$ en facteur dans le terme du second degré et dans celui du premier degré, on transforme la parenthèse, puis on la développe.</p>
+<p class="mb-3"><b>Exemple :</b> $-2x^2+8x-3=-2(x^2-4x)-3=-2\left[(x-2)^2-4\right]-3=-2(x-2)^2+5$, sommet $V[2;5]$.</p>
+<div class="warn-box mb-3">
+    <p>Après la mise en facteur, le nombre retranché dans la parenthèse doit lui aussi être multiplié par $a$ ($-2\cdot(-4)=+8$).</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Propriétés de la fonction quadratique $y=a(x-m)^2+n$</h2>
+<ul class="list-disc list-inside space-y-1 mb-3">
+    <li>Ensemble de définition : $\mathbb{R}$.</li>
+    <li>Ensemble image : $\langle n;\infty)$ pour $a\gt0$, $(-\infty;n\rangle$ pour $a\lt0$.</li>
+    <li>Sens de variation pour $a\gt0$ : décroissante sur $(-\infty;m\rangle$, croissante sur $\langle m;\infty)$ ; pour $a\lt0$, c'est l'inverse.</li>
+    <li>Bornes : pour $a\gt0$, minorée et non majorée ; pour $a\lt0$, majorée et non minorée.</li>
+    <li>Extremum : au sommet, c'est-à-dire en $x=m$ ; pour $a\gt0$ minimum $n$, pour $a\lt0$ maximum $n$.</li>
+    <li>Parité : paire si et seulement si $m=0$ (c'est-à-dire $b=0$), sinon ni paire ni impaire. La fonction n'est ni injective ni périodique.</li>
+</ul>
+<p class="mb-3"><b>Exemple :</b> $y=2x^2-8x+11=2(x-2)^2+3$ : ensemble image $\langle3;\infty)$, décroissante sur $(-\infty;2\rangle$, croissante sur $\langle2;\infty)$, minimum $3$ atteint en $x=2$. La courbe ne coupe pas l'axe des abscisses, $P_y[0;11]$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Expression à partir du sommet et d'un point</h2>
+<p class="mb-3">Dans la forme canonique, on remplace les coordonnées du sommet, puis celles du point donné, et on calcule $a$.</p>
+<p class="mb-3"><b>Exemple :</b> $V[-2;1]$, point $[0;-7]$ : $-7=a(0+2)^2+1$, donc $a=-2$ et $y=-2(x+2)^2+1=-2x^2-8x-7$.</p>
+<p class="mb-3">Si l'on connaît trois points de la courbe (d'abscisses différentes, non alignés), on les remplace dans la forme développée et on résout un système de trois équations d'inconnues $a$, $b$, $c$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Fonction avec valeur absolue $y=|ax^2+bx+c|$</h2>
+<ol class="list-decimal list-inside space-y-1 mb-3">
+    <li>On trace la courbe de la fonction sans valeur absolue.</li>
+    <li>On garde la partie de la courbe située sur l'axe des abscisses ou au-dessus.</li>
+    <li>On retourne la partie située sous l'axe des abscisses par symétrie par rapport à cet axe.</li>
+</ol>
+<p class="mb-3"><b>Exemple :</b> $y=|x^2-4x|$ : la parabole $y=(x-2)^2-4$ coupe l'axe en $[0;0]$ et $[4;0]$ ; on retourne l'arc compris entre ces points, le sommet $[2;-4]$ devient le point $[2;4]$.</p>
+<div class="warn-box mb-3">
+    <p>La courbe d'une fonction avec valeur absolue présente des pointes aux points situés sur l'axe des abscisses ; ce n'est plus une fonction quadratique.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">12. Recherche d'un maximum en pratique</h2>
+<p class="mb-3"><b>Exemple :</b> à l'instant $t$ (s), une balle est à la hauteur $h=-5t^2+20t$ (m). Comme $h=-5(t-2)^2+20$, elle est au plus haut au bout de $2$ s, à $20$ m, et retombe au sol au bout de $4$ s.</p>
+<p class="mb-3"><b>Exemple :</b> un rectangle de périmètre $20$ cm et de côté $x$ a pour aire $S=x(10-x)$. Les zéros sont $0$ et $10$, le sommet est atteint pour $x=5$ : c'est le carré qui a la plus grande aire, $25\ \text{cm}^2$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">13. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900"><th class="text-left py-1 pr-2">Écriture</th><th class="text-left py-1 pr-2">Ce qu'on lit directement</th><th class="text-left py-1">Ce qu'il faut calculer</th></tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">canonique $a(x-m)^2+n$</td><td class="py-1 pr-2">$V[m;n]$, sens d'ouverture</td><td class="py-1">intersections avec les axes</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">factorisée $a(x-x_1)(x-x_2)$</td><td class="py-1 pr-2">$[x_1;0]$, $[x_2;0]$</td><td class="py-1">$m=\frac{x_1+x_2}{2}$, puis $n$</td></tr>
+        <tr><td class="py-1 pr-2">développée $ax^2+bx+c$</td><td class="py-1 pr-2">$P_y[0;c]$</td><td class="py-1">$m=-\frac{b}{2a}$, puis $n$ ; intersections avec l'axe des abscisses</td></tr>
+    </tbody>
+</table>
+<p class="mb-3">Dans le chapitre suivant, <i>Résolution graphique des équations et inéquations du second degré</i>, nous lirons les racines de l'équation $ax^2+bx+c=0$ comme les points d'intersection de la parabole avec l'axe des abscisses, et les solutions des inéquations comme les $x$ pour lesquels la courbe est située au-dessus ou au-dessous de cet axe.</p>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? 'Fonction quadratique · Manuel' : 'Kvadratická funkce · Příručka';
+    document.title = czVisible ? 'Fonction quadratique — Manuel' : 'Kvadratická funkce — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>
