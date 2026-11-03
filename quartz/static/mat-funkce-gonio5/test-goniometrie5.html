@@ -519,8 +519,8 @@ function prepareQuestion(template, lang) {
             tr.q = subst(lang === 'cs' ? template.fr.q : template.cs.q, other); tr.e = subst(lang === 'cs' ? template.fr.e : template.cs.e, other);
             q.a = '$' + sol.res + '$'; tr.a = q.a;
             const cats = M5_CATEGORIES.map(c => '$' + c + '$');
-            q.o = buildCategoryOptions(q.a, [...cats, ...(lang === 'cs' ? M5_DISTRACTOR_CS : M5_DISTRACTOR_FR)]);
-            tr.o = buildCategoryOptions(tr.a, [...cats, ...(lang === 'cs' ? M5_DISTRACTOR_FR : M5_DISTRACTOR_CS)]);
+            q.o = [...cats, ...(lang === 'cs' ? M5_DISTRACTOR_CS : M5_DISTRACTOR_FR)];
+            tr.o = [...cats, ...(lang === 'cs' ? M5_DISTRACTOR_FR : M5_DISTRACTOR_CS)];
 
         } else if (template.id === 'm6') {
             const dCs = Object.assign({}, p, { expl: sol.explCs });
@@ -530,8 +530,8 @@ function prepareQuestion(template, lang) {
             tr.q = subst(lang === 'cs' ? template.fr.q : template.cs.q, other); tr.e = subst(lang === 'cs' ? template.fr.e : template.cs.e, other);
             q.a = lang === 'cs' ? sol.res : sol.resFr;
             tr.a = lang === 'cs' ? sol.resFr : sol.res;
-            q.o = buildCategoryOptions(q.a, [...(lang === 'cs' ? YESNO_CS : YESNO_FR), ...(lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR)]);
-            tr.o = buildCategoryOptions(tr.a, [...(lang === 'cs' ? YESNO_FR : YESNO_CS), ...(lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS)]);
+            q.o = [...(lang === 'cs' ? YESNO_CS : YESNO_FR), ...(lang === 'cs' ? YESNO_DISTRACTORS_CS : YESNO_DISTRACTORS_FR)];
+            tr.o = [...(lang === 'cs' ? YESNO_FR : YESNO_CS), ...(lang === 'cs' ? YESNO_DISTRACTORS_FR : YESNO_DISTRACTORS_CS)];
 
         } else {
             const options = template.wrongOptions(p, sol);
@@ -544,13 +544,19 @@ function prepareQuestion(template, lang) {
                 obj.o = shuffleArray([...options]).map(o => o + unit);
             };
             dispInject(q); dispInject(tr);
+            tr.o = q.o.slice();
         }
     }
 
-    shuffleArray(q.o);
-    shuffleArray(tr.o);
+    // jedno sdílené promíchání pořadí možností pro CZ i FR (možnosti jsou v obou jazycích na stejných pozicích)
+    const ci0 = q.o.indexOf(q.a);
+    if (ci0 < 0 || tr.o.indexOf(tr.a) !== ci0 || q.o.length !== tr.o.length) console.warn('Možnosti nejsou zarovnané:', template.id);
+    const order = shuffleArray([...Array(q.o.length).keys()]);
+    q.o = order.map(i => q.o[i]);
+    tr.o = order.map(i => tr.o[i]);
+    const ci = order.indexOf(ci0);
 
-    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id });
+    return Object.assign({}, q, { type: template.type, lang: lang, translation: tr, id: template.id, ci: ci });
 }
 
 function generateBalancedQuiz() {
@@ -567,135 +573,135 @@ function generateBalancedQuiz() {
 }
 
 
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let sessionQuestions = [];
-        let userAnswers = [];
-        let translationUsedCount = 0;
-        let hintUsedCount = 0;
-        let isTranslated = false;
+// ======== RIZENI KVIZU ========
+let currentQuestionIndex = 0;
+let score = 0;
+let sessionQuestions = [];
+let userAnswers = [];
+let translationUsedCount = 0;
+let hintUsedCount = 0;
+let isTranslated = false;
+let hintShown = false;
+let answeredIndex = null;
+let answeredCorrect = false;
 
-        function startQuiz() {
-            sessionQuestions = generateBalancedQuiz();
-            currentQuestionIndex = 0;
-            score = 0;
-            userAnswers = [];
-            translationUsedCount = 0;
-            hintUsedCount = 0;
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
-            showQuestion();
+function startQuiz() {
+    sessionQuestions = generateBalancedQuiz();
+    currentQuestionIndex = 0;
+    score = 0;
+    userAnswers = [];
+    translationUsedCount = 0;
+    hintUsedCount = 0;
+    document.getElementById('score-text').textContent = 'Body: 0';
+    document.getElementById('start-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    showQuestion();
+}
+
+function restartQuiz() {
+    document.getElementById('result-screen').classList.add('hidden');
+    document.getElementById('start-screen').classList.remove('hidden');
+}
+
+function showQuestion() {
+    const q = sessionQuestions[currentQuestionIndex];
+    isTranslated = false;
+    hintShown = false;
+    answeredIndex = null;
+    answeredCorrect = false;
+
+    const transBtn = document.getElementById('translate-btn');
+    if (q.lang === 'cs') transBtn.classList.add('hidden-el'); else transBtn.classList.remove('hidden-el');
+
+    document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
+    document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
+    document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+
+    document.getElementById('hint-box').classList.add('hidden');
+    document.getElementById('hint-btn').classList.remove('hidden');
+    document.getElementById('next-btn').classList.add('hidden');
+    document.getElementById('feedback-area').classList.add('hidden');
+
+    renderContent();
+}
+
+function renderContent() {
+    const q = sessionQuestions[currentQuestionIndex];
+    const data = isTranslated ? q.translation : q;
+
+    document.getElementById('question-title').innerHTML = data.q;
+    document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+
+    const grid = document.getElementById('options-grid');
+    grid.innerHTML = '';
+    data.o.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl font-medium fade-in";
+        btn.innerHTML = opt;
+        btn.dataset.optText = opt;
+        btn.dataset.idx = idx;
+        if (answeredIndex === null) {
+            btn.classList.add('hover:bg-slate-50', 'hover:border-violet-300');
+            btn.onclick = () => checkAnswer(idx);
+        } else {
+            btn.disabled = true;
+            if (idx === q.ci) btn.classList.add('correct');
+            else if (idx === answeredIndex) btn.classList.add('wrong');
         }
+        grid.appendChild(btn);
+    });
 
-        function restartQuiz() {
-            document.getElementById('result-screen').classList.add('hidden');
-            document.getElementById('start-screen').classList.remove('hidden');
-        }
+    const hb = document.getElementById('hint-box');
+    if (hintShown) { hb.innerHTML = data.h; hb.classList.remove('hidden'); }
 
-        function showQuestion() {
-            const q = sessionQuestions[currentQuestionIndex];
-            isTranslated = false;
+    const fe = document.getElementById('feedback-explanation');
+    if (answeredIndex !== null) fe.innerHTML = data.e;
 
-            const transBtn = document.getElementById('translate-btn');
-            if (q.lang === 'cs') {
-                transBtn.classList.add('hidden-el');
-            } else {
-                transBtn.classList.remove('hidden-el');
-            }
+    if (window.MathJax && MathJax.typesetPromise) {
+        const nodes = [document.getElementById('question-title'), grid, hb];
+        if (answeredIndex !== null) nodes.push(fe);
+        MathJax.typesetPromise(nodes).catch(err => console.warn('MathJax error:', err));
+    }
+}
 
-            document.getElementById('lang-tag').textContent = q.lang === 'cs' ? '🇨🇿 CZ' : '🇫🇷 FR';
-            document.getElementById('type-tag').textContent = q.type === 'math' ? 'Výpočet' : 'Teorie';
-            document.getElementById('progress-text').textContent = `Otázka ${currentQuestionIndex + 1} / ${TOTAL_QUESTIONS}`;
+function toggleTranslation() {
+    if (!isTranslated) translationUsedCount++;
+    isTranslated = !isTranslated;
+    renderContent();
+}
 
-            renderContent();
+function showHint() {
+    hintUsedCount++;
+    hintShown = true;
+    document.getElementById('hint-btn').classList.add('hidden');
+    renderContent();
+}
 
-            document.getElementById('hint-box').classList.add('hidden');
-            document.getElementById('hint-btn').classList.remove('hidden');
-            document.getElementById('next-btn').classList.add('hidden');
-            document.getElementById('feedback-area').classList.add('hidden');
-        }
+function checkAnswer(selectedIndex) {
+    if (answeredIndex !== null) return;
+    const q = sessionQuestions[currentQuestionIndex];
+    answeredIndex = selectedIndex;
+    answeredCorrect = (selectedIndex === q.ci);
+    if (answeredCorrect) score++;
 
-        function renderContent() {
-            const q = sessionQuestions[currentQuestionIndex];
-            const data = isTranslated ? q.translation : q;
+    document.getElementById('feedback-status').textContent = answeredCorrect ? "Správně!" : "Chyba";
+    document.getElementById('feedback-status').className = answeredCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
+    const fa = document.getElementById('feedback-area');
+    fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${answeredCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
+    fa.classList.remove('hidden');
 
-            document.getElementById('question-title').innerHTML = data.q;
-            document.getElementById('question-title').className = isTranslated ? "text-xl font-bold leading-snug text-violet-700" : "text-xl font-bold leading-snug text-slate-900";
+    userAnswers.push({ type: q.type, correct: answeredCorrect });
+    document.getElementById('score-text').textContent = `Body: ${score}`;
+    document.getElementById('next-btn').classList.remove('hidden');
+    renderContent();
+}
 
-            const grid = document.getElementById('options-grid');
-            grid.innerHTML = '';
-            data.o.forEach((opt) => {
-                const btn = document.createElement('button');
-                btn.className = "option-btn w-full text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-violet-300 font-medium fade-in";
-                btn.innerHTML = opt;
-                btn.dataset.optText = opt;
-                btn.onclick = () => checkAnswer(btn, opt, data.a);
-                grid.appendChild(btn);
-            });
+function nextQuestion() {
+    currentQuestionIndex++;
+    if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
+}
 
-            if (!document.getElementById('hint-box').classList.contains('hidden')) {
-                document.getElementById('hint-box').innerHTML = data.h;
-            }
-
-            if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise([document.getElementById('question-title'), document.getElementById('options-grid'), document.getElementById('hint-box')]).catch(err => console.warn('MathJax error:', err));
-            }
-        }
-
-        function toggleTranslation() {
-            if (!isTranslated) translationUsedCount++;
-            isTranslated = !isTranslated;
-            renderContent();
-        }
-
-        function showHint() {
-            hintUsedCount++;
-            const q = sessionQuestions[currentQuestionIndex];
-            const data = isTranslated ? q.translation : q;
-            const hb = document.getElementById('hint-box');
-            hb.innerHTML = data.h;
-            hb.classList.remove('hidden');
-            document.getElementById('hint-btn').classList.add('hidden');
-            if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise([hb]).catch(err => console.warn('MathJax error:', err));
-            }
-        }
-
-        function checkAnswer(btn, selected, correct) {
-            const q = sessionQuestions[currentQuestionIndex];
-            const data = isTranslated ? q.translation : q;
-            const allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.disabled = true);
-
-            const isCorrect = (selected === correct);
-            if (isCorrect) { btn.classList.add('correct'); score++; }
-            else {
-                btn.classList.add('wrong');
-                allBtns.forEach(b => { if (b.dataset.optText === correct) b.classList.add('correct'); });
-            }
-
-            document.getElementById('feedback-status').textContent = isCorrect ? "Správně!" : "Chyba";
-            document.getElementById('feedback-status').className = isCorrect ? "font-bold text-emerald-600" : "font-bold text-red-600";
-            document.getElementById('feedback-explanation').innerHTML = data.e;
-
-            const fa = document.getElementById('feedback-area');
-            fa.className = `mt-6 p-4 rounded-xl border-2 fade-in ${isCorrect ? 'bg-emerald-50 border-emerald-100' : 'bg-red-50 border-red-100'}`;
-            fa.classList.remove('hidden');
-
-            if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise([document.getElementById('feedback-explanation')]).catch(err => console.warn('MathJax error:', err));
-            }
-
-            userAnswers.push({ type: q.type, correct: isCorrect });
-            document.getElementById('score-text').textContent = `Body: ${score}`;
-            document.getElementById('next-btn').classList.remove('hidden');
-        }
-
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < TOTAL_QUESTIONS) showQuestion(); else finishQuiz();
-        }
 
         function finishQuiz() {
             document.getElementById('quiz-screen').classList.add('hidden');
@@ -728,8 +734,8 @@ function generateBalancedQuiz() {
 
             let strengths = [], weaknesses = [];
             if (theoryPercent >= 70) strengths.push("Teorii zvládáš dobře – rozumíš základním i součtovým vzorcům a zkoušce po umocnění.");
-            else weaknesses.push("Teorie ti dělá potíže – zopakuj si definiční obor a periodicitu tangens a kotangens.");
-            if (mathPercent >= 70) strengths.push("Výpočty (redukční vzorce, hodnoty pro libovolný úhel) ti jdou velmi dobře!");
+            else weaknesses.push("Teorie ti dělá potíže – zopakuj si základní a součtové vzorce, vzorce pro dvojnásobný úhel a pravidlo, že po umocnění rovnice je nutná zkouška.");
+            if (mathPercent >= 70) strengths.push("Výpočty (dopočet funkce, součtové vzorce, dvojnásobný úhel a rovnice) ti jdou velmi dobře!");
             else weaknesses.push("Ve výpočtech chybuješ – procvič si zejména dopočet funkce ze znalosti kvadrantu a řešení rovnic substitucí.");
             if (theoryPercent < 70 && mathPercent < 70) weaknesses.push("Celkově je potřeba zopakovat základní pojmy z této kapitoly.");
 
@@ -737,7 +743,7 @@ function generateBalancedQuiz() {
             if (weaknesses.length > 0) {
                 recommendations.push("Zaměř se na opakování základních pojmů – projdi si příručku a vzorové příklady v sekci Úlohy.");
             } else {
-                recommendations.push("Skvělá práce! Zvládl/a jsi kapitolu o tangens a kotangens – můžeš si otestovat své znalosti znovu s jinými čísly.");
+                recommendations.push("Skvělá práce! Kapitolu o goniometrických vzorcích máš zvládnutou – můžeš test zkusit znovu s jinými čísly nebo přejít na kapitolu Goniometrie 6 — Sinová a kosinová věta.");
             }
             if (percent < 50) recommendations.push("Doporučuji použít flashcards k procvičení jednotlivých vzorců a postupů.");
 
