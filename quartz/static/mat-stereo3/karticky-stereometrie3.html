@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flashcards: Stereometrie 3 — Metrické vlastnosti / Géométrie dans l'espace 3 — Propriétés métriques</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+        body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; }
+        .perspective { perspective: 1000px; }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer;
+        }
+        .card-flipped { transform: rotateY(180deg); }
+        .card-face {
+            position: absolute; width: 100%; height: 100%;
+            backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+            padding: 2rem; border-radius: 1rem; text-align: center;
+        }
+        .card-back { transform: rotateY(180deg); }
+        mjx-container { display: inline-block !important; white-space: nowrap; }
+        .card-face p { max-width: 100%; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col">
+
+    <header class="bg-violet-800 text-white p-6 shadow-md text-center">
+        <div class="max-w-2xl mx-auto flex items-center justify-between">
+            <a href="rozcestnik-stereometrie3.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <div>
+                <h1 class="text-2xl font-bold">Flashcards: Stereometrie 3</h1>
+                <p class="text-violet-100 text-sm mt-1">Interaktivní porovnávání jazyků (synchronizované pořadí)</p>
+            </div>
+            <span class="w-16"></span>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col items-center justify-center p-4">
+
+        <div class="flex gap-4 mb-8">
+            <button id="lang-cs" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-violet-700 text-violet-700 font-bold hover:bg-violet-50 transition-colors">Čeština</button>
+            <button id="lang-fr" class="px-4 py-2 bg-white rounded-full shadow-sm border-2 border-transparent text-slate-600 hover:bg-slate-50 transition-colors">Français</button>
+        </div>
+
+        <div class="w-full max-w-md aspect-[4/3] perspective">
+            <div id="card" class="card-inner h-full shadow-xl">
+                <div class="card-face card-front bg-white border-4 border-violet-600 text-xl font-semibold text-slate-800">
+                    <p id="question-text">Načítání...</p>
+                </div>
+                <div class="card-face card-back bg-violet-50 border-4 border-emerald-500 text-lg text-slate-700">
+                    <p id="answer-text"></p>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-xs text-slate-400 mt-3">(klepnutím na kartičku ji otočíš)</p>
+
+        <div class="mt-8 flex flex-col items-center gap-4">
+            <div class="flex gap-4">
+                <button id="prev" class="px-6 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-700 disabled:opacity-30" disabled="">← Předchozí</button>
+                <button id="next" class="px-6 py-2 bg-violet-700 text-white rounded-lg hover:bg-violet-600 font-bold">Další →</button>
+            </div>
+            <p id="counter" class="text-slate-500 font-mono text-sm">Karta: 1 / 50</p>
+            <button id="shuffle" class="text-violet-700 text-sm hover:underline mt-2">Nové zamíchání (reset)</button>
+        </div>
+
+    </main>
+
+    <footer class="p-6 text-center text-slate-400 text-xs">
+        © 2026 – Guide d'étude interactif - Matematika / Mathématiques · Géométrie dans l'espace 3 — Propriétés métriques
+    </footer>
+
+    <script>
+const rawData = {
+    "cs": [
+        {
+            "q": "Co je odchylka dvou různoběžek?",
+            "a": "velikost ostrého nebo pravého úhlu, který přímky svírají"
+        },
+        {
+            "q": "Jaká je odchylka dvou rovnoběžek?",
+            "a": "$0^\\circ$ (u různých i totožných přímek)"
+        },
+        {
+            "q": "Jak určíme odchylku dvou mimoběžek?",
+            "a": "libovolným bodem vedeme rovnoběžky s oběma přímkami a určíme odchylku těchto různoběžek"
+        },
+        {
+            "q": "V jakém intervalu leží odchylka dvou přímek?",
+            "a": "$0^\\circ\\le|\\sphericalangle pq|\\le90^\\circ$"
+        },
+        {
+            "q": "Mezi přímkami vyšel úhel $130^\\circ$. Jaká je jejich odchylka?",
+            "a": "$180^\\circ-130^\\circ=50^\\circ$"
+        },
+        {
+            "q": "Jaká je odchylka přímek $AC$ a $AF$ v krychli?",
+            "a": "$60^\\circ$, protože trojúhelník $ACF$ je rovnostranný"
+        },
+        {
+            "q": "Jaká je odchylka mimoběžek $AB$ a $CH$ v krychli?",
+            "a": "$45^\\circ$, protože $CH\\parallel BE$ a $BE$ je úhlopříčka čtverce $ABFE$"
+        },
+        {
+            "q": "Kdy jsou dvě přímky kolmé?",
+            "a": "když je jejich odchylka $90^\\circ$"
+        },
+        {
+            "q": "Mohou být kolmé i mimoběžky? Uveď příklad v krychli.",
+            "a": "ano, například $AB$ a $CG$ nebo $AC$ a $FH$"
+        },
+        {
+            "q": "Jaký je ve francouzštině rozdíl mezi <i>orthogonales</i> a <i>perpendiculaires</i>?",
+            "a": "<i>perpendiculaires</i> jsou kolmé přímky, které jsou navíc různoběžné"
+        },
+        {
+            "q": "Kdy je přímka kolmá k rovině?",
+            "a": "když je kolmá ke všem přímkám této roviny"
+        },
+        {
+            "q": "Jak zní kritérium kolmosti přímky a roviny?",
+            "a": "přímka je kolmá k rovině, právě když je kolmá ke dvěma různoběžkám této roviny"
+        },
+        {
+            "q": "Stačí ke kolmosti přímky a roviny kolmost ke dvěma rovnoběžkám roviny?",
+            "a": "ne, potřebujeme dvě různoběžky"
+        },
+        {
+            "q": "Proč je přímka $BD$ kolmá k rovině $ACG$?",
+            "a": "protože $BD\\perp AC$ a $BD\\perp AE$ a přímky $AC$, $AE$ jsou různoběžky roviny $ACG$"
+        },
+        {
+            "q": "Kolik přímek kolmých k dané rovině prochází daným bodem?",
+            "a": "právě jedna"
+        },
+        {
+            "q": "Jaká je vzájemná poloha dvou přímek kolmých k téže rovině?",
+            "a": "jsou rovnoběžné"
+        },
+        {
+            "q": "Co je kolmý průmět bodu $M$ do roviny $\\rho$?",
+            "a": "pata $M'$ kolmice vedené bodem $M$ k rovině $\\rho$"
+        },
+        {
+            "q": "Co je kolmým průmětem přímky kolmé k rovině?",
+            "a": "bod"
+        },
+        {
+            "q": "Co je kolmým průmětem úsečky $AG$ krychle do roviny podstavy $ABC$?",
+            "a": "úsečka $AC$"
+        },
+        {
+            "q": "Kam se kolmo promítne vrchol pravidelného jehlanu do roviny podstavy?",
+            "a": "do středu podstavy $S$"
+        },
+        {
+            "q": "Jak je definována odchylka přímky a roviny (přímka není kolmá ani rovnoběžná)?",
+            "a": "jako odchylka přímky a jejího kolmého průmětu do roviny"
+        },
+        {
+            "q": "Jaká je odchylka přímky, která leží v rovině?",
+            "a": "$0^\\circ$"
+        },
+        {
+            "q": "Kvádr $3\\times4\\times5$: jaká je odchylka úhlopříčky $AG$ od podstavy?",
+            "a": "$\\operatorname{tg}\\varphi=\\dfrac55=1$, tedy $45^\\circ$"
+        },
+        {
+            "q": "Kdy jsou dvě roviny kolmé?",
+            "a": "když jedna z nich obsahuje přímku kolmou ke druhé rovině"
+        },
+        {
+            "q": "Je-li $\\alpha\\perp\\beta$, je každá přímka roviny $\\alpha$ kolmá k rovině $\\beta$?",
+            "a": "ne, například $AG$ leží v rovině $ACG\\perp ABC$, ale k podstavě kolmá není"
+        },
+        {
+            "q": "Jak určíme odchylku dvou různoběžných rovin?",
+            "a": "řežeme je rovinou kolmou k jejich průsečnici a určíme odchylku vzniklých průsečnic"
+        },
+        {
+            "q": "Jehlan $|AB|=6$, $v=4$: jaká je odchylka stěny $BCV$ od podstavy?",
+            "a": "$\\operatorname{tg}\\varphi=\\dfrac43$, $\\varphi\\approx53{,}13^\\circ$"
+        },
+        {
+            "q": "Co je stěnová výška pravidelného jehlanu?",
+            "a": "výška boční stěny, tj. vzdálenost vrcholu $V$ od středu podstavné hrany"
+        },
+        {
+            "q": "Jak se vypočítá tělesová úhlopříčka kvádru s rozměry $a$, $b$, $c$?",
+            "a": "$u=\\sqrt{a^2+b^2+c^2}$"
+        },
+        {
+            "q": "Jak dlouhá je tělesová úhlopříčka krychle s hranou $a$?",
+            "a": "$a\\sqrt3$"
+        },
+        {
+            "q": "Jak dlouhá je tělesová úhlopříčka kvádru $3\\times4\\times12$?",
+            "a": "$13$"
+        },
+        {
+            "q": "Co je vzdálenost bodu od přímky?",
+            "a": "vzdálenost bodu od paty kolmice, kterou z něj vedeme k přímce"
+        },
+        {
+            "q": "Jaký vzorec dává výšku na přeponu pravoúhlého trojúhelníku?",
+            "a": "$v_c=\\dfrac{ab}{c}$"
+        },
+        {
+            "q": "Krychle s hranou $3$: jaká je vzdálenost bodu $A$ od přímky $BH$?",
+            "a": "$\\sqrt6\\approx2{,}45$"
+        },
+        {
+            "q": "Proč má trojúhelník $ABH$ v krychli pravý úhel u vrcholu $A$?",
+            "a": "protože hrana $AB$ je kolmá ke stěně $ADHE$, a tedy i k přímce $AH$"
+        },
+        {
+            "q": "Co je vzdálenost bodu $M$ od roviny $\\rho$?",
+            "a": "vzdálenost bodu $M$ od jeho kolmého průmětu $M'$ do roviny $\\rho$"
+        },
+        {
+            "q": "Jak dlouhá je vzdálenost vrcholu $G$ krychle s hranou $a$ od roviny podstavy?",
+            "a": "$a$ (je to délka hrany $CG$)"
+        },
+        {
+            "q": "Jehlan $|AB|=6$, $v=4$: jaká je vzdálenost středu podstavy $S$ od stěny $BCV$?",
+            "a": "$\\dfrac{3\\cdot4}{5}=2{,}4$"
+        },
+        {
+            "q": "V jaké pomocné rovině hledáme kolmici z bodu k rovině?",
+            "a": "v rovině, která prochází daným bodem a je k dané rovině kolmá"
+        },
+        {
+            "q": "Jaká je vzdálenost přímky od roviny, kterou protíná?",
+            "a": "$0$"
+        },
+        {
+            "q": "Jak určíme vzdálenost přímky rovnoběžné s rovinou?",
+            "a": "jako vzdálenost libovolného bodu přímky od roviny"
+        },
+        {
+            "q": "Jehlan $|AB|=6$, $v=4$: jaká je vzdálenost přímky $CD$ od roviny $ABV$?",
+            "a": "$\\dfrac{24}{5}=4{,}8$"
+        },
+        {
+            "q": "Jak určíme vzdálenost dvou rovnoběžných rovin?",
+            "a": "jako vzdálenost libovolného bodu jedné roviny od druhé"
+        },
+        {
+            "q": "Krychle s hranou $6$: jaká je vzdálenost rovin $BDE$ a $CFH$?",
+            "a": "$2\\sqrt3$, třetina tělesové úhlopříčky $6\\sqrt3$"
+        },
+        {
+            "q": "Jaká je vzdálenost dvou různoběžných rovin?",
+            "a": "$0$"
+        },
+        {
+            "q": "Co je osa mimoběžek?",
+            "a": "příčka mimoběžek, která je kolmá k oběma"
+        },
+        {
+            "q": "Co je vzdálenost dvou mimoběžek?",
+            "a": "délka úsečky, kterou z mimoběžek vytíná jejich osa"
+        },
+        {
+            "q": "Krychle s hranou $4$: jaká je vzdálenost mimoběžek $AE$ a $BD$?",
+            "a": "$2\\sqrt2$ (osou je $AS$, $S$ je střed podstavy)"
+        },
+        {
+            "q": "Krychle s hranou $4$: jaká je vzdálenost rovnoběžek $AB$ a $GH$?",
+            "a": "$|BG|=4\\sqrt2$"
+        },
+        {
+            "q": "Proč neměříme délky a úhly přímo na obrázku ve volném rovnoběžném promítání?",
+            "a": "protože toto promítání nezachovává úhly ani délky (kromě přední stěny)"
+        }
+    ],
+    "fr": [
+        {
+            "q": "Qu'est-ce que l'angle de deux droites sécantes ?",
+            "a": "la mesure de l'angle aigu ou droit que forment les droites"
+        },
+        {
+            "q": "Quel est l'angle de deux droites parallèles ?",
+            "a": "$0^\\circ$ (qu'elles soient distinctes ou confondues)"
+        },
+        {
+            "q": "Comment détermine-t-on l'angle de deux droites non coplanaires ?",
+            "a": "par un point quelconque, on mène les parallèles aux deux droites et on détermine l'angle de ces droites sécantes"
+        },
+        {
+            "q": "Dans quel intervalle se trouve l'angle de deux droites ?",
+            "a": "$0^\\circ\\le|\\sphericalangle pq|\\le90^\\circ$"
+        },
+        {
+            "q": "On a trouvé un angle de $130^\\circ$ entre deux droites. Quel est leur angle ?",
+            "a": "$180^\\circ-130^\\circ=50^\\circ$"
+        },
+        {
+            "q": "Quel est l'angle des droites $AC$ et $AF$ dans un cube ?",
+            "a": "$60^\\circ$, car le triangle $ACF$ est équilatéral"
+        },
+        {
+            "q": "Quel est l'angle des droites non coplanaires $AB$ et $CH$ dans un cube ?",
+            "a": "$45^\\circ$, car $CH\\parallel BE$ et $BE$ est une diagonale du carré $ABFE$"
+        },
+        {
+            "q": "Quand deux droites sont-elles orthogonales ?",
+            "a": "quand leur angle est $90^\\circ$"
+        },
+        {
+            "q": "Deux droites non coplanaires peuvent-elles être orthogonales ? Donne un exemple dans un cube.",
+            "a": "oui, par exemple $AB$ et $CG$ ou $AC$ et $FH$"
+        },
+        {
+            "q": "Quelle est la différence entre des droites orthogonales et des droites perpendiculaires ?",
+            "a": "des droites perpendiculaires sont orthogonales et, de plus, sécantes"
+        },
+        {
+            "q": "Quand une droite est-elle perpendiculaire à un plan ?",
+            "a": "quand elle est orthogonale à toutes les droites de ce plan"
+        },
+        {
+            "q": "Quel est le critère d'orthogonalité d'une droite et d'un plan ?",
+            "a": "une droite est perpendiculaire à un plan si et seulement si elle est orthogonale à deux droites sécantes de ce plan"
+        },
+        {
+            "q": "L'orthogonalité avec deux droites parallèles du plan suffit-elle ?",
+            "a": "non, il faut deux droites sécantes"
+        },
+        {
+            "q": "Pourquoi la droite $BD$ est-elle perpendiculaire au plan $ACG$ ?",
+            "a": "car $BD\\perp AC$ et $BD\\perp AE$, et les droites $AC$, $AE$ sont sécantes dans le plan $ACG$"
+        },
+        {
+            "q": "Combien de droites perpendiculaires à un plan donné passent par un point donné ?",
+            "a": "une seule"
+        },
+        {
+            "q": "Quelle est la position relative de deux droites perpendiculaires à un même plan ?",
+            "a": "elles sont parallèles"
+        },
+        {
+            "q": "Qu'est-ce que le projeté orthogonal d'un point $M$ sur un plan $\\rho$ ?",
+            "a": "le pied $M'$ de la perpendiculaire au plan $\\rho$ menée par $M$"
+        },
+        {
+            "q": "Quelle est la projection orthogonale d'une droite perpendiculaire au plan ?",
+            "a": "un point"
+        },
+        {
+            "q": "Quelle est la projection orthogonale du segment $AG$ d'un cube sur le plan de la base $ABC$ ?",
+            "a": "le segment $AC$"
+        },
+        {
+            "q": "Où se projette orthogonalement le sommet d'une pyramide régulière sur le plan de la base ?",
+            "a": "au centre de la base $S$"
+        },
+        {
+            "q": "Comment définit-on l'angle d'une droite et d'un plan (ni perpendiculaire, ni parallèle) ?",
+            "a": "comme l'angle de la droite et de sa projection orthogonale sur le plan"
+        },
+        {
+            "q": "Quel est l'angle d'une droite contenue dans un plan ?",
+            "a": "$0^\\circ$"
+        },
+        {
+            "q": "Pavé droit $3\\times4\\times5$ : quel est l'angle de la diagonale $AG$ et de la base ?",
+            "a": "$\\tan\\varphi=\\dfrac55=1$, donc $45^\\circ$"
+        },
+        {
+            "q": "Quand deux plans sont-ils perpendiculaires ?",
+            "a": "quand l'un d'eux contient une droite perpendiculaire à l'autre plan"
+        },
+        {
+            "q": "Si $\\alpha\\perp\\beta$, toute droite du plan $\\alpha$ est-elle perpendiculaire au plan $\\beta$ ?",
+            "a": "non, par exemple $AG$ est dans le plan $ACG\\perp ABC$, mais n'est pas perpendiculaire à la base"
+        },
+        {
+            "q": "Comment détermine-t-on l'angle de deux plans sécants ?",
+            "a": "on les coupe par un plan perpendiculaire à leur droite d'intersection et on détermine l'angle des droites obtenues"
+        },
+        {
+            "q": "Pyramide $|AB|=6$, $v=4$ : quel est l'angle de la face $BCV$ et de la base ?",
+            "a": "$\\tan\\varphi=\\dfrac43$, $\\varphi\\approx53{,}13^\\circ$"
+        },
+        {
+            "q": "Qu'est-ce que l'apothème d'une pyramide régulière ?",
+            "a": "la hauteur d'une face latérale, c'est-à-dire la distance du sommet $V$ au milieu d'une arête de base"
+        },
+        {
+            "q": "Comment calcule-t-on la grande diagonale d'un pavé droit de dimensions $a$, $b$, $c$ ?",
+            "a": "$u=\\sqrt{a^2+b^2+c^2}$"
+        },
+        {
+            "q": "Quelle est la longueur de la grande diagonale d'un cube d'arête $a$ ?",
+            "a": "$a\\sqrt3$"
+        },
+        {
+            "q": "Quelle est la longueur de la grande diagonale d'un pavé droit $3\\times4\\times12$ ?",
+            "a": "$13$"
+        },
+        {
+            "q": "Qu'est-ce que la distance d'un point à une droite ?",
+            "a": "la distance du point au pied de la perpendiculaire menée de ce point à la droite"
+        },
+        {
+            "q": "Quelle formule donne la hauteur relative à l'hypoténuse d'un triangle rectangle ?",
+            "a": "$v_c=\\dfrac{ab}{c}$"
+        },
+        {
+            "q": "Cube d'arête $3$ : quelle est la distance du point $A$ à la droite $BH$ ?",
+            "a": "$\\sqrt6\\approx2{,}45$"
+        },
+        {
+            "q": "Pourquoi le triangle $ABH$ d'un cube est-il rectangle en $A$ ?",
+            "a": "car l'arête $AB$ est perpendiculaire à la face $ADHE$, donc orthogonale à la droite $AH$"
+        },
+        {
+            "q": "Qu'est-ce que la distance d'un point $M$ à un plan $\\rho$ ?",
+            "a": "la distance du point $M$ à son projeté orthogonal $M'$ sur le plan $\\rho$"
+        },
+        {
+            "q": "Quelle est la distance du sommet $G$ d'un cube d'arête $a$ au plan de la base ?",
+            "a": "$a$ (c'est la longueur de l'arête $CG$)"
+        },
+        {
+            "q": "Pyramide $|AB|=6$, $v=4$ : quelle est la distance du centre de la base $S$ à la face $BCV$ ?",
+            "a": "$\\dfrac{3\\cdot4}{5}=2{,}4$"
+        },
+        {
+            "q": "Dans quel plan auxiliaire cherche-t-on la perpendiculaire menée d'un point à un plan ?",
+            "a": "dans un plan qui passe par le point donné et qui est perpendiculaire au plan donné"
+        },
+        {
+            "q": "Quelle est la distance d'une droite à un plan qu'elle coupe ?",
+            "a": "$0$"
+        },
+        {
+            "q": "Comment détermine-t-on la distance d'une droite parallèle à un plan ?",
+            "a": "comme la distance d'un point quelconque de la droite au plan"
+        },
+        {
+            "q": "Pyramide $|AB|=6$, $v=4$ : quelle est la distance de la droite $CD$ au plan $ABV$ ?",
+            "a": "$\\dfrac{24}{5}=4{,}8$"
+        },
+        {
+            "q": "Comment détermine-t-on la distance de deux plans parallèles ?",
+            "a": "comme la distance d'un point quelconque de l'un des plans à l'autre"
+        },
+        {
+            "q": "Cube d'arête $6$ : quelle est la distance des plans $BDE$ et $CFH$ ?",
+            "a": "$2\\sqrt3$, le tiers de la grande diagonale $6\\sqrt3$"
+        },
+        {
+            "q": "Quelle est la distance de deux plans sécants ?",
+            "a": "$0$"
+        },
+        {
+            "q": "Qu'est-ce que la perpendiculaire commune de deux droites non coplanaires ?",
+            "a": "la droite qui les coupe toutes les deux et qui est orthogonale à chacune d'elles"
+        },
+        {
+            "q": "Qu'est-ce que la distance de deux droites non coplanaires ?",
+            "a": "la longueur du segment que découpe sur elles leur perpendiculaire commune"
+        },
+        {
+            "q": "Cube d'arête $4$ : quelle est la distance des droites non coplanaires $AE$ et $BD$ ?",
+            "a": "$2\\sqrt2$ (la perpendiculaire commune est $AS$, où $S$ est le centre de la base)"
+        },
+        {
+            "q": "Cube d'arête $4$ : quelle est la distance des droites parallèles $AB$ et $GH$ ?",
+            "a": "$|BG|=4\\sqrt2$"
+        },
+        {
+            "q": "Pourquoi ne mesure-t-on pas les longueurs et les angles directement sur une figure en perspective cavalière ?",
+            "a": "parce que cette perspective ne conserve ni les angles ni les longueurs (sauf dans la face avant)"
+        }
+    ]
+};
+
+        let currentLang = 'cs';
+        let currentIndex = 0;
+        let order = [];
+
+        const card = document.getElementById('card');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const counter = document.getElementById('counter');
+        const nextBtn = document.getElementById('next');
+        const prevBtn = document.getElementById('prev');
+        const btnCs = document.getElementById('lang-cs');
+        const btnFr = document.getElementById('lang-fr');
+        const shuffleBtn = document.getElementById('shuffle');
+
+        function generateOrder() {
+            let arr = Array.from({length: 50}, (_, i) => i);
+            let curr = arr.length, rand;
+            while (curr != 0) {
+                rand = Math.floor(Math.random() * curr);
+                curr--;
+                [arr[curr], arr[rand]] = [arr[rand], arr[curr]];
+            }
+            order = arr;
+            currentIndex = 0;
+            updateCard();
+        }
+
+        function updateCard() {
+            card.classList.remove('card-flipped');
+            const originalIndex = order[currentIndex];
+            const data = rawData[currentLang][originalIndex];
+            qText.innerHTML = data.q;
+            aText.innerHTML = data.a;
+            counter.textContent = `${currentLang === 'cs' ? 'Karta' : 'Carte'}: ${currentIndex + 1} / 50`;
+            prevBtn.disabled = currentIndex === 0;
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise([qText, aText]).catch(err => console.warn('MathJax error:', err));
+            }
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('card-flipped');
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % 50;
+            updateCard();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        });
+
+        btnCs.addEventListener('click', () => {
+            currentLang = 'cs';
+            btnCs.classList.add('border-violet-700', 'text-violet-700');
+            btnCs.classList.remove('border-transparent', 'text-slate-600');
+            btnFr.classList.remove('border-violet-700', 'text-violet-700');
+            btnFr.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        btnFr.addEventListener('click', () => {
+            currentLang = 'fr';
+            btnFr.classList.add('border-violet-700', 'text-violet-700');
+            btnFr.classList.remove('border-transparent', 'text-slate-600');
+            btnCs.classList.remove('border-violet-700', 'text-violet-700');
+            btnCs.classList.add('border-transparent', 'text-slate-600');
+            updateCard();
+        });
+
+        shuffleBtn.addEventListener('click', generateOrder);
+
+        generateOrder();
+    </script>
+
+</body>
+</html>

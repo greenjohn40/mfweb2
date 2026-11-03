@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stereometrie 3 — Metrické vlastnosti — Příručka</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .hidden { display: none !important; }
+    .def-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; }
+    .warn-box { border-left: 3px solid #1f1f1f; padding-left: 1rem; background: #f5f5f4; }
+    @media print {
+        .lang-switcher { display: none !important; }
+        header { background: white !important; color: black !important; }
+        body { color: black; }
+    }
+</style>
+</head>
+<body class="text-stone-900">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white print:hidden">
+    <div class="max-w-3xl mx-auto px-5 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <a href="rozcestnik-stereometrie3.html" class="text-violet-200 hover:text-white text-sm">← Rozcestník</a>
+            <h1 id="page-title" class="font-semibold text-sm sm:text-base">Stereometrie 3 — Metrické vlastnosti · Příručka</h1>
+        </div>
+        <button onclick="toggleLanguagePrirucka()" class="lang-switcher bg-white/15 hover:bg-white/25 rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-2">
+            <span>🇨🇿/🇫🇷</span>
+            <span id="lang-label">FR</span>
+        </button>
+    </div>
+</header>
+
+<!-- CZ CONTENT -->
+<div id="cz-content">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Stereometrie 3 — Metrické vlastnosti</h1>
+<p class="mb-3">Metrické vlastnosti souvisejí s velikostmi úhlů a s délkami. V této příručce značíme odchylku přímek $p$, $q$ jako $|\sphericalangle pq|$, vzdálenost bodu $M$ od přímky $p$ jako $|Mp|$ a od roviny $\rho$ jako $|M\rho|$. Krychle a kvádr mají vrcholy $ABCDEFGH$ se spodní podstavou $ABCD$, pravidelný čtyřboký jehlan je $ABCDV$ se středem podstavy $S$ a $S_{BC}$ je střed hrany $BC$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Odchylka dvou přímek</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Různoběžky: odchylka je velikost ostrého nebo pravého úhlu, který přímky svírají.</li>
+        <li>Rovnoběžky (různé i totožné): odchylka je $0^\circ$.</li>
+        <li>Mimoběžky: libovolným bodem vedeme rovnoběžky s oběma přímkami; odchylka mimoběžek je odchylka těchto různoběžek.</li>
+    </ul>
+</div>
+<p class="mb-3">Vždy platí $0^\circ\le|\sphericalangle pq|\le90^\circ$. Bod je nejvýhodnější zvolit přímo na jedné z mimoběžek.</p>
+<p class="mb-3"><b>Příklad:</b> V krychli je trojúhelník $ACF$ rovnostranný (jeho strany jsou úhlopříčky stěn), proto odchylka přímek $AC$ a $AF$ je $60^\circ$. Mimoběžky $AC$ a $BG$: bodem $A$ vedeme rovnoběžku s $BG$, tedy přímku $AH$. Trojúhelník $ACH$ je rovnostranný, odchylka je $60^\circ$.</p>
+<div class="warn-box mb-3">
+    <p>Tupý úhel odchylkou nikdy není. Vyjde-li úhel mezi přímkami $120^\circ$, je jejich odchylka $60^\circ$.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Kolmé přímky</h2>
+<p class="mb-3">Přímky jsou kolmé ($p\perp q$), je-li jejich odchylka $90^\circ$. Kolmé mohou být různoběžky i mimoběžky.</p>
+<p class="mb-3"><b>Příklad:</b> V krychli platí $AC\perp BD$ (úhlopříčky čtverce, různoběžky), $AC\perp FH$ (protože $FH\parallel BD$; mimoběžky) a $AB\perp CG$ (protože $CG\parallel BF$; mimoběžky).</p>
+<p class="mb-3">Ve francouzštině se rozlišují přímky <i>orthogonales</i> (odchylka $90^\circ$) a <i>perpendiculaires</i> (kolmé a zároveň různoběžné).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Kolmost přímky a roviny</h2>
+<div class="def-box mb-3">
+    <p>Přímka $p$ je kolmá k rovině $\rho$, je-li kolmá ke všem přímkám roviny $\rho$.</p>
+    <p class="mt-1"><b>Kritérium:</b> přímka je kolmá k rovině, právě když je kolmá ke dvěma různoběžkám této roviny.</p>
+</div>
+<ul class="list-disc list-inside space-y-1 mb-3">
+    <li>Daným bodem prochází právě jedna přímka kolmá k dané rovině a právě jedna rovina kolmá k dané přímce.</li>
+    <li>Dvě přímky kolmé k téže rovině jsou rovnoběžné; dvě roviny kolmé k téže přímce jsou rovnoběžné.</li>
+</ul>
+<p class="mb-3"><b>Příklad:</b> $BD\perp ACG$, protože $BD\perp AC$ (úhlopříčky čtverce) a $BD\perp AE$ (hrana $AE$ je kolmá k různoběžkám $AB$, $AD$, tedy k celé podstavě).</p>
+<div class="warn-box mb-3">
+    <p>Kolmost k jedné přímce roviny ani ke dvěma rovnoběžkám nestačí: úhlopříčka $AF$ je kolmá k rovnoběžným hranám $AD$ a $BC$, a přesto k podstavě kolmá není.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Kolmý průmět</h2>
+<p class="mb-3">Kolmý průmět bodu $M$ do roviny $\rho$ je pata $M'$ kolmice vedené bodem $M$ k rovině $\rho$. Leží-li $M$ v rovině, je $M'=M$. Kolmý průmět útvaru je množina průmětů všech jeho bodů. Průmětem přímky je přímka, jen přímka kolmá k rovině se promítne do bodu.</p>
+<p class="mb-3"><b>Příklad:</b> Průmětem vrcholu $G$ krychle do podstavy je bod $C$, průmětem úsečky $AG$ je úsečka $AC$. Průmětem vrcholu pravidelného jehlanu do podstavy je její střed $S$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Odchylka přímky a roviny</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Přímka kolmá k rovině: odchylka $90^\circ$.</li>
+        <li>Přímka rovnoběžná s rovinou nebo v ní ležící: odchylka $0^\circ$.</li>
+        <li>Jinak: odchylka přímky $p$ a jejího kolmého průmětu $p'$ do roviny.</li>
+    </ul>
+</div>
+<p class="mb-3">Zvolíme bod $M\in p$, jeho průmět $M'$ a průsečík $P$ přímky s rovinou. V pravoúhlém trojúhelníku $PM'M$ platí $\operatorname{tg}\varphi=\dfrac{|MM'|}{|PM'|}$.</p>
+<p class="mb-3"><b>Příklad:</b> Kvádr $3\times4\times5$: průmětem úhlopříčky $AG$ do podstavy je $AC$, $|AC|=5$, $\operatorname{tg}\varphi=\dfrac55=1$, tedy $\varphi=45^\circ$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Kolmost rovin a odchylka dvou rovin</h2>
+<p class="mb-3">Roviny jsou kolmé ($\alpha\perp\beta$), jestliže jedna z nich obsahuje přímku kolmou ke druhé. Například $ACG\perp ABC$, protože $CG$ je kolmá k podstavě.</p>
+<div class="warn-box mb-3">
+    <p>Z $\alpha\perp\beta$ neplyne, že každá přímka roviny $\alpha$ je kolmá k $\beta$ (například $AG$ leží v $ACG$, ale k podstavě kolmá není).</p>
+</div>
+<div class="def-box mb-3">
+    <p>Rovnoběžné roviny mají odchylku $0^\circ$. U různoběžných rovin s průsečnicí $r$ zvolíme rovinu $\gamma\perp r$; ta protne obě roviny v přímkách $a$, $b$ a odchylka rovin je odchylka přímek $a$, $b$.</p>
+</div>
+<p class="mb-3"><b>Příklad:</b> Jehlan $|AB|=6$, $v=4$. Rovina kolmá k $BC$ procházející vrcholem $V$ dá pravoúhlý trojúhelník $SS_{BC}V$ s odvěsnami $3$ a $4$. Odchylka stěny $BCV$ od podstavy: $\operatorname{tg}\varphi=\dfrac43$, $\varphi\approx53{,}13^\circ$. Přepona $|VS_{BC}|=5$ je stěnová výška.</p>
+<p class="mb-3"><b>Příklad:</b> V krychli svírají roviny $ABC$ a $ABG$ odchylku $45^\circ$ (řez rovinou $BCG$ dá přímky $BC$ a $BG$).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Vzdálenost dvou bodů a bodu od přímky</h2>
+<p class="mb-3">Vzdálenost bodů $A$, $B$ je délka úsečky $AB$. Tělesová úhlopříčka kvádru je $u=\sqrt{a^2+b^2+c^2}$, krychle $u=a\sqrt3$.</p>
+<p class="mb-3"><b>Příklad:</b> Kvádr $3\times4\times12$: $|AC|=5$, $|AG|=\sqrt{25+144}=13$.</p>
+<div class="def-box mb-3">
+    <p>Vzdálenost bodu $M$ od přímky $p$ je vzdálenost bodu $M$ od paty $P$ kolmice vedené z $M$ k přímce $p$ (je-li $M\in p$, je vzdálenost $0$).</p>
+</div>
+<p class="mb-3">Úlohu řešíme v rovině určené bodem a přímkou, často pomocí výšky na přeponu $v_c=\dfrac{ab}{c}$.</p>
+<p class="mb-3"><b>Příklad:</b> Krychle s hranou $3$, vzdálenost bodu $A$ od přímky $BH$. Trojúhelník $ABH$ má pravý úhel u $A$, $|AB|=3$, $|AH|=3\sqrt2$, $|BH|=3\sqrt3$, tedy $d=\dfrac{3\cdot3\sqrt2}{3\sqrt3}=\sqrt6\approx2{,}45$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Vzdálenost bodu od roviny</h2>
+<div class="def-box mb-3">
+    <p>Vzdálenost bodu $M$ od roviny $\rho$ je vzdálenost bodu $M$ od jeho kolmého průmětu $M'$ do roviny $\rho$.</p>
+</div>
+<p class="mb-3">Kolmici hledáme v pomocné rovině, která prochází bodem $M$ a je k dané rovině kolmá.</p>
+<p class="mb-3"><b>Příklad:</b> Jehlan $|AB|=6$, $v=4$, vzdálenost středu $S$ od stěny $BCV$: je to výška na přeponu v trojúhelníku $SS_{BC}V$ se stranami $3$, $4$, $5$, tedy $\dfrac{12}{5}=2{,}4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Vzdálenost přímky od roviny a dvou rovin</h2>
+<p class="mb-3">Je-li přímka rovnoběžná s rovinou, je její vzdálenost od roviny rovna vzdálenosti libovolného jejího bodu od roviny; jinak je $0$. Vzdálenost dvou rovnoběžných rovin je vzdálenost libovolného bodu jedné z nich od druhé; různoběžné roviny mají vzdálenost $0$.</p>
+<p class="mb-3"><b>Příklad:</b> Jehlan $|AB|=6$, $v=4$, vzdálenost přímky $CD$ od roviny $ABV$. Řez rovinou $S_{AB}S_{CD}V$ je rovnoramenný trojúhelník se základnou $6$, výškou $4$ a rameny $5$. Z obsahu $12=\dfrac{5d}{2}$ plyne $d=4{,}8$.</p>
+<p class="mb-3"><b>Příklad:</b> Krychle s hranou $6$: roviny $BDE$ a $CFH$ dělí úhlopříčku $AG=6\sqrt3$ na třetiny, jejich vzdálenost je $2\sqrt3\approx3{,}46$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Vzdálenost dvou přímek</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Různoběžky a totožné přímky: vzdálenost $0$.</li>
+        <li>Rovnoběžky: vzdálenost libovolného bodu jedné z nich od druhé.</li>
+        <li>Mimoběžky: délka úsečky na <b>ose mimoběžek</b>, tj. na příčce kolmé k oběma přímkám (osa je vždy právě jedna).</li>
+    </ul>
+</div>
+<p class="mb-3">Jiná cesta pro mimoběžky: přímkou $q$ proložíme rovinu $\rho\parallel p$ a určíme vzdálenost přímky $p$ od roviny $\rho$.</p>
+<p class="mb-3"><b>Příklad:</b> Krychle s hranou $4$: rovnoběžky $AB$ a $GH$ mají vzdálenost $|BG|=4\sqrt2$. Mimoběžky $AE$ a $BD$ mají osu $AS$ ($S$ je střed podstavy), jejich vzdálenost je $2\sqrt2\approx2{,}83$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Postup výpočtu</h2>
+<ol class="list-decimal list-inside space-y-1 mb-3">
+    <li>Urči, mezi kterými body se vzdálenost měří, nebo který úhel hledáš.</li>
+    <li>Zvol pomocnou rovinu, ve které tyto body nebo úhel leží (obvykle kolmou k dané přímce či rovině).</li>
+    <li>Sestroj řez tělesa a překresli ho ve skutečné velikosti.</li>
+    <li>Najdi v řezu pravoúhlý trojúhelník.</li>
+    <li>Vypočítej stranu, výšku nebo úhel (Pythagorova věta, $v_c=\frac{ab}{c}$, Euklidovy věty, goniometrické funkce).</li>
+</ol>
+<div class="warn-box mb-3">
+    <p>Volné rovnoběžné promítání nezachovává úhly ani délky. Nikdy neměř na prostorovém obrázku, počítej z řezu ve skutečné velikosti.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">12. Shrnutí</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900"><th class="text-left py-1 pr-2">Úloha</th><th class="text-left py-1">Postup</th></tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">odchylka mimoběžek</td><td class="py-1">rovnoběžky vedené jedním bodem</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">odchylka přímky a roviny</td><td class="py-1">kolmý průmět přímky, $\operatorname{tg}\varphi$ v pravoúhlém trojúhelníku</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">odchylka dvou rovin</td><td class="py-1">řez rovinou kolmou k průsečnici</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">vzdálenost bodu od přímky</td><td class="py-1">pata kolmice, výška trojúhelníku</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">vzdálenost bodu od roviny</td><td class="py-1">kolmý průmět bodu, pomocná kolmá rovina</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">přímka a rovina, dvě roviny</td><td class="py-1">převod na vzdálenost bodu od roviny</td></tr>
+        <tr><td class="py-1 pr-2">vzdálenost mimoběžek</td><td class="py-1">osa mimoběžek nebo vzdálenost přímky od rovnoběžné roviny</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<!-- FR CONTENT -->
+<div id="fr-content" class="hidden">
+<main class="max-w-3xl mx-auto px-6 py-10 leading-relaxed">
+
+<h1 class="text-2xl font-bold mb-6">Géométrie dans l'espace 3 — Propriétés métriques</h1>
+<p class="mb-3">Les propriétés métriques sont liées aux mesures d'angles et aux longueurs. Dans ce manuel, l'angle des droites $p$, $q$ est noté $|\sphericalangle pq|$, la distance du point $M$ à la droite $p$ est notée $|Mp|$ et sa distance au plan $\rho$ est notée $|M\rho|$. Le cube et le pavé droit ont pour sommets $ABCDEFGH$ avec la base inférieure $ABCD$, la pyramide régulière à base carrée est $ABCDV$ avec le centre de la base $S$, et $S_{BC}$ est le milieu de l'arête $BC$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">1. Angle de deux droites</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Droites sécantes : l'angle est la mesure de l'angle aigu ou droit que forment les droites.</li>
+        <li>Droites parallèles (distinctes ou confondues) : l'angle est $0^\circ$.</li>
+        <li>Droites non coplanaires : par un point quelconque, on mène les parallèles aux deux droites ; l'angle des droites non coplanaires est l'angle de ces droites sécantes.</li>
+    </ul>
+</div>
+<p class="mb-3">On a toujours $0^\circ\le|\sphericalangle pq|\le90^\circ$. Le plus pratique est de choisir le point sur l'une des deux droites.</p>
+<p class="mb-3"><b>Exemple :</b> Dans un cube, le triangle $ACF$ est équilatéral (ses côtés sont des diagonales de faces), donc l'angle des droites $AC$ et $AF$ est $60^\circ$. Droites non coplanaires $AC$ et $BG$ : par le point $A$, on mène la parallèle à $BG$, c'est-à-dire la droite $AH$. Le triangle $ACH$ est équilatéral, l'angle est $60^\circ$.</p>
+<div class="warn-box mb-3">
+    <p>Un angle obtus n'est jamais l'angle de deux droites. Si l'angle entre les droites est $120^\circ$, leur angle est $60^\circ$.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">2. Droites orthogonales</h2>
+<p class="mb-3">Deux droites sont orthogonales ($p\perp q$) si leur angle est $90^\circ$. Des droites sécantes comme des droites non coplanaires peuvent être orthogonales.</p>
+<p class="mb-3"><b>Exemple :</b> Dans un cube, $AC\perp BD$ (diagonales d'un carré, droites sécantes), $AC\perp FH$ (car $FH\parallel BD$ ; droites non coplanaires) et $AB\perp CG$ (car $CG\parallel BF$ ; droites non coplanaires).</p>
+<p class="mb-3">En français, on distingue les droites <i>orthogonales</i> (angle de $90^\circ$) et les droites <i>perpendiculaires</i> (orthogonales et sécantes).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">3. Droite perpendiculaire à un plan</h2>
+<div class="def-box mb-3">
+    <p>Une droite $p$ est perpendiculaire au plan $\rho$ si elle est orthogonale à toutes les droites du plan $\rho$.</p>
+    <p class="mt-1"><b>Critère :</b> une droite est perpendiculaire à un plan si et seulement si elle est orthogonale à deux droites sécantes de ce plan.</p>
+</div>
+<ul class="list-disc list-inside space-y-1 mb-3">
+    <li>Par un point donné passe une seule droite perpendiculaire à un plan donné et un seul plan perpendiculaire à une droite donnée.</li>
+    <li>Deux droites perpendiculaires à un même plan sont parallèles ; deux plans perpendiculaires à une même droite sont parallèles.</li>
+</ul>
+<p class="mb-3"><b>Exemple :</b> $BD\perp ACG$, car $BD\perp AC$ (diagonales d'un carré) et $BD\perp AE$ (l'arête $AE$ est orthogonale aux droites sécantes $AB$, $AD$, donc à toute la base).</p>
+<div class="warn-box mb-3">
+    <p>L'orthogonalité avec une seule droite du plan, ou avec deux droites parallèles, ne suffit pas : la diagonale $AF$ est orthogonale aux arêtes parallèles $AD$ et $BC$, et pourtant elle n'est pas perpendiculaire à la base.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">4. Projection orthogonale</h2>
+<p class="mb-3">Le projeté orthogonal d'un point $M$ sur le plan $\rho$ est le pied $M'$ de la perpendiculaire au plan $\rho$ menée par $M$. Si $M$ appartient au plan, alors $M'=M$. La projection orthogonale d'une figure est l'ensemble des projetés de tous ses points. La projection d'une droite est une droite ; seule une droite perpendiculaire au plan se projette en un point.</p>
+<p class="mb-3"><b>Exemple :</b> Le projeté du sommet $G$ du cube sur la base est le point $C$, la projection du segment $AG$ est le segment $AC$. Le projeté du sommet d'une pyramide régulière sur la base est son centre $S$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">5. Angle d'une droite et d'un plan</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Droite perpendiculaire au plan : angle de $90^\circ$.</li>
+        <li>Droite parallèle au plan ou contenue dans le plan : angle de $0^\circ$.</li>
+        <li>Sinon : angle de la droite $p$ et de sa projection orthogonale $p'$ sur le plan.</li>
+    </ul>
+</div>
+<p class="mb-3">On choisit un point $M\in p$, son projeté $M'$ et le point d'intersection $P$ de la droite et du plan. Dans le triangle rectangle $PM'M$, on a $\tan\varphi=\dfrac{|MM'|}{|PM'|}$.</p>
+<p class="mb-3"><b>Exemple :</b> Pavé droit $3\times4\times5$ : la projection de la diagonale $AG$ sur la base est $AC$, $|AC|=5$, $\tan\varphi=\dfrac55=1$, donc $\varphi=45^\circ$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">6. Plans perpendiculaires et angle de deux plans</h2>
+<p class="mb-3">Deux plans sont perpendiculaires ($\alpha\perp\beta$) si l'un d'eux contient une droite perpendiculaire à l'autre. Par exemple $ACG\perp ABC$, car $CG$ est perpendiculaire à la base.</p>
+<div class="warn-box mb-3">
+    <p>Si $\alpha\perp\beta$, cela ne signifie pas que toute droite du plan $\alpha$ est perpendiculaire à $\beta$ (par exemple, $AG$ est contenue dans $ACG$, mais n'est pas perpendiculaire à la base).</p>
+</div>
+<div class="def-box mb-3">
+    <p>Deux plans parallèles forment un angle de $0^\circ$. Pour deux plans sécants de droite d'intersection $r$, on choisit un plan $\gamma\perp r$ ; il coupe les deux plans selon les droites $a$, $b$ et l'angle des plans est l'angle des droites $a$, $b$.</p>
+</div>
+<p class="mb-3"><b>Exemple :</b> Pyramide $|AB|=6$, $v=4$. Le plan perpendiculaire à $BC$ passant par le sommet $V$ donne le triangle rectangle $SS_{BC}V$ dont les côtés de l'angle droit mesurent $3$ et $4$. Angle de la face $BCV$ et de la base : $\tan\varphi=\dfrac43$, $\varphi\approx53{,}13^\circ$. L'hypoténuse $|VS_{BC}|=5$ est l'apothème.</p>
+<p class="mb-3"><b>Exemple :</b> Dans un cube, les plans $ABC$ et $ABG$ forment un angle de $45^\circ$ (la section par le plan $BCG$ donne les droites $BC$ et $BG$).</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">7. Distance de deux points et d'un point à une droite</h2>
+<p class="mb-3">La distance des points $A$, $B$ est la longueur du segment $AB$. La grande diagonale d'un pavé droit mesure $u=\sqrt{a^2+b^2+c^2}$, celle d'un cube $u=a\sqrt3$.</p>
+<p class="mb-3"><b>Exemple :</b> Pavé droit $3\times4\times12$ : $|AC|=5$, $|AG|=\sqrt{25+144}=13$.</p>
+<div class="def-box mb-3">
+    <p>La distance du point $M$ à la droite $p$ est la distance du point $M$ au pied $P$ de la perpendiculaire à $p$ menée par $M$ (si $M\in p$, la distance est $0$).</p>
+</div>
+<p class="mb-3">On résout le problème dans le plan déterminé par le point et la droite, souvent à l'aide de la hauteur relative à l'hypoténuse $v_c=\dfrac{ab}{c}$.</p>
+<p class="mb-3"><b>Exemple :</b> Cube d'arête $3$, distance du point $A$ à la droite $BH$. Le triangle $ABH$ est rectangle en $A$, $|AB|=3$, $|AH|=3\sqrt2$, $|BH|=3\sqrt3$, donc $d=\dfrac{3\cdot3\sqrt2}{3\sqrt3}=\sqrt6\approx2{,}45$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">8. Distance d'un point à un plan</h2>
+<div class="def-box mb-3">
+    <p>La distance du point $M$ au plan $\rho$ est la distance du point $M$ à son projeté orthogonal $M'$ sur le plan $\rho$.</p>
+</div>
+<p class="mb-3">On cherche la perpendiculaire dans un plan auxiliaire qui passe par le point $M$ et qui est perpendiculaire au plan donné.</p>
+<p class="mb-3"><b>Exemple :</b> Pyramide $|AB|=6$, $v=4$, distance du centre $S$ à la face $BCV$ : c'est la hauteur relative à l'hypoténuse dans le triangle $SS_{BC}V$ de côtés $3$, $4$, $5$, donc $\dfrac{12}{5}=2{,}4$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">9. Distance d'une droite à un plan et de deux plans</h2>
+<p class="mb-3">Si la droite est parallèle au plan, sa distance au plan est égale à la distance d'un point quelconque de la droite au plan ; sinon elle est $0$. La distance de deux plans parallèles est la distance d'un point quelconque de l'un à l'autre ; deux plans sécants sont à une distance $0$.</p>
+<p class="mb-3"><b>Exemple :</b> Pyramide $|AB|=6$, $v=4$, distance de la droite $CD$ au plan $ABV$. La section par le plan $S_{AB}S_{CD}V$ est un triangle isocèle de base $6$, de hauteur $4$ et dont les côtés égaux mesurent $5$. L'aire donne $12=\dfrac{5d}{2}$, donc $d=4{,}8$.</p>
+<p class="mb-3"><b>Exemple :</b> Cube d'arête $6$ : les plans $BDE$ et $CFH$ partagent la diagonale $AG=6\sqrt3$ en trois parties égales, leur distance est $2\sqrt3\approx3{,}46$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">10. Distance de deux droites</h2>
+<div class="def-box mb-3">
+    <ul class="list-disc list-inside space-y-1">
+        <li>Droites sécantes ou confondues : distance $0$.</li>
+        <li>Droites parallèles : distance d'un point quelconque de l'une à l'autre.</li>
+        <li>Droites non coplanaires : longueur du segment porté par la <b>perpendiculaire commune</b>, c'est-à-dire la droite qui coupe les deux droites et qui est orthogonale à chacune d'elles (elle est toujours unique).</li>
+    </ul>
+</div>
+<p class="mb-3">Autre méthode pour des droites non coplanaires : par la droite $q$, on mène le plan $\rho\parallel p$ et on détermine la distance de la droite $p$ au plan $\rho$.</p>
+<p class="mb-3"><b>Exemple :</b> Cube d'arête $4$ : les droites parallèles $AB$ et $GH$ sont à la distance $|BG|=4\sqrt2$. La perpendiculaire commune des droites non coplanaires $AE$ et $BD$ est $AS$ ($S$ est le centre de la base), leur distance est $2\sqrt2\approx2{,}83$.</p>
+
+<h2 class="text-xl font-bold mt-8 mb-3">11. Démarche de calcul</h2>
+<ol class="list-decimal list-inside space-y-1 mb-3">
+    <li>Détermine entre quels points se mesure la distance, ou quel angle tu cherches.</li>
+    <li>Choisis un plan auxiliaire qui contient ces points ou cet angle (en général perpendiculaire à la droite ou au plan donnés).</li>
+    <li>Construis la section du solide et redessine-la en vraie grandeur.</li>
+    <li>Trouve un triangle rectangle dans la section.</li>
+    <li>Calcule le côté, la hauteur ou l'angle (théorème de Pythagore, $v_c=\frac{ab}{c}$, relations métriques d'Euclide, trigonométrie).</li>
+</ol>
+<div class="warn-box mb-3">
+    <p>La perspective cavalière ne conserve ni les angles ni les longueurs. Ne mesure jamais sur la figure dans l'espace, calcule à partir d'une section en vraie grandeur.</p>
+</div>
+
+<h2 class="text-xl font-bold mt-8 mb-3">12. Résumé</h2>
+<table class="w-full text-sm border-collapse mb-3">
+    <thead>
+        <tr class="border-b-2 border-stone-900"><th class="text-left py-1 pr-2">Problème</th><th class="text-left py-1">Démarche</th></tr>
+    </thead>
+    <tbody>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">angle de droites non coplanaires</td><td class="py-1">parallèles menées par un même point</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">angle d'une droite et d'un plan</td><td class="py-1">projection orthogonale de la droite, $\tan\varphi$ dans un triangle rectangle</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">angle de deux plans</td><td class="py-1">section par un plan perpendiculaire à la droite d'intersection</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">distance d'un point à une droite</td><td class="py-1">pied de la perpendiculaire, hauteur d'un triangle</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">distance d'un point à un plan</td><td class="py-1">projeté orthogonal du point, plan auxiliaire perpendiculaire</td></tr>
+        <tr class="border-b border-stone-300"><td class="py-1 pr-2">droite et plan, deux plans</td><td class="py-1">retour à la distance d'un point à un plan</td></tr>
+        <tr><td class="py-1 pr-2">distance de droites non coplanaires</td><td class="py-1">perpendiculaire commune ou distance d'une droite à un plan parallèle</td></tr>
+    </tbody>
+</table>
+
+</main>
+</div>
+
+<script>
+function toggleLanguagePrirucka(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const oldEl = czVisible ? czEl : frEl;
+    const newEl = czVisible ? frEl : czEl;
+    const oldHeight = oldEl.scrollHeight || 1;
+    const ratio = window.scrollY / oldHeight;
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-label').textContent = czVisible ? 'CZ' : 'FR';
+    document.getElementById('page-title').textContent = czVisible ? "Géométrie dans l'espace 3 — Propriétés métriques · Manuel" : 'Stereometrie 3 — Metrické vlastnosti · Příručka';
+    document.title = czVisible ? "Géométrie dans l'espace 3 — Propriétés métriques — Manuel" : 'Stereometrie 3 — Metrické vlastnosti — Příručka';
+
+    const newHeight = newEl.scrollHeight;
+    window.scrollTo(0, ratio * newHeight);
+
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>

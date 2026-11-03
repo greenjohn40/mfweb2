@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stereometrie 3 — Metrické vlastnosti — Teorie</title>
+<script>
+    (function() {
+        var originalWarn = console.warn;
+        console.warn = function() {
+            if (typeof arguments[0] === 'string' && arguments[0].indexOf('cdn.tailwindcss.com') !== -1) return;
+            originalWarn.apply(console, arguments);
+        };
+    })();
+</script>
+<script src="https://cdn.tailwindcss.com/"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+<script>
+    window.MathJax = {
+        tex: { inlineMath: [['$', '$']], displayMath: [['$$', '$$']] },
+        chtml: { scale: 0.85 },
+        options: { enableMenu: false }
+    };
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .grid-bg {
+        background-image:
+            linear-gradient(rgba(124,58,237,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(124,58,237,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+    .note-box { border-radius: 0.75rem; padding: 1rem 1.25rem; font-size: 0.92rem; }
+    .note-curious { background: #f0fdfa; border-left: 4px solid #0d9488; }
+    .note-warn { background: #fffbeb; border-left: 4px solid #d97706; }
+    .note-link { background: #eef2ff; border-left: 4px solid #4f46e5; }
+    .note-next { background: #f5f5f4; border-left: 4px solid #78716c; }
+    .card { background: white; border-radius: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 1.5rem; }
+    .slider-label { font-size: 0.85rem; color: #57534e; font-weight: 600; }
+    input[type=range] { accent-color: #7c3aed; }
+    .part-tag { display: inline-block; font-size: 0.85rem; font-weight: 600; color: #86198f; background: #fdf4ff; border: 1px solid #f5d0fe; border-radius: 9999px; padding: 0.2rem 0.85rem; }
+    .stereo-fig { display: block; margin: 0 auto; height: auto; }
+    .sel { border: 1px solid #c4b5fd; border-radius: 0.4rem; padding: 0.15rem 0.4rem; background: white; }
+    .step-btn { background: #ede9fe; color: #5b21b6; font-weight: 600; font-size: 0.85rem; border-radius: 0.5rem; padding: 0.35rem 0.9rem; }
+    .step-btn:hover { background: #ddd6fe; }
+    .case-btn { background: #f5f3ff; color: #5b21b6; font-weight: 600; font-size: 0.85rem; border-radius: 0.5rem; padding: 0.3rem 0.8rem; border: 1px solid #ddd6fe; }
+    .case-btn.case-active { background: #7c3aed; color: white; border-color: #7c3aed; }
+    .def-card { border-left: 4px solid #f59e0b; }
+    button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid #7c3aed; outline-offset: 2px; }
+</style>
+</head>
+<body class="grid-bg min-h-screen text-stone-800">
+
+<header class="bg-gradient-to-r from-violet-800 to-fuchsia-900 text-white sticky top-0 z-20 shadow-md">
+    <div class="max-w-4xl mx-auto px-5 py-4 flex items-center justify-between gap-4">
+        <div>
+            <p class="text-violet-200 text-xs font-medium tracking-wide uppercase">Matematika · CLIL</p>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold">Stereometrie 3 — Metrické vlastnosti</h1>
+        </div>
+        <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 transition rounded-lg px-4 py-2 text-sm font-semibold whitespace-nowrap">
+            🌐 <span id="lang-btn-label">Français</span>
+        </button>
+    </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-5 py-8">
+<a href="rozcestnik-stereometrie3.html" class="text-sm text-violet-700 hover:underline">← Rozcestník</a>
+
+<!-- ============================= CZ ============================= -->
+<div id="cz-content" class="mt-4 space-y-10">
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Úhly a vzdálenosti v prostoru</h2>
+    <p>Ve Stereometrii 2 jsme řešili <b>polohové</b> úlohy: zda se dvě přímky protnou, kde leží průsečík přímky s rovinou nebo jak vypadá řez tělesa. Nyní začneme <b>měřit</b>. Budeme se ptát, pod jakým úhlem se přímky a roviny setkávají a jak daleko jsou od sebe. Vlastnostem, které souvisejí s velikostmi úhlů a s délkami, říkáme <b>metrické</b>.</p>
+    <p>S metrickými úlohami se v prostoru setkáváme denně. Zedník olovnicí ověřuje, že je sloup kolmý k podlaze. Projektant hlídá, jaký úhel svírá šikmá rampa s vodorovnou rovinou. A když chceme vědět, jak vysoko visí lampa nad stolem, hledáme vzdálenost bodu od roviny.</p>
+    <p>Kapitola má tři části. V části A zavedeme odchylku a kolmost dvou přímek. V části B se budeme věnovat kolmosti a odchylce přímky a roviny a dvou rovin a také kolmému průmětu. V části C určíme všechny druhy vzdáleností.</p>
+    <div class="card space-y-2">
+        <p><b>Jak kreslíme.</b> Tělesa kreslíme stejně jako ve Stereometrii 2 ve <b>volném rovnoběžném promítání</b>: hrany směřující dozadu kreslíme pod úhlem $30^\circ$ a zkrácené na polovinu, neviditelné hrany čárkovaně. Pravý úhel vyznačujeme obloučkem s tečkou. Rozměry tělesa jsou vždy uvedeny v zadání příkladu; krychle kreslíme stejně velké bez ohledu na délku hrany.</p>
+        <p><b>Označení.</b> Krychle a kvádr mají vrcholy $ABCDEFGH$, spodní podstavu $ABCD$ a bod $E$ leží nad bodem $A$. Pravidelný čtyřboký jehlan značíme $ABCDV$ a střed jeho podstavy $S$. Střed hrany $BC$ značíme $S_{BC}$.</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Odchylku přímek $p$, $q$ zapisujeme $|\sphericalangle pq|$, vzdálenost bodu $M$ od přímky $p$ jako $|Mp|$ a vzdálenost bodu $M$ od roviny $\rho$ jako $|M\rho|$. Ve francouzských učebnicích uvidíš pro vzdálenost zápis $d(M,p)$ nebo $d(M,\rho)$.
+    </div>
+</section>
+
+<section id="sec-odchylka-primek" class="space-y-3">
+    <p class="part-tag">Část A: Odchylka a kolmost přímek</p>
+    <h2 class="text-2xl font-bold text-violet-900">Odchylka dvou přímek</h2>
+    <p>Dvě různoběžky rozdělí rovinu, ve které leží, na čtyři úhly. Protilehlé úhly jsou shodné a sousední se doplňují do $180^\circ$. Jako míru toho, jak jsou přímky „rozevřené“, bereme ten z úhlů, který není tupý.</p>
+    <div class="card def-card space-y-2">
+        <p class="font-semibold text-violet-800">Odchylka dvou přímek $p$, $q$</p>
+        <ul class="list-disc pl-6 space-y-1">
+            <li><b>Různoběžky:</b> odchylka je velikost ostrého nebo pravého úhlu, který přímky svírají.</li>
+            <li><b>Rovnoběžky</b> (různé i totožné): odchylka je $0^\circ$.</li>
+            <li><b>Mimoběžky:</b> libovolným bodem vedeme rovnoběžky $p'\parallel p$ a $q'\parallel q$. Odchylka mimoběžek je odchylka různoběžek $p'$ a $q'$.</li>
+        </ul>
+        <p>Pro každé dvě přímky tedy platí $0^\circ\le|\sphericalangle pq|\le 90^\circ$.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 gap-3">
+        <div class="card">
+            <p class="text-sm mb-2"><b>Příklad:</b> Odchylka různoběžek $AC$ a $AF$ v krychli. Úsečky $AC$, $AF$ a $CF$ jsou úhlopříčky stěn, mají stejnou délku, a trojúhelník $ACF$ je proto rovnostranný. Odchylka přímek je $60^\circ$.</p>
+            <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 275.1,-48.0 192.0,-192.0" fill="#c026d3" fill-opacity="0.16" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#0d9488" stroke-width="2.2" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.2" stroke-linecap="round"/><polyline points="42.2,-7.4 42.5,-8.6 42.8,-9.9 43.0,-11.2 43.2,-12.4 43.2,-13.6 43.2,-14.8 43.1,-16.0 42.9,-17.1 42.6,-18.2 42.3,-19.2 41.8,-20.2 41.3,-21.2 40.7,-22.2 40.1,-23.1 39.3,-23.9 38.5,-24.7 37.6,-25.5 36.6,-26.2 35.6,-26.9 34.5,-27.5 33.3,-28.1 32.1,-28.6 30.8,-29.0 29.4,-29.4" fill="none" stroke="#b91c1c" stroke-width="1.4"/><text x="57.9" y="-26.8" font-size="13" fill="#b91c1c" font-style="italic" font-family="Inter, sans-serif">φ</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+        </div>
+        <div class="card">
+            <p class="text-sm mb-2"><b>Příklad:</b> Odchylka mimoběžek $AC$ a $BG$. Bodem $A$ vedeme rovnoběžku s $BG$: je to přímka $AH$, protože $ABGH$ je obdélník. Trojúhelník $ACH$ je opět rovnostranný, odchylka mimoběžek je tedy $60^\circ$.</p>
+            <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 275.1,-48.0 83.1,-240.0" fill="#c026d3" fill-opacity="0.16" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-240.0" stroke="#0d9488" stroke-width="2.2" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="83.1" y2="-240.0" stroke="#0d9488" stroke-width="2.0" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="42.2,-7.4 41.7,-9.0 41.2,-10.7 40.5,-12.3 39.8,-13.9 39.1,-15.5 38.2,-17.0 37.3,-18.5 36.3,-20.0 35.3,-21.4 34.1,-22.8 32.9,-24.2 31.7,-25.5 30.4,-26.7 29.0,-27.9 27.6,-29.1 26.1,-30.2 24.6,-31.2 23.0,-32.2 21.4,-33.1 19.7,-34.0 18.0,-34.8 16.3,-35.5 14.5,-36.2 12.7,-36.8" fill="none" stroke="#b91c1c" stroke-width="1.4"/><text x="44.0" y="-32.9" font-size="13" fill="#b91c1c" font-style="italic" font-family="Inter, sans-serif">φ</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+        </div>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: zvol dvě přímky určené vrcholy krychle a zjisti jejich odchylku</p>
+        <div class="flex flex-wrap items-center gap-3 mb-2 text-sm">
+            <label>První přímka: <select id="pk-ang-a" class="sel"><option value="AB">AB</option><option value="BC">BC</option><option value="CD">CD</option><option value="DA">DA</option><option value="EF">EF</option><option value="FG">FG</option><option value="GH">GH</option><option value="HE">HE</option><option value="AE">AE</option><option value="BF">BF</option><option value="CG">CG</option><option value="DH">DH</option><option value="AC" selected>AC</option><option value="BD">BD</option><option value="EG">EG</option><option value="FH">FH</option><option value="AF">AF</option><option value="BE">BE</option><option value="CH">CH</option><option value="DG">DG</option><option value="AH">AH</option><option value="DE">DE</option><option value="BG">BG</option><option value="CF">CF</option><option value="AG">AG</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option></select></label>
+            <label>Druhá přímka: <select id="pk-ang-b" class="sel"><option value="AB">AB</option><option value="BC">BC</option><option value="CD">CD</option><option value="DA">DA</option><option value="EF">EF</option><option value="FG">FG</option><option value="GH">GH</option><option value="HE">HE</option><option value="AE">AE</option><option value="BF">BF</option><option value="CG">CG</option><option value="DH">DH</option><option value="AC">AC</option><option value="BD">BD</option><option value="EG">EG</option><option value="FH">FH</option><option value="AF">AF</option><option value="BE">BE</option><option value="CH">CH</option><option value="DG">DG</option><option value="AH">AH</option><option value="DE">DE</option><option value="BG" selected>BG</option><option value="CF">CF</option><option value="AG">AG</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option></select></label>
+        </div>
+        <div id="pk-ang-fig" class="flex justify-center"></div>
+        <p class="text-sm font-semibold mt-2" id="pk-ang-res"></p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Proč nezáleží na tom, kterým bodem rovnoběžky vedeme? Dvojici rovnoběžek vedených jedním bodem lze posunutím přenést do jiného bodu a posunutí úhly nemění. Nejvýhodnější je zvolit bod přímo na jedné z mimoběžek, protože pak stačí vést rovnoběžku jen s tou druhou.
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Tupý úhel odchylkou nikdy není. Vyjde-li ti při výpočtu mezi přímkami úhel $120^\circ$, je jejich odchylka $180^\circ-120^\circ=60^\circ$.
+    </div>
+</section>
+
+<section id="sec-kolme-primky" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kolmé přímky</h2>
+    <p>Nejdůležitější odchylkou je pravý úhel. Dvě přímky jsou <b>kolmé</b>, je-li jejich odchylka $90^\circ$; píšeme $p\perp q$. Kolmé různoběžky známe z planimetrie. V prostoru však mohou být kolmé i <b>mimoběžky</b>.</p>
+    <div class="card">
+        <p class="mb-1"><b>Příklad:</b> V krychli $ABCDEFGH$ platí:</p>
+        <ul class="list-disc pl-6 text-sm space-y-1 mb-2">
+            <li>$AC\perp BD$: úhlopříčky čtverce jsou na sebe kolmé (různoběžky, průsečíkem je střed podstavy),</li>
+            <li>$AC\perp FH$: přímka $FH$ je rovnoběžná s $BD$, jde tedy o kolmé mimoběžky,</li>
+            <li>$AB\perp CG$: přímka $CG$ je rovnoběžná s $BF$ a $AB\perp BF$, opět jde o kolmé mimoběžky.</li>
+        </ul>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#0d9488" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-48.0" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-192.0" x2="83.1" y2="-240.0" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#d97706" stroke-width="2.4" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#d97706" stroke-width="2.4" stroke-linecap="round"/><polyline points="166.8,-29.1 167.4,-28.7 168.0,-28.4 168.4,-28.0 168.7,-27.6 168.9,-27.2 168.9,-26.8 168.8,-26.3 168.6,-25.9 168.2,-25.4 167.8,-24.9 167.1,-24.5 166.4,-24.0 165.5,-23.5 164.5,-23.1 163.4,-22.6 162.2,-22.1 160.8,-21.7 159.4,-21.2 157.9,-20.8 156.3,-20.4 154.6,-20.0 152.8,-19.6 151.0,-19.3 149.1,-18.9" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="152.0" cy="-24.0" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Čeština má pro kolmé přímky jediné slovo. Francouzština rozlišuje přímky <i>orthogonales</i> (jejich odchylka je $90^\circ$) a přímky <i>perpendiculaires</i> (kolmé a navíc různoběžné). Přímky $AC$ a $BD$ jsou tedy <i>perpendiculaires</i>, kdežto $AC$ a $FH$ jen <i>orthogonales</i>.
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Rozlišení různoběžek, rovnoběžek a mimoběžek ze Stereometrie 2 potřebujeme hned na začátku, protože podle něj volíme, jak odchylku dvou přímek určit.
+    </div>
+</section>
+
+<section id="sec-kolmost-primka-rovina" class="space-y-3">
+    <p class="part-tag">Část B: Přímka a rovina, dvě roviny</p>
+    <h2 class="text-2xl font-bold text-violet-900">Kolmost přímky a roviny</h2>
+    <div class="card def-card">
+        <p>Přímka $p$ je <b>kolmá k rovině</b> $\rho$ (píšeme $p\perp\rho$), je-li kolmá ke všem přímkám roviny $\rho$.</p>
+    </div>
+    <p>Ověřit kolmost ke všem přímkám roviny nelze. Naštěstí stačí mnohem méně:</p>
+    <div class="card def-card">
+        <p class="font-semibold text-violet-800 mb-1">Kritérium kolmosti přímky a roviny</p>
+        <p>Přímka je kolmá k rovině, právě když je kolmá ke <b>dvěma různoběžkám</b> této roviny.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Přímka $BD$ je kolmá k rovině $ACG$. V rovině $ACG$ leží různoběžky $AC$ a $AE$. Platí $BD\perp AC$ (úhlopříčky čtverce). Hrana $AE$ je kolmá k různoběžkám $AB$ a $AD$, podle kritéria je tedy kolmá k celé podstavě, a proto i k přímce $BD$. Přímka $BD$ je kolmá ke dvěma různoběžkám roviny $ACG$, takže $BD\perp ACG$. Na obrázku jsou oba pravé úhly vyznačeny ve středu podstavy $S_1$; svislá úsečka je rovnoběžná s $AE$.</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 275.1,-48.0 275.1,-240.0 0.0,-192.0" fill="#0d9488" fill-opacity="0.2" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-48.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="137.6" y1="-24.0" x2="137.6" y2="-216.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="165.1,-28.8 165.8,-28.5 166.3,-28.1 166.7,-27.8 167.0,-27.4 167.2,-27.0 167.2,-26.6 167.1,-26.2 166.9,-25.8 166.5,-25.3 166.1,-24.9 165.5,-24.4 164.8,-24.0 163.9,-23.6 163.0,-23.1 161.9,-22.7 160.8,-22.2 159.5,-21.8 158.2,-21.4 156.8,-21.0 155.2,-20.6 153.6,-20.2 152.0,-19.9 150.3,-19.5 148.5,-19.2" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="151.2" cy="-24.0" r="1.7" fill="#b91c1c"/><polyline points="137.6,-51.2 138.3,-50.8 139.0,-50.3 139.7,-49.7 140.4,-49.0 141.1,-48.2 141.7,-47.3 142.4,-46.3 143.0,-45.2 143.6,-43.9 144.2,-42.7 144.8,-41.3 145.3,-39.8 145.8,-38.3 146.2,-36.7 146.6,-35.1 147.0,-33.4 147.3,-31.7 147.6,-30.0 147.9,-28.2 148.1,-26.4 148.3,-24.6 148.4,-22.8 148.5,-21.0 148.5,-19.2" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="141.4" cy="-31.9" r="1.7" fill="#b91c1c"/><path d="M134.1,-27.5L141.1,-20.5M134.1,-20.5L141.1,-27.5" stroke="#1c1917" stroke-width="1.6"/><text x="111.6" y="-8.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">1</tspan></text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="card space-y-2">
+        <p class="font-semibold text-violet-800">Věty o kolmosti</p>
+        <ul class="list-disc pl-6 space-y-1 text-sm">
+            <li>Daným bodem prochází <b>právě jedna</b> přímka kolmá k dané rovině a <b>právě jedna</b> rovina kolmá k dané přímce.</li>
+            <li>Dvě přímky kolmé k téže rovině jsou rovnoběžné.</li>
+            <li>Dvě roviny kolmé k téže přímce jsou rovnoběžné.</li>
+        </ul>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Kolmost k jedné přímce roviny nestačí, a nestačí ani kolmost ke dvěma rovnoběžkám. Úhlopříčka $AF$ přední stěny je kolmá k hraně $AD$ i k hraně $BC$ podstavy, a přesto k podstavě kolmá není. Hrany $AD$ a $BC$ jsou totiž rovnoběžné.
+    </div>
+</section>
+
+<section id="sec-prumet" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kolmý průmět</h2>
+    <div class="card def-card">
+        <p><b>Kolmý průmět</b> bodu $M$ do roviny $\rho$ je pata kolmice vedené bodem $M$ k rovině $\rho$, tedy průsečík $M'$ této kolmice s rovinou $\rho$. Leží-li bod $M$ v rovině $\rho$, je $M'=M$.</p>
+    </div>
+    <p>Kolmý průmět útvaru je množina kolmých průmětů všech jeho bodů. Kolmým průmětem přímky je přímka, s jedinou výjimkou: přímka kolmá k rovině se promítne do bodu. K určení průmětu přímky proto stačí promítnout dva její body.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Kolmým průmětem vrcholu $G$ do roviny podstavy $ABC$ je bod $C$, protože hrana $CG$ je k podstavě kolmá. Bod $A$ leží v podstavě, je tedy sám sobě průmětem. Kolmým průmětem úsečky $AG$ je proto úsečka $AC$. Podobně je kolmým průmětem vrcholu pravidelného jehlanu do roviny podstavy střed podstavy $S$.</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 192.0,-0.0 275.1,-48.0 83.1,-48.0" fill="#7c3aed" fill-opacity="0.1" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-240.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#0d9488" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="275.1" y1="-240.0" x2="275.1" y2="-48.0" stroke="#b91c1c" stroke-width="2.0" stroke-linecap="round"/><polyline points="275.1,-73.6 273.4,-73.2 271.8,-72.8 270.1,-72.2 268.4,-71.6 266.8,-70.8 265.2,-69.9 263.7,-69.0 262.2,-67.9 260.7,-66.8 259.3,-65.6 258.0,-64.3 256.8,-62.9 255.6,-61.5 254.6,-60.0 253.6,-58.5 252.7,-56.9 251.9,-55.3 251.2,-53.6 250.6,-51.9 250.1,-50.3 249.7,-48.6 249.4,-46.9 249.3,-45.2 249.2,-43.5" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="266.0" cy="-55.5" r="1.7" fill="#b91c1c"/><polyline points="51.9,-9.1 51.9,-10.4 51.8,-11.7 51.7,-13.0 51.6,-14.2 51.5,-15.5 51.3,-16.8 51.0,-18.0 50.8,-19.3 50.5,-20.5 50.2,-21.7 49.8,-22.9 49.4,-24.1 49.0,-25.3 48.6,-26.5 48.1,-27.6 47.6,-28.7 47.0,-29.8 46.5,-30.9 45.8,-32.0 45.2,-33.0 44.5,-34.0 43.8,-35.0 43.1,-36.0 42.4,-37.0" fill="none" stroke="#d97706" stroke-width="1.4"/><text x="71.7" y="-31.0" font-size="13" fill="#d97706" font-style="italic" font-family="Inter, sans-serif">φ</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Kolmé průměty znáš ze stavebních výkresů. Půdorys budovy je její kolmý průmět do vodorovné roviny a nárys je kolmý průmět do svislé roviny.
+    </div>
+</section>
+
+<section id="sec-odchylka-primka-rovina" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Odchylka přímky a roviny</h2>
+    <div class="card def-card space-y-2">
+        <p class="font-semibold text-violet-800">Odchylka přímky $p$ a roviny $\rho$, značíme $|\sphericalangle p\rho|$</p>
+        <ul class="list-disc pl-6 space-y-1">
+            <li>Je-li přímka kolmá k rovině, je odchylka $90^\circ$.</li>
+            <li>Je-li přímka s rovinou rovnoběžná nebo v ní leží, je odchylka $0^\circ$.</li>
+            <li>V ostatních případech je odchylka přímky $p$ a roviny $\rho$ rovna odchylce přímky $p$ a jejího kolmého průmětu $p'$ do roviny $\rho$.</li>
+        </ul>
+    </div>
+    <p>Prakticky postupujeme takto: zvolíme bod $M\in p$, najdeme jeho průmět $M'$ a průsečík $P$ přímky $p$ s rovinou. Trojúhelník $PM'M$ je pravoúhlý s pravým úhlem u vrcholu $M'$ a platí</p>
+    <div class="card def-card text-center">$$\operatorname{tg}\varphi=\frac{|MM'|}{|PM'|}.$$</div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Kvádr $ABCDEFGH$ má rozměry $|AB|=3$, $|BC|=4$, $|AE|=5$. Určíme odchylku tělesové úhlopříčky $AG$ od roviny podstavy. Průmětem úsečky $AG$ je úsečka $AC$ a $|AC|=\sqrt{3^2+4^2}=5$. V trojúhelníku $ACG$ s pravým úhlem u vrcholu $C$ platí $\operatorname{tg}\varphi=\dfrac{|CG|}{|AC|}=\dfrac55=1$, tedy $\varphi=45^\circ$.</p>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: měň výšku kvádru $c=|AE|$ (podstava zůstává $3\times4$)</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="kv-c" min="1" max="12" value="5" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right">c = <span id="kv-cval">5</span></span>
+        </div>
+        <div id="kv-fig" class="flex justify-center"></div>
+        <p class="text-sm font-semibold mt-2" id="kv-res"></p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Dopravní značka „stoupání 10 %“ říká, že na každých 100 metrů ve vodorovném směru vystoupá silnice o 10 metrů. Je tedy $\operatorname{tg}\varphi=0{,}1$ a odchylka silnice od vodorovné roviny je jen asi $5{,}71^\circ$. Ve francouzských učebnicích se tangens značí $\tan$, nikoli $\operatorname{tg}$.
+    </div>
+</section>
+
+<section id="sec-kolmost-rovin" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Kolmost rovin</h2>
+    <div class="card def-card">
+        <p>Dvě roviny jsou <b>kolmé</b> (píšeme $\alpha\perp\beta$), jestliže jedna z nich obsahuje přímku kolmou ke druhé rovině.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Rovina $ACG$ je kolmá k rovině podstavy $ABC$, protože obsahuje hranu $CG$, která je k podstavě kolmá. Stejně je k podstavě kolmá každá rovina obsahující některou svislou hranu, například $BDH$. Navíc platí $ACG\perp BDH$, protože rovina $BDH$ obsahuje přímku $BD$, která je k rovině $ACG$ kolmá (viz příklad výše).</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 192.0,-0.0 275.1,-48.0 83.1,-48.0" fill="#7c3aed" fill-opacity="0.14" stroke="none"/><polygon points="0.0,-0.0 275.1,-48.0 275.1,-240.0 0.0,-192.0" fill="#0d9488" fill-opacity="0.2" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><polyline points="275.1,-73.6 274.4,-73.1 273.7,-72.5 273.0,-71.9 272.3,-71.1 271.6,-70.2 270.9,-69.2 270.2,-68.1 269.6,-67.0 269.0,-65.7 268.4,-64.4 267.8,-63.0 267.3,-61.6 266.8,-60.1 266.3,-58.5 265.9,-56.9 265.5,-55.3 265.2,-53.6 264.9,-51.9 264.6,-50.2 264.4,-48.4 264.3,-46.7 264.1,-45.0 264.1,-43.3 264.1,-41.6" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="271.2" cy="-54.8" r="1.7" fill="#b91c1c"/><polyline points="275.1,-73.6 273.5,-73.5 271.8,-73.4 270.1,-73.1 268.5,-72.7 266.9,-72.2 265.3,-71.7 263.8,-71.0 262.3,-70.2 260.9,-69.3 259.6,-68.3 258.3,-67.2 257.0,-66.1 255.9,-64.9 254.8,-63.6 253.9,-62.2 253.0,-60.8 252.2,-59.3 251.5,-57.8 250.9,-56.2 250.4,-54.6 250.0,-53.0 249.8,-51.3 249.6,-49.7 249.5,-48.0" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="266.1" cy="-57.1" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Z kolmosti rovin $\alpha\perp\beta$ neplyne, že každá přímka roviny $\alpha$ je kolmá k rovině $\beta$. V rovině $ACG$ leží například úhlopříčka $AG$, která svírá s podstavou ostrý úhel. K podstavě jsou kolmé jen ty přímky roviny $ACG$, které jsou rovnoběžné s $CG$.
+    </div>
+</section>
+
+<section id="sec-odchylka-rovin" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Odchylka dvou rovin</h2>
+    <div class="card def-card space-y-2">
+        <p class="font-semibold text-violet-800">Odchylka rovin $\alpha$ a $\beta$, značíme $|\sphericalangle\alpha\beta|$</p>
+        <ul class="list-disc pl-6 space-y-1">
+            <li>Rovnoběžné roviny (různé i totožné) mají odchylku $0^\circ$.</li>
+            <li>U různoběžných rovin s průsečnicí $r$ zvolíme rovinu $\gamma$ kolmou k průsečnici $r$. Ta protne roviny $\alpha$ a $\beta$ v přímkách $a$ a $b$. Odchylka rovin $\alpha$ a $\beta$ je odchylka přímek $a$ a $b$.</li>
+        </ul>
+    </div>
+    <p>Rovinu $\gamma$ volíme tak, aby byl řez co nejjednodušší, nejčastěji tak, aby procházela některým významným bodem tělesa.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Pravidelný čtyřboký jehlan $ABCDV$ má podstavnou hranu $|AB|=6$ a výšku $v=4$. Určíme odchylku boční stěny $BCV$ od podstavy. Průsečnicí obou rovin je přímka $BC$. Rovina kolmá k $BC$ procházející vrcholem $V$ protne podstavu v přímce $SS_{BC}$ a stěnu v její výšce $VS_{BC}$. Trojúhelník $SS_{BC}V$ je pravoúhlý s odvěsnami $|SS_{BC}|=3$ a $|SV|=4$, takže $\operatorname{tg}\varphi=\dfrac43$ a $\varphi\approx53{,}13^\circ$. Přepona $|VS_{BC}|=5$ je <b>stěnová výška</b> jehlanu.</p>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: měň výšku jehlanu $v$ (podstava zůstává $6\times6$)</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="py-v" min="1" max="10" value="4" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right">v = <span id="py-vval">4</span></span>
+        </div>
+        <div id="py-fig" class="flex justify-center"></div>
+        <p class="text-sm font-semibold mt-2" id="py-res"></p>
+        <p class="text-xs text-stone-500 mt-1">Červená úsečka $SP$ je vzdálenost středu podstavy od stěny; vrátíme se k ní v části C.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm"><b>Příklad:</b> V krychli svírají roviny $ABC$ a $ABG$ odchylku $45^\circ$. Rovina $BCG$ je kolmá k jejich průsečnici $AB$ a protne je v přímkách $BC$ a $BG$. Ty svírají úhel $45^\circ$, protože $BG$ je úhlopříčka čtverce $BCGF$.</p>
+    </div>
+</section>
+
+<section id="sec-vzdalenost-bodu" class="space-y-3">
+    <p class="part-tag">Část C: Vzdálenosti</p>
+    <h2 class="text-2xl font-bold text-violet-900">Vzdálenost dvou bodů</h2>
+    <p><b>Vzdálenost</b> bodů $A$, $B$ je délka úsečky $AB$, značíme ji $|AB|$. Totožné body mají vzdálenost $0$. Ve všech dalších případech budeme vzdálenost dvou útvarů převádět právě na vzdálenost dvou vhodně zvolených bodů.</p>
+    <div class="card def-card text-center">
+        <p class="text-sm mb-1">Tělesová úhlopříčka kvádru s rozměry $a$, $b$, $c$ a krychle s hranou $a$:</p>
+        $$u=\sqrt{a^2+b^2+c^2},\qquad u=a\sqrt3.$$
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Kvádr má rozměry $|AB|=3$, $|BC|=4$, $|AE|=12$. Nejprve z pravoúhlého trojúhelníku $ABC$ vypočítáme $|AC|=\sqrt{9+16}=5$ a pak z pravoúhlého trojúhelníku $ACG$ délku úhlopříčky $|AG|=\sqrt{25+144}=13$.</p>
+        <svg viewBox="-25.0 -285.0 144.6 313.0" class="stereo-fig" style="width:100%;max-width:145px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 94.6,-20.0 94.6,-260.0" fill="#7c3aed" fill-opacity="0.12" stroke="none"/><line x1="0.0" y1="-0.0" x2="60.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="60.0" y1="-0.0" x2="94.6" y2="-20.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="94.6" y1="-20.0" x2="34.6" y2="-20.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="34.6" y1="-20.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-240.0" x2="60.0" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="60.0" y1="-240.0" x2="94.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="94.6" y1="-260.0" x2="34.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="34.6" y1="-260.0" x2="0.0" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="60.0" y1="-0.0" x2="60.0" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="94.6" y1="-20.0" x2="94.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="34.6" y1="-20.0" x2="34.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="94.6" y2="-20.0" stroke="#0d9488" stroke-width="2.0" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="94.6" y2="-260.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="94.6" y1="-20.0" x2="94.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><polyline points="94.6,-38.0 93.5,-37.7 92.4,-37.4 91.3,-37.0 90.2,-36.5 89.2,-35.9 88.1,-35.3 87.1,-34.6 86.1,-33.8 85.2,-33.0 84.3,-32.1 83.4,-31.2 82.6,-30.2 81.8,-29.2 81.1,-28.1 80.5,-27.0 79.9,-25.9 79.4,-24.7 78.9,-23.6 78.5,-22.4 78.2,-21.2 77.9,-20.0 77.8,-18.8 77.6,-17.6 77.6,-16.4" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="88.6" cy="-25.1" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="66.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="101.6" y="-14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="19.6" y="-24.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-236.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="66.0" y="-230.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="100.6" y="-264.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="20.6" y="-265.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+</section>
+
+<section id="sec-bod-primka" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vzdálenost bodu od přímky</h2>
+    <div class="card def-card">
+        <p><b>Vzdálenost bodu $M$ od přímky $p$</b> je vzdálenost bodu $M$ od paty $P$ kolmice vedené bodem $M$ k přímce $p$. Leží-li bod na přímce, je vzdálenost $0$. Značíme $|Mp|$.</p>
+    </div>
+    <p>Bod a přímka, na které neleží, určují rovinu. V ní úlohu vyřešíme jako planimetrickou: hledaná vzdálenost je výška trojúhelníku. Často se hodí vzorec pro výšku na přeponu, který plyne z vyjádření obsahu pravoúhlého trojúhelníku dvěma způsoby:</p>
+    <div class="card def-card text-center">$$\tfrac12\,ab=\tfrac12\,c\,v_c\quad\Rightarrow\quad v_c=\frac{ab}{c}.$$</div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Krychle má hranu $3$. Určíme vzdálenost bodu $A$ od přímky $BH$. V trojúhelníku $ABH$ je úhel u vrcholu $A$ pravý, protože hrana $AB$ je kolmá ke stěně $ADHE$. Odvěsny mají délky $|AB|=3$, $|AH|=3\sqrt2$ a přepona $|BH|=3\sqrt3$. Hledaná vzdálenost je výška na přeponu: $d=\dfrac{3\cdot3\sqrt2}{3\sqrt3}=\sqrt6\approx2{,}45$.</p>
+        <div class="grid sm:grid-cols-2 gap-3 items-center">
+            <div><svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 192.0,-0.0 83.1,-240.0" fill="#0d9488" fill-opacity="0.2" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-240.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="155.7" y2="-80.0" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="25.6,-0.0 26.1,-1.5 26.4,-3.0 26.6,-4.4 26.8,-5.9 26.8,-7.3 26.7,-8.7 26.4,-10.0 26.1,-11.3 25.6,-12.6 25.1,-13.8 24.4,-14.9 23.6,-16.0 22.8,-17.0 21.8,-18.0 20.7,-18.8 19.6,-19.6 18.4,-20.3 17.0,-20.9 15.7,-21.4 14.2,-21.9 12.7,-22.2 11.1,-22.4 9.5,-22.6 7.8,-22.6" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="11.8" cy="-8.0" r="1.7" fill="#b91c1c"/><polyline points="136.6,-70.2 136.3,-71.1 136.0,-72.1 135.8,-73.1 135.7,-74.1 135.6,-75.2 135.7,-76.3 135.8,-77.3 136.1,-78.4 136.4,-79.6 136.8,-80.7 137.2,-81.8 137.8,-82.9 138.4,-84.0 139.1,-85.0 139.9,-86.1 140.7,-87.1 141.6,-88.1 142.6,-89.1 143.6,-90.0 144.7,-90.8 145.8,-91.7 147.0,-92.5 148.2,-93.2 149.4,-93.9" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="146.7" cy="-81.4" r="1.7" fill="#b91c1c"/><path d="M152.2,-83.5L159.2,-76.5M152.2,-76.5L159.2,-83.5" stroke="#1c1917" stroke-width="1.6"/><text x="159.7" y="-88.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg></div>
+            <div><svg viewBox="-46.0 -219.2 207.5 251.2" class="stereo-fig" style="width:100%;max-width:208px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,0.0 138.0,0.0 0.0,-195.2" fill="#0d9488" fill-opacity="0.18" stroke="none"/><line x1="0.0" y1="0.0" x2="138.0" y2="0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="0.0" y2="-195.2" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="138.0" y1="0.0" x2="0.0" y2="-195.2" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="92.0" y2="-65.1" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/><polyline points="20.7,-0.0 20.6,-2.0 20.3,-4.0 19.8,-6.0 19.1,-7.9 18.3,-9.8 17.2,-11.5 16.0,-13.1 14.6,-14.6 13.1,-16.0 11.5,-17.2 9.8,-18.3 7.9,-19.1 6.0,-19.8 4.0,-20.3 2.0,-20.6 0.0,-20.7" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="7.3" cy="-7.3" r="1.7" fill="#b91c1c"/><polyline points="78.9,-55.8 78.0,-57.1 77.3,-58.5 76.7,-60.0 76.3,-61.5 76.0,-63.1 75.9,-64.6 75.9,-66.2 76.1,-67.8 76.5,-69.3 77.0,-70.8 77.6,-72.3 78.4,-73.6 79.3,-74.9 80.3,-76.1 81.5,-77.2 82.7,-78.2" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="84.1" cy="-66.4" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">A</text><text x="142.0" y="14.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">B</text><text x="-14.0" y="-195.2" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">H</text><text x="98.0" y="-69.1" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">P</text><text x="69.0" y="16.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">3</text><text x="-22.0" y="-93.6" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">3√2</text><text x="91.0" y="-99.6" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">3√3</text><text x="48.0" y="-38.5" font-size="12" fill="#b91c1c" text-anchor="middle" font-family="Inter, sans-serif">d</text></svg><p class="text-xs text-stone-500 text-center mt-1">trojúhelník $ABH$ ve skutečné velikosti</p></div>
+        </div>
+    </div>
+</section>
+
+<section id="sec-bod-rovina" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vzdálenost bodu od roviny</h2>
+    <div class="card def-card">
+        <p><b>Vzdálenost bodu $M$ od roviny $\rho$</b> je vzdálenost bodu $M$ od jeho kolmého průmětu $M'$ do roviny $\rho$. Leží-li bod v rovině, je vzdálenost $0$. Značíme $|M\rho|$.</p>
+    </div>
+    <p>Kolmici k rovině nejpohodlněji najdeme v pomocné rovině, která prochází bodem $M$ a je k dané rovině kolmá. V ní se hledaná kolmice zobrazí ve skutečné velikosti.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Pravidelný čtyřboký jehlan má $|AB|=6$ a výšku $v=4$. Určíme vzdálenost středu podstavy $S$ od stěny $BCV$. Hrana $BC$ je kolmá k rovině $SS_{BC}V$, proto je tato rovina kolmá ke stěně $BCV$. Kolmice z bodu $S$ ke stěně tedy leží v rovině $SS_{BC}V$: je to výška $SP$ pravoúhlého trojúhelníku se stranami $3$, $4$, $5$. Vychází $|SP|=\dfrac{3\cdot4}{5}=\dfrac{12}{5}=2{,}4$.</p>
+        <div class="grid sm:grid-cols-2 gap-3 items-center">
+            <div><svg viewBox="-24.0 -219.0 392.9 247.0" class="stereo-fig" style="width:100%;max-width:393px" xmlns="http://www.w3.org/2000/svg"><polygon points="172.0,-30.0 292.0,-30.0 172.0,-190.0" fill="#0d9488" fill-opacity="0.22" stroke="none"/><line x1="0.0" y1="-0.0" x2="240.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="240.0" y1="-0.0" x2="343.9" y2="-60.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="343.9" y1="-60.0" x2="103.9" y2="-60.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="103.9" y1="-60.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="240.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="343.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="103.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="172.0" y1="-30.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="172.0" y1="-30.0" x2="292.0" y2="-30.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="292.0" y1="-30.0" x2="172.0" y2="-190.0" stroke="#7c3aed" stroke-width="2.0" stroke-linecap="round"/><line x1="172.0" y1="-30.0" x2="248.8" y2="-87.6" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="229.6,-73.2 228.7,-74.5 227.8,-75.8 227.1,-77.2 226.5,-78.7 226.0,-80.1 225.5,-81.6 225.2,-83.2 224.9,-84.7 224.8,-86.3 224.8,-87.9 224.8,-89.4 225.0,-91.0 225.3,-92.5 225.6,-94.1 226.1,-95.6 226.7,-97.0 227.4,-98.5 228.1,-99.8 229.0,-101.2 229.9,-102.4 230.9,-103.6 232.0,-104.8 233.1,-105.8 234.4,-106.8" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="236.9" cy="-89.3" r="1.7" fill="#b91c1c"/><polyline points="196.0,-30.0 195.9,-31.6 195.8,-33.1 195.5,-34.7 195.1,-36.2 194.7,-37.7 194.1,-39.2 193.5,-40.6 192.7,-42.0 191.9,-43.3 191.0,-44.6 190.0,-45.8 188.9,-47.0 187.8,-48.0 186.6,-49.0 185.3,-50.0 184.0,-50.8 182.6,-51.5 181.1,-52.2 179.7,-52.7 178.2,-53.2 176.6,-53.5 175.1,-53.8 173.5,-53.9 172.0,-54.0" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="180.4" cy="-38.5" r="1.7" fill="#b91c1c"/><path d="M168.5,-33.5L175.5,-26.5M168.5,-26.5L175.5,-33.5" stroke="#1c1917" stroke-width="1.6"/><text x="156.0" y="-26.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S</text><path d="M288.5,-33.5L295.5,-26.5M288.5,-26.5L295.5,-33.5" stroke="#1c1917" stroke-width="1.6"/><text x="300.0" y="-20.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">BC</tspan></text><path d="M245.3,-91.1L252.3,-84.1M245.3,-84.1L252.3,-91.1" stroke="#1c1917" stroke-width="1.6"/><text x="256.8" y="-89.6" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P</text><text x="-14.0" y="12.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="244.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="350.9" y="-56.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="88.9" y="-64.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="168.0" y="-199.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">V</text></svg></div>
+            <div><svg viewBox="-28.0 -200.0 204.0 232.0" class="stereo-fig" style="width:100%;max-width:204px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,0.0 132.0,0.0 0.0,-176.0" fill="#0d9488" fill-opacity="0.18" stroke="none"/><line x1="0.0" y1="0.0" x2="132.0" y2="0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="0.0" y2="-176.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="132.0" y1="0.0" x2="0.0" y2="-176.0" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="84.5" y2="-63.4" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/><polyline points="19.8,-0.0 19.7,-1.9 19.4,-3.9 18.9,-5.7 18.3,-7.6 17.5,-9.3 16.5,-11.0 15.3,-12.6 14.0,-14.0 12.6,-15.3 11.0,-16.5 9.3,-17.5 7.6,-18.3 5.7,-18.9 3.9,-19.4 1.9,-19.7 0.0,-19.8" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="7.0" cy="-7.0" r="1.7" fill="#b91c1c"/><polyline points="72.2,-54.1 71.3,-55.4 70.6,-56.7 70.0,-58.1 69.6,-59.5 69.3,-61.0 69.1,-62.5 69.1,-64.0 69.2,-65.5 69.5,-67.0 70.0,-68.5 70.5,-69.9 71.2,-71.2 72.1,-72.5 73.0,-73.6 74.1,-74.7 75.2,-75.7" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="76.9" cy="-64.4" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">S</text><text x="134.0" y="16.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">BC</tspan></text><text x="-14.0" y="-176.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">V</text><text x="90.5" y="-67.4" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">P</text><text x="66.0" y="16.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">3</text><text x="-12.0" y="-84.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">4</text><text x="80.0" y="-90.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">5</text><text x="44.2" y="-37.7" font-size="12" fill="#b91c1c" text-anchor="middle" font-family="Inter, sans-serif">d</text></svg><p class="text-xs text-stone-500 text-center mt-1">trojúhelník $SS_{BC}V$ ve skutečné velikosti</p></div>
+        </div>
+    </div>
+</section>
+
+<section id="sec-primka-rovina-vzd" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vzdálenost přímky od roviny</h2>
+    <div class="card def-card">
+        <p>Je-li přímka $p$ rovnoběžná s rovinou $\rho$, je její <b>vzdálenost od roviny</b> rovna vzdálenosti libovolného bodu přímky $p$ od roviny $\rho$. Má-li přímka s rovinou společný bod (protíná ji nebo v ní leží), je vzdálenost $0$. Značíme $|p\rho|$.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Pravidelný čtyřboký jehlan má $|AB|=6$ a výšku $v=4$. Určíme vzdálenost přímky $CD$ od roviny $ABV$. Platí $CD\parallel AB$, a proto je přímka $CD$ rovnoběžná s rovinou $ABV$. Zvolíme na ní bod $S_{CD}$. Rovina $S_{AB}S_{CD}V$ je kolmá k hraně $AB$, a tedy i ke stěně $ABV$. Řezem je rovnoramenný trojúhelník se základnou $6$, výškou $4$ a rameny $5$. Hledaná vzdálenost je výška z vrcholu $S_{CD}$ na rameno. Obsah trojúhelníku je $\dfrac{6\cdot4}{2}=12$, takže $\dfrac{5\cdot d}{2}=12$ a $d=\dfrac{24}{5}=4{,}8$.</p>
+        <div class="grid sm:grid-cols-2 gap-3 items-center">
+            <div><svg viewBox="-24.0 -219.0 392.9 251.0" class="stereo-fig" style="width:100%;max-width:393px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 240.0,-0.0 172.0,-190.0" fill="#7c3aed" fill-opacity="0.12" stroke="none"/><polygon points="120.0,-0.0 223.9,-60.0 172.0,-190.0" fill="#0d9488" fill-opacity="0.2" stroke="none"/><line x1="0.0" y1="-0.0" x2="240.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="240.0" y1="-0.0" x2="343.9" y2="-60.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="343.9" y1="-60.0" x2="103.9" y2="-60.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="103.9" y1="-60.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="240.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="343.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="103.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="343.9" y1="-60.0" x2="103.9" y2="-60.0" stroke="#d97706" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="120.0" y1="-0.0" x2="223.9" y2="-60.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="223.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="120.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#7c3aed" stroke-width="2.0" stroke-linecap="round"/><line x1="223.9" y1="-60.0" x2="157.4" y2="-136.8" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="165.7,-127.2 166.1,-128.7 166.5,-130.3 166.8,-131.8 167.1,-133.4 167.3,-135.0 167.5,-136.7 167.6,-138.3 167.7,-139.9 167.8,-141.5 167.8,-143.1 167.8,-144.6 167.7,-146.1 167.6,-147.6 167.4,-149.0 167.2,-150.4 167.0,-151.7 166.7,-153.0 166.4,-154.2 166.0,-155.3 165.6,-156.3 165.1,-157.3 164.7,-158.2 164.2,-158.9 163.6,-159.6" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="162.6" cy="-141.5" r="1.7" fill="#b91c1c"/><path d="M116.5,-3.5L123.5,3.5M116.5,3.5L123.5,-3.5" stroke="#1c1917" stroke-width="1.6"/><text x="112.0" y="18.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">AB</tspan></text><path d="M220.4,-63.5L227.4,-56.5M220.4,-56.5L227.4,-63.5" stroke="#1c1917" stroke-width="1.6"/><text x="227.9" y="-68.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">CD</tspan></text><path d="M153.9,-140.3L160.9,-133.3M153.9,-133.3L160.9,-140.3" stroke="#1c1917" stroke-width="1.6"/><text x="139.4" y="-134.8" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P</text><text x="-14.0" y="12.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="244.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="350.9" y="-56.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="88.9" y="-64.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="168.0" y="-199.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">V</text></svg></div>
+            <div><svg viewBox="-36.0 -184.0 306.0 216.0" class="stereo-fig" style="width:100%;max-width:306px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,0.0 228.0,0.0 114.0,-152.0" fill="#0d9488" fill-opacity="0.18" stroke="none"/><line x1="0.0" y1="0.0" x2="228.0" y2="0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="228.0" y1="0.0" x2="114.0" y2="-152.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="114.0" y2="-152.0" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/><line x1="228.0" y1="0.0" x2="82.1" y2="-109.4" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/><line x1="114.0" y1="-152.0" x2="114.0" y2="0.0" stroke="#44403c" stroke-width="1" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="92.7,-101.5 93.5,-102.5 94.1,-103.7 94.6,-104.9 95.0,-106.1 95.2,-107.4 95.4,-108.7 95.4,-110.0 95.2,-111.3 95.0,-112.6 94.6,-113.9 94.1,-115.1 93.5,-116.2 92.8,-117.3 92.0,-118.3 91.1,-119.2 90.1,-120.1" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="88.7" cy="-110.4" r="1.7" fill="#b91c1c"/><text x="-24.0" y="16.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">AB</tspan></text><text x="228.0" y="16.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">CD</tspan></text><text x="110.0" y="-160.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">V</text><text x="66.1" y="-113.4" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">P</text><text x="114.0" y="16.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">6</text><text x="45.0" y="-78.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">5</text><text x="183.0" y="-78.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">5</text><text x="122.0" y="-58.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">4</text><text x="159.0" y="-40.7" font-size="12" fill="#b91c1c" text-anchor="middle" font-family="Inter, sans-serif">d</text></svg><p class="text-xs text-stone-500 text-center mt-1">trojúhelník $S_{AB}S_{CD}V$ ve skutečné velikosti</p></div>
+        </div>
+    </div>
+</section>
+
+<section id="sec-dve-roviny-vzd" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vzdálenost dvou rovin</h2>
+    <div class="card def-card">
+        <p><b>Vzdálenost dvou rovnoběžných rovin</b> je vzdálenost libovolného bodu jedné z nich od druhé roviny. Různoběžné roviny mají vzdálenost $0$. Značíme $|\alpha\beta|$.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Krychle má hranu $6$. Roviny $BDE$ a $CFH$ jsou rovnoběžné (viz Stereometrie 2). Tělesová úhlopříčka $AG$ je k oběma rovinám kolmá a protíná je v bodech $P_1$ a $P_2$, které ji dělí na tři shodné části. Protože $|AG|=6\sqrt3$, je vzdálenost rovin $|P_1P_2|=2\sqrt3\approx3{,}46$.</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="192.0,-0.0 83.1,-48.0 0.0,-192.0" fill="#0d9488" fill-opacity="0.22" stroke="none"/><polygon points="275.1,-48.0 192.0,-192.0 83.1,-240.0" fill="#7c3aed" fill-opacity="0.18" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-48.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-192.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-0.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="192.0" y2="-192.0" stroke="#7c3aed" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="83.1" y2="-240.0" stroke="#7c3aed" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="275.1" y2="-48.0" stroke="#7c3aed" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-240.0" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><path d="M88.2,-83.5L95.2,-76.5M88.2,-76.5L95.2,-83.5" stroke="#1c1917" stroke-width="1.6"/><text x="97.7" y="-68.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P<tspan baseline-shift="sub" font-size="9.4">1</tspan></text><path d="M179.9,-163.5L186.9,-156.5M179.9,-156.5L186.9,-163.5" stroke="#1c1917" stroke-width="1.6"/><text x="159.4" y="-162.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P<tspan baseline-shift="sub" font-size="9.4">2</tspan></text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Proč je úhlopříčka $AG$ kolmá k rovině $BDE$? Platí $AG\perp BD$, protože $BD$ je kolmá k celé rovině $ACG$. Stejnou úvahou ve stěně $ABFE$ zjistíme, že $BE$ je kolmá k rovině $ADG$, a tedy $AG\perp BE$. Podle kritéria je $AG$ kolmá k rovině $BDE$. Zkus si také ověřit, že vzdálenost bodu $A$ od roviny $BDE$ je $\dfrac{a\sqrt3}{3}$, tedy třetina úhlopříčky.
+    </div>
+</section>
+
+<section id="sec-dve-primky-vzd" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Vzdálenost dvou přímek</h2>
+    <div class="card def-card space-y-2">
+        <p class="font-semibold text-violet-800">Vzdálenost přímek $p$ a $q$, značíme $|pq|$</p>
+        <ul class="list-disc pl-6 space-y-1">
+            <li>Různoběžky a totožné přímky mají vzdálenost $0$.</li>
+            <li>Vzdálenost rovnoběžek je vzdálenost libovolného bodu jedné z nich od druhé přímky.</li>
+            <li>Vzdálenost mimoběžek je délka úsečky, kterou z mimoběžek vytíná jejich <b>osa</b>, tj. příčka kolmá k oběma mimoběžkám. Dvě mimoběžky mají vždy právě jednu osu.</li>
+        </ul>
+    </div>
+    <p>U mimoběžek můžeme postupovat i jinak: přímkou $q$ proložíme rovinu $\rho$ rovnoběžnou s přímkou $p$. Vzdálenost mimoběžek je pak rovna vzdálenosti přímky $p$ od roviny $\rho$.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Příklad:</b> Krychle má hranu $4$. Rovnoběžky $AB$ a $GH$ leží v rovině $ABGH$ a jejich vzdálenost je $|BG|=4\sqrt2$. Mimoběžky $AE$ a $BD$ mají osu $AS$, kde $S$ je střed podstavy: platí $AS\perp BD$ (úhlopříčky čtverce) a $AS\perp AE$ (hrana $AE$ je kolmá k podstavě). Vzdálenost mimoběžek je $|AS|=\dfrac{4\sqrt2}{2}=2\sqrt2\approx2{,}83$.</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-48.0" stroke="#0d9488" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="137.6" y2="-24.0" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="0.0,-25.6 1.7,-25.8 3.4,-26.0 5.1,-26.0 6.7,-25.9 8.3,-25.7 9.9,-25.4 11.5,-25.0 13.0,-24.4 14.4,-23.8 15.8,-23.1 17.1,-22.2 18.3,-21.3 19.5,-20.3 20.6,-19.2 21.6,-18.0 22.5,-16.7 23.3,-15.4 24.0,-14.0 24.6,-12.5 25.1,-11.0 25.4,-9.4 25.7,-7.8 25.9,-6.2 25.9,-4.5" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="9.2" cy="-10.7" r="1.7" fill="#b91c1c"/><polyline points="111.6,-19.5 112.4,-19.2 113.2,-18.9 114.1,-18.7 115.2,-18.5 116.3,-18.3 117.5,-18.1 118.8,-17.9 120.2,-17.8 121.7,-17.7 123.2,-17.7 124.8,-17.6 126.5,-17.6 128.2,-17.6 129.9,-17.7 131.7,-17.7 133.5,-17.8 135.3,-17.9 137.1,-18.1 138.9,-18.3 140.8,-18.5 142.6,-18.7 144.4,-18.9 146.1,-19.2 147.8,-19.5" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="132.0" cy="-20.8" r="1.7" fill="#b91c1c"/><path d="M134.1,-27.5L141.1,-20.5M134.1,-20.5L141.1,-27.5" stroke="#1c1917" stroke-width="1.6"/><text x="141.6" y="-8.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Vyzkoušej si to: zvol dvě přímky určené vrcholy krychle s hranou $6$ a zjisti jejich vzdálenost</p>
+        <div class="flex flex-wrap items-center gap-3 mb-2 text-sm">
+            <label>První přímka: <select id="pk-dist-a" class="sel"><option value="AB">AB</option><option value="BC">BC</option><option value="CD">CD</option><option value="DA">DA</option><option value="EF">EF</option><option value="FG">FG</option><option value="GH">GH</option><option value="HE">HE</option><option value="AE" selected>AE</option><option value="BF">BF</option><option value="CG">CG</option><option value="DH">DH</option><option value="AC">AC</option><option value="BD">BD</option><option value="EG">EG</option><option value="FH">FH</option><option value="AF">AF</option><option value="BE">BE</option><option value="CH">CH</option><option value="DG">DG</option><option value="AH">AH</option><option value="DE">DE</option><option value="BG">BG</option><option value="CF">CF</option><option value="AG">AG</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option></select></label>
+            <label>Druhá přímka: <select id="pk-dist-b" class="sel"><option value="AB">AB</option><option value="BC">BC</option><option value="CD">CD</option><option value="DA">DA</option><option value="EF">EF</option><option value="FG">FG</option><option value="GH">GH</option><option value="HE">HE</option><option value="AE">AE</option><option value="BF">BF</option><option value="CG">CG</option><option value="DH">DH</option><option value="AC">AC</option><option value="BD" selected>BD</option><option value="EG">EG</option><option value="FH">FH</option><option value="AF">AF</option><option value="BE">BE</option><option value="CH">CH</option><option value="DG">DG</option><option value="AH">AH</option><option value="DE">DE</option><option value="BG">BG</option><option value="CF">CF</option><option value="AG">AG</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option></select></label>
+        </div>
+        <div id="pk-dist-fig" class="flex justify-center"></div>
+        <p class="text-sm font-semibold mt-2" id="pk-dist-res"></p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pro zvídavé:</b> Úsečka na ose mimoběžek je nejkratší ze všech úseček, které spojují bod jedné mimoběžky s bodem druhé. Proto má smysl brát její délku jako vzdálenost přímek.
+    </div>
+</section>
+
+<section id="sec-postup" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Jak počítat vzdálenosti a odchylky</h2>
+    <p>Všechny úlohy této kapitoly řešíme stejným postupem: prostorovou úlohu převedeme na rovinnou.</p>
+    <ol class="list-decimal pl-6 space-y-1">
+        <li>Určíme, mezi kterými dvěma body se vzdálenost měří (bod a jeho kolmý průmět, pata kolmice, krajní body úsečky na ose mimoběžek), případně který úhel hledáme.</li>
+        <li>Zvolíme pomocnou rovinu, ve které tyto body nebo úhel leží a kterou umíme nakreslit ve skutečné velikosti. Obvykle je kolmá k dané přímce či rovině a prochází daným bodem.</li>
+        <li>Sestrojíme řez tělesa touto rovinou a překreslíme ho ve skutečné velikosti.</li>
+        <li>V řezu najdeme pravoúhlý trojúhelník; hledaná vzdálenost je jeho strana nebo výška, hledaný úhel jeho vnitřní úhel.</li>
+        <li>Vypočítáme ji.</li>
+    </ol>
+    <div class="card space-y-1">
+        <p class="font-semibold text-violet-800">Pomůcky z planimetrie</p>
+        <ul class="list-disc pl-6 space-y-1 text-sm">
+            <li>Pythagorova věta: $c^2=a^2+b^2$.</li>
+            <li>Výška na přeponu: $v_c=\dfrac{ab}{c}$.</li>
+            <li>Euklidova věta o výšce $v_c^2=c_a\,c_b$ a o odvěsně $a^2=c\,c_a$.</li>
+            <li>Goniometrické funkce v pravoúhlém trojúhelníku, například $\operatorname{tg}\varphi=\dfrac{\text{protilehlá odvěsna}}{\text{přilehlá odvěsna}}$.</li>
+            <li>Výška rovnostranného trojúhelníku se stranou $s$: $\dfrac{s\sqrt3}{2}$.</li>
+        </ul>
+    </div>
+    <div class="note-box note-warn">
+        <b>Pozor na past:</b> Obrázek ve volném rovnoběžném promítání nezachovává úhly ani délky (s výjimkou přední stěny). Pravý úhel se může jevit jako ostrý a stejně dlouhé úsečky jako různě dlouhé. Proto vždy počítáme z řezu nakresleného ve skutečné velikosti a nikdy neměříme na prostorovém obrázku.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Shrnutí</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Odchylka</th><th class="p-1 text-left">$0^\circ$</th><th class="p-1 text-left">$90^\circ$</th><th class="p-1 text-left">jinak</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">dvě přímky</td><td class="p-1">rovnoběžky</td><td class="p-1">kolmé přímky</td><td class="p-1">různoběžky: úhel, který není tupý; mimoběžky: přes rovnoběžky vedené jedním bodem</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">přímka a rovina</td><td class="p-1">přímka je s rovinou rovnoběžná nebo v ní leží</td><td class="p-1">přímka je kolmá k rovině</td><td class="p-1">odchylka přímky a jejího kolmého průmětu</td></tr>
+                <tr><td class="p-1">dvě roviny</td><td class="p-1">rovnoběžné roviny</td><td class="p-1">kolmé roviny</td><td class="p-1">řez rovinou kolmou k průsečnici</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Vzdálenost</th><th class="p-1 text-left">je nulová, když</th><th class="p-1 text-left">jak ji určíme</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">bod a přímka</td><td class="p-1">bod leží na přímce</td><td class="p-1">pata kolmice, výška trojúhelníku</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">bod a rovina</td><td class="p-1">bod leží v rovině</td><td class="p-1">kolmý průmět bodu, pomocná kolmá rovina</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">přímka a rovina</td><td class="p-1">mají společný bod</td><td class="p-1">vzdálenost libovolného bodu přímky od roviny</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">dvě roviny</td><td class="p-1">jsou různoběžné</td><td class="p-1">vzdálenost libovolného bodu jedné roviny od druhé</td></tr>
+                <tr><td class="p-1">dvě přímky</td><td class="p-1">jsou různoběžné nebo totožné</td><td class="p-1">rovnoběžky: bod jedné od druhé; mimoběžky: osa mimoběžek</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-link">
+        <b>Souvislosti:</b> Postupy ze Stereometrie 2, tedy pomocná rovina, řez tělesa a průsečnice dvou rovin, nám tu posloužily jako nástroje. Výpočet odchylky i vzdálenosti vždy převádíme na rovinný řez a v něm na pravoúhlý trojúhelník.
+    </div>
+    <div class="note-box note-next">
+        <b>Co bude dál:</b> V kapitole <b>Stereometrie 4</b> se budeme věnovat tělesům, jejich objemům a povrchům. Metrické úvahy z této kapitoly tam budeme potřebovat na každém kroku: výška tělesa je vzdálenost rovin podstav nebo vzdálenost vrcholu od roviny podstavy a stěnovou výšku jehlanu jsme počítali už v této kapitole.
+    </div>
+</section>
+
+</div>
+
+<!-- ============================= FR ============================= -->
+<div id="fr-content" class="mt-4 space-y-10 hidden">
+<section id="sec-uvod" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Angles et distances dans l'espace</h2>
+    <p>Dans le chapitre Géométrie dans l'espace 2, nous avons résolu des <b>problèmes de position</b> : deux droites se coupent-elles, où se trouve le point d'intersection d'une droite et d'un plan, à quoi ressemble la section d'un solide. Maintenant, nous allons <b>mesurer</b>. Nous nous demanderons sous quel angle se rencontrent des droites et des plans, et à quelle distance ils se trouvent l'un de l'autre. Les propriétés liées aux mesures d'angles et aux longueurs sont appelées <b>métriques</b>.</p>
+    <p>Nous rencontrons des problèmes métriques tous les jours. Le maçon vérifie avec un fil à plomb qu'un poteau est perpendiculaire au sol. L'architecte contrôle l'angle que forme une rampe inclinée avec le plan horizontal. Et lorsqu'on veut savoir à quelle hauteur une lampe est suspendue au-dessus d'une table, on cherche la distance d'un point à un plan.</p>
+    <p>Le chapitre comporte trois parties. Dans la partie A, nous définissons l'angle de deux droites et l'orthogonalité. La partie B traite de l'orthogonalité et de l'angle d'une droite et d'un plan, de deux plans, ainsi que de la projection orthogonale. Dans la partie C, nous déterminons tous les types de distances.</p>
+    <div class="card space-y-2">
+        <p><b>Comment dessinons-nous ?</b> Comme dans le chapitre précédent, nous dessinons les solides en <b>perspective cavalière</b> : les arêtes fuyantes sont tracées sous un angle de $30^\circ$ et réduites de moitié, les arêtes cachées en pointillés. Un angle droit est marqué par un petit arc avec un point. Les dimensions du solide sont toujours données dans l'énoncé de l'exemple ; nous dessinons les cubes de la même taille, quelle que soit la longueur de l'arête.</p>
+        <p><b>Notations.</b> Le cube et le pavé droit ont pour sommets $ABCDEFGH$, la base inférieure est $ABCD$ et le point $E$ est au-dessus du point $A$. La pyramide régulière à base carrée est notée $ABCDV$ et le centre de sa base $S$. Le milieu de l'arête $BC$ est noté $S_{BC}$.</p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Dans les manuels tchèques, l'angle des droites $p$, $q$ s'écrit $|\sphericalangle pq|$, la distance du point $M$ à la droite $p$ s'écrit $|Mp|$ et la distance du point $M$ au plan $\rho$ s'écrit $|M\rho|$. En France, on note la distance $d(M,p)$ ou $d(M,\rho)$. Dans ce chapitre, nous utilisons la notation tchèque.
+    </div>
+</section>
+
+<section id="sec-odchylka-primek" class="space-y-3">
+    <p class="part-tag">Partie A : Angle de deux droites et orthogonalité</p>
+    <h2 class="text-2xl font-bold text-violet-900">Angle de deux droites</h2>
+    <p>Deux droites sécantes partagent le plan qui les contient en quatre angles. Les angles opposés sont égaux et deux angles voisins ont pour somme $180^\circ$. Pour mesurer l'« ouverture » des droites, on choisit celui de ces angles qui n'est pas obtus.</p>
+    <div class="card def-card space-y-2">
+        <p class="font-semibold text-violet-800">Angle de deux droites $p$, $q$</p>
+        <ul class="list-disc pl-6 space-y-1">
+            <li><b>Droites sécantes :</b> l'angle est la mesure de l'angle aigu ou droit que forment les droites.</li>
+            <li><b>Droites parallèles</b> (distinctes ou confondues) : l'angle est $0^\circ$.</li>
+            <li><b>Droites non coplanaires :</b> par un point quelconque, on mène les parallèles $p'\parallel p$ et $q'\parallel q$. L'angle des droites non coplanaires est l'angle des droites sécantes $p'$ et $q'$.</li>
+        </ul>
+        <p>Pour deux droites quelconques, on a donc $0^\circ\le|\sphericalangle pq|\le 90^\circ$.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 gap-3">
+        <div class="card">
+            <p class="text-sm mb-2"><b>Exemple :</b> Angle des droites sécantes $AC$ et $AF$ dans un cube. Les segments $AC$, $AF$ et $CF$ sont des diagonales de faces, ils ont la même longueur et le triangle $ACF$ est donc équilatéral. L'angle des droites est $60^\circ$.</p>
+            <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 275.1,-48.0 192.0,-192.0" fill="#c026d3" fill-opacity="0.16" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#0d9488" stroke-width="2.2" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.2" stroke-linecap="round"/><polyline points="42.2,-7.4 42.5,-8.6 42.8,-9.9 43.0,-11.2 43.2,-12.4 43.2,-13.6 43.2,-14.8 43.1,-16.0 42.9,-17.1 42.6,-18.2 42.3,-19.2 41.8,-20.2 41.3,-21.2 40.7,-22.2 40.1,-23.1 39.3,-23.9 38.5,-24.7 37.6,-25.5 36.6,-26.2 35.6,-26.9 34.5,-27.5 33.3,-28.1 32.1,-28.6 30.8,-29.0 29.4,-29.4" fill="none" stroke="#b91c1c" stroke-width="1.4"/><text x="57.9" y="-26.8" font-size="13" fill="#b91c1c" font-style="italic" font-family="Inter, sans-serif">φ</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+        </div>
+        <div class="card">
+            <p class="text-sm mb-2"><b>Exemple :</b> Angle des droites non coplanaires $AC$ et $BG$. Par le point $A$, on mène la parallèle à $BG$ : c'est la droite $AH$, car $ABGH$ est un rectangle. Le triangle $ACH$ est de nouveau équilatéral, l'angle des droites non coplanaires est donc $60^\circ$.</p>
+            <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 275.1,-48.0 83.1,-240.0" fill="#c026d3" fill-opacity="0.16" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-240.0" stroke="#0d9488" stroke-width="2.2" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="83.1" y2="-240.0" stroke="#0d9488" stroke-width="2.0" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="42.2,-7.4 41.7,-9.0 41.2,-10.7 40.5,-12.3 39.8,-13.9 39.1,-15.5 38.2,-17.0 37.3,-18.5 36.3,-20.0 35.3,-21.4 34.1,-22.8 32.9,-24.2 31.7,-25.5 30.4,-26.7 29.0,-27.9 27.6,-29.1 26.1,-30.2 24.6,-31.2 23.0,-32.2 21.4,-33.1 19.7,-34.0 18.0,-34.8 16.3,-35.5 14.5,-36.2 12.7,-36.8" fill="none" stroke="#b91c1c" stroke-width="1.4"/><text x="44.0" y="-32.9" font-size="13" fill="#b91c1c" font-style="italic" font-family="Inter, sans-serif">φ</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+        </div>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Essaie : choisis deux droites passant par des sommets du cube et détermine leur angle</p>
+        <div class="flex flex-wrap items-center gap-3 mb-2 text-sm">
+            <label>Première droite : <select id="pk-ang-a-fr" class="sel"><option value="AB">AB</option><option value="BC">BC</option><option value="CD">CD</option><option value="DA">DA</option><option value="EF">EF</option><option value="FG">FG</option><option value="GH">GH</option><option value="HE">HE</option><option value="AE">AE</option><option value="BF">BF</option><option value="CG">CG</option><option value="DH">DH</option><option value="AC" selected>AC</option><option value="BD">BD</option><option value="EG">EG</option><option value="FH">FH</option><option value="AF">AF</option><option value="BE">BE</option><option value="CH">CH</option><option value="DG">DG</option><option value="AH">AH</option><option value="DE">DE</option><option value="BG">BG</option><option value="CF">CF</option><option value="AG">AG</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option></select></label>
+            <label>Seconde droite : <select id="pk-ang-b-fr" class="sel"><option value="AB">AB</option><option value="BC">BC</option><option value="CD">CD</option><option value="DA">DA</option><option value="EF">EF</option><option value="FG">FG</option><option value="GH">GH</option><option value="HE">HE</option><option value="AE">AE</option><option value="BF">BF</option><option value="CG">CG</option><option value="DH">DH</option><option value="AC">AC</option><option value="BD">BD</option><option value="EG">EG</option><option value="FH">FH</option><option value="AF">AF</option><option value="BE">BE</option><option value="CH">CH</option><option value="DG">DG</option><option value="AH">AH</option><option value="DE">DE</option><option value="BG" selected>BG</option><option value="CF">CF</option><option value="AG">AG</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option></select></label>
+        </div>
+        <div id="pk-ang-fig-fr" class="flex justify-center"></div>
+        <p class="text-sm font-semibold mt-2" id="pk-ang-res-fr"></p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Pourquoi le choix du point n'a-t-il pas d'importance ? Un couple de parallèles menées par un point peut être transporté en un autre point par une translation, et une translation conserve les angles. Le plus pratique est de choisir le point sur l'une des deux droites : il suffit alors de mener la parallèle à l'autre.
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Un angle obtus n'est jamais l'angle de deux droites. Si ton calcul donne un angle de $120^\circ$ entre les droites, leur angle est $180^\circ-120^\circ=60^\circ$.
+    </div>
+</section>
+
+<section id="sec-kolme-primky" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Droites orthogonales</h2>
+    <p>L'angle le plus important est l'angle droit. Deux droites sont <b>orthogonales</b> si leur angle est $90^\circ$ ; on écrit $p\perp q$. Nous connaissons les droites sécantes orthogonales de la géométrie plane. Dans l'espace, deux droites <b>non coplanaires</b> peuvent elles aussi être orthogonales.</p>
+    <div class="card">
+        <p class="mb-1"><b>Exemple :</b> Dans le cube $ABCDEFGH$, on a :</p>
+        <ul class="list-disc pl-6 text-sm space-y-1 mb-2">
+            <li>$AC\perp BD$ : les diagonales d'un carré sont orthogonales (droites sécantes, leur point d'intersection est le centre de la base),</li>
+            <li>$AC\perp FH$ : la droite $FH$ est parallèle à $BD$, ce sont donc des droites non coplanaires orthogonales,</li>
+            <li>$AB\perp CG$ : la droite $CG$ est parallèle à $BF$ et $AB\perp BF$, ce sont de nouveau des droites non coplanaires orthogonales.</li>
+        </ul>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#0d9488" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-48.0" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-192.0" x2="83.1" y2="-240.0" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#d97706" stroke-width="2.4" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#d97706" stroke-width="2.4" stroke-linecap="round"/><polyline points="166.8,-29.1 167.4,-28.7 168.0,-28.4 168.4,-28.0 168.7,-27.6 168.9,-27.2 168.9,-26.8 168.8,-26.3 168.6,-25.9 168.2,-25.4 167.8,-24.9 167.1,-24.5 166.4,-24.0 165.5,-23.5 164.5,-23.1 163.4,-22.6 162.2,-22.1 160.8,-21.7 159.4,-21.2 157.9,-20.8 156.3,-20.4 154.6,-20.0 152.8,-19.6 151.0,-19.3 149.1,-18.9" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="152.0" cy="-24.0" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Le tchèque n'a qu'un seul mot, <i>kolmé</i>. Le français distingue deux droites <b>orthogonales</b> (leur angle est $90^\circ$) et deux droites <b>perpendiculaires</b> (orthogonales et, de plus, sécantes). Les droites $AC$ et $BD$ sont donc perpendiculaires, tandis que $AC$ et $FH$ sont seulement orthogonales.
+    </div>
+    <div class="note-box note-link">
+        <b>Liens :</b> La distinction entre droites sécantes, parallèles et non coplanaires du chapitre précédent nous sert dès le départ : c'est elle qui détermine la façon de calculer l'angle de deux droites.
+    </div>
+</section>
+
+<section id="sec-kolmost-primka-rovina" class="space-y-3">
+    <p class="part-tag">Partie B : Droite et plan, deux plans</p>
+    <h2 class="text-2xl font-bold text-violet-900">Droite perpendiculaire à un plan</h2>
+    <div class="card def-card">
+        <p>Une droite $p$ est <b>perpendiculaire au plan</b> $\rho$ (on écrit $p\perp\rho$) si elle est orthogonale à toutes les droites du plan $\rho$.</p>
+    </div>
+    <p>Il est impossible de vérifier l'orthogonalité avec toutes les droites du plan. Heureusement, il en faut beaucoup moins :</p>
+    <div class="card def-card">
+        <p class="font-semibold text-violet-800 mb-1">Critère d'orthogonalité d'une droite et d'un plan</p>
+        <p>Une droite est perpendiculaire à un plan si et seulement si elle est orthogonale à <b>deux droites sécantes</b> de ce plan.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> La droite $BD$ est perpendiculaire au plan $ACG$. Le plan $ACG$ contient les droites sécantes $AC$ et $AE$. On a $BD\perp AC$ (diagonales d'un carré). L'arête $AE$ est orthogonale aux droites sécantes $AB$ et $AD$ ; d'après le critère, elle est donc perpendiculaire à toute la base, et ainsi orthogonale à la droite $BD$. La droite $BD$ est orthogonale à deux droites sécantes du plan $ACG$, donc $BD\perp ACG$. Sur la figure, les deux angles droits sont marqués au centre de la base $S_1$ ; le segment vertical est parallèle à $AE$.</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 275.1,-48.0 275.1,-240.0 0.0,-192.0" fill="#0d9488" fill-opacity="0.2" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-48.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="137.6" y1="-24.0" x2="137.6" y2="-216.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="165.1,-28.8 165.8,-28.5 166.3,-28.1 166.7,-27.8 167.0,-27.4 167.2,-27.0 167.2,-26.6 167.1,-26.2 166.9,-25.8 166.5,-25.3 166.1,-24.9 165.5,-24.4 164.8,-24.0 163.9,-23.6 163.0,-23.1 161.9,-22.7 160.8,-22.2 159.5,-21.8 158.2,-21.4 156.8,-21.0 155.2,-20.6 153.6,-20.2 152.0,-19.9 150.3,-19.5 148.5,-19.2" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="151.2" cy="-24.0" r="1.7" fill="#b91c1c"/><polyline points="137.6,-51.2 138.3,-50.8 139.0,-50.3 139.7,-49.7 140.4,-49.0 141.1,-48.2 141.7,-47.3 142.4,-46.3 143.0,-45.2 143.6,-43.9 144.2,-42.7 144.8,-41.3 145.3,-39.8 145.8,-38.3 146.2,-36.7 146.6,-35.1 147.0,-33.4 147.3,-31.7 147.6,-30.0 147.9,-28.2 148.1,-26.4 148.3,-24.6 148.4,-22.8 148.5,-21.0 148.5,-19.2" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="141.4" cy="-31.9" r="1.7" fill="#b91c1c"/><path d="M134.1,-27.5L141.1,-20.5M134.1,-20.5L141.1,-27.5" stroke="#1c1917" stroke-width="1.6"/><text x="111.6" y="-8.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">1</tspan></text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="card space-y-2">
+        <p class="font-semibold text-violet-800">Théorèmes sur l'orthogonalité</p>
+        <ul class="list-disc pl-6 space-y-1 text-sm">
+            <li>Par un point donné passe <b>une seule</b> droite perpendiculaire à un plan donné et <b>un seul</b> plan perpendiculaire à une droite donnée.</li>
+            <li>Deux droites perpendiculaires à un même plan sont parallèles.</li>
+            <li>Deux plans perpendiculaires à une même droite sont parallèles.</li>
+        </ul>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> L'orthogonalité avec une seule droite du plan ne suffit pas, ni même avec deux droites parallèles. La diagonale $AF$ de la face avant est orthogonale à l'arête $AD$ et à l'arête $BC$ de la base, et pourtant elle n'est pas perpendiculaire à la base. En effet, les arêtes $AD$ et $BC$ sont parallèles.
+    </div>
+</section>
+
+<section id="sec-prumet" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Projection orthogonale</h2>
+    <div class="card def-card">
+        <p>Le <b>projeté orthogonal</b> d'un point $M$ sur un plan $\rho$ est le pied de la perpendiculaire au plan $\rho$ menée par le point $M$, c'est-à-dire le point d'intersection $M'$ de cette perpendiculaire et du plan $\rho$. Si le point $M$ appartient au plan $\rho$, alors $M'=M$.</p>
+    </div>
+    <p>La projection orthogonale d'une figure est l'ensemble des projetés orthogonaux de tous ses points. La projection d'une droite est une droite, avec une seule exception : une droite perpendiculaire au plan se projette en un point. Pour déterminer la projection d'une droite, il suffit donc de projeter deux de ses points.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Le projeté orthogonal du sommet $G$ sur le plan de la base $ABC$ est le point $C$, car l'arête $CG$ est perpendiculaire à la base. Le point $A$ appartient à la base, il est donc son propre projeté. La projection du segment $AG$ est donc le segment $AC$. De même, le projeté orthogonal du sommet d'une pyramide régulière sur le plan de la base est le centre de la base $S$.</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 192.0,-0.0 275.1,-48.0 83.1,-48.0" fill="#7c3aed" fill-opacity="0.1" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-240.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#0d9488" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="275.1" y1="-240.0" x2="275.1" y2="-48.0" stroke="#b91c1c" stroke-width="2.0" stroke-linecap="round"/><polyline points="275.1,-73.6 273.4,-73.2 271.8,-72.8 270.1,-72.2 268.4,-71.6 266.8,-70.8 265.2,-69.9 263.7,-69.0 262.2,-67.9 260.7,-66.8 259.3,-65.6 258.0,-64.3 256.8,-62.9 255.6,-61.5 254.6,-60.0 253.6,-58.5 252.7,-56.9 251.9,-55.3 251.2,-53.6 250.6,-51.9 250.1,-50.3 249.7,-48.6 249.4,-46.9 249.3,-45.2 249.2,-43.5" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="266.0" cy="-55.5" r="1.7" fill="#b91c1c"/><polyline points="51.9,-9.1 51.9,-10.4 51.8,-11.7 51.7,-13.0 51.6,-14.2 51.5,-15.5 51.3,-16.8 51.0,-18.0 50.8,-19.3 50.5,-20.5 50.2,-21.7 49.8,-22.9 49.4,-24.1 49.0,-25.3 48.6,-26.5 48.1,-27.6 47.6,-28.7 47.0,-29.8 46.5,-30.9 45.8,-32.0 45.2,-33.0 44.5,-34.0 43.8,-35.0 43.1,-36.0 42.4,-37.0" fill="none" stroke="#d97706" stroke-width="1.4"/><text x="71.7" y="-31.0" font-size="13" fill="#d97706" font-style="italic" font-family="Inter, sans-serif">φ</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Tu connais les projections orthogonales grâce aux plans d'architecte. La vue de dessus d'un bâtiment est sa projection orthogonale sur un plan horizontal et la vue de face est sa projection orthogonale sur un plan vertical.
+    </div>
+</section>
+
+<section id="sec-odchylka-primka-rovina" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Angle d'une droite et d'un plan</h2>
+    <div class="card def-card space-y-2">
+        <p class="font-semibold text-violet-800">Angle de la droite $p$ et du plan $\rho$, noté $|\sphericalangle p\rho|$</p>
+        <ul class="list-disc pl-6 space-y-1">
+            <li>Si la droite est perpendiculaire au plan, l'angle est $90^\circ$.</li>
+            <li>Si la droite est parallèle au plan ou contenue dans le plan, l'angle est $0^\circ$.</li>
+            <li>Dans les autres cas, l'angle de la droite $p$ et du plan $\rho$ est égal à l'angle de la droite $p$ et de sa projection orthogonale $p'$ sur le plan $\rho$.</li>
+        </ul>
+    </div>
+    <p>En pratique, on procède ainsi : on choisit un point $M\in p$, on trouve son projeté $M'$ et le point d'intersection $P$ de la droite $p$ et du plan. Le triangle $PM'M$ est rectangle en $M'$ et on a</p>
+    <div class="card def-card text-center">$$\tan\varphi=\frac{|MM'|}{|PM'|}.$$</div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Le pavé droit $ABCDEFGH$ a pour dimensions $|AB|=3$, $|BC|=4$, $|AE|=5$. Déterminons l'angle de la grande diagonale $AG$ et du plan de la base. La projection du segment $AG$ est le segment $AC$ et $|AC|=\sqrt{3^2+4^2}=5$. Dans le triangle $ACG$ rectangle en $C$, on a $\tan\varphi=\dfrac{|CG|}{|AC|}=\dfrac55=1$, donc $\varphi=45^\circ$.</p>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Essaie : modifie la hauteur du pavé $c=|AE|$ (la base reste $3\times4$)</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="kv-c-fr" min="1" max="12" value="5" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right">c = <span id="kv-cval-fr">5</span></span>
+        </div>
+        <div id="kv-fig-fr" class="flex justify-center"></div>
+        <p class="text-sm font-semibold mt-2" id="kv-res-fr"></p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Le panneau routier « montée de 10 % » indique que sur 100 mètres parcourus horizontalement, la route s'élève de 10 mètres. On a donc $\tan\varphi=0{,}1$ et l'angle de la route et du plan horizontal n'est que d'environ $5{,}71^\circ$.
+    </div>
+</section>
+
+<section id="sec-kolmost-rovin" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Plans perpendiculaires</h2>
+    <div class="card def-card">
+        <p>Deux plans sont <b>perpendiculaires</b> (on écrit $\alpha\perp\beta$) si l'un d'eux contient une droite perpendiculaire à l'autre plan.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Le plan $ACG$ est perpendiculaire au plan de la base $ABC$, car il contient l'arête $CG$, qui est perpendiculaire à la base. De même, tout plan contenant une arête verticale est perpendiculaire à la base, par exemple le plan $BDH$. De plus, $ACG\perp BDH$, car le plan $BDH$ contient la droite $BD$, qui est perpendiculaire au plan $ACG$ (voir l'exemple ci-dessus).</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 192.0,-0.0 275.1,-48.0 83.1,-48.0" fill="#7c3aed" fill-opacity="0.14" stroke="none"/><polygon points="0.0,-0.0 275.1,-48.0 275.1,-240.0 0.0,-192.0" fill="#0d9488" fill-opacity="0.2" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round"/><polyline points="275.1,-73.6 274.4,-73.1 273.7,-72.5 273.0,-71.9 272.3,-71.1 271.6,-70.2 270.9,-69.2 270.2,-68.1 269.6,-67.0 269.0,-65.7 268.4,-64.4 267.8,-63.0 267.3,-61.6 266.8,-60.1 266.3,-58.5 265.9,-56.9 265.5,-55.3 265.2,-53.6 264.9,-51.9 264.6,-50.2 264.4,-48.4 264.3,-46.7 264.1,-45.0 264.1,-43.3 264.1,-41.6" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="271.2" cy="-54.8" r="1.7" fill="#b91c1c"/><polyline points="275.1,-73.6 273.5,-73.5 271.8,-73.4 270.1,-73.1 268.5,-72.7 266.9,-72.2 265.3,-71.7 263.8,-71.0 262.3,-70.2 260.9,-69.3 259.6,-68.3 258.3,-67.2 257.0,-66.1 255.9,-64.9 254.8,-63.6 253.9,-62.2 253.0,-60.8 252.2,-59.3 251.5,-57.8 250.9,-56.2 250.4,-54.6 250.0,-53.0 249.8,-51.3 249.6,-49.7 249.5,-48.0" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="266.1" cy="-57.1" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Si $\alpha\perp\beta$, cela ne signifie pas que toute droite du plan $\alpha$ est perpendiculaire au plan $\beta$. Le plan $ACG$ contient par exemple la diagonale $AG$, qui forme un angle aigu avec la base. Seules les droites du plan $ACG$ parallèles à $CG$ sont perpendiculaires à la base.
+    </div>
+</section>
+
+<section id="sec-odchylka-rovin" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Angle de deux plans</h2>
+    <div class="card def-card space-y-2">
+        <p class="font-semibold text-violet-800">Angle des plans $\alpha$ et $\beta$, noté $|\sphericalangle\alpha\beta|$</p>
+        <ul class="list-disc pl-6 space-y-1">
+            <li>Deux plans parallèles (distincts ou confondus) forment un angle de $0^\circ$.</li>
+            <li>Pour deux plans sécants de droite d'intersection $r$, on choisit un plan $\gamma$ perpendiculaire à la droite $r$. Il coupe les plans $\alpha$ et $\beta$ selon les droites $a$ et $b$. L'angle des plans $\alpha$ et $\beta$ est l'angle des droites $a$ et $b$.</li>
+        </ul>
+    </div>
+    <p>On choisit le plan $\gamma$ de façon à obtenir la section la plus simple possible, le plus souvent en le faisant passer par un point remarquable du solide.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> La pyramide régulière à base carrée $ABCDV$ a une arête de base $|AB|=6$ et une hauteur $v=4$. Déterminons l'angle de la face latérale $BCV$ et de la base. La droite d'intersection des deux plans est la droite $BC$. Le plan perpendiculaire à $BC$ passant par le sommet $V$ coupe la base selon la droite $SS_{BC}$ et la face selon sa hauteur $VS_{BC}$. Le triangle $SS_{BC}V$ est rectangle, ses côtés de l'angle droit mesurent $|SS_{BC}|=3$ et $|SV|=4$, donc $\tan\varphi=\dfrac43$ et $\varphi\approx53{,}13^\circ$. L'hypoténuse $|VS_{BC}|=5$ est l'<b>apothème</b> de la pyramide.</p>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Essaie : modifie la hauteur de la pyramide $v$ (la base reste $6\times6$)</p>
+        <div class="flex items-center gap-3 mb-3">
+            <input type="range" id="py-v-fr" min="1" max="10" value="4" step="1" class="flex-grow">
+            <span class="font-mono text-sm w-16 text-right">v = <span id="py-vval-fr">4</span></span>
+        </div>
+        <div id="py-fig-fr" class="flex justify-center"></div>
+        <p class="text-sm font-semibold mt-2" id="py-res-fr"></p>
+        <p class="text-xs text-stone-500 mt-1">Le segment rouge $SP$ représente la distance du centre de la base à la face ; nous y reviendrons dans la partie C.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm"><b>Exemple :</b> Dans un cube, les plans $ABC$ et $ABG$ forment un angle de $45^\circ$. Le plan $BCG$ est perpendiculaire à leur droite d'intersection $AB$ et les coupe selon les droites $BC$ et $BG$. Celles-ci forment un angle de $45^\circ$, car $BG$ est une diagonale du carré $BCGF$.</p>
+    </div>
+</section>
+
+<section id="sec-vzdalenost-bodu" class="space-y-3">
+    <p class="part-tag">Partie C : Distances</p>
+    <h2 class="text-2xl font-bold text-violet-900">Distance de deux points</h2>
+    <p>La <b>distance</b> des points $A$, $B$ est la longueur du segment $AB$, on la note $|AB|$. Deux points confondus sont à une distance $0$. Dans tous les autres cas, nous ramènerons la distance de deux figures à la distance de deux points bien choisis.</p>
+    <div class="card def-card text-center">
+        <p class="text-sm mb-1">Grande diagonale d'un pavé droit de dimensions $a$, $b$, $c$ et d'un cube d'arête $a$ :</p>
+        $$u=\sqrt{a^2+b^2+c^2},\qquad u=a\sqrt3.$$
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Un pavé droit a pour dimensions $|AB|=3$, $|BC|=4$, $|AE|=12$. On calcule d'abord dans le triangle rectangle $ABC$ la longueur $|AC|=\sqrt{9+16}=5$, puis dans le triangle rectangle $ACG$ la longueur de la diagonale $|AG|=\sqrt{25+144}=13$.</p>
+        <svg viewBox="-25.0 -285.0 144.6 313.0" class="stereo-fig" style="width:100%;max-width:145px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 94.6,-20.0 94.6,-260.0" fill="#7c3aed" fill-opacity="0.12" stroke="none"/><line x1="0.0" y1="-0.0" x2="60.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="60.0" y1="-0.0" x2="94.6" y2="-20.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="94.6" y1="-20.0" x2="34.6" y2="-20.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="34.6" y1="-20.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-240.0" x2="60.0" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="60.0" y1="-240.0" x2="94.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="94.6" y1="-260.0" x2="34.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="34.6" y1="-260.0" x2="0.0" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="60.0" y1="-0.0" x2="60.0" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="94.6" y1="-20.0" x2="94.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="34.6" y1="-20.0" x2="34.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="94.6" y2="-20.0" stroke="#0d9488" stroke-width="2.0" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="94.6" y2="-260.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="94.6" y1="-20.0" x2="94.6" y2="-260.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><polyline points="94.6,-38.0 93.5,-37.7 92.4,-37.4 91.3,-37.0 90.2,-36.5 89.2,-35.9 88.1,-35.3 87.1,-34.6 86.1,-33.8 85.2,-33.0 84.3,-32.1 83.4,-31.2 82.6,-30.2 81.8,-29.2 81.1,-28.1 80.5,-27.0 79.9,-25.9 79.4,-24.7 78.9,-23.6 78.5,-22.4 78.2,-21.2 77.9,-20.0 77.8,-18.8 77.6,-17.6 77.6,-16.4" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="88.6" cy="-25.1" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="66.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="101.6" y="-14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="19.6" y="-24.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-236.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="66.0" y="-230.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="100.6" y="-264.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="20.6" y="-265.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+</section>
+
+<section id="sec-bod-primka" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Distance d'un point à une droite</h2>
+    <div class="card def-card">
+        <p>La <b>distance du point $M$ à la droite $p$</b> est la distance du point $M$ au pied $P$ de la perpendiculaire à la droite $p$ menée par le point $M$. Si le point appartient à la droite, la distance est $0$. On la note $|Mp|$.</p>
+    </div>
+    <p>Un point et une droite qui ne le contient pas déterminent un plan. Dans ce plan, on résout le problème comme en géométrie plane : la distance cherchée est une hauteur d'un triangle. La formule de la hauteur relative à l'hypoténuse, obtenue en exprimant de deux façons l'aire d'un triangle rectangle, est souvent utile :</p>
+    <div class="card def-card text-center">$$\tfrac12\,ab=\tfrac12\,c\,v_c\quad\Rightarrow\quad v_c=\frac{ab}{c}.$$</div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Un cube a une arête de longueur $3$. Déterminons la distance du point $A$ à la droite $BH$. Dans le triangle $ABH$, l'angle au sommet $A$ est droit, car l'arête $AB$ est perpendiculaire à la face $ADHE$. Les côtés de l'angle droit mesurent $|AB|=3$, $|AH|=3\sqrt2$ et l'hypoténuse $|BH|=3\sqrt3$. La distance cherchée est la hauteur relative à l'hypoténuse : $d=\dfrac{3\cdot3\sqrt2}{3\sqrt3}=\sqrt6\approx2{,}45$.</p>
+        <div class="grid sm:grid-cols-2 gap-3 items-center">
+            <div><svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 192.0,-0.0 83.1,-240.0" fill="#0d9488" fill-opacity="0.2" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-240.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="155.7" y2="-80.0" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="25.6,-0.0 26.1,-1.5 26.4,-3.0 26.6,-4.4 26.8,-5.9 26.8,-7.3 26.7,-8.7 26.4,-10.0 26.1,-11.3 25.6,-12.6 25.1,-13.8 24.4,-14.9 23.6,-16.0 22.8,-17.0 21.8,-18.0 20.7,-18.8 19.6,-19.6 18.4,-20.3 17.0,-20.9 15.7,-21.4 14.2,-21.9 12.7,-22.2 11.1,-22.4 9.5,-22.6 7.8,-22.6" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="11.8" cy="-8.0" r="1.7" fill="#b91c1c"/><polyline points="136.6,-70.2 136.3,-71.1 136.0,-72.1 135.8,-73.1 135.7,-74.1 135.6,-75.2 135.7,-76.3 135.8,-77.3 136.1,-78.4 136.4,-79.6 136.8,-80.7 137.2,-81.8 137.8,-82.9 138.4,-84.0 139.1,-85.0 139.9,-86.1 140.7,-87.1 141.6,-88.1 142.6,-89.1 143.6,-90.0 144.7,-90.8 145.8,-91.7 147.0,-92.5 148.2,-93.2 149.4,-93.9" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="146.7" cy="-81.4" r="1.7" fill="#b91c1c"/><path d="M152.2,-83.5L159.2,-76.5M152.2,-76.5L159.2,-83.5" stroke="#1c1917" stroke-width="1.6"/><text x="159.7" y="-88.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg></div>
+            <div><svg viewBox="-46.0 -219.2 207.5 251.2" class="stereo-fig" style="width:100%;max-width:208px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,0.0 138.0,0.0 0.0,-195.2" fill="#0d9488" fill-opacity="0.18" stroke="none"/><line x1="0.0" y1="0.0" x2="138.0" y2="0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="0.0" y2="-195.2" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="138.0" y1="0.0" x2="0.0" y2="-195.2" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="92.0" y2="-65.1" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/><polyline points="20.7,-0.0 20.6,-2.0 20.3,-4.0 19.8,-6.0 19.1,-7.9 18.3,-9.8 17.2,-11.5 16.0,-13.1 14.6,-14.6 13.1,-16.0 11.5,-17.2 9.8,-18.3 7.9,-19.1 6.0,-19.8 4.0,-20.3 2.0,-20.6 0.0,-20.7" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="7.3" cy="-7.3" r="1.7" fill="#b91c1c"/><polyline points="78.9,-55.8 78.0,-57.1 77.3,-58.5 76.7,-60.0 76.3,-61.5 76.0,-63.1 75.9,-64.6 75.9,-66.2 76.1,-67.8 76.5,-69.3 77.0,-70.8 77.6,-72.3 78.4,-73.6 79.3,-74.9 80.3,-76.1 81.5,-77.2 82.7,-78.2" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="84.1" cy="-66.4" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">A</text><text x="142.0" y="14.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">B</text><text x="-14.0" y="-195.2" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">H</text><text x="98.0" y="-69.1" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">P</text><text x="69.0" y="16.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">3</text><text x="-22.0" y="-93.6" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">3√2</text><text x="91.0" y="-99.6" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">3√3</text><text x="48.0" y="-38.5" font-size="12" fill="#b91c1c" text-anchor="middle" font-family="Inter, sans-serif">d</text></svg><p class="text-xs text-stone-500 text-center mt-1">le triangle $ABH$ en vraie grandeur</p></div>
+        </div>
+    </div>
+</section>
+
+<section id="sec-bod-rovina" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Distance d'un point à un plan</h2>
+    <div class="card def-card">
+        <p>La <b>distance du point $M$ au plan $\rho$</b> est la distance du point $M$ à son projeté orthogonal $M'$ sur le plan $\rho$. Si le point appartient au plan, la distance est $0$. On la note $|M\rho|$.</p>
+    </div>
+    <p>Le plus commode est de chercher la perpendiculaire au plan dans un plan auxiliaire qui passe par le point $M$ et qui est perpendiculaire au plan donné. Dans ce plan, la perpendiculaire cherchée apparaît en vraie grandeur.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Une pyramide régulière à base carrée a $|AB|=6$ et une hauteur $v=4$. Déterminons la distance du centre de la base $S$ à la face $BCV$. L'arête $BC$ est perpendiculaire au plan $SS_{BC}V$, ce plan est donc perpendiculaire à la face $BCV$. La perpendiculaire à la face menée par le point $S$ est donc contenue dans le plan $SS_{BC}V$ : c'est la hauteur $SP$ du triangle rectangle de côtés $3$, $4$, $5$. On obtient $|SP|=\dfrac{3\cdot4}{5}=\dfrac{12}{5}=2{,}4$.</p>
+        <div class="grid sm:grid-cols-2 gap-3 items-center">
+            <div><svg viewBox="-24.0 -219.0 392.9 247.0" class="stereo-fig" style="width:100%;max-width:393px" xmlns="http://www.w3.org/2000/svg"><polygon points="172.0,-30.0 292.0,-30.0 172.0,-190.0" fill="#0d9488" fill-opacity="0.22" stroke="none"/><line x1="0.0" y1="-0.0" x2="240.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="240.0" y1="-0.0" x2="343.9" y2="-60.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="343.9" y1="-60.0" x2="103.9" y2="-60.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="103.9" y1="-60.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="240.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="343.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="103.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="172.0" y1="-30.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="172.0" y1="-30.0" x2="292.0" y2="-30.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="292.0" y1="-30.0" x2="172.0" y2="-190.0" stroke="#7c3aed" stroke-width="2.0" stroke-linecap="round"/><line x1="172.0" y1="-30.0" x2="248.8" y2="-87.6" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="229.6,-73.2 228.7,-74.5 227.8,-75.8 227.1,-77.2 226.5,-78.7 226.0,-80.1 225.5,-81.6 225.2,-83.2 224.9,-84.7 224.8,-86.3 224.8,-87.9 224.8,-89.4 225.0,-91.0 225.3,-92.5 225.6,-94.1 226.1,-95.6 226.7,-97.0 227.4,-98.5 228.1,-99.8 229.0,-101.2 229.9,-102.4 230.9,-103.6 232.0,-104.8 233.1,-105.8 234.4,-106.8" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="236.9" cy="-89.3" r="1.7" fill="#b91c1c"/><polyline points="196.0,-30.0 195.9,-31.6 195.8,-33.1 195.5,-34.7 195.1,-36.2 194.7,-37.7 194.1,-39.2 193.5,-40.6 192.7,-42.0 191.9,-43.3 191.0,-44.6 190.0,-45.8 188.9,-47.0 187.8,-48.0 186.6,-49.0 185.3,-50.0 184.0,-50.8 182.6,-51.5 181.1,-52.2 179.7,-52.7 178.2,-53.2 176.6,-53.5 175.1,-53.8 173.5,-53.9 172.0,-54.0" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="180.4" cy="-38.5" r="1.7" fill="#b91c1c"/><path d="M168.5,-33.5L175.5,-26.5M168.5,-26.5L175.5,-33.5" stroke="#1c1917" stroke-width="1.6"/><text x="156.0" y="-26.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S</text><path d="M288.5,-33.5L295.5,-26.5M288.5,-26.5L295.5,-33.5" stroke="#1c1917" stroke-width="1.6"/><text x="300.0" y="-20.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">BC</tspan></text><path d="M245.3,-91.1L252.3,-84.1M245.3,-84.1L252.3,-91.1" stroke="#1c1917" stroke-width="1.6"/><text x="256.8" y="-89.6" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P</text><text x="-14.0" y="12.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="244.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="350.9" y="-56.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="88.9" y="-64.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="168.0" y="-199.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">V</text></svg></div>
+            <div><svg viewBox="-28.0 -200.0 204.0 232.0" class="stereo-fig" style="width:100%;max-width:204px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,0.0 132.0,0.0 0.0,-176.0" fill="#0d9488" fill-opacity="0.18" stroke="none"/><line x1="0.0" y1="0.0" x2="132.0" y2="0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="0.0" y2="-176.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="132.0" y1="0.0" x2="0.0" y2="-176.0" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="84.5" y2="-63.4" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/><polyline points="19.8,-0.0 19.7,-1.9 19.4,-3.9 18.9,-5.7 18.3,-7.6 17.5,-9.3 16.5,-11.0 15.3,-12.6 14.0,-14.0 12.6,-15.3 11.0,-16.5 9.3,-17.5 7.6,-18.3 5.7,-18.9 3.9,-19.4 1.9,-19.7 0.0,-19.8" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="7.0" cy="-7.0" r="1.7" fill="#b91c1c"/><polyline points="72.2,-54.1 71.3,-55.4 70.6,-56.7 70.0,-58.1 69.6,-59.5 69.3,-61.0 69.1,-62.5 69.1,-64.0 69.2,-65.5 69.5,-67.0 70.0,-68.5 70.5,-69.9 71.2,-71.2 72.1,-72.5 73.0,-73.6 74.1,-74.7 75.2,-75.7" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="76.9" cy="-64.4" r="1.7" fill="#b91c1c"/><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">S</text><text x="134.0" y="16.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">BC</tspan></text><text x="-14.0" y="-176.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">V</text><text x="90.5" y="-67.4" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">P</text><text x="66.0" y="16.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">3</text><text x="-12.0" y="-84.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">4</text><text x="80.0" y="-90.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">5</text><text x="44.2" y="-37.7" font-size="12" fill="#b91c1c" text-anchor="middle" font-family="Inter, sans-serif">d</text></svg><p class="text-xs text-stone-500 text-center mt-1">le triangle $SS_{BC}V$ en vraie grandeur</p></div>
+        </div>
+    </div>
+</section>
+
+<section id="sec-primka-rovina-vzd" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Distance d'une droite à un plan</h2>
+    <div class="card def-card">
+        <p>Si la droite $p$ est parallèle au plan $\rho$, sa <b>distance au plan</b> est égale à la distance d'un point quelconque de la droite $p$ au plan $\rho$. Si la droite a un point commun avec le plan (elle le coupe ou elle est contenue dans le plan), la distance est $0$. On la note $|p\rho|$.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Une pyramide régulière à base carrée a $|AB|=6$ et une hauteur $v=4$. Déterminons la distance de la droite $CD$ au plan $ABV$. On a $CD\parallel AB$, la droite $CD$ est donc parallèle au plan $ABV$. On choisit sur cette droite le point $S_{CD}$. Le plan $S_{AB}S_{CD}V$ est perpendiculaire à l'arête $AB$, donc aussi à la face $ABV$. La section est un triangle isocèle de base $6$, de hauteur $4$ et dont les côtés égaux mesurent $5$. La distance cherchée est la hauteur issue du sommet $S_{CD}$ sur l'un des côtés égaux. L'aire du triangle est $\dfrac{6\cdot4}{2}=12$, donc $\dfrac{5\cdot d}{2}=12$ et $d=\dfrac{24}{5}=4{,}8$.</p>
+        <div class="grid sm:grid-cols-2 gap-3 items-center">
+            <div><svg viewBox="-24.0 -219.0 392.9 251.0" class="stereo-fig" style="width:100%;max-width:393px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,-0.0 240.0,-0.0 172.0,-190.0" fill="#7c3aed" fill-opacity="0.12" stroke="none"/><polygon points="120.0,-0.0 223.9,-60.0 172.0,-190.0" fill="#0d9488" fill-opacity="0.2" stroke="none"/><line x1="0.0" y1="-0.0" x2="240.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="240.0" y1="-0.0" x2="343.9" y2="-60.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="343.9" y1="-60.0" x2="103.9" y2="-60.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="103.9" y1="-60.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="240.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="343.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="103.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="343.9" y1="-60.0" x2="103.9" y2="-60.0" stroke="#d97706" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="120.0" y1="-0.0" x2="223.9" y2="-60.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="223.9" y1="-60.0" x2="172.0" y2="-190.0" stroke="#44403c" stroke-width="1.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="120.0" y1="-0.0" x2="172.0" y2="-190.0" stroke="#7c3aed" stroke-width="2.0" stroke-linecap="round"/><line x1="223.9" y1="-60.0" x2="157.4" y2="-136.8" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="165.7,-127.2 166.1,-128.7 166.5,-130.3 166.8,-131.8 167.1,-133.4 167.3,-135.0 167.5,-136.7 167.6,-138.3 167.7,-139.9 167.8,-141.5 167.8,-143.1 167.8,-144.6 167.7,-146.1 167.6,-147.6 167.4,-149.0 167.2,-150.4 167.0,-151.7 166.7,-153.0 166.4,-154.2 166.0,-155.3 165.6,-156.3 165.1,-157.3 164.7,-158.2 164.2,-158.9 163.6,-159.6" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="162.6" cy="-141.5" r="1.7" fill="#b91c1c"/><path d="M116.5,-3.5L123.5,3.5M116.5,3.5L123.5,-3.5" stroke="#1c1917" stroke-width="1.6"/><text x="112.0" y="18.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">AB</tspan></text><path d="M220.4,-63.5L227.4,-56.5M220.4,-56.5L227.4,-63.5" stroke="#1c1917" stroke-width="1.6"/><text x="227.9" y="-68.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">CD</tspan></text><path d="M153.9,-140.3L160.9,-133.3M153.9,-133.3L160.9,-140.3" stroke="#1c1917" stroke-width="1.6"/><text x="139.4" y="-134.8" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P</text><text x="-14.0" y="12.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="244.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="350.9" y="-56.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="88.9" y="-64.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="168.0" y="-199.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">V</text></svg></div>
+            <div><svg viewBox="-36.0 -184.0 306.0 216.0" class="stereo-fig" style="width:100%;max-width:306px" xmlns="http://www.w3.org/2000/svg"><polygon points="0.0,0.0 228.0,0.0 114.0,-152.0" fill="#0d9488" fill-opacity="0.18" stroke="none"/><line x1="0.0" y1="0.0" x2="228.0" y2="0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="228.0" y1="0.0" x2="114.0" y2="-152.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="0.0" x2="114.0" y2="-152.0" stroke="#7c3aed" stroke-width="2" stroke-linecap="round"/><line x1="228.0" y1="0.0" x2="82.1" y2="-109.4" stroke="#b91c1c" stroke-width="2" stroke-linecap="round"/><line x1="114.0" y1="-152.0" x2="114.0" y2="0.0" stroke="#44403c" stroke-width="1" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="92.7,-101.5 93.5,-102.5 94.1,-103.7 94.6,-104.9 95.0,-106.1 95.2,-107.4 95.4,-108.7 95.4,-110.0 95.2,-111.3 95.0,-112.6 94.6,-113.9 94.1,-115.1 93.5,-116.2 92.8,-117.3 92.0,-118.3 91.1,-119.2 90.1,-120.1" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="88.7" cy="-110.4" r="1.7" fill="#b91c1c"/><text x="-24.0" y="16.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">AB</tspan></text><text x="228.0" y="16.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">S<tspan baseline-shift="sub" font-size="9.4">CD</tspan></text><text x="110.0" y="-160.0" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">V</text><text x="66.1" y="-113.4" font-size="13" fill="#1c1917" text-anchor="start" font-style="italic" font-family="Inter, sans-serif">P</text><text x="114.0" y="16.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">6</text><text x="45.0" y="-78.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">5</text><text x="183.0" y="-78.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">5</text><text x="122.0" y="-58.0" font-size="12" fill="#44403c" text-anchor="middle" font-family="Inter, sans-serif">4</text><text x="159.0" y="-40.7" font-size="12" fill="#b91c1c" text-anchor="middle" font-family="Inter, sans-serif">d</text></svg><p class="text-xs text-stone-500 text-center mt-1">le triangle $S_{AB}S_{CD}V$ en vraie grandeur</p></div>
+        </div>
+    </div>
+</section>
+
+<section id="sec-dve-roviny-vzd" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Distance de deux plans</h2>
+    <div class="card def-card">
+        <p>La <b>distance de deux plans parallèles</b> est la distance d'un point quelconque de l'un d'eux à l'autre plan. Deux plans sécants sont à une distance $0$. On la note $|\alpha\beta|$.</p>
+    </div>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Un cube a une arête de longueur $6$. Les plans $BDE$ et $CFH$ sont parallèles (voir le chapitre précédent). La grande diagonale $AG$ est perpendiculaire aux deux plans et les coupe aux points $P_1$ et $P_2$, qui la partagent en trois parties égales. Comme $|AG|=6\sqrt3$, la distance des plans est $|P_1P_2|=2\sqrt3\approx3{,}46$.</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><polygon points="192.0,-0.0 83.1,-48.0 0.0,-192.0" fill="#0d9488" fill-opacity="0.22" stroke="none"/><polygon points="275.1,-48.0 192.0,-192.0 83.1,-240.0" fill="#7c3aed" fill-opacity="0.18" stroke="none"/><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-48.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-192.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-0.0" stroke="#0d9488" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="192.0" y2="-192.0" stroke="#7c3aed" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="83.1" y2="-240.0" stroke="#7c3aed" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="275.1" y2="-48.0" stroke="#7c3aed" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="275.1" y2="-240.0" stroke="#b91c1c" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="5,4"/><path d="M88.2,-83.5L95.2,-76.5M88.2,-76.5L95.2,-83.5" stroke="#1c1917" stroke-width="1.6"/><text x="97.7" y="-68.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P<tspan baseline-shift="sub" font-size="9.4">1</tspan></text><path d="M179.9,-163.5L186.9,-156.5M179.9,-156.5L186.9,-163.5" stroke="#1c1917" stroke-width="1.6"/><text x="159.4" y="-162.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">P<tspan baseline-shift="sub" font-size="9.4">2</tspan></text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Pourquoi la diagonale $AG$ est-elle perpendiculaire au plan $BDE$ ? On a $AG\perp BD$, car $BD$ est perpendiculaire à tout le plan $ACG$. Par le même raisonnement dans la face $ABFE$, on montre que $BE$ est perpendiculaire au plan $ADG$, donc $AG\perp BE$. D'après le critère, $AG$ est perpendiculaire au plan $BDE$. Vérifie aussi que la distance du point $A$ au plan $BDE$ est $\dfrac{a\sqrt3}{3}$, c'est-à-dire le tiers de la diagonale.
+    </div>
+</section>
+
+<section id="sec-dve-primky-vzd" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Distance de deux droites</h2>
+    <div class="card def-card space-y-2">
+        <p class="font-semibold text-violet-800">Distance des droites $p$ et $q$, notée $|pq|$</p>
+        <ul class="list-disc pl-6 space-y-1">
+            <li>Deux droites sécantes ou confondues sont à une distance $0$.</li>
+            <li>La distance de deux droites parallèles est la distance d'un point quelconque de l'une à l'autre droite.</li>
+            <li>La distance de deux droites non coplanaires est la longueur du segment que découpe sur elles leur <b>perpendiculaire commune</b>, c'est-à-dire la droite qui les coupe toutes les deux et qui est orthogonale à chacune d'elles. Deux droites non coplanaires ont toujours une seule perpendiculaire commune.</li>
+        </ul>
+    </div>
+    <p>Pour deux droites non coplanaires, on peut aussi procéder autrement : par la droite $q$, on mène le plan $\rho$ parallèle à la droite $p$. La distance des droites est alors égale à la distance de la droite $p$ au plan $\rho$.</p>
+    <div class="card">
+        <p class="text-sm mb-2"><b>Exemple :</b> Un cube a une arête de longueur $4$. Les droites parallèles $AB$ et $GH$ sont dans le plan $ABGH$ et leur distance est $|BG|=4\sqrt2$. La perpendiculaire commune des droites non coplanaires $AE$ et $BD$ est la droite $AS$, où $S$ est le centre de la base : on a $AS\perp BD$ (diagonales d'un carré) et $AS\perp AE$ (l'arête $AE$ est perpendiculaire à la base). La distance des droites est $|AS|=\dfrac{4\sqrt2}{2}=2\sqrt2\approx2{,}83$.</p>
+        <svg viewBox="-25.0 -265.0 325.1 293.0" class="stereo-fig" style="width:100%;max-width:325px" xmlns="http://www.w3.org/2000/svg"><line x1="0.0" y1="-0.0" x2="192.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="275.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="83.1" y2="-48.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="83.1" y1="-48.0" x2="0.0" y2="-0.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-192.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-192.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-240.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-240.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="192.0" y2="-192.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="275.1" y1="-48.0" x2="275.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round"/><line x1="83.1" y1="-48.0" x2="83.1" y2="-240.0" stroke="#44403c" stroke-width="1.6" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="0.0" y2="-192.0" stroke="#7c3aed" stroke-width="2.4" stroke-linecap="round"/><line x1="192.0" y1="-0.0" x2="83.1" y2="-48.0" stroke="#0d9488" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><line x1="0.0" y1="-0.0" x2="137.6" y2="-24.0" stroke="#b91c1c" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="5,4"/><polyline points="0.0,-25.6 1.7,-25.8 3.4,-26.0 5.1,-26.0 6.7,-25.9 8.3,-25.7 9.9,-25.4 11.5,-25.0 13.0,-24.4 14.4,-23.8 15.8,-23.1 17.1,-22.2 18.3,-21.3 19.5,-20.3 20.6,-19.2 21.6,-18.0 22.5,-16.7 23.3,-15.4 24.0,-14.0 24.6,-12.5 25.1,-11.0 25.4,-9.4 25.7,-7.8 25.9,-6.2 25.9,-4.5" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="9.2" cy="-10.7" r="1.7" fill="#b91c1c"/><polyline points="111.6,-19.5 112.4,-19.2 113.2,-18.9 114.1,-18.7 115.2,-18.5 116.3,-18.3 117.5,-18.1 118.8,-17.9 120.2,-17.8 121.7,-17.7 123.2,-17.7 124.8,-17.6 126.5,-17.6 128.2,-17.6 129.9,-17.7 131.7,-17.7 133.5,-17.8 135.3,-17.9 137.1,-18.1 138.9,-18.3 140.8,-18.5 142.6,-18.7 144.4,-18.9 146.1,-19.2 147.8,-19.5" fill="none" stroke="#b91c1c" stroke-width="1.4"/><circle cx="132.0" cy="-20.8" r="1.7" fill="#b91c1c"/><path d="M134.1,-27.5L141.1,-20.5M134.1,-20.5L141.1,-27.5" stroke="#1c1917" stroke-width="1.6"/><text x="141.6" y="-8.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">S</text><text x="-14.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">A</text><text x="198.0" y="14.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">B</text><text x="282.1" y="-44.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">C</text><text x="68.1" y="-52.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">D</text><text x="-15.0" y="-188.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">E</text><text x="198.0" y="-178.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">F</text><text x="281.1" y="-244.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">G</text><text x="69.1" y="-245.0" font-size="13" fill="#1c1917" font-style="italic" font-family="Inter, sans-serif">H</text></svg>
+    </div>
+    <div class="card">
+        <p class="slider-label mb-2">🔄 Essaie : choisis deux droites passant par des sommets du cube d'arête $6$ et détermine leur distance</p>
+        <div class="flex flex-wrap items-center gap-3 mb-2 text-sm">
+            <label>Première droite : <select id="pk-dist-a-fr" class="sel"><option value="AB">AB</option><option value="BC">BC</option><option value="CD">CD</option><option value="DA">DA</option><option value="EF">EF</option><option value="FG">FG</option><option value="GH">GH</option><option value="HE">HE</option><option value="AE" selected>AE</option><option value="BF">BF</option><option value="CG">CG</option><option value="DH">DH</option><option value="AC">AC</option><option value="BD">BD</option><option value="EG">EG</option><option value="FH">FH</option><option value="AF">AF</option><option value="BE">BE</option><option value="CH">CH</option><option value="DG">DG</option><option value="AH">AH</option><option value="DE">DE</option><option value="BG">BG</option><option value="CF">CF</option><option value="AG">AG</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option></select></label>
+            <label>Seconde droite : <select id="pk-dist-b-fr" class="sel"><option value="AB">AB</option><option value="BC">BC</option><option value="CD">CD</option><option value="DA">DA</option><option value="EF">EF</option><option value="FG">FG</option><option value="GH">GH</option><option value="HE">HE</option><option value="AE">AE</option><option value="BF">BF</option><option value="CG">CG</option><option value="DH">DH</option><option value="AC">AC</option><option value="BD" selected>BD</option><option value="EG">EG</option><option value="FH">FH</option><option value="AF">AF</option><option value="BE">BE</option><option value="CH">CH</option><option value="DG">DG</option><option value="AH">AH</option><option value="DE">DE</option><option value="BG">BG</option><option value="CF">CF</option><option value="AG">AG</option><option value="BH">BH</option><option value="CE">CE</option><option value="DF">DF</option></select></label>
+        </div>
+        <div id="pk-dist-fig-fr" class="flex justify-center"></div>
+        <p class="text-sm font-semibold mt-2" id="pk-dist-res-fr"></p>
+    </div>
+    <div class="note-box note-curious">
+        <b>Pour les curieux :</b> Le segment porté par la perpendiculaire commune est le plus court de tous les segments qui relient un point de l'une des droites à un point de l'autre. C'est pourquoi il est naturel de prendre sa longueur comme distance des droites.
+    </div>
+</section>
+
+<section id="sec-postup" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Comment calculer les distances et les angles</h2>
+    <p>Nous résolvons tous les problèmes de ce chapitre de la même façon : nous ramenons le problème dans l'espace à un problème plan.</p>
+    <ol class="list-decimal pl-6 space-y-1">
+        <li>On détermine entre quels deux points se mesure la distance (un point et son projeté orthogonal, le pied d'une perpendiculaire, les extrémités du segment porté par la perpendiculaire commune), ou bien quel angle on cherche.</li>
+        <li>On choisit un plan auxiliaire qui contient ces points ou cet angle et que l'on sait dessiner en vraie grandeur. Il est en général perpendiculaire à la droite ou au plan donnés et passe par le point donné.</li>
+        <li>On construit la section du solide par ce plan et on la redessine en vraie grandeur.</li>
+        <li>Dans la section, on trouve un triangle rectangle ; la distance cherchée est l'un de ses côtés ou l'une de ses hauteurs, l'angle cherché l'un de ses angles.</li>
+        <li>On la calcule.</li>
+    </ol>
+    <div class="card space-y-1">
+        <p class="font-semibold text-violet-800">Outils de géométrie plane</p>
+        <ul class="list-disc pl-6 space-y-1 text-sm">
+            <li>Théorème de Pythagore : $c^2=a^2+b^2$.</li>
+            <li>Hauteur relative à l'hypoténuse : $v_c=\dfrac{ab}{c}$.</li>
+            <li>Relations métriques dans le triangle rectangle (théorèmes d'Euclide) : $v_c^2=c_a\,c_b$ et $a^2=c\,c_a$.</li>
+            <li>Trigonométrie dans le triangle rectangle, par exemple $\tan\varphi=\dfrac{\text{côté opposé}}{\text{côté adjacent}}$.</li>
+            <li>Hauteur d'un triangle équilatéral de côté $s$ : $\dfrac{s\sqrt3}{2}$.</li>
+        </ul>
+    </div>
+    <div class="note-box note-warn">
+        <b>Attention au piège :</b> Une figure en perspective cavalière ne conserve ni les angles ni les longueurs (sauf dans la face avant). Un angle droit peut paraître aigu et des segments de même longueur peuvent paraître inégaux. C'est pourquoi on calcule toujours à partir d'une section dessinée en vraie grandeur et on ne mesure jamais sur la figure dans l'espace.
+    </div>
+</section>
+
+<section id="sec-shrnuti" class="space-y-3">
+    <h2 class="text-2xl font-bold text-violet-900">Résumé</h2>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Angle</th><th class="p-1 text-left">$0^\circ$</th><th class="p-1 text-left">$90^\circ$</th><th class="p-1 text-left">sinon</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">deux droites</td><td class="p-1">droites parallèles</td><td class="p-1">droites orthogonales</td><td class="p-1">sécantes : l'angle qui n'est pas obtus ; non coplanaires : à l'aide de parallèles menées par un même point</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">une droite et un plan</td><td class="p-1">la droite est parallèle au plan ou contenue dans le plan</td><td class="p-1">la droite est perpendiculaire au plan</td><td class="p-1">angle de la droite et de sa projection orthogonale</td></tr>
+                <tr><td class="p-1">deux plans</td><td class="p-1">plans parallèles</td><td class="p-1">plans perpendiculaires</td><td class="p-1">section par un plan perpendiculaire à la droite d'intersection</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead><tr class="border-b-2 border-violet-200"><th class="p-1 text-left">Distance</th><th class="p-1 text-left">elle est nulle si</th><th class="p-1 text-left">comment la déterminer</th></tr></thead>
+            <tbody>
+                <tr class="border-b border-violet-100"><td class="p-1">un point et une droite</td><td class="p-1">le point appartient à la droite</td><td class="p-1">pied de la perpendiculaire, hauteur d'un triangle</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">un point et un plan</td><td class="p-1">le point appartient au plan</td><td class="p-1">projeté orthogonal du point, plan auxiliaire perpendiculaire</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">une droite et un plan</td><td class="p-1">ils ont un point commun</td><td class="p-1">distance d'un point quelconque de la droite au plan</td></tr>
+                <tr class="border-b border-violet-100"><td class="p-1">deux plans</td><td class="p-1">ils sont sécants</td><td class="p-1">distance d'un point quelconque de l'un des plans à l'autre</td></tr>
+                <tr><td class="p-1">deux droites</td><td class="p-1">elles sont sécantes ou confondues</td><td class="p-1">parallèles : d'un point de l'une à l'autre ; non coplanaires : perpendiculaire commune</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="note-box note-link">
+        <b>Liens :</b> Les méthodes du chapitre Géométrie dans l'espace 2, c'est-à-dire le plan auxiliaire, la section d'un solide et la droite d'intersection de deux plans, nous ont servi ici d'outils. Le calcul d'un angle comme celui d'une distance se ramène toujours à une section plane, puis à un triangle rectangle.
+    </div>
+    <div class="note-box note-next">
+        <b>Et ensuite :</b> Dans le chapitre <b>Géométrie dans l'espace 4</b>, nous étudierons les solides, leurs volumes et leurs aires. Nous y aurons besoin des raisonnements métriques de ce chapitre à chaque étape : la hauteur d'un solide est la distance des plans des bases ou la distance du sommet au plan de la base, et nous avons déjà calculé l'apothème d'une pyramide dans ce chapitre.
+    </div>
+</section>
+
+</div>
+</main>
+
+<script>
+function toggleLanguage(){
+    const czEl = document.getElementById('cz-content');
+    const frEl = document.getElementById('fr-content');
+    const czVisible = !czEl.classList.contains('hidden');
+    const activeRoot = czVisible ? czEl : frEl;
+    const otherRoot = czVisible ? frEl : czEl;
+    const headerOffset = 76;
+
+    let matchedId = null, ratio = 0;
+    const secs = activeRoot.querySelectorAll('section[id]');
+    for (const s of secs){
+        const r = s.getBoundingClientRect();
+        if (r.bottom > headerOffset){
+            matchedId = s.id;
+            ratio = (headerOffset - r.top) / r.height;
+            break;
+        }
+    }
+
+    czEl.classList.toggle('hidden');
+    frEl.classList.toggle('hidden');
+    document.getElementById('lang-btn-label').textContent = czVisible ? 'Čeština' : 'Français';
+    document.getElementById('page-title').textContent = czVisible ? "Géométrie dans l'espace 3 — Propriétés métriques" : 'Stereometrie 3 — Metrické vlastnosti';
+    document.title = czVisible ? "Géométrie dans l'espace 3 — Propriétés métriques — Théorie" : 'Stereometrie 3 — Metrické vlastnosti — Teorie';
+
+    if (matchedId){
+        const target = otherRoot.querySelector('#' + matchedId);
+        if (target){
+            const r = target.getBoundingClientRect();
+            const delta = (r.top - headerOffset) + ratio * r.height;
+            window.scrollBy(0, delta);
+        }
+    }
+    if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+// ---------- Vektory ----------
+function v3sub(a,b){ return [a[0]-b[0], a[1]-b[1], a[2]-b[2]]; }
+function v3add(a,b){ return [a[0]+b[0], a[1]+b[1], a[2]+b[2]]; }
+function v3mul(a,k){ return [a[0]*k, a[1]*k, a[2]*k]; }
+function v3dot(a,b){ return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]; }
+function v3cross(a,b){ return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]]; }
+function v3len(a){ return Math.sqrt(v3dot(a,a)); }
+function v3unit(a){ return v3mul(a, 1 / v3len(a)); }
+function v3lerp(a,b,t){ return v3add(a, v3mul(v3sub(b,a), t)); }
+function footOnLine(X, A, B){ const u = v3sub(B, A); return v3add(A, v3mul(u, v3dot(v3sub(X, A), u) / v3dot(u, u))); }
+
+// ---------- Kreslení ve volném rovnoběžném promítání (30°, zkrácení 1/2) ----------
+const QX = 0.5 * Math.cos(Math.PI / 6), QY = 0.5 * Math.sin(Math.PI / 6), WV = [QX, -1, QY];
+const C_INK = '#44403c', C_LAB = '#1c1917', C_VIOLET = '#7c3aed', C_TEAL = '#0d9488', C_RED = '#b91c1c', C_AMBER = '#d97706';
+
+function makeBox(a, b, c){
+    return {
+        V: {A:[0,0,0], B:[a,0,0], C:[a,b,0], D:[0,b,0], E:[0,0,c], F:[a,0,c], G:[a,b,c], H:[0,b,c]},
+        E: ['AB','BC','CD','DA','EF','FG','GH','HE','AE','BF','CG','DH'],
+        hs: [[[1,0,0],a], [[-1,0,0],0], [[0,1,0],b], [[0,-1,0],0], [[0,0,1],c], [[0,0,-1],0]]
+    };
+}
+function makePyramid(a, v){
+    const V = {A:[0,0,0], B:[a,0,0], C:[a,a,0], D:[0,a,0], V:[a/2,a/2,v]};
+    const hs = [[[0,0,-1],0]];
+    const cen = [a/2, a/2, 0.01];
+    [['A','B'],['B','C'],['C','D'],['D','A']].forEach(([P,Q]) => {
+        let n = v3unit(v3cross(v3sub(V[Q], V[P]), v3sub(V.V, V[P])));
+        let d = v3dot(n, V[P]);
+        if (v3dot(n, cen) > d){ n = v3mul(n, -1); d = -d; }
+        hs.push([n, d]);
+    });
+    return { V, E: ['AB','BC','CD','DA','AV','BV','CV','DV'], hs };
+}
+function occluded(solid, p){
+    let tmin = -1e9, tmax = 1e9;
+    for (const [n, d] of solid.hs){
+        const a = v3dot(n, WV), b = d - v3dot(n, p);
+        if (Math.abs(a) < 1e-12){ if (b < -1e-9) return false; continue; }
+        const t = b / a;
+        if (a > 0) tmax = Math.min(tmax, t); else tmin = Math.max(tmin, t);
+    }
+    return tmax > tmin + 1e-6 && tmax > 1e-6;
+}
+function newDrawing(solid, sc){ return { solid, sc, back: '', lines: '', top: '' }; }
+function prj(d, p){ return [(p[0] + QX*p[1]) * d.sc, -(p[2] + QY*p[1]) * d.sc]; }
+function f1(x){ return x.toFixed(1); }
+function dSeg(d, a, b, color, width){
+    const n = 80; const runs = [];
+    for (let i = 0; i < n; i++){
+        const occ = occluded(d.solid, v3lerp(a, b, (i + 0.5) / n));
+        if (runs.length && runs[runs.length-1][2] === occ) runs[runs.length-1][1] = (i+1)/n;
+        else runs.push([i/n, (i+1)/n, occ]);
+    }
+    for (const r of runs){
+        const p = prj(d, v3lerp(a, b, r[0])), q = prj(d, v3lerp(a, b, r[1]));
+        d.lines += '<line x1="'+f1(p[0])+'" y1="'+f1(p[1])+'" x2="'+f1(q[0])+'" y2="'+f1(q[1])+'" stroke="'+color+
+                   '" stroke-width="'+width+'" stroke-linecap="round"'+(r[2] ? ' stroke-dasharray="5,4"' : '')+'/>';
+    }
+}
+function dEdges(d){ for (const e of d.solid.E) dSeg(d, d.solid.V[e[0]], d.solid.V[e[1]], C_INK, 1.6); }
+function dPoly(d, pts, color, op){
+    d.back += '<polygon points="' + pts.map(p => { const q = prj(d, p); return f1(q[0]) + ',' + f1(q[1]); }).join(' ') +
+              '" fill="' + color + '" fill-opacity="' + op + '" stroke="none"/>';
+}
+function dText(d, x, y, lab, color){
+    let inner = lab;
+    if (lab.indexOf('_') > 0){
+        const parts = lab.split('_');
+        inner = parts[0] + '<tspan baseline-shift="sub" font-size="9.4">' + parts[1] + '</tspan>';
+    }
+    d.top += '<text x="'+f1(x)+'" y="'+f1(y)+'" font-size="13" fill="'+color+'" font-style="italic" font-family="Inter, sans-serif">'+inner+'</text>';
+}
+function dLabel(d, p, lab, dx, dy, color){ const q = prj(d, p); dText(d, q[0]+dx, q[1]+dy, lab, color || C_LAB); }
+function dPoint(d, p, lab, dx, dy, color){
+    const q = prj(d, p), x = q[0], y = q[1], c = color || C_LAB;
+    d.top += '<path d="M'+f1(x-3.5)+','+f1(y-3.5)+'L'+f1(x+3.5)+','+f1(y+3.5)+'M'+f1(x-3.5)+','+f1(y+3.5)+'L'+f1(x+3.5)+','+f1(y-3.5)+'" stroke="'+c+'" stroke-width="1.6"/>';
+    if (lab) dText(d, x+dx, y+dy, lab, c);
+}
+function dArc(d, V, P1, P2, r, color, right, lab){
+    const u = v3unit(v3sub(P1, V)), w2 = v3sub(P2, V);
+    const vv = v3unit(v3sub(w2, v3mul(u, v3dot(w2, u))));
+    const ang = Math.acos(Math.max(-1, Math.min(1, v3dot(u, v3unit(w2)))));
+    const at = (t, rr) => prj(d, v3add(V, v3add(v3mul(u, rr*Math.cos(t)), v3mul(vv, rr*Math.sin(t)))));
+    const pts = [];
+    for (let i = 0; i <= 24; i++) pts.push(at(ang*i/24, r));
+    d.top += '<polyline points="' + pts.map(q => f1(q[0])+','+f1(q[1])).join(' ') + '" fill="none" stroke="'+color+'" stroke-width="1.4"/>';
+    if (right){ const q = at(ang/2, r*0.5); d.top += '<circle cx="'+f1(q[0])+'" cy="'+f1(q[1])+'" r="1.7" fill="'+color+'"/>'; }
+    if (lab){ const q = at(ang/2, r*1.45); dText(d, q[0]-4, q[1]+4, lab, color); }
+}
+function dSvg(d, vbox, maxw){
+    return '<svg viewBox="'+vbox+'" class="stereo-fig" style="width:100%;max-width:'+maxw+'px" xmlns="http://www.w3.org/2000/svg">' + d.back + d.lines + d.top + '</svg>';
+}
+
+// ---------- Formátování čísel ----------
+function dec(x){ // desetinná čárka pro LaTeX
+    const r = Math.round(x * 100) / 100;
+    return (Number.isInteger(r) ? r.toString() : r.toFixed(2).replace(/0+$/, '')).replace('.', '{,}');
+}
+function isInt(x){ return Math.abs(x - Math.round(x)) < 1e-9; }
+function gcd(a, b){ a = Math.abs(a); b = Math.abs(b); while (b){ [a, b] = [b, a % b]; } return a; }
+function sqrtTex(N, D){ // přesný zápis sqrt(N/D) pro celá N, D
+    if (N === 0) return {tex: '0', exact: true, val: 0};
+    let g = gcd(N, D); N /= g; D /= g;
+    let m = N * D, k = 1;
+    for (let f = 2; f*f <= m; f++) while (m % (f*f) === 0){ m /= f*f; k *= f; }
+    g = gcd(k, D); const num = k / g, den = D / g;
+    const val = num * Math.sqrt(m) / den;
+    let tex;
+    if (m === 1) tex = den === 1 ? String(num) : '\\tfrac{' + num + '}{' + den + '}';
+    else {
+        const core = (num === 1 ? '' : String(num)) + '\\sqrt{' + m + '}';
+        tex = den === 1 ? core : '\\tfrac{' + core + '}{' + den + '}';
+    }
+    return {tex, exact: m === 1, val};
+}
+
+const TXT = {
+    cs: {
+        kv: 'Průmět úhlopříčky: $|AC|=5$. Odchylka: $\\operatorname{tg}\\varphi=\\dfrac{|CG|}{|AC|}=\\dfrac{{c}}{5}={TGX}$, tedy $\\varphi{phi}$.',
+        pyr: 'Stěnová výška: $|VS_{BC}|=\\sqrt{3^2+{v}^2}{h}$. Odchylka stěny od podstavy: $\\operatorname{tg}\\varphi=\\dfrac{{v}}{3}{TGX}$, tedy $\\varphi{phi}$. Vzdálenost středu podstavy od stěny: $|SP|=\\dfrac{3\\cdot {v}}{|VS_{BC}|}{d}$.',
+        same: 'Přímky $\\leftrightarrow {a}$ a $\\leftrightarrow {b}$ jsou totožné.',
+        par: 'Přímky $\\leftrightarrow {a}$ a $\\leftrightarrow {b}$ jsou rovnoběžky různé.',
+        int: 'Přímky $\\leftrightarrow {a}$ a $\\leftrightarrow {b}$ jsou různoběžky, jejich průsečíkem je {p}.',
+        skew: 'Přímky $\\leftrightarrow {a}$ a $\\leftrightarrow {b}$ jsou mimoběžky.',
+        ang: ' Jejich odchylka je $\\varphi{phi}$.',
+        dist0: ' Jejich vzdálenost je $0$.',
+        distPar: ' Jejich vzdálenost je vzdálenost libovolného bodu jedné přímky od druhé: $d={d}$ (červeně).',
+        distSkew: ' Červeně je vyznačena osa mimoběžek; vzdálenost přímek je $d={d}$.',
+        vertex: 'vrchol ${v}$', center: 'střed krychle', face: 'střed stěny ${f}$'
+    },
+    fr: {
+        kv: 'Projection de la diagonale : $|AC|=5$. Angle : $\\tan\\varphi=\\dfrac{|CG|}{|AC|}=\\dfrac{{c}}{5}={TGX}$, donc $\\varphi{phi}$.',
+        pyr: 'Apothème : $|VS_{BC}|=\\sqrt{3^2+{v}^2}{h}$. Angle de la face et de la base : $\\tan\\varphi=\\dfrac{{v}}{3}{TGX}$, donc $\\varphi{phi}$. Distance du centre de la base à la face : $|SP|=\\dfrac{3\\cdot {v}}{|VS_{BC}|}{d}$.',
+        same: 'Les droites $\\leftrightarrow {a}$ et $\\leftrightarrow {b}$ sont confondues.',
+        par: 'Les droites $\\leftrightarrow {a}$ et $\\leftrightarrow {b}$ sont parallèles distinctes.',
+        int: 'Les droites $\\leftrightarrow {a}$ et $\\leftrightarrow {b}$ sont sécantes, leur point d\'intersection est {p}.',
+        skew: 'Les droites $\\leftrightarrow {a}$ et $\\leftrightarrow {b}$ sont non coplanaires.',
+        ang: ' Leur angle est $\\varphi{phi}$.',
+        dist0: ' Leur distance est $0$.',
+        distPar: ' Leur distance est la distance d\'un point quelconque de l\'une à l\'autre : $d={d}$ (en rouge).',
+        distSkew: ' La perpendiculaire commune est tracée en rouge ; la distance des droites est $d={d}$.',
+        vertex: 'le sommet ${v}$', center: 'le centre du cube', face: 'le centre de la face ${f}$'
+    }
+};
+function fill(t, o){ return t.replace(/\{(\w+)\}/g, (m, k) => (k in o ? o[k] : m)); }
+function typeset(el){ if (window.MathJax && window.MathJax.typesetPromise) MathJax.typesetPromise([el]); }
+
+// ---------- Posuvník: kvádr 3 × 4 × c ----------
+const KV_LAB = {A:[-14,14], B:[6,14], C:[7,6], D:[-15,-4], E:[-15,4], F:[6,12], G:[6,-4], H:[-14,-5]};
+function updateKvadr(suffix){
+    const lang = suffix === '-fr' ? 'fr' : 'cs';
+    const c = parseInt(document.getElementById('kv-c' + suffix).value);
+    document.getElementById('kv-cval' + suffix).textContent = c;
+    const d = newDrawing(makeBox(3, 4, c), 24), V = d.solid.V;
+    dPoly(d, [V.A, V.C, V.G], C_VIOLET, 0.12);
+    dEdges(d);
+    dSeg(d, V.A, V.C, C_TEAL, 2.2); dSeg(d, V.A, V.G, C_VIOLET, 2.4); dSeg(d, V.C, V.G, C_RED, 2);
+    dArc(d, V.C, V.G, V.A, 0.7, C_RED, true);
+    dArc(d, V.A, V.C, V.G, 1.2, C_AMBER, false, 'φ');
+    for (const k in KV_LAB) dLabel(d, V[k], k, KV_LAB[k][0], KV_LAB[k][1]);
+    document.getElementById('kv-fig' + suffix).innerHTML = dSvg(d, '-28 ' + (-(c + QY*4)*24 - 26).toFixed(0) + ' 172 ' + ((c + QY*4)*24 + 52).toFixed(0), 172);
+    const tg = c / 5, phi = Math.atan(tg) * 180 / Math.PI;
+    const res = document.getElementById('kv-res' + suffix);
+    res.textContent = fill(TXT[lang].kv, {c: c, TGX: dec(tg), phi: (c === 5 ? '=45^\\circ' : '\\approx ' + dec(phi) + '^\\circ')});
+    typeset(res);
+}
+
+// ---------- Posuvník: jehlan 6 × 6, výška v ----------
+const PY_LAB = {A:[-14,12], B:[4,14], C:[7,4], D:[-15,-4], V:[-4,-9]};
+function updatePyramid(suffix){
+    const lang = suffix === '-fr' ? 'fr' : 'cs';
+    const v = parseInt(document.getElementById('py-v' + suffix).value);
+    document.getElementById('py-vval' + suffix).textContent = v;
+    const d = newDrawing(makePyramid(6, v), 32), V = d.solid.V;
+    const S = [3,3,0], M = v3lerp(V.B, V.C, 0.5), P = footOnLine(S, M, V.V);
+    dPoly(d, [S, M, V.V], C_TEAL, 0.22);
+    dEdges(d);
+    dSeg(d, S, V.V, C_INK, 1.4); dSeg(d, S, M, C_INK, 1.4); dSeg(d, M, V.V, C_VIOLET, 2.2); dSeg(d, S, P, C_RED, 2.2);
+    dArc(d, S, M, V.V, 0.6, C_RED, true);
+    dArc(d, P, S, V.V, 0.5, C_RED, true);
+    dArc(d, M, S, V.V, 0.9, C_AMBER, false, 'φ');
+    dPoint(d, S, 'S', -16, 4); dPoint(d, M, 'S_BC', 8, 10); dPoint(d, P, 'P', 8, -2);
+    for (const k in PY_LAB) dLabel(d, V[k], k, PY_LAB[k][0], PY_LAB[k][1]);
+    document.getElementById('py-fig' + suffix).innerHTML = dSvg(d, '-30 ' + (-v*32 - 30).toFixed(0) + ' 336 ' + (v*32 + 60).toFixed(0), 336);
+    const h = Math.sqrt(9 + v*v), phi = Math.atan(v / 3) * 180 / Math.PI, dist = 3 * v / h;
+    const tgTex = (v % 3 === 0) ? '=' + (v / 3) : '';
+    const res = document.getElementById('py-res' + suffix);
+    res.textContent = fill(TXT[lang].pyr, {
+        v: v,
+        h: isInt(h) ? '=' + Math.round(h) : '\\approx ' + dec(h),
+        TGX: tgTex,
+        phi: (v === 3 ? '=45^\\circ' : '\\approx ' + dec(phi) + '^\\circ'),
+        d: isInt(dist * 100) ? '=' + dec(dist) : '\\approx ' + dec(dist)
+    });
+    typeset(res);
+}
+
+// ---------- Volič dvojice přímek v krychli (hrana 6) ----------
+const CUBE = makeBox(6, 6, 6);
+const CV = CUBE.V;
+const CLAB = {A:[-14,14], B:[6,14], C:[7,4], D:[-15,-4], E:[-15,4], F:[6,14], G:[6,-4], H:[-14,-5]};
+const FACECENTERS = [['ABCD',[3,3,0]], ['EFGH',[3,3,6]], ['ABFE',[3,0,3]], ['BCGF',[6,3,3]], ['CDHG',[3,6,3]], ['ADHE',[0,3,3]]];
+function namePoint(p, lang){
+    for (const k in CV) if (v3len(v3sub(p, CV[k])) < 1e-6) return fill(TXT[lang].vertex, {v: k});
+    if (v3len(v3sub(p, [3,3,3])) < 1e-6) return TXT[lang].center;
+    for (const fc of FACECENTERS) if (v3len(v3sub(p, fc[1])) < 1e-6) return fill(TXT[lang].face, {f: fc[0]});
+    return '?';
+}
+function lineRelation(l1, l2){
+    const A1 = CV[l1[0]], u1 = v3sub(CV[l1[1]], A1), A2 = CV[l2[0]], u2 = v3sub(CV[l2[1]], A2);
+    const c = v3cross(u1, u2), w = v3sub(A2, A1);
+    if (v3len(c) < 1e-9) return v3len(v3cross(w, u1)) < 1e-9 ? {type: 'same'} : {type: 'par'};
+    if (Math.abs(v3dot(w, c)) > 1e-9) return {type: 'skew'};
+    const t = v3dot(v3cross(w, u2), c) / v3dot(c, c);
+    return {type: 'int', p: v3add(A1, v3mul(u1, t))};
+}
+function angleTex(l1, l2){
+    const u1 = v3sub(CV[l1[1]], CV[l1[0]]), u2 = v3sub(CV[l2[1]], CV[l2[0]]);
+    const num = v3dot(u1, u2) ** 2, den = v3dot(u1, u1) * v3dot(u2, u2);   // cos^2 jako zlomek
+    const g = gcd(num, den), key = (num / g) + '/' + (den / g);
+    const exact = {'1/1': 0, '0/1': 90, '1/2': 45, '1/4': 60, '3/4': 30};
+    if (key in exact) return '=' + exact[key] + '^\\circ';
+    const phi = Math.acos(Math.sqrt(num / den)) * 180 / Math.PI;
+    return '\\approx ' + dec(phi) + '^\\circ';
+}
+function extLine(a, b, extra){
+    const u = v3sub(b, a), L = v3len(u);
+    let t0 = -1.5 / L, t1 = 1 + 1.5 / L;
+    for (const p of extra){ const tp = v3dot(v3sub(p, a), u) / (L*L); t0 = Math.min(t0, tp - 0.15); t1 = Math.max(t1, tp + 0.15); }
+    return [v3lerp(a, b, t0), v3lerp(a, b, t1)];
+}
+function updatePicker(mode, suffix){
+    const lang = suffix === '-fr' ? 'fr' : 'cs';
+    const l1 = document.getElementById('pk-' + mode + '-a' + suffix).value;
+    const l2 = document.getElementById('pk-' + mode + '-b' + suffix).value;
+    const rel = lineRelation(l1, l2);
+    const A1 = CV[l1[0]], u1 = v3sub(CV[l1[1]], A1), A2 = CV[l2[0]], u2 = v3sub(CV[l2[1]], A2);
+    let text = fill(TXT[lang][rel.type], {a: l1, b: l2, p: rel.p ? namePoint(rel.p, lang) : ''});
+    let P = null, Q = null;
+    if (mode === 'ang'){
+        text += fill(TXT[lang].ang, {phi: angleTex(l1, l2)});
+    } else {
+        if (rel.type === 'same' || rel.type === 'int') text += TXT[lang].dist0;
+        else if (rel.type === 'par'){
+            const w = v3sub(A2, A1), cr = v3cross(w, u1);
+            const s = sqrtTex(v3dot(cr, cr), v3dot(u1, u1));
+            P = A2; Q = footOnLine(A2, A1, CV[l1[1]]);
+            text += fill(TXT[lang].distPar, {d: s.tex + (s.exact ? '' : '\\approx ' + dec(s.val))});
+        } else {
+            const c = v3cross(u1, u2), w = v3sub(A2, A1);
+            const s = sqrtTex(v3dot(w, c) ** 2, v3dot(c, c));
+            // nejbližší body
+            const a = v3dot(u1,u1), b = v3dot(u1,u2), cc = v3dot(u2,u2), dd = v3dot(u1,w), e = v3dot(u2,w);
+            const den = a*cc - b*b, sP = (dd*cc - b*e) / den, tQ = (b*dd - a*e) / den;
+            P = v3add(A1, v3mul(u1, sP)); Q = v3add(A2, v3mul(u2, tQ));
+            text += fill(TXT[lang].distSkew, {d: s.tex + (s.exact ? '' : '\\approx ' + dec(s.val))});
+        }
+    }
+    const extra1 = [], extra2 = [];
+    if (rel.p){ extra1.push(rel.p); extra2.push(rel.p); }
+    if (P){ extra1.push(Q); extra2.push(P); }
+    // P leží na l2 (rovnoběžky) / l1 (mimoběžky) – rozšíření obou přímek o oba body je bezpečné
+    if (P){ extra1.push(P); extra2.push(Q); }
+    const s1 = extLine(CV[l1[0]], CV[l1[1]], extra1.filter(x => v3len(v3cross(v3sub(x, A1), u1)) < 1e-6));
+    const s2 = extLine(CV[l2[0]], CV[l2[1]], extra2.filter(x => v3len(v3cross(v3sub(x, A2), u2)) < 1e-6));
+    const d = newDrawing(CUBE, 32);
+    dEdges(d);
+    dSeg(d, s1[0], s1[1], C_VIOLET, 2.2); dSeg(d, s2[0], s2[1], C_TEAL, 2.2);
+    if (rel.type === 'int') dPoint(d, rel.p, '', 0, 0, C_RED);
+    if (P && v3len(v3sub(P, Q)) > 1e-9){
+        dSeg(d, P, Q, C_RED, 2.4);
+        dPoint(d, P, '', 0, 0, C_RED); dPoint(d, Q, '', 0, 0, C_RED);
+    }
+    for (const k in CLAB) dLabel(d, CV[k], k, CLAB[k][0], CLAB[k][1]);
+    document.getElementById('pk-' + mode + '-fig' + suffix).innerHTML = dSvg(d, '-70 -310 415 380', 415);
+    const res = document.getElementById('pk-' + mode + '-res' + suffix);
+    res.textContent = text;
+    typeset(res);
+}
+
+['', '-fr'].forEach(suf => {
+    document.getElementById('kv-c' + suf).addEventListener('input', () => updateKvadr(suf));
+    document.getElementById('py-v' + suf).addEventListener('input', () => updatePyramid(suf));
+    ['ang', 'dist'].forEach(mode => {
+        ['a', 'b'].forEach(x => document.getElementById('pk-' + mode + '-' + x + suf).addEventListener('change', () => updatePicker(mode, suf)));
+        updatePicker(mode, suf);
+    });
+    updateKvadr(suf);
+    updatePyramid(suf);
+});
+</script>
+
+</body>
+</html>
