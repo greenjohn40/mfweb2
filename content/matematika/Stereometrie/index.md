@@ -2,5 +2,6 @@
 <br>
 <a href="/static/mat-stereo2/rozcestnik-stereometrie2.html" data-router-ignore><h4>Polohové úlohy</h4></a><p>
 <br>
-
+<a href="/static/mat-stereo3/rozcestnik-stereometrie3.html" data-router-ignore><h4>Metrické úlohy</h4></a><p>
+<br>
 
