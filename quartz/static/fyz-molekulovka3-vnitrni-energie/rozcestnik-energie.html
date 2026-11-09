@@ -9,198 +9,177 @@
         body {
             background-color: #f8fafc;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
         }
-        .mindmap-container {
-            position: relative;
-            min-height: 800px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-        .node {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10;
-        }
-        .node:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-        }
-        .central-node {
+        .hero {
             background: linear-gradient(135deg, #be123c 0%, #9f1239 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 50%;
-            width: 220px;
-            height: 220px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            box-shadow: 0 10px 15px -3px rgba(190,18,60,0.4);
-            z-index: 20;
         }
-        .category-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.25rem;
-            color: #64748b;
+        .step {
+            position: relative;
+        }
+        /* svislá linka spojující kroky (desktop) */
+        @media (min-width: 768px) {
+            .step:not(:last-child)::after {
+                content: "";
+                position: absolute;
+                left: 27px; top: 64px; bottom: -28px;
+                border-left: 2px dashed #cbd5e1;
+            }
+        }
+        .step-badge {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.4rem; color: #fff;
+            flex-shrink: 0;
         }
         .link-card {
-            background: white;
+            display: flex; flex-direction: column;
+            background: #fff;
             border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 1rem;
-            width: 240px;
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
             text-decoration: none;
             color: #1e293b;
-        }
-        .line-svg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
             height: 100%;
-            pointer-events: none;
-            z-index: 5;
         }
-        .connector {
-            stroke: #cbd5e1;
-            stroke-width: 2;
-            fill: none;
-            stroke-dasharray: 5;
-            animation: dash 20s linear infinite;
+        .link-card:hover, .link-card:focus-visible {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -8px rgba(0,0,0,0.15);
+            border-color: #fda4af;
         }
-        @keyframes dash {
-            to { stroke-dashoffset: -100; }
+        .link-card:focus-visible { outline: 3px solid #be123c; outline-offset: 2px; }
+        .new-tag {
+            font-size: 0.65rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+            background: #fef3c7; color: #92400e; border-radius: 999px; padding: 2px 8px;
         }
-        .flag { display: inline-block; margin-right: 0.5rem; }
-
-        /* Desktop positions – 6 uzlů */
-        @media (min-width: 1024px) {
-            .pos-1 { position: absolute; top: 8%; left: 15%; }
-            .pos-2 { position: absolute; top: 8%; right: 15%; }
-            .pos-3 { position: absolute; top: 40%; left: 3%; }
-            .pos-4 { position: absolute; top: 40%; right: 3%; }
-            .pos-5 { position: absolute; bottom: 8%; left: 15%; }
-            .pos-6 { position: absolute; bottom: 8%; right: 15%; }
+        .lang {
+            font-size: 0.7rem; font-weight: 700; color: #475569;
+            background: #f1f5f9; border-radius: 6px; padding: 2px 6px;
         }
-        /* Mobile layout */
-        @media (max-width: 1023px) {
-            .mindmap-container {
-                flex-direction: column;
-                height: auto;
-            }
-            .central-node {
-                margin-bottom: 3rem;
-                width: 180px;
-                height: 180px;
-            }
-            .pos-1, .pos-2, .pos-3, .pos-4, .pos-5, .pos-6 {
-                position: static !important;
-                margin-bottom: 1rem;
-            }
-            .line-svg { display: none; }
+        @media (prefers-reduced-motion: reduce) {
+            .link-card { transition: none; }
+            .link-card:hover { transform: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="max-w-7xl mx-auto px-4 py-12">
-    <header class="text-center mb-12">
-        <h1 class="text-4xl font-extrabold text-slate-900 mb-4">Vnitřní energie</h1>
-        <p class="text-lg text-slate-600">Interaktivní rozcestník studijních materiálů (CZ/FR)</p>
+<div class="max-w-5xl mx-auto px-4 py-10">
+
+    <header class="hero text-white rounded-3xl px-8 py-10 mb-12 shadow-xl text-center">
+        <p class="uppercase tracking-widest text-rose-100 text-sm mb-2">Molekulová fyzika a termika · <i class="normal-case tracking-normal">Thermodynamique</i></p>
+        <h1 class="text-4xl md:text-5xl font-extrabold mb-2">Vnitřní energie</h1>
+        <p class="text-xl italic text-rose-100 mb-4">L’énergie interne</p>
+        <p class="text-rose-50">Rozcestník studijních materiálů (CZ/FR) – postupujte shora dolů</p>
     </header>
 
-    <div class="mindmap-container" id="mindmap">
-        <!-- SVG čáry -->
-        <svg class="line-svg" id="svg-canvas"></svg>
+    <main class="flex flex-col gap-10">
 
-        <!-- Centrální uzel -->
-        <div class="central-node shadow-2xl" id="center">
-            <div>VNITŘNÍ<br>ENERGIE</div>
-        </div>
+        <!-- 1. Teorie -->
+        <section class="step flex flex-col md:flex-row gap-5" aria-labelledby="s1">
+            <div class="flex md:flex-col items-center gap-3 md:w-14">
+                <div class="step-badge" style="background:#be123c">1</div>
+            </div>
+            <div class="flex-1">
+                <h2 id="s1" class="text-2xl font-bold text-slate-900">Teorie <span class="text-lg font-normal italic text-slate-500">· Théorie</span></h2>
+                <p class="text-slate-500 text-sm mb-4">Seznamte se s pojmy a zákony kapitoly.</p>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <a href="teorie-energie.html" target="_blank" class="link-card">
+                        <div class="flex justify-between items-center mb-1"><span class="text-xs uppercase tracking-wide text-slate-500">Vizuální přehled</span><span class="lang">CZ/FR</span></div>
+                        <div class="font-bold text-lg">Interaktivní přehled</div>
+                        <div class="text-sm text-slate-500 mt-1">Grafické shrnutí s diagramy a řešenými příklady</div>
+                        <div class="text-sm mt-auto pt-3 text-rose-700 font-semibold">Otevřít materiál →</div>
+                    </a>
+                    <a href="prirucka-energie.html" target="_blank" class="link-card">
+                        <div class="flex justify-between items-center mb-1"><span class="text-xs uppercase tracking-wide text-slate-500">Studijní text</span><span class="lang">CZ/FR</span></div>
+                        <div class="font-bold text-lg">Příručka</div>
+                        <div class="text-sm text-slate-500 mt-1">Ucelený výklad se vzorovými příklady</div>
+                        <div class="text-sm mt-auto pt-3 text-rose-700 font-semibold">Číst více →</div>
+                    </a>
+                </div>
+            </div>
+        </section>
 
-        <!-- 1. Interaktivní grafický přehled (CZ/FR) -->
-        <a href="teorie-energie.html" target="_blank" class="node link-card pos-1" data-node="1">
-            <div class="category-label">Vizuální přehled</div>
-            <div class="font-bold"><span class="flag">🇨🇿/🇫🇷</span>Interaktivní přehled (CZ/FR)</div>
-            <div class="text-xs mt-2 text-rose-700">Otevřít materiál →</div>
-        </a>
+        <!-- 2. Procvičování -->
+        <section class="step flex flex-col md:flex-row gap-5" aria-labelledby="s2">
+            <div class="flex md:flex-col items-center gap-3 md:w-14">
+                <div class="step-badge" style="background:#c2410c">2</div>
+            </div>
+            <div class="flex-1">
+                <h2 id="s2" class="text-2xl font-bold text-slate-900">Procvičování pojmů <span class="text-lg font-normal italic text-slate-500">· Vocabulaire et notions</span></h2>
+                <p class="text-slate-500 text-sm mb-4">Upevněte si odbornou terminologii v obou jazycích.</p>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <a href="karticky-energie.html" target="_blank" class="link-card">
+                        <div class="flex justify-between items-center mb-1"><span class="text-xs uppercase tracking-wide text-slate-500">Flashcards</span><span class="lang">CZ/FR</span></div>
+                        <div class="font-bold text-lg">Bilingvní kartičky</div>
+                        <div class="text-sm text-slate-500 mt-1">Pojmy a vztahy kapitoly na otáčecích kartičkách</div>
+                        <div class="text-sm mt-auto pt-3 text-rose-700 font-semibold">Spustit kartičky →</div>
+                    </a>
+                    <a href="texty-prenos-tepla.html" target="_blank" class="link-card">
+                        <div class="flex justify-between items-center mb-1"><span class="text-xs uppercase tracking-wide text-slate-500">Doplňovací texty</span><span class="flex gap-2"><span class="new-tag">Nové</span><span class="lang">FR + CZ</span></span></div>
+                        <div class="font-bold text-lg">Přenos tepla v textech</div>
+                        <div class="text-sm text-slate-500 mt-1">Vedení, proudění, záření: vyberte správnou variantu v 11 francouzských textech</div>
+                        <div class="text-sm mt-auto pt-3 text-rose-700 font-semibold">Doplňovat texty →</div>
+                    </a>
+                </div>
+            </div>
+        </section>
 
-        <!-- 2. Studijní příručka (CZ/FR) -->
-        <a href="prirucka-energie.html" target="_blank" class="node link-card pos-2" data-node="2">
-            <div class="category-label">Studijní text</div>
-            <div class="font-bold"><span class="flag">🇨🇿/🇫🇷</span>Příručka (CZ/FR)</div>
-            <div class="text-xs mt-2 text-rose-700">Číst více →</div>
-        </a>
+        <!-- 3. Úlohy -->
+        <section class="step flex flex-col md:flex-row gap-5" aria-labelledby="s3">
+            <div class="flex md:flex-col items-center gap-3 md:w-14">
+                <div class="step-badge" style="background:#1d4ed8">3</div>
+            </div>
+            <div class="flex-1">
+                <h2 id="s3" class="text-2xl font-bold text-slate-900">Úlohy <span class="text-lg font-normal italic text-slate-500">· Exercices</span></h2>
+                <p class="text-slate-500 text-sm mb-4">Od řešených příkladů po samostatnou práci.</p>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <a href="ulohy-prvni-zakon.html" target="_blank" class="link-card">
+                        <div class="flex justify-between items-center mb-1"><span class="text-xs uppercase tracking-wide text-slate-500">Řešené úlohy</span><span class="flex gap-2"><span class="new-tag">Nové</span><span class="lang">FR + CZ</span></span></div>
+                        <div class="font-bold text-lg">1. termodynamický zákon</div>
+                        <div class="text-sm text-slate-500 mt-1">9 úloh krok za krokem: nápověda, rozbor, řešení, odpověď</div>
+                        <div class="text-sm mt-auto pt-3 text-rose-700 font-semibold">Projít řešení →</div>
+                    </a>
+                    <a href="ulohy-energie.html" target="_blank" class="link-card">
+                        <div class="flex justify-between items-center mb-1"><span class="text-xs uppercase tracking-wide text-slate-500">Aplikace</span><span class="lang">FR + CZ</span></div>
+                        <div class="font-bold text-lg">Úlohy s překladem</div>
+                        <div class="text-sm text-slate-500 mt-1">Tepelná kapacita a kalorimetrie</div>
+                        <div class="text-sm mt-auto pt-3 text-rose-700 font-semibold">Řešit úlohy →</div>
+                    </a>
+                    <a href="neresene-energie.html" target="_blank" class="link-card">
+                        <div class="flex justify-between items-center mb-1"><span class="text-xs uppercase tracking-wide text-slate-500">Samostatná práce</span><span class="lang">PDF</span></div>
+                        <div class="font-bold text-lg">Neřešené úlohy</div>
+                        <div class="text-sm text-slate-500 mt-1">Zadání k samostatnému řešení</div>
+                        <div class="text-sm mt-auto pt-3 text-rose-700 font-semibold">Zobrazit zadání →</div>
+                    </a>
+                </div>
+            </div>
+        </section>
 
-        <!-- 3. Bilingvní kartičky -->
-        <a href="karticky-energie.html" target="_blank" class="node link-card pos-3" data-node="3">
-            <div class="category-label">Procvičování</div>
-            <div class="font-bold"><span class="flag">🇨🇿/🇫🇷</span>Bilingvní kartičky</div>
-            <div class="text-xs mt-2 text-rose-700">Spustit Flashcards →</div>
-        </a>
+        <!-- 4. Ověření -->
+        <section class="step flex flex-col md:flex-row gap-5" aria-labelledby="s4">
+            <div class="flex md:flex-col items-center gap-3 md:w-14">
+                <div class="step-badge" style="background:#0f766e">4</div>
+            </div>
+            <div class="flex-1">
+                <h2 id="s4" class="text-2xl font-bold text-slate-900">Ověření znalostí <span class="text-lg font-normal italic text-slate-500">· Évaluation</span></h2>
+                <p class="text-slate-500 text-sm mb-4">Na závěr si vyzkoušejte, co umíte.</p>
+                <a href="test-energie.html" target="_blank" class="link-card sm:max-w-md" style="background:#fff1f2; border-color:#fecdd3; height:auto">
+                    <div class="flex justify-between items-center mb-1"><span class="text-xs uppercase tracking-wide text-rose-700">Evaluace</span><span class="lang">CLIL</span></div>
+                    <div class="font-bold text-lg">Interaktivní test</div>
+                    <div class="text-sm text-slate-600 mt-1">Fyzika + francouzština, náhodné parametry a analýza výkonu na konci</div>
+                    <div class="text-sm mt-auto pt-3 text-rose-700 font-semibold">Zahájit test →</div>
+                </a>
+            </div>
+        </section>
 
-        <!-- 4. Úlohy s překladem -->
-        <a href="ulohy-energie.html" target="_blank" class="node link-card pos-4" data-node="4">
-            <div class="category-label">Aplikace</div>
-            <div class="font-bold">Úlohy s překladem</div>
-            <div class="text-xs mt-1 text-slate-500">FR ↔ CZ, tepelná kapacita a kalorimetrie</div>
-            <div class="text-xs mt-2 text-rose-700">Řešit úlohy →</div>
-        </a>
+    </main>
 
-        <!-- 5. Neřešené úlohy (PDF) -->
-        <a href="neresene-energie.html" target="_blank" class="node link-card pos-5" data-node="5">
-            <div class="category-label">Samostatná práce</div>
-            <div class="font-bold"><span class="flag">📄</span>Neřešené úlohy</div>
-            <div class="text-xs mt-1 text-slate-500">Zadání ve formátu PDF k samostatnému řešení</div>
-            <div class="text-xs mt-2 text-rose-700">Zobrazit zadání →</div>
-        </a>
-
-        <!-- 6. Interaktivní test -->
-        <a href="test-energie.html" target="_blank" class="node link-card pos-6 border-rose-200 bg-rose-50" data-node="6">
-            <div class="category-label text-rose-600">Evaluace</div>
-            <div class="font-bold">Interaktivní test</div>
-            <div class="text-xs mt-1 text-slate-500">CLIL: fyzika + francouzština, s analýzou výkonu</div>
-            <div class="text-xs mt-2 text-rose-700">Zahájit test →</div>
-        </a>
-    </div>
-
-    <footer class="mt-20 pt-8 border-t border-slate-200 text-center text-slate-500 text-sm">
+    <footer class="mt-16 pt-8 border-t border-slate-200 text-center text-slate-500 text-sm">
         Metodický materiál pro výuku fyziky a CLIL.
     </footer>
 </div>
-
-<script>
-    function drawConnections() {
-        if (window.innerWidth < 1024) return;
-        const svg = document.getElementById('svg-canvas');
-        const center = document.getElementById('center');
-        const nodes = document.querySelectorAll('.node');
-        const containerRect = document.getElementById('mindmap').getBoundingClientRect();
-        const centerRect = center.getBoundingClientRect();
-        const centerX = centerRect.left + centerRect.width / 2 - containerRect.left;
-        const centerY = centerRect.top + centerRect.height / 2 - containerRect.top;
-        svg.innerHTML = '';
-        nodes.forEach(node => {
-            const nodeRect = node.getBoundingClientRect();
-            const nodeX = nodeRect.left + nodeRect.width / 2 - containerRect.left;
-            const nodeY = nodeRect.top + nodeRect.height / 2 - containerRect.top;
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            const midX = (centerX + nodeX) / 2;
-            path.setAttribute("d", `M ${centerX} ${centerY} Q ${midX} ${centerY} ${nodeX} ${nodeY}`);
-            path.setAttribute("class", "connector");
-            svg.appendChild(path);
-        });
-    }
-    window.addEventListener('load', drawConnections);
-    window.addEventListener('resize', drawConnections);
-</script>
 
 </body>
 </html>
