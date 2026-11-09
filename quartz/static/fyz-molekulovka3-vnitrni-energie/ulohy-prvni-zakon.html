@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premier principe de la thermodynamique – Exercices résolus</title>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+            svg: { fontCache: 'local' },
+            options: { enableMenu: false }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-svg.js"></script>
+<style>
+    :root {
+        --primary: #1d4ed8;
+        --secondary: #1e3a8a;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --text: #1e293b;
+        --accent: #eff6ff;
+        --translation: #64748b;
+        --hint: #b45309;
+        --answer: #047857;
+    }
+    body {
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg); color: var(--text);
+        line-height: 1.6; margin: 0; padding: 20px;
+    }
+    svg text, svg tspan { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; }
+    mjx-container svg { display: inline !important; }
+    mjx-container { display: inline-block !important; }
+    mjx-container[display="true"] { display: block !important; margin: 0.8em auto !important; }
+
+    .container { max-width: 900px; margin: 0 auto; }
+    h1 { text-align: center; color: var(--primary); font-size: 2.3rem; margin-bottom: 0.2rem; }
+    .subtitle { text-align: center; color: #64748b; margin-bottom: 1.2rem; }
+    .convention {
+        background: var(--card); border: 1px solid #e2e8f0; border-left: 4px solid var(--primary);
+        border-radius: 8px; padding: 12px 18px; margin-bottom: 2rem; font-size: 0.95rem;
+    }
+    .convention .cz { color: #475569; font-style: italic; font-size: 0.9rem; margin-top: 4px; }
+
+    .exercise-card {
+        background: var(--card); border-radius: 12px; padding: 25px; margin-bottom: 25px;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); border: 1px solid #e2e8f0;
+    }
+    .exercise-header {
+        font-weight: 700; color: var(--primary); margin-bottom: 6px; font-size: 1.2rem;
+        border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;
+    }
+    .meta { font-size: 0.8rem; color: #64748b; margin-bottom: 12px; display: flex; gap: 14px; flex-wrap: wrap; }
+    .meta .lookup { color: var(--hint); }
+    .exercise-body { margin-bottom: 18px; font-size: 1.05rem; }
+    .exercise-body ol { margin: 6px 0 0; padding-left: 1.6rem; }
+    .figure { text-align: center; margin: -4px 0 16px; }
+    .figure svg { width: 100%; max-width: 440px; height: auto; }
+
+    .button-group { display: flex; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+    .btn { border: 1px solid transparent; padding: 7px 14px; border-radius: 6px; cursor: pointer;
+           font-weight: 600; font-size: 0.85rem; transition: 0.2s; font-family: inherit; }
+    .btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+    .btn-translation { background: transparent; color: var(--translation); border-color: var(--translation); }
+    .btn-translation:hover, .btn-translation.on { background: var(--translation); color: #fff; }
+    .btn-step { background: var(--accent); color: var(--primary); border-color: #bfdbfe; }
+    .btn-step:hover, .btn-step.on { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .btn-hint { background: #fffbeb; color: var(--hint); border-color: #fde68a; }
+    .btn-hint:hover, .btn-hint.on { background: var(--hint); color: #fff; border-color: var(--hint); }
+    .btn-answer { background: #ecfdf5; color: var(--answer); border-color: #a7f3d0; }
+    .btn-answer:hover, .btn-answer.on { background: var(--answer); color: #fff; border-color: var(--answer); }
+    .btn-cz { float: right; margin: -2px 0 6px 10px; padding: 3px 9px; font-size: 0.75rem;
+              background: transparent; color: var(--translation); border: 1px solid #cbd5e1; }
+    .btn-cz:hover, .btn-cz.on { background: var(--translation); color: #fff; }
+
+    .content-box { display: none; margin-top: 12px; padding: 14px 16px; border-radius: 6px;
+                   font-size: 0.97rem; line-height: 1.8; animation: fadeIn 0.3s ease-in; overflow-x: auto; }
+    .content-box.active { display: block; }
+    .box-title { font-weight: 700; margin-bottom: 6px; }
+    .translation-box { background: #f1f5f9; color: #475569; border-left: 4px solid var(--translation); font-style: italic; }
+    .hint-box { background: #fffbeb; border-left: 4px solid var(--hint); }
+    .hint-box .box-title { color: var(--hint); }
+    .step-box { background: var(--accent); border-left: 4px solid var(--primary); }
+    .step-box .box-title { color: var(--secondary); }
+    .answer-box { background: #ecfdf5; border-left: 4px solid var(--answer); }
+    .answer-box .box-title { color: var(--answer); }
+    .cz-part { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #94a3b8;
+               color: #475569; font-style: italic; }
+    .cz-part.active { display: block; }
+    .cz-part .box-title { color: #475569; }
+
+    table.data { border-collapse: collapse; margin: 6px 0 12px; font-size: 0.92rem; }
+    table.data td { padding: 3px 12px 3px 0; vertical-align: top; }
+    table.data td.note { color: #64748b; font-size: 0.85rem; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) { .content-box { animation: none; } }
+    footer { text-align: center; margin-top: 40px; padding: 20px; color: #94a3b8; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Premier principe de la thermodynamique</h1>
+    <p class="subtitle">9 exercices résolus pas à pas : indice, analyse, solution littérale, application numérique, réponse</p>
+
+    <div class="convention">
+        <strong>Convention :</strong> \( \Delta U = W + Q \), où \( W \) et \( Q \) sont le travail et le transfert thermique
+        <em>reçus</em> par le système (positifs s'il les reçoit, négatifs s'il les cède).
+        <div class="cz">Konvence: \( \Delta U = W + Q \), kde \( W \) je práce vykonaná okolím na soustavě a \( Q \) teplo soustavou přijaté
+        (kladné, pokud je soustava přijímá, záporné, pokud je odevzdává).</div>
+    </div>
+
+    <div id="exercises"></div>
+
+    <footer>
+        © 2026 – Physique en Français – Exercices résolus sur le premier principe de la thermodynamique
+    </footer>
+</div>
+
+<script>
+/* Každá úloha: zadání a pět kroků řešení, vše ve FR a CZ.
+   Řetězce jsou psané jako String.raw, aby se zachovala zpětná lomítka LaTeXu. */
+const R = String.raw;
+const STEPS = [
+    { key: 'hint',     fr: 'Indice',                cz: 'Nápověda',          cls: 'hint' },
+    { key: 'analysis', fr: 'Analyse',               cz: 'Rozbor',            cls: 'step' },
+    { key: 'solution', fr: 'Solution littérale',    cz: 'Řešení (obecně)',   cls: 'step' },
+    { key: 'numeric',  fr: 'Application numérique', cz: 'Číselné dosazení',  cls: 'step' },
+    { key: 'answer',   fr: 'Réponse',               cz: 'Odpověď',           cls: 'answer' }
+];
+const LEVEL = {
+    1: { fr: 'Niveau : ★☆☆ facile',     cz: 'snadná' },
+    2: { fr: 'Niveau : ★★☆ moyen',      cz: 'středně obtížná' },
+    3: { fr: 'Niveau : ★★★ difficile',  cz: 'obtížnější' }
+};
+
+const EX = [
+/* ---------------- 1 ---------------- */
+{
+    level: 1, lookup: false,
+    title: { fr: 'Compression et détente d’un gaz', cz: 'Stlačení a rozpínání plynu' },
+    statement: {
+        fr: R`<ol type="a">
+            <li>On comprime un gaz enfermé dans un cylindre : le piston fournit au gaz un travail de \( 800\,\mathrm{J} \), tandis que le gaz cède \( 300\,\mathrm{J} \) au milieu extérieur par transfert thermique. Calculez la variation de l’énergie interne du gaz.</li>
+            <li>Un gaz reçoit \( 1\,200\,\mathrm{J} \) par transfert thermique et fournit lui-même un travail de \( 500\,\mathrm{J} \) au milieu extérieur. Calculez la variation de son énergie interne.</li></ol>`,
+        cz: R`<ol type="a">
+            <li>Plyn uzavřený ve válci stlačíme: píst vykoná na plynu práci \( 800\,\mathrm{J} \) a plyn přitom odevzdá okolí teplo \( 300\,\mathrm{J} \). Vypočtěte změnu vnitřní energie plynu.</li>
+            <li>Plyn přijme teplo \( 1\,200\,\mathrm{J} \) a sám vykoná na okolí práci \( 500\,\mathrm{J} \). Vypočtěte změnu jeho vnitřní energie.</li></ol>`
+    },
+    hint: {
+        fr: R`Écrivez le premier principe \( \Delta U = W + Q \) et attribuez à chaque grandeur le bon signe : ce que le gaz reçoit est positif, ce qu’il cède est négatif.`,
+        cz: R`Zapište první termodynamický zákon \( \Delta U = W + Q \) a každé veličině přiřaďte správné znaménko: co plyn přijímá, je kladné, co odevzdává, je záporné.`
+    },
+    analysis: {
+        fr: R`a) Le piston agit sur le gaz : le gaz <em>reçoit</em> du travail, donc \( W > 0 \). Le gaz <em>cède</em> de l’énergie par transfert thermique, donc \( Q < 0 \).<br>
+              b) Le gaz <em>reçoit</em> de l’énergie par transfert thermique, donc \( Q > 0 \). Il <em>fournit</em> du travail, il en reçoit donc un travail négatif : \( W < 0 \).`,
+        cz: R`a) Píst působí na plyn: plyn práci <em>přijímá</em>, tedy \( W > 0 \). Plyn teplo <em>odevzdává</em>, tedy \( Q < 0 \).<br>
+              b) Plyn teplo <em>přijímá</em>, tedy \( Q > 0 \). Práci sám <em>koná</em>, takže práce vykonaná okolím na plynu je záporná: \( W < 0 \).`
+    },
+    solution: {
+        fr: R`Dans les deux cas : \[ \Delta U = W + Q . \] a) \( W = +W_1,\ Q = -Q_1 \Rightarrow \Delta U = W_1 - Q_1 \).<br>
+              b) \( W = -W_2,\ Q = +Q_2 \Rightarrow \Delta U = Q_2 - W_2 \).`,
+        cz: R`V obou případech: \[ \Delta U = W + Q . \] a) \( W = +W_1,\ Q = -Q_1 \Rightarrow \Delta U = W_1 - Q_1 \).<br>
+              b) \( W = -W_2,\ Q = +Q_2 \Rightarrow \Delta U = Q_2 - W_2 \).`
+    },
+    numeric: {
+        fr: R`<table class="data"><tr><td>\( W_1 = 800\,\mathrm{J} \), \( Q_1 = 300\,\mathrm{J} \)</td></tr><tr><td>\( Q_2 = 1\,200\,\mathrm{J} \), \( W_2 = 500\,\mathrm{J} \)</td></tr></table>
+              a) \( \Delta U = 800 - 300 = 500\,\mathrm{J} \)<br>b) \( \Delta U = 1\,200 - 500 = 700\,\mathrm{J} \)`,
+        cz: R`<table class="data"><tr><td>\( W_1 = 800\,\mathrm{J} \), \( Q_1 = 300\,\mathrm{J} \)</td></tr><tr><td>\( Q_2 = 1\,200\,\mathrm{J} \), \( W_2 = 500\,\mathrm{J} \)</td></tr></table>
+              a) \( \Delta U = 800 - 300 = 500\,\mathrm{J} \)<br>b) \( \Delta U = 1\,200 - 500 = 700\,\mathrm{J} \)`
+    },
+    answer: {
+        fr: R`L’énergie interne du gaz augmente de \( 500\,\mathrm{J} \) dans le cas a) et de \( 700\,\mathrm{J} \) dans le cas b). Pour un gaz parfait, sa température augmente donc dans les deux cas.`,
+        cz: R`Vnitřní energie plynu vzroste v případě a) o \( 500\,\mathrm{J} \) a v případě b) o \( 700\,\mathrm{J} \). U ideálního plynu se tedy v obou případech zvýší jeho teplota.`
+    }
+},
+/* ---------------- 2 ---------------- */
+{
+    level: 1, lookup: false,
+    title: { fr: 'La descente en luge', cz: 'Sáňkař' },
+    statement: {
+        fr: R`Un enfant et sa luge (masse totale \( 60\,\mathrm{kg} \)) partent sans vitesse du sommet d’une pente haute de \( 20\,\mathrm{m} \). En bas, leur vitesse vaut \( 10\,\mathrm{m\,s^{-1}} \). Quelle énergie a été convertie en énergie interne pendant la descente ? Quelle fraction de l’énergie potentielle initiale cela représente-t-il ? Où cette énergie se manifeste-t-elle ?`,
+        cz: R`Dítě se saněmi (celková hmotnost \( 60\,\mathrm{kg} \)) se rozjede z klidu z vrcholu svahu vysokého \( 20\,\mathrm{m} \). Dole má rychlost \( 10\,\mathrm{m\,s^{-1}} \). Jaká energie se během jízdy přeměnila na vnitřní energii? Jakou část původní potenciální energie to představuje? Kde se tato energie projeví?`
+    },
+    hint: {
+        fr: R`Comparez l’énergie mécanique au sommet et en bas. Ce qui « manque » n’a pas disparu.`,
+        cz: R`Porovnejte mechanickou energii na vrcholu a dole. To, co „chybí“, nezmizelo.`
+    },
+    analysis: {
+        fr: R`Au sommet, le système n’a que de l’énergie potentielle de pesanteur ; en bas, il n’a plus que de l’énergie cinétique (on prend le bas de la pente comme référence). À cause des frottements (patins sur la neige, air), l’énergie mécanique diminue. Le système {luge + enfant + neige + air} n’échange pas d’énergie avec l’extérieur pendant la descente : la diminution de l’énergie mécanique est égale à l’augmentation de l’énergie interne.`,
+        cz: R`Na vrcholu má soustava pouze tíhovou potenciální energii, dole už jen kinetickou (nulovou hladinu volíme na úpatí svahu). Vlivem tření (sanice o sníh, odpor vzduchu) se mechanická energie zmenšuje. Soustava {saně + dítě + sníh + vzduch} si během jízdy nevyměňuje energii s okolím: úbytek mechanické energie je roven přírůstku vnitřní energie.`
+    },
+    solution: {
+        fr: R`\[ \Delta U = E_\mathrm{p} - E_\mathrm{c} = mgh - \tfrac12 mv^2 , \qquad \frac{\Delta U}{E_\mathrm{p}} = 1 - \frac{v^2}{2gh} . \]`,
+        cz: R`\[ \Delta U = E_\mathrm{p} - E_\mathrm{k} = mgh - \tfrac12 mv^2 , \qquad \frac{\Delta U}{E_\mathrm{p}} = 1 - \frac{v^2}{2gh} . \]`
+    },
+    numeric: {
+        fr: R`<table class="data"><tr><td>\( m = 60\,\mathrm{kg},\ h = 20\,\mathrm{m},\ v = 10\,\mathrm{m\,s^{-1}},\ g = 9{,}81\,\mathrm{m\,s^{-2}} \)</td></tr></table>
+              \( E_\mathrm{p} = 60\cdot 9{,}81\cdot 20 = 11\,772\,\mathrm{J} \), \( E_\mathrm{c} = \tfrac12\cdot 60\cdot 10^2 = 3\,000\,\mathrm{J} \)
+              \[ \Delta U = 11\,772 - 3\,000 = 8\,772\,\mathrm{J} \approx 8{,}8\,\mathrm{kJ}, \qquad \frac{\Delta U}{E_\mathrm{p}} = \frac{8\,772}{11\,772} \approx 0{,}75 . \]`,
+        cz: R`<table class="data"><tr><td>\( m = 60\,\mathrm{kg},\ h = 20\,\mathrm{m},\ v = 10\,\mathrm{m\,s^{-1}},\ g = 9{,}81\,\mathrm{m\,s^{-2}} \)</td></tr></table>
+              \( E_\mathrm{p} = 60\cdot 9{,}81\cdot 20 = 11\,772\,\mathrm{J} \), \( E_\mathrm{k} = \tfrac12\cdot 60\cdot 10^2 = 3\,000\,\mathrm{J} \)
+              \[ \Delta U = 11\,772 - 3\,000 = 8\,772\,\mathrm{J} \approx 8{,}8\,\mathrm{kJ}, \qquad \frac{\Delta U}{E_\mathrm{p}} = \frac{8\,772}{11\,772} \approx 0{,}75 . \]`
+    },
+    answer: {
+        fr: R`Environ \( 8{,}8\,\mathrm{kJ} \), soit à peu près \( 75\,\% \) de l’énergie potentielle initiale, ont été convertis en énergie interne. Cette énergie réchauffe les patins de la luge, la neige (qui peut fondre légèrement) et l’air.`,
+        cz: R`Na vnitřní energii se přeměnilo přibližně \( 8{,}8\,\mathrm{kJ} \), tedy asi \( 75\,\% \) původní potenciální energie. Tato energie ohřeje sanice, sníh (který může mírně odtávat) a vzduch.`
+    }
+},
+/* ---------------- 3 ---------------- */
+{
+    level: 2, lookup: true,
+    title: { fr: 'L’eau des cascades', cz: 'Voda pod vodopádem' },
+    statement: {
+        fr: R`De combien l’eau est-elle plus chaude au pied d’une cascade qu’à son sommet, si toute son énergie mécanique est convertie en énergie interne de l’eau ?
+              <ol type="a"><li>Cascade de Pančava (monts des Géants, République tchèque) : hauteur \( 148\,\mathrm{m} \).</li>
+              <li>Grande cascade de Gavarnie (Pyrénées, France) : hauteur \( 422\,\mathrm{m} \).</li>
+              <li>Pourquoi mesure-t-on en réalité une élévation de température plus faible ?</li></ol>`,
+        cz: R`O kolik je voda pod vodopádem teplejší než nahoře, jestliže se veškerá její mechanická energie přemění na vnitřní energii vody?
+              <ol type="a"><li>Pančavský vodopád (Krkonoše): výška \( 148\,\mathrm{m} \).</li>
+              <li>Velký vodopád Gavarnie (Pyreneje, Francie): výška \( 422\,\mathrm{m} \).</li>
+              <li>Proč ve skutečnosti naměříme menší zvýšení teploty?</li></ol>`
+    },
+    hint: {
+        fr: R`Choisissez une masse \( m \) quelconque d’eau. L’énergie potentielle perdue est égale à l’énergie reçue par l’eau pour s’échauffer. La masse va se simplifier.`,
+        cz: R`Uvažujte libovolnou hmotnost vody \( m \). Ztráta potenciální energie se rovná energii, kterou voda přijme na ohřátí. Hmotnost se zkrátí.`
+    },
+    analysis: {
+        fr: R`Au sommet, l’eau possède de l’énergie potentielle de pesanteur (sa vitesse initiale est négligeable). Au pied de la cascade, elle s’arrête dans le bassin : toute l’énergie mécanique est convertie en énergie interne de l’eau, ce qui se traduit par une élévation de température. James Prescott Joule aurait d’ailleurs, selon une anecdote célèbre, essayé de mesurer cet échauffement lors de son voyage de noces dans les Alpes.`,
+        cz: R`Nahoře má voda tíhovou potenciální energii (počáteční rychlost zanedbáme). Pod vodopádem se v tůni zastaví: veškerá mechanická energie se přemění na vnitřní energii vody, což se projeví zvýšením teploty. Podle známé historky se o změření tohoto ohřátí pokoušel James Prescott Joule během své svatební cesty v Alpách.`
+    },
+    solution: {
+        fr: R`\[ mgh = mc\,\Delta T \quad\Rightarrow\quad \Delta T = \frac{gh}{c} . \] Le résultat ne dépend pas de la masse d’eau.`,
+        cz: R`\[ mgh = mc\,\Delta T \quad\Rightarrow\quad \Delta T = \frac{gh}{c} . \] Výsledek nezávisí na hmotnosti vody.`
+    },
+    numeric: {
+        fr: R`<table class="data">
+              <tr><td>\( c = 4\,180\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">capacité thermique massique de l’eau (à rechercher)</td></tr>
+              <tr><td>\( g = 9{,}81\,\mathrm{m\,s^{-2}} \)</td><td></td></tr></table>
+              a) \( \Delta T = \dfrac{9{,}81\cdot 148}{4\,180} \approx 0{,}35\,\mathrm{K} \)<br>
+              b) \( \Delta T = \dfrac{9{,}81\cdot 422}{4\,180} \approx 0{,}99\,\mathrm{K} \approx 1{,}0\,\mathrm{K} \)`,
+        cz: R`<table class="data">
+              <tr><td>\( c = 4\,180\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">měrná tepelná kapacita vody (vyhledat)</td></tr>
+              <tr><td>\( g = 9{,}81\,\mathrm{m\,s^{-2}} \)</td><td></td></tr></table>
+              a) \( \Delta T = \dfrac{9{,}81\cdot 148}{4\,180} \approx 0{,}35\,\mathrm{K} \)<br>
+              b) \( \Delta T = \dfrac{9{,}81\cdot 422}{4\,180} \approx 0{,}99\,\mathrm{K} \approx 1{,}0\,\mathrm{K} \)`
+    },
+    answer: {
+        fr: R`a) L’eau s’échauffe d’environ \( 0{,}35\,\mathrm{K} \) ; b) d’environ \( 1\,\mathrm{K} \).<br>
+              c) En réalité, une partie de l’eau s’évapore et s’éparpille en gouttelettes, l’eau échange de l’énergie avec l’air et les rochers, et elle continue à s’écouler avec une certaine vitesse. L’échauffement mesuré est donc plus faible.`,
+        cz: R`a) Voda se ohřeje přibližně o \( 0{,}35\,\mathrm{K} \); b) přibližně o \( 1\,\mathrm{K} \).<br>
+              c) Ve skutečnosti se část vody vypaří a rozprší na kapičky, voda si vyměňuje energii se vzduchem a skalami a dál odtéká určitou rychlostí. Naměřené ohřátí je proto menší.`
+    }
+},
+/* ---------------- 4 ---------------- */
+{
+    level: 2, lookup: true,
+    title: { fr: 'L’expérience de Joule', cz: 'Jouleův pokus' },
+    statement: {
+        fr: R`Dans une reproduction de l’expérience de Joule, une masse de \( 10\,\mathrm{kg} \) descend lentement de \( 2{,}0\,\mathrm{m} \) en entraînant une roue à palettes qui brasse \( 0{,}50\,\mathrm{kg} \) d’eau dans un récipient calorifugé. On remonte la masse et on répète la descente \( 20 \) fois. De combien la température de l’eau augmente-t-elle ?`,
+        cz: R`Při napodobení Jouleova pokusu klesá závaží o hmotnosti \( 10\,\mathrm{kg} \) pomalu o \( 2{,}0\,\mathrm{m} \) a roztáčí lopatkové kolo, které míchá \( 0{,}50\,\mathrm{kg} \) vody v tepelně izolované nádobě. Závaží vytáhneme zpět a pokles zopakujeme celkem \( 20 \)krát. O kolik se zvýší teplota vody?`
+    },
+    hint: {
+        fr: R`La masse descend lentement : son énergie cinétique est négligeable. Toute la diminution de son énergie potentielle est transmise à l’eau sous forme de travail.`,
+        cz: R`Závaží klesá pomalu, jeho kinetickou energii lze zanedbat. Celý úbytek jeho potenciální energie se předá vodě ve formě práce.`
+    },
+    analysis: {
+        fr: R`Le système étudié est l’eau. Le récipient est calorifugé, donc \( Q = 0 \). L’eau reçoit uniquement le travail \( W \) des palettes, égal à la diminution totale d’énergie potentielle de la masse. D’après le premier principe, \( \Delta U = W \) ; cette augmentation d’énergie interne se traduit par une élévation de température. On néglige la capacité thermique du récipient et de la roue.`,
+        cz: R`Zkoumanou soustavou je voda. Nádoba je tepelně izolovaná, tedy \( Q = 0 \). Voda přijímá pouze práci \( W \) lopatek, která je rovna celkovému úbytku potenciální energie závaží. Podle prvního termodynamického zákona \( \Delta U = W \); přírůstek vnitřní energie se projeví zvýšením teploty. Tepelnou kapacitu nádoby a kola zanedbáme.`
+    },
+    solution: {
+        fr: R`\[ W = N M g h , \qquad \Delta U = m_\mathrm{e} c\,\Delta T = W \quad\Rightarrow\quad \Delta T = \frac{N M g h}{m_\mathrm{e} c} . \]`,
+        cz: R`\[ W = N M g h , \qquad \Delta U = m_\mathrm{v} c\,\Delta T = W \quad\Rightarrow\quad \Delta T = \frac{N M g h}{m_\mathrm{v} c} . \]`
+    },
+    numeric: {
+        fr: R`<table class="data">
+              <tr><td>\( N = 20,\ M = 10\,\mathrm{kg},\ h = 2{,}0\,\mathrm{m},\ m_\mathrm{e} = 0{,}50\,\mathrm{kg} \)</td><td></td></tr>
+              <tr><td>\( c = 4\,180\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">eau (à rechercher)</td></tr></table>
+              \( W = 20\cdot 10\cdot 9{,}81\cdot 2{,}0 = 3\,924\,\mathrm{J} \)
+              \[ \Delta T = \frac{3\,924}{0{,}50\cdot 4\,180} \approx 1{,}9\,\mathrm{K} \]`,
+        cz: R`<table class="data">
+              <tr><td>\( N = 20,\ M = 10\,\mathrm{kg},\ h = 2{,}0\,\mathrm{m},\ m_\mathrm{v} = 0{,}50\,\mathrm{kg} \)</td><td></td></tr>
+              <tr><td>\( c = 4\,180\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">voda (vyhledat)</td></tr></table>
+              \( W = 20\cdot 10\cdot 9{,}81\cdot 2{,}0 = 3\,924\,\mathrm{J} \)
+              \[ \Delta T = \frac{3\,924}{0{,}50\cdot 4\,180} \approx 1{,}9\,\mathrm{K} \]`
+    },
+    answer: {
+        fr: R`L’eau reçoit un travail d’environ \( 3{,}9\,\mathrm{kJ} \) et sa température augmente d’environ \( 1{,}9\,\mathrm{K} \). C’est grâce à ce type d’expérience que Joule a établi l’équivalence entre travail et chaleur.`,
+        cz: R`Voda přijme práci přibližně \( 3{,}9\,\mathrm{kJ} \) a její teplota se zvýší přibližně o \( 1{,}9\,\mathrm{K} \). Právě takovými pokusy Joule prokázal ekvivalenci práce a tepla.`
+    }
+},
+/* ---------------- 5 ---------------- */
+{
+    level: 2, lookup: true,
+    title: { fr: 'Le forgeron', cz: 'Kovář' },
+    statement: {
+        fr: R`Un marteau de masse \( 1{,}0\,\mathrm{kg} \) frappe à la vitesse de \( 6{,}0\,\mathrm{m\,s^{-1}} \) une pièce en fer de masse \( 0{,}20\,\mathrm{kg} \) posée sur l’enclume, puis s’arrête. À chaque coup, la moitié de l’énergie cinétique du marteau est convertie en énergie interne de la pièce. Combien de coups faut-il pour échauffer la pièce de \( 20\,\mathrm{K} \) ? On néglige les pertes thermiques entre les coups.`,
+        cz: R`Kladivo o hmotnosti \( 1{,}0\,\mathrm{kg} \) dopadá rychlostí \( 6{,}0\,\mathrm{m\,s^{-1}} \) na železný polotovar o hmotnosti \( 0{,}20\,\mathrm{kg} \) položený na kovadlině a zastaví se. Při každém úderu se polovina kinetické energie kladiva přemění na vnitřní energii polotovaru. Kolik úderů je potřeba k jeho ohřátí o \( 20\,\mathrm{K} \)? Tepelné ztráty mezi údery zanedbejte.`
+    },
+    hint: {
+        fr: R`Calculez séparément l’énergie reçue par la pièce lors d’un seul coup et l’énergie nécessaire pour l’échauffer de \( 20\,\mathrm{K} \).`,
+        cz: R`Vypočtěte zvlášť energii, kterou polotovar přijme při jednom úderu, a energii potřebnou k jeho ohřátí o \( 20\,\mathrm{K} \).`
+    },
+    analysis: {
+        fr: R`Lors du choc, le marteau s’arrête : son énergie cinétique est convertie en énergie interne du marteau, de l’enclume et de la pièce (déformation, frottements internes). Seule la moitié est attribuée à la pièce. Après \( N \) coups, l’énergie interne de la pièce a augmenté de \( N \) fois cette valeur, ce qui doit correspondre à l’énergie nécessaire à son échauffement.`,
+        cz: R`Při nárazu se kladivo zastaví: jeho kinetická energie se přemění na vnitřní energii kladiva, kovadliny a polotovaru (deformace, vnitřní tření). Polotovaru připadne jen polovina. Po \( N \) úderech vzroste vnitřní energie polotovaru \( N \)-krát o tuto hodnotu, což musí odpovídat energii potřebné k jeho ohřátí.`
+    },
+    solution: {
+        fr: R`\[ E_1 = \tfrac12\cdot\tfrac12 M v^2 = \tfrac14 M v^2 , \qquad N E_1 = m c\,\Delta T \quad\Rightarrow\quad N = \frac{4 m c\,\Delta T}{M v^2} . \]`,
+        cz: R`\[ E_1 = \tfrac12\cdot\tfrac12 M v^2 = \tfrac14 M v^2 , \qquad N E_1 = m c\,\Delta T \quad\Rightarrow\quad N = \frac{4 m c\,\Delta T}{M v^2} . \]`
+    },
+    numeric: {
+        fr: R`<table class="data">
+              <tr><td>\( M = 1{,}0\,\mathrm{kg},\ v = 6{,}0\,\mathrm{m\,s^{-1}},\ m = 0{,}20\,\mathrm{kg},\ \Delta T = 20\,\mathrm{K} \)</td><td></td></tr>
+              <tr><td>\( c = 450\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">fer (à rechercher)</td></tr></table>
+              \( E_1 = \tfrac14\cdot 1{,}0\cdot 6{,}0^2 = 9{,}0\,\mathrm{J} \), \( Q = 0{,}20\cdot 450\cdot 20 = 1\,800\,\mathrm{J} \)
+              \[ N = \frac{1\,800}{9{,}0} = 200 \]`,
+        cz: R`<table class="data">
+              <tr><td>\( M = 1{,}0\,\mathrm{kg},\ v = 6{,}0\,\mathrm{m\,s^{-1}},\ m = 0{,}20\,\mathrm{kg},\ \Delta T = 20\,\mathrm{K} \)</td><td></td></tr>
+              <tr><td>\( c = 450\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">železo (vyhledat)</td></tr></table>
+              \( E_1 = \tfrac14\cdot 1{,}0\cdot 6{,}0^2 = 9{,}0\,\mathrm{J} \), \( Q = 0{,}20\cdot 450\cdot 20 = 1\,800\,\mathrm{J} \)
+              \[ N = \frac{1\,800}{9{,}0} = 200 \]`
+    },
+    answer: {
+        fr: R`Il faut environ \( 200 \) coups. En réalité, la pièce se refroidit entre les coups (contact avec l’enclume, air), il en faudrait donc davantage. C’est pourquoi le forgeron chauffe la pièce dans la forge avant de la travailler.`,
+        cz: R`Je potřeba přibližně \( 200 \) úderů. Ve skutečnosti polotovar mezi údery chladne (styk s kovadlinou, vzduch), takže by jich bylo potřeba víc. Proto kovář polotovar před kováním nahřívá ve výhni.`
+    }
+},
+/* ---------------- 6 ---------------- */
+{
+    level: 3, lookup: true,
+    title: { fr: 'Le plomb de carabine à la fête foraine', cz: 'Diabolka na pouťové střelnici' },
+    statement: {
+        fr: R`Un plomb diabolo de masse \( 0{,}50\,\mathrm{g} \), tiré par une carabine à air comprimé, frappe à la vitesse de \( 150\,\mathrm{m\,s^{-1}} \) la plaque d’acier du stand de tir et s’y arrête. La moitié de son énergie cinétique est convertie en énergie interne du plomb, l’autre moitié en énergie interne de la plaque. La température initiale du plomb est \( 20\,^\circ\mathrm{C} \).
+              <ol type="a"><li>Jusqu’à quelle température le plomb s’échauffe-t-il ? Fond-il ?</li>
+              <li>À quelle vitesse devrait-il arriver pour atteindre la température de fusion du plomb ?</li>
+              <li>À quelle vitesse devrait-il arriver pour fondre entièrement ?</li></ol>`,
+        cz: R`Olověná diabolka o hmotnosti \( 0{,}50\,\mathrm{g} \) vystřelená ze vzduchovky dopadne rychlostí \( 150\,\mathrm{m\,s^{-1}} \) na ocelovou záchytnou desku střelnice a zastaví se na ní. Polovina její kinetické energie se přemění na vnitřní energii diabolky, druhá polovina na vnitřní energii desky. Počáteční teplota diabolky je \( 20\,^\circ\mathrm{C} \).
+              <ol type="a"><li>Na jakou teplotu se diabolka ohřeje? Roztaví se?</li>
+              <li>Jakou rychlostí by musela dopadnout, aby dosáhla teploty tání olova?</li>
+              <li>Jakou rychlostí by musela dopadnout, aby se celá roztavila?</li></ol>`
+    },
+    hint: {
+        fr: R`Pour a) et b), seul l’échauffement compte. Pour c), il faut ajouter l’énergie nécessaire au changement d’état (fusion) : \( Q_\mathrm{f} = m L_\mathrm{f} \).`,
+        cz: R`V částech a) a b) jde jen o ohřátí. V části c) je třeba přidat energii potřebnou ke změně skupenství (tání): \( Q_\mathrm{t} = m\,l_\mathrm{t} \).`
+    },
+    analysis: {
+        fr: R`Avant le choc, le plomb possède l’énergie cinétique \( \tfrac12 mv^2 \). Lors du choc, il s’arrête et se déforme : toute cette énergie est convertie en énergie interne, dont la moitié revient au plomb. Cette énergie sert d’abord à élever la température du plomb jusqu’à \( \theta_\mathrm{f} = 327\,^\circ\mathrm{C} \), puis, à température constante, à le faire fondre. Remarquez que la masse du plomb n’intervient pas dans le résultat : la donnée \( 0{,}50\,\mathrm{g} \) est superflue.`,
+        cz: R`Před nárazem má diabolka kinetickou energii \( \tfrac12 mv^2 \). Při nárazu se zastaví a zdeformuje: celá tato energie se přemění na vnitřní energii a polovina z ní připadne diabolce. Tato energie nejprve zvýší teplotu diabolky až na teplotu tání \( t_\mathrm{t} = 327\,^\circ\mathrm{C} \) a potom ji za stálé teploty taví. Všimněte si, že hmotnost diabolky ve výsledku nevystupuje: údaj \( 0{,}50\,\mathrm{g} \) je nadbytečný.`
+    },
+    solution: {
+        fr: R`a) \( \tfrac12\cdot\tfrac12 mv^2 = mc\,\Delta T \Rightarrow \Delta T = \dfrac{v^2}{4c} \), \( \theta = \theta_0 + \Delta T \).<br>
+              b) \( \tfrac14 m v^2 = mc(\theta_\mathrm{f} - \theta_0) \Rightarrow v = \sqrt{4c(\theta_\mathrm{f} - \theta_0)} \).<br>
+              c) \( \tfrac14 m v^2 = mc(\theta_\mathrm{f} - \theta_0) + m L_\mathrm{f} \Rightarrow v = \sqrt{4\left[c(\theta_\mathrm{f} - \theta_0) + L_\mathrm{f}\right]} \).`,
+        cz: R`a) \( \tfrac12\cdot\tfrac12 mv^2 = mc\,\Delta t \Rightarrow \Delta t = \dfrac{v^2}{4c} \), \( t = t_0 + \Delta t \).<br>
+              b) \( \tfrac14 m v^2 = mc(t_\mathrm{t} - t_0) \Rightarrow v = \sqrt{4c(t_\mathrm{t} - t_0)} \).<br>
+              c) \( \tfrac14 m v^2 = mc(t_\mathrm{t} - t_0) + m\,l_\mathrm{t} \Rightarrow v = \sqrt{4\left[c(t_\mathrm{t} - t_0) + l_\mathrm{t}\right]} \).`
+    },
+    numeric: {
+        fr: R`<table class="data">
+              <tr><td>\( v = 150\,\mathrm{m\,s^{-1}},\ \theta_0 = 20\,^\circ\mathrm{C} \)</td><td></td></tr>
+              <tr><td>\( c = 130\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">capacité thermique massique du plomb (à rechercher)</td></tr>
+              <tr><td>\( \theta_\mathrm{f} = 327\,^\circ\mathrm{C} \)</td><td class="note">température de fusion du plomb (à rechercher)</td></tr>
+              <tr><td>\( L_\mathrm{f} = 23\,\mathrm{kJ\,kg^{-1}} \)</td><td class="note">énergie massique de fusion du plomb (à rechercher)</td></tr></table>
+              a) \( \Delta T = \dfrac{150^2}{4\cdot 130} \approx 43\,\mathrm{K} \Rightarrow \theta \approx 63\,^\circ\mathrm{C} \)<br>
+              b) \( v = \sqrt{4\cdot 130\cdot (327-20)}\,\mathrm{m\,s^{-1}} \approx 400\,\mathrm{m\,s^{-1}} \)<br>
+              c) \( v = \sqrt{4\cdot\left[130\cdot(327-20) + 23\,000\right]}\,\mathrm{m\,s^{-1}} \approx 500\,\mathrm{m\,s^{-1}} \)`,
+        cz: R`<table class="data">
+              <tr><td>\( v = 150\,\mathrm{m\,s^{-1}},\ t_0 = 20\,^\circ\mathrm{C} \)</td><td></td></tr>
+              <tr><td>\( c = 130\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">měrná tepelná kapacita olova (vyhledat)</td></tr>
+              <tr><td>\( t_\mathrm{t} = 327\,^\circ\mathrm{C} \)</td><td class="note">teplota tání olova (vyhledat)</td></tr>
+              <tr><td>\( l_\mathrm{t} = 23\,\mathrm{kJ\,kg^{-1}} \)</td><td class="note">měrné skupenské teplo tání olova (vyhledat)</td></tr></table>
+              a) \( \Delta t = \dfrac{150^2}{4\cdot 130} \approx 43\,^\circ\mathrm{C} \Rightarrow t \approx 63\,^\circ\mathrm{C} \)<br>
+              b) \( v = \sqrt{4\cdot 130\cdot (327-20)}\,\mathrm{m\,s^{-1}} \approx 400\,\mathrm{m\,s^{-1}} \)<br>
+              c) \( v = \sqrt{4\cdot\left[130\cdot(327-20) + 23\,000\right]}\,\mathrm{m\,s^{-1}} \approx 500\,\mathrm{m\,s^{-1}} \)`
+    },
+    answer: {
+        fr: R`a) Le plomb atteint environ \( 63\,^\circ\mathrm{C} \) : il est loin de fondre.<br>
+              b) Il faudrait environ \( 400\,\mathrm{m\,s^{-1}} \) pour atteindre la température de fusion, c) et environ \( 500\,\mathrm{m\,s^{-1}} \) pour le fondre entièrement.<br>
+              Les carabines à air comprimé courantes tirent à environ \( 120 \) à \( 250\,\mathrm{m\,s^{-1}} \) et même les plus puissantes ne dépassent guère \( 300\,\mathrm{m\,s^{-1}} \). Le plomb aplati que l’on retrouve au pied de la plaque n’a donc pas fondu : il a subi une déformation plastique.`,
+        cz: R`a) Diabolka se ohřeje přibližně na \( 63\,^\circ\mathrm{C} \): k roztavení má daleko.<br>
+              b) K dosažení teploty tání by potřebovala rychlost přibližně \( 400\,\mathrm{m\,s^{-1}} \), c) k úplnému roztavení přibližně \( 500\,\mathrm{m\,s^{-1}} \).<br>
+              Běžné vzduchovky střílejí rychlostí zhruba \( 120 \) až \( 250\,\mathrm{m\,s^{-1}} \) a ani ty nejvýkonnější nepřekračují výrazně \( 300\,\mathrm{m\,s^{-1}} \). Zploštělá diabolka, kterou najdeme pod záchytnou deskou, se tedy neroztavila: prošla plastickou deformací.`
+    }
+},
+/* ---------------- 7 ---------------- */
+{
+    level: 2, lookup: true,
+    title: { fr: 'Les freins d’une voiture', cz: 'Brzdy automobilu' },
+    statement: {
+        fr: R`Une voiture de masse \( 1\,200\,\mathrm{kg} \) roulant à \( 72\,\mathrm{km\,h^{-1}} \) freine jusqu’à l’arrêt. \( 80\,\% \) de son énergie cinétique est convertie en énergie interne des quatre disques de frein en acier, de masse \( 6{,}0\,\mathrm{kg} \) chacun. De combien la température des disques augmente-t-elle ?`,
+        cz: R`Automobil o hmotnosti \( 1\,200\,\mathrm{kg} \) jedoucí rychlostí \( 72\,\mathrm{km\,h^{-1}} \) zabrzdí až do zastavení. \( 80\,\% \) jeho kinetické energie se přemění na vnitřní energii čtyř ocelových brzdových kotoučů, každý o hmotnosti \( 6{,}0\,\mathrm{kg} \). O kolik se zvýší teplota kotoučů?`
+    },
+    hint: {
+        fr: R`N’oubliez pas de convertir la vitesse en \( \mathrm{m\,s^{-1}} \). La masse à échauffer est celle des quatre disques.`,
+        cz: R`Nezapomeňte převést rychlost na \( \mathrm{m\,s^{-1}} \). Ohřívá se hmotnost všech čtyř kotoučů.`
+    },
+    analysis: {
+        fr: R`Pendant le freinage, les plaquettes frottent sur les disques : l’énergie cinétique de la voiture est convertie en énergie interne des disques, des plaquettes et de l’air. Selon l’énoncé, \( 80\,\% \) de cette énergie reste dans les disques. On suppose que le freinage est assez court pour négliger les pertes thermiques des disques pendant celui-ci, et que les quatre disques s’échauffent de la même façon.`,
+        cz: R`Při brzdění se destičky třou o kotouče: kinetická energie automobilu se mění na vnitřní energii kotoučů, destiček a vzduchu. Podle zadání zůstane \( 80\,\% \) této energie v kotoučích. Předpokládáme, že brzdění je dost krátké na to, abychom mohli zanedbat tepelné ztráty kotoučů během něj, a že se všechny čtyři kotouče ohřejí stejně.`
+    },
+    solution: {
+        fr: R`\[ k\cdot\tfrac12 M v^2 = 4 m c\,\Delta T \quad\Rightarrow\quad \Delta T = \frac{k M v^2}{8 m c} , \qquad k = 0{,}80 . \]`,
+        cz: R`\[ k\cdot\tfrac12 M v^2 = 4 m c\,\Delta T \quad\Rightarrow\quad \Delta T = \frac{k M v^2}{8 m c} , \qquad k = 0{,}80 . \]`
+    },
+    numeric: {
+        fr: R`<table class="data">
+              <tr><td>\( M = 1\,200\,\mathrm{kg},\ v = 72\,\mathrm{km\,h^{-1}} = 20\,\mathrm{m\,s^{-1}},\ m = 6{,}0\,\mathrm{kg} \)</td><td></td></tr>
+              <tr><td>\( c = 470\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">acier (à rechercher)</td></tr></table>
+              \( E_\mathrm{c} = \tfrac12\cdot 1\,200\cdot 20^2 = 240\,000\,\mathrm{J} \), dont \( 0{,}80\cdot 240\,000 = 192\,000\,\mathrm{J} \) pour les disques
+              \[ \Delta T = \frac{192\,000}{4\cdot 6{,}0\cdot 470} \approx 17\,\mathrm{K} \]`,
+        cz: R`<table class="data">
+              <tr><td>\( M = 1\,200\,\mathrm{kg},\ v = 72\,\mathrm{km\,h^{-1}} = 20\,\mathrm{m\,s^{-1}},\ m = 6{,}0\,\mathrm{kg} \)</td><td></td></tr>
+              <tr><td>\( c = 470\,\mathrm{J\,kg^{-1}\,K^{-1}} \)</td><td class="note">ocel (vyhledat)</td></tr></table>
+              \( E_\mathrm{k} = \tfrac12\cdot 1\,200\cdot 20^2 = 240\,000\,\mathrm{J} \), z toho \( 0{,}80\cdot 240\,000 = 192\,000\,\mathrm{J} \) připadne kotoučům
+              \[ \Delta T = \frac{192\,000}{4\cdot 6{,}0\cdot 470} \approx 17\,\mathrm{K} \]`
+    },
+    answer: {
+        fr: R`La température des disques augmente d’environ \( 17\,\mathrm{K} \). Lors de freinages répétés en descente de montagne, cet échauffement s’additionne et les disques peuvent dépasser plusieurs centaines de degrés.`,
+        cz: R`Teplota kotoučů se zvýší přibližně o \( 17\,\mathrm{K} \). Při opakovaném brzdění při sjezdu z hor se ohřátí sčítá a kotouče mohou dosáhnout teploty i několika set stupňů.`
+    }
+},
+/* ---------------- 8 ---------------- */
+{
+    level: 2, lookup: false,
+    title: { fr: 'Détente d’un gaz à pression constante', cz: 'Izobarický děj ideálního plynu' },
+    statement: {
+        fr: R`Un gaz parfait enfermé dans un cylindre fermé par un piston mobile se détend à la pression constante \( p = 100\,\mathrm{kPa} \) : son volume passe de \( 2{,}0\,\mathrm{L} \) à \( 5{,}0\,\mathrm{L} \). Pendant cette transformation, il reçoit \( 750\,\mathrm{J} \) par transfert thermique. Calculez le travail fourni par le gaz et la variation de son énergie interne.`,
+        cz: R`Ideální plyn uzavřený ve válci s pohyblivým pístem se rozpíná za stálého tlaku \( p = 100\,\mathrm{kPa} \): jeho objem se zvětší z \( 2{,}0\,\mathrm{l} \) na \( 5{,}0\,\mathrm{l} \). Během tohoto děje přijme teplo \( 750\,\mathrm{J} \). Vypočtěte práci vykonanou plynem a změnu jeho vnitřní energie.`
+    },
+    hint: {
+        fr: R`À pression constante, le travail fourni par le gaz vaut \( W' = p\,\Delta V \). Le travail <em>reçu</em> par le gaz est son opposé.`,
+        cz: R`Za stálého tlaku vykoná plyn práci \( W' = p\,\Delta V \). Práce vykonaná okolím na plynu je opačná.`
+    },
+    analysis: {
+        fr: R`Le gaz pousse le piston : il fournit du travail au milieu extérieur, donc le travail qu’il reçoit est négatif, \( W = -W' = -p\,\Delta V \). Il reçoit de l’énergie par transfert thermique, donc \( Q > 0 \). On applique ensuite le premier principe. Attention aux unités : les volumes doivent être exprimés en \( \mathrm{m^3} \) et la pression en \( \mathrm{Pa} \).`,
+        cz: R`Plyn tlačí na píst: koná práci na okolí, takže práce vykonaná okolím na plynu je záporná, \( W = -W' = -p\,\Delta V \). Plyn teplo přijímá, tedy \( Q > 0 \). Potom použijeme první termodynamický zákon. Pozor na jednotky: objemy musí být v \( \mathrm{m^3} \) a tlak v \( \mathrm{Pa} \).`
+    },
+    solution: {
+        fr: R`\[ W' = p\,(V_2 - V_1), \qquad \Delta U = W + Q = Q - p\,(V_2 - V_1) . \]`,
+        cz: R`\[ W' = p\,(V_2 - V_1), \qquad \Delta U = W + Q = Q - p\,(V_2 - V_1) . \]
+              Ekvivalentní tvar běžný v českých učebnicích: \( Q = \Delta U + W' \).`
+    },
+    numeric: {
+        fr: R`<table class="data"><tr><td>\( p = 1{,}0\cdot 10^5\,\mathrm{Pa},\ V_1 = 2{,}0\cdot 10^{-3}\,\mathrm{m^3},\ V_2 = 5{,}0\cdot 10^{-3}\,\mathrm{m^3},\ Q = 750\,\mathrm{J} \)</td></tr></table>
+              \( W' = 1{,}0\cdot 10^5\cdot 3{,}0\cdot 10^{-3} = 300\,\mathrm{J} \), donc \( W = -300\,\mathrm{J} \)
+              \[ \Delta U = -300 + 750 = 450\,\mathrm{J} \]`,
+        cz: R`<table class="data"><tr><td>\( p = 1{,}0\cdot 10^5\,\mathrm{Pa},\ V_1 = 2{,}0\cdot 10^{-3}\,\mathrm{m^3},\ V_2 = 5{,}0\cdot 10^{-3}\,\mathrm{m^3},\ Q = 750\,\mathrm{J} \)</td></tr></table>
+              \( W' = 1{,}0\cdot 10^5\cdot 3{,}0\cdot 10^{-3} = 300\,\mathrm{J} \), tedy \( W = -300\,\mathrm{J} \)
+              \[ \Delta U = -300 + 750 = 450\,\mathrm{J} \]`
+    },
+    answer: {
+        fr: R`Le gaz fournit un travail de \( 300\,\mathrm{J} \) et son énergie interne augmente de \( 450\,\mathrm{J} \) : sur les \( 750\,\mathrm{J} \) reçus, \( 300\,\mathrm{J} \) ressortent sous forme de travail.<br>
+              <em>Pour aller plus loin :</em> pour un gaz parfait monoatomique, \( \Delta U = \tfrac32 nR\,\Delta T = \tfrac32 p\,\Delta V = 450\,\mathrm{J} \). Les données correspondent donc à un gaz monoatomique (hélium, argon…).`,
+        cz: R`Plyn vykoná práci \( 300\,\mathrm{J} \) a jeho vnitřní energie vzroste o \( 450\,\mathrm{J} \): z přijatých \( 750\,\mathrm{J} \) odejde \( 300\,\mathrm{J} \) ve formě práce.<br>
+              <em>Pro zájemce:</em> pro jednoatomový ideální plyn platí \( \Delta U = \tfrac32 nR\,\Delta T = \tfrac32 p\,\Delta V = 450\,\mathrm{J} \). Zadané hodnoty tedy odpovídají jednoatomovému plynu (helium, argon…).`
+    }
+},
+/* ---------------- 9 ---------------- */
+{
+    level: 3, lookup: false,
+    title: { fr: 'Le projectile dans le sac de sable', cz: 'Střela v pytli s pískem' },
+    statement: {
+        fr: R`Un projectile de masse \( 10\,\mathrm{g} \) volant à \( 400\,\mathrm{m\,s^{-1}} \) se fiche dans un sac de sable suspendu, de masse \( 2{,}0\,\mathrm{kg} \), initialement immobile. Quelle énergie est convertie en énergie interne lors du choc ? Quelle fraction de l’énergie cinétique initiale du projectile cela représente-t-il ?`,
+        cz: R`Střela o hmotnosti \( 10\,\mathrm{g} \) letící rychlostí \( 400\,\mathrm{m\,s^{-1}} \) uvízne v zavěšeném pytli s pískem o hmotnosti \( 2{,}0\,\mathrm{kg} \), který byl původně v klidu. Jaká energie se při srážce přemění na vnitřní energii? Jakou část původní kinetické energie střely to představuje?`
+    },
+    hint: {
+        fr: R`Le sac n’est pas immobile après le choc ! Déterminez d’abord sa vitesse grâce à la conservation de la quantité de mouvement.`,
+        cz: R`Pytel po srážce není v klidu! Nejprve určete jeho rychlost pomocí zákona zachování hybnosti.`
+    },
+    analysis: {
+        fr: R`Il s’agit d’un choc parfaitement inélastique : après le choc, le projectile et le sac se déplacent ensemble à la vitesse \( v' \). La quantité de mouvement du système se conserve (le choc est très bref), mais pas son énergie mécanique : la différence entre l’énergie cinétique avant et après le choc est convertie en énergie interne (échauffement et déformation du projectile et du sable).`,
+        cz: R`Jde o dokonale nepružnou srážku: po srážce se střela a pytel pohybují společně rychlostí \( v' \). Hybnost soustavy se zachovává (srážka je velmi krátká), mechanická energie však ne: rozdíl kinetických energií před srážkou a po ní se přemění na vnitřní energii (ohřátí a deformace střely a písku).`
+    },
+    solution: {
+        fr: R`\[ mv = (m+M)\,v' \;\Rightarrow\; v' = \frac{m}{m+M}\,v \]
+              \[ \Delta U = \tfrac12 mv^2 - \tfrac12 (m+M)\,v'^2 = \tfrac12 mv^2\left(1 - \frac{m}{m+M}\right) = \tfrac12 mv^2\cdot\frac{M}{m+M} \]
+              La fraction convertie vaut donc \( \dfrac{M}{m+M} \).`,
+        cz: R`\[ mv = (m+M)\,v' \;\Rightarrow\; v' = \frac{m}{m+M}\,v \]
+              \[ \Delta U = \tfrac12 mv^2 - \tfrac12 (m+M)\,v'^2 = \tfrac12 mv^2\left(1 - \frac{m}{m+M}\right) = \tfrac12 mv^2\cdot\frac{M}{m+M} \]
+              Přeměněná část tedy činí \( \dfrac{M}{m+M} \).`
+    },
+    numeric: {
+        fr: R`<table class="data"><tr><td>\( m = 0{,}010\,\mathrm{kg},\ v = 400\,\mathrm{m\,s^{-1}},\ M = 2{,}0\,\mathrm{kg} \)</td></tr></table>
+              \( v' = \dfrac{0{,}010}{2{,}01}\cdot 400 \approx 2{,}0\,\mathrm{m\,s^{-1}} \), \( E_\mathrm{c} = \tfrac12\cdot 0{,}010\cdot 400^2 = 800\,\mathrm{J} \)
+              \[ \Delta U = 800\cdot\frac{2{,}0}{2{,}01} \approx 796\,\mathrm{J}, \qquad \frac{M}{m+M} = \frac{2{,}0}{2{,}01} \approx 0{,}995 \]`,
+        cz: R`<table class="data"><tr><td>\( m = 0{,}010\,\mathrm{kg},\ v = 400\,\mathrm{m\,s^{-1}},\ M = 2{,}0\,\mathrm{kg} \)</td></tr></table>
+              \( v' = \dfrac{0{,}010}{2{,}01}\cdot 400 \approx 2{,}0\,\mathrm{m\,s^{-1}} \), \( E_\mathrm{k} = \tfrac12\cdot 0{,}010\cdot 400^2 = 800\,\mathrm{J} \)
+              \[ \Delta U = 800\cdot\frac{2{,}0}{2{,}01} \approx 796\,\mathrm{J}, \qquad \frac{M}{m+M} = \frac{2{,}0}{2{,}01} \approx 0{,}995 \]`
+    },
+    answer: {
+        fr: R`Environ \( 796\,\mathrm{J} \), soit \( 99{,}5\,\% \) de l’énergie cinétique initiale, sont convertis en énergie interne. Seuls \( 4\,\mathrm{J} \) environ restent sous forme d’énergie cinétique du sac, qui se met à osciller lentement.`,
+        cz: R`Na vnitřní energii se přemění přibližně \( 796\,\mathrm{J} \), tedy \( 99{,}5\,\% \) původní kinetické energie. Jen asi \( 4\,\mathrm{J} \) zůstanou jako kinetická energie pytle, který se pomalu rozkývá.`
+    }
+}
+];
+
+/* ---------- obrázky (SVG) – všechna id jsou v dokumentu jedinečná (prefix f1…f9) ---------- */
+const C = { blue: '#1d4ed8', red: '#dc2626', dim: '#475569', ink: '#1e293b' };
+function mk(id, color) {
+    return `<marker id="${id}" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="${color}"/></marker>`;
+}
+function defs(p) {
+    return `<defs>${mk(p + '-b', C.blue)}${mk(p + '-r', C.red)}${mk(p + '-d', C.dim)}</defs>`;
+}
+const T = (x, y, s, extra = '') => `<text x="${x}" y="${y}" font-size="14" fill="${C.ink}" ${extra}>${s}</text>`;
+const I = (x, y, s, fill = C.ink, anchor = 'start') =>
+    `<text x="${x}" y="${y}" font-size="15" font-style="italic" fill="${fill}" text-anchor="${anchor}">${s}</text>`;
+const dots = (pts) => pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.2" fill="#2563eb"/>`).join('');
+
+const FIG = {
+1: `<svg viewBox="0 0 440 205" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Piston et cylindre">${defs('f1')}
+    <!-- a) -->
+    <rect x="62" y="92" width="96" height="76" fill="#dbeafe"/>
+    ${dots([[80,110],[120,104],[145,125],[95,140],[130,155],[75,160],[110,128],[148,150]])}
+    <path d="M60,40 L60,170 L160,170 L160,40" fill="none" stroke="${C.ink}" stroke-width="3"/>
+    <rect x="62" y="80" width="96" height="12" fill="#94a3b8" stroke="${C.ink}"/>
+    <line x1="110" y1="40" x2="110" y2="80" stroke="${C.ink}" stroke-width="4"/>
+    <line x1="85" y1="30" x2="85" y2="79" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f1-b)"/>
+    <text x="10" y="58" font-size="15" fill="${C.blue}"><tspan font-style="italic">W</tspan> &gt; 0</text>
+    <line x1="162" y1="135" x2="210" y2="135" stroke="${C.red}" stroke-width="2.5" marker-end="url(#f1-r)"/>
+    <text x="166" y="126" font-size="15" fill="${C.red}"><tspan font-style="italic">Q</tspan> &lt; 0</text>
+    <text x="110" y="196" font-size="15" font-weight="bold" fill="${C.ink}" text-anchor="middle">a)</text>
+    <!-- b) -->
+    <rect x="282" y="72" width="96" height="96" fill="#dbeafe"/>
+    ${dots([[300,92],[345,86],[365,110],[310,125],[350,140],[295,158],[330,105],[368,155],[322,150]])}
+    <path d="M280,40 L280,170 L380,170 L380,40" fill="none" stroke="${C.ink}" stroke-width="3"/>
+    <rect x="282" y="60" width="96" height="12" fill="#94a3b8" stroke="${C.ink}"/>
+    <line x1="330" y1="22" x2="330" y2="60" stroke="${C.ink}" stroke-width="4"/>
+    <line x1="305" y1="56" x2="305" y2="18" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f1-b)"/>
+    <text x="228" y="42" font-size="15" fill="${C.blue}"><tspan font-style="italic">W</tspan> &lt; 0</text>
+    <line x1="432" y1="135" x2="384" y2="135" stroke="${C.red}" stroke-width="2.5" marker-end="url(#f1-r)"/>
+    <text x="388" y="126" font-size="15" fill="${C.red}"><tspan font-style="italic">Q</tspan> &gt; 0</text>
+    <text x="330" y="196" font-size="15" font-weight="bold" fill="${C.ink}" text-anchor="middle">b)</text>
+</svg>`,
+
+2: `<svg viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Luge sur une pente">${defs('f2')}
+    <polygon points="40,50 80,50 300,170 40,170" fill="#f1f5f9" stroke="${C.ink}" stroke-width="2"/>
+    <line x1="300" y1="170" x2="430" y2="170" stroke="${C.ink}" stroke-width="2"/>
+    <line x1="22" y1="52" x2="22" y2="168" stroke="${C.dim}" stroke-width="1.5" marker-start="url(#f2-d)" marker-end="url(#f2-d)"/>
+    ${I(8, 115, 'h')}
+    <!-- saně nahoře: sanice leží na plošině y = 50 -->
+    <g stroke="${C.ink}" stroke-width="2" fill="none">
+        <path d="M46,50 L72,50 Q78,50 78,44"/><line x1="52" y1="50" x2="52" y2="43"/><line x1="66" y1="50" x2="66" y2="43"/>
+    </g>
+    <rect x="48" y="37" width="24" height="6" fill="#b45309"/>
+    <text x="44" y="28" font-size="15" fill="${C.ink}"><tspan font-style="italic">v</tspan> = 0</text>
+    <!-- saně dole: sanice leží na zemi y = 170 -->
+    <g stroke="${C.ink}" stroke-width="2" fill="none">
+        <path d="M336,170 L362,170 Q368,170 368,164"/><line x1="342" y1="170" x2="342" y2="163"/><line x1="356" y1="170" x2="356" y2="163"/>
+    </g>
+    <rect x="338" y="157" width="24" height="6" fill="#b45309"/>
+    <line x1="372" y1="158" x2="424" y2="158" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f2-b)"/>
+    ${I(392, 150, 'v', C.blue)}
+</svg>`,
+
+3: `<svg viewBox="0 0 440 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cascade">${defs('f3')}
+    <rect x="30" y="40" width="170" height="165" fill="#d6d3d1" stroke="${C.ink}" stroke-width="2"/>
+    <rect x="30" y="32" width="172" height="8" fill="#60a5fa"/>
+    <path d="M200,34 Q214,36 214,60 L214,190 L200,190 L200,40 Z" fill="#60a5fa" opacity="0.85"/>
+    <rect x="200" y="190" width="200" height="15" fill="#60a5fa"/>
+    <line x1="200" y1="205" x2="410" y2="205" stroke="${C.ink}" stroke-width="2"/>
+    <line x1="214" y1="34" x2="350" y2="34" stroke="${C.dim}" stroke-dasharray="4 3"/>
+    <line x1="340" y1="36" x2="340" y2="188" stroke="${C.dim}" stroke-width="1.5" marker-start="url(#f3-d)" marker-end="url(#f3-d)"/>
+    ${I(348, 116, 'h')}
+    ${I(100, 25, 'T', C.ink, 'middle')}
+    <text x="262" y="182" font-size="15" fill="${C.red}"><tspan font-style="italic">T</tspan> + Δ<tspan font-style="italic">T</tspan></text>
+</svg>`,
+
+4: `<svg viewBox="0 0 440 225" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Expérience de Joule">${defs('f4')}
+    <rect x="50" y="82" width="170" height="128" rx="4" fill="#e2e8f0" stroke="${C.ink}" stroke-width="2"/>
+    <rect x="60" y="92" width="150" height="110" fill="#fff" stroke="${C.ink}"/>
+    <rect x="61" y="108" width="148" height="93" fill="#bfdbfe"/>
+    <line x1="135" y1="56" x2="135" y2="190" stroke="${C.ink}" stroke-width="3"/>
+    <rect x="103" y="150" width="64" height="8" fill="#64748b"/>
+    <rect x="103" y="174" width="64" height="8" fill="#64748b"/>
+    <rect x="125" y="40" width="20" height="18" fill="#94a3b8" stroke="${C.ink}"/>
+    <line x1="145" y1="44" x2="330" y2="44" stroke="${C.ink}" stroke-width="1.5"/>
+    <circle cx="330" cy="56" r="12" fill="#fff" stroke="${C.ink}" stroke-width="2"/>
+    <circle cx="330" cy="56" r="2" fill="${C.ink}"/>
+    <line x1="342" y1="56" x2="342" y2="112" stroke="${C.ink}" stroke-width="1.5"/>
+    <rect x="327" y="112" width="30" height="30" fill="#475569"/>
+    <text x="342" y="132" font-size="15" font-style="italic" fill="#fff" text-anchor="middle">M</text>
+    <rect x="327" y="172" width="30" height="30" fill="none" stroke="#475569" stroke-dasharray="4 3"/>
+    <line x1="374" y1="144" x2="374" y2="200" stroke="${C.dim}" stroke-width="1.5" marker-start="url(#f4-d)" marker-end="url(#f4-d)"/>
+    <line x1="358" y1="142" x2="380" y2="142" stroke="${C.dim}" stroke-dasharray="3 2"/>
+    <line x1="358" y1="202" x2="380" y2="202" stroke="${C.dim}" stroke-dasharray="3 2"/>
+    ${I(384, 176, 'h')}
+    <text x="300" y="220" font-size="14" fill="${C.ink}"><tspan font-style="italic">N</tspan> = 20</text>
+    <!-- teploměr -->
+    <line x1="192" y1="70" x2="192" y2="180" stroke="#ef4444" stroke-width="3"/>
+    <rect x="188" y="66" width="8" height="114" rx="4" fill="none" stroke="${C.ink}"/>
+    <circle cx="192" cy="186" r="7" fill="#ef4444" stroke="${C.ink}"/>
+</svg>`,
+
+5: `<svg viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Marteau et enclume">${defs('f5')}
+    <polygon points="110,120 300,120 300,140 272,140 262,165 292,192 148,192 178,165 168,140 140,140" fill="#64748b" stroke="${C.ink}" stroke-width="2"/>
+    <rect x="200" y="110" width="50" height="10" fill="#f97316" stroke="${C.ink}"/>
+    ${I(256, 108, 'm')}
+    <rect x="245" y="53" width="95" height="8" rx="3" fill="#92400e"/>
+    <rect x="205" y="45" width="40" height="24" fill="#94a3b8" stroke="${C.ink}" stroke-width="1.5"/>
+    <text x="225" y="62" font-size="15" font-style="italic" fill="${C.ink}" text-anchor="middle">M</text>
+    <line x1="225" y1="70" x2="225" y2="105" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f5-b)"/>
+    ${I(232, 94, 'v', C.blue)}
+</svg>`,
+
+6: `<svg viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Plomb et plaque">${defs('f6')}
+    <path d="M180,88 L197,95 L203,94 Q216,94 216,100 Q216,106 203,106 L197,105 L180,112 Z" fill="#9ca3af" stroke="${C.ink}" stroke-width="1.5"/>
+    ${I(192, 80, 'm')}
+    <line x1="224" y1="100" x2="316" y2="100" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f6-b)"/>
+    ${I(266, 92, 'v', C.blue)}
+    <rect x="320" y="30" width="14" height="160" fill="#94a3b8" stroke="${C.ink}" stroke-width="2"/>
+    <line x1="60" y1="190" x2="400" y2="190" stroke="${C.ink}" stroke-width="2"/>
+    <ellipse cx="306" cy="186" rx="9" ry="3.5" fill="#9ca3af" stroke="${C.ink}"/>
+</svg>`,
+
+7: `<svg viewBox="0 0 440 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Voiture et disque de frein">${defs('f7')}
+    <rect x="30" y="100" width="150" height="34" rx="8" fill="#93c5fd" stroke="${C.ink}" stroke-width="1.5"/>
+    <polygon points="60,100 82,76 140,76 162,100" fill="#bfdbfe" stroke="${C.ink}" stroke-width="1.5"/>
+    <circle cx="68" cy="138" r="15" fill="${C.ink}"/><circle cx="68" cy="138" r="6" fill="#cbd5e1"/>
+    <circle cx="146" cy="138" r="15" fill="${C.ink}"/><circle cx="146" cy="138" r="6" fill="#cbd5e1"/>
+    <line x1="15" y1="153" x2="250" y2="153" stroke="${C.ink}" stroke-width="2"/>
+    <line x1="181" y1="112" x2="236" y2="112" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f7-b)"/>
+    ${I(206, 104, 'v', C.blue)}
+    <circle cx="340" cy="100" r="60" fill="#cbd5e1" stroke="${C.ink}" stroke-width="2"/>
+    <circle cx="340" cy="100" r="18" fill="#94a3b8" stroke="${C.ink}"/>
+    <circle cx="378" cy="100" r="4" fill="#fff"/><circle cx="359" cy="132.9" r="4" fill="#fff"/><circle cx="321" cy="132.9" r="4" fill="#fff"/>
+    <circle cx="302" cy="100" r="4" fill="#fff"/><circle cx="321" cy="67.1" r="4" fill="#fff"/><circle cx="359" cy="67.1" r="4" fill="#fff"/>
+    <rect x="322" y="30" width="36" height="28" rx="4" fill="#dc2626" stroke="${C.ink}"/>
+    <polyline points="387.6,156.7 377.0,164.1 365.3,169.5 352.8,172.9 340.0,174.0 327.2,172.9 314.7,169.5 303.0,164.1 292.4,156.7"
+        fill="none" stroke="${C.dim}" stroke-width="2" marker-end="url(#f7-d)"/>
+    <text x="408" y="40" font-size="15" fill="${C.ink}" text-anchor="middle">4 × <tspan font-style="italic">m</tspan></text>
+</svg>`,
+
+8: `<svg viewBox="0 0 440 186" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Détente isobare">${defs('f8')}
+    <rect x="42" y="52" width="278" height="76" fill="#dbeafe"/>
+    ${dots([[70,70],[110,100],[130,78],[190,115],[230,85],[270,110],[300,70],[90,118],[210,64],[255,95]])}
+    <path d="M360,50 L40,50 L40,130 L360,130" fill="none" stroke="${C.ink}" stroke-width="3"/>
+    <rect x="152" y="52" width="10" height="76" fill="none" stroke="#64748b" stroke-dasharray="4 3"/>
+    <rect x="320" y="52" width="10" height="76" fill="#94a3b8" stroke="${C.ink}"/>
+    <line x1="330" y1="90" x2="420" y2="90" stroke="${C.ink}" stroke-width="4"/>
+    ${I(60, 96, 'p')}
+    <line x1="170" y1="40" x2="312" y2="40" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f8-b)"/>
+    <text x="232" y="33" font-size="15" font-style="italic" fill="${C.blue}">W′</text>
+    <line x1="100" y1="8" x2="100" y2="46" stroke="${C.red}" stroke-width="2.5" marker-end="url(#f8-r)"/>
+    ${I(108, 26, 'Q', C.red)}
+    <line x1="42" y1="153" x2="152" y2="153" stroke="${C.dim}" stroke-width="1.5" marker-start="url(#f8-d)" marker-end="url(#f8-d)"/>
+    <text x="97" y="148" font-size="14" fill="${C.ink}" text-anchor="middle"><tspan font-style="italic">V</tspan>₁</text>
+    <line x1="42" y1="177" x2="320" y2="177" stroke="${C.dim}" stroke-width="1.5" marker-start="url(#f8-d)" marker-end="url(#f8-d)"/>
+    <text x="236" y="172" font-size="14" fill="${C.ink}" text-anchor="middle"><tspan font-style="italic">V</tspan>₂</text>
+</svg>`,
+
+9: `<svg viewBox="0 0 440 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Projectile et sac de sable">${defs('f9')}
+    <line x1="60" y1="20" x2="170" y2="20" stroke="${C.ink}" stroke-width="4"/>
+    <line x1="270" y1="20" x2="380" y2="20" stroke="${C.ink}" stroke-width="4"/>
+    <line x1="220" y1="15" x2="220" y2="180" stroke="#cbd5e1" stroke-dasharray="5 4"/>
+    <!-- před srážkou -->
+    <line x1="115" y1="20" x2="115" y2="82" stroke="${C.ink}" stroke-width="1.5"/>
+    <ellipse cx="115" cy="116" rx="28" ry="35" fill="#d6b98c" stroke="${C.ink}" stroke-width="1.5"/>
+    ${I(115, 121, 'M', C.ink, 'middle')}
+    <rect x="22" y="113" width="14" height="6" rx="2" fill="#475569"/>
+    ${I(24, 106, 'm')}
+    <line x1="40" y1="116" x2="82" y2="116" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f9-b)"/>
+    ${I(56, 108, 'v', C.blue)}
+    <!-- po srážce -->
+    <line x1="325" y1="20" x2="325" y2="82" stroke="${C.ink}" stroke-width="1.5"/>
+    <ellipse cx="325" cy="116" rx="28" ry="35" fill="#d6b98c" stroke="${C.ink}" stroke-width="1.5"/>
+    <rect x="303" y="113" width="14" height="6" rx="2" fill="#475569"/>
+    <text x="328" y="138" font-size="12" font-style="italic" fill="${C.ink}" text-anchor="middle">m+M</text>
+    <line x1="357" y1="116" x2="410" y2="116" stroke="${C.blue}" stroke-width="2.5" marker-end="url(#f9-b)"/>
+    ${I(376, 108, 'v′', C.blue)}
+</svg>`
+};
+
+/* ---------- vykreslení ---------- */
+function render() {
+    const root = document.getElementById('exercises');
+    root.innerHTML = EX.map((ex, i) => {
+        const n = i + 1;
+        const lv = LEVEL[ex.level];
+        const lookup = ex.lookup
+            ? `<span class="lookup" title="Úloha vyžaduje vyhledání údajů">🔍 Données à rechercher</span>` : '';
+        const buttons = STEPS.map(s =>
+            `<button class="btn btn-${s.cls}" title="${s.cz}" onclick="toggleBox('${s.key}${n}', this)">${s.fr}</button>`).join('');
+        const boxes = STEPS.map(s => `
+            <div id="${s.key}${n}" class="content-box ${s.cls}-box">
+                <button class="btn btn-cz" onclick="toggleCz('${s.key}${n}-cz', this)">CZ</button>
+                <div class="box-title">${s.fr}</div>
+                <div>${ex[s.key].fr}</div>
+                <div id="${s.key}${n}-cz" class="cz-part">
+                    <div class="box-title">${s.cz}</div>
+                    <div>${ex[s.key].cz}</div>
+                </div>
+            </div>`).join('');
+        return `
+        <div class="exercise-card" id="ex${n}">
+            <div class="exercise-header">${n}. ${ex.title.fr}</div>
+            <div class="meta"><span title="Obtížnost: ${lv.cz}">${lv.fr}</span>${lookup}</div>
+            <div class="exercise-body">${ex.statement.fr}</div>
+            ${FIG[n] ? `<div class="figure">${FIG[n]}</div>` : ''}
+            <div class="button-group">
+                <button class="btn btn-translation" onclick="toggleBox('tr${n}', this)">Traduction</button>
+                ${buttons}
+            </div>
+            <div id="tr${n}" class="content-box translation-box">
+                <div class="box-title">${n}. ${ex.title.cz}</div>
+                ${ex.statement.cz}
+            </div>
+            ${boxes}
+        </div>`;
+    }).join('');
+}
+
+function retypeset(el) {
+    if (window.MathJax && MathJax.typesetPromise) {
+        setTimeout(() => MathJax.typesetPromise([el]).catch(() => {}), 30);
+    }
+}
+
+function toggleBox(id, btn) {
+    const el = document.getElementById(id);
+    const on = el.classList.toggle('active');
+    btn.classList.toggle('on', on);
+    if (on) retypeset(el);
+}
+
+function toggleCz(id, btn) {
+    const el = document.getElementById(id);
+    const on = el.classList.toggle('active');
+    btn.classList.toggle('on', on);
+    if (on) retypeset(el);
+}
+
+render();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transferts thermiques – Textes à compléter (CLIL)</title>
+    <script src="https://cdn.tailwindcss.com/"></script>
+    <style>
+        body { font-family: 'Segoe UI', Arial, Helvetica, sans-serif; }
+        .fade-in { animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) { .fade-in { animation: none; } }
+
+        /* Text s volbami */
+        .passage { font-size: 1.15rem; line-height: 2.05; color: #1e293b; }
+        .gap { white-space: normal; }
+        .opt {
+            display: inline; font: inherit; font-weight: 700; color: #1e293b;
+            background: #fef9c3; border: none; border-radius: 4px; padding: 1px 4px; line-height: 1.35; vertical-align: baseline;
+            cursor: pointer; transition: background-color .15s;
+            -webkit-box-decoration-break: clone; box-decoration-break: clone;
+        }
+        .opt:hover:not(:disabled) { background: #fde68a; }
+        .opt:focus-visible { outline: 3px solid #1d4ed8; outline-offset: 1px; }
+        .opt:disabled { cursor: default; }
+        .opt.ok   { background: #34d399; color: #064e3b; }
+        .opt.bad  { background: #f87171; color: #7f1d1d; text-decoration: line-through; }
+        .opt.dead { background: #f1f5f9; color: #cbd5e1; text-decoration: line-through; font-weight: 600; }
+        .sep { color: #64748b; margin: 0 1px; }
+
+        /* Překlad */
+        .tr-gap { color: #64748b; font-style: normal; }
+        .tr-gap b { color: #047857; }
+        .hidden-el { display: none !important; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900">
+
+<div id="app" class="max-w-3xl mx-auto px-4 py-8">
+
+    <!-- Úvodní obrazovka -->
+    <div id="start-screen" class="bg-white p-8 rounded-2xl shadow-xl text-center border-t-4 border-blue-700">
+        <h1 class="text-3xl font-bold text-blue-800 mb-1">Transferts thermiques</h1>
+        <p class="text-lg text-slate-500 mb-6">Přenos tepla – doplňování textů (CLIL)</p>
+        <p class="text-slate-600 mb-3 leading-relaxed">
+            Čeká tě <strong id="n-texts">11</strong> krátkých francouzských textů v náhodném pořadí.
+            Na každém zvýrazněném místě klikni na jednu ze dvou variant. Volbu už nelze změnit.
+        </p>
+        <p class="text-sm italic text-blue-600 mb-8">
+            Conduction, convection, rayonnement, isolants et ponts thermiques.<br>
+            Tlačítko <em>Traduction</em> zobrazí český překlad (bez prozrazení odpovědi).
+        </p>
+        <button onclick="startExercise()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-10 rounded-full text-lg shadow-lg transition-transform hover:scale-105">
+            Začít / Commencer
+        </button>
+    </div>
+
+    <!-- Obrazovka s textem -->
+    <div id="text-screen" class="hidden-el bg-white p-6 rounded-2xl shadow-xl">
+        <div class="flex justify-between items-center mb-3">
+            <span id="progress-text" class="text-xs text-slate-500">Text 1 / 11</span>
+            <span id="score-text" class="font-bold text-blue-700 text-sm">Správně: 0 / 0</span>
+        </div>
+        <div class="w-full h-2 bg-slate-100 rounded-full mb-6 overflow-hidden">
+            <div id="progress-bar" class="h-full bg-blue-700 rounded-full transition-all" style="width:0%"></div>
+        </div>
+
+        <div class="flex justify-between items-start gap-4 mb-4">
+            <h2 id="text-title" class="text-2xl font-bold text-slate-800 leading-snug"></h2>
+            <button id="translate-btn" onclick="toggleTranslation()" class="shrink-0 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold py-2 px-3 rounded-lg border border-blue-200 transition-all shadow-sm">
+                🔄 Traduction / CZ
+            </button>
+        </div>
+
+        <div id="passage" class="passage"></div>
+
+        <div id="translation-box" class="hidden-el mt-5 p-4 rounded-lg bg-slate-100 border-l-4 border-slate-400 text-slate-600 italic leading-relaxed">
+            <div id="translation-title" class="not-italic font-bold text-slate-700 mb-1"></div>
+            <div id="translation-text"></div>
+        </div>
+
+        <div class="flex justify-between items-center border-t mt-8 pt-5 min-h-[64px]">
+            <span id="remaining-text" class="text-sm text-slate-500"></span>
+            <button id="next-btn" onclick="nextText()" class="hidden-el bg-blue-700 text-white px-8 py-2 rounded-lg font-bold shadow-md hover:bg-blue-800 transition-all fade-in">
+                Další / Suivant
+            </button>
+        </div>
+    </div>
+
+    <!-- Výsledky -->
+    <div id="result-screen" class="hidden-el">
+        <div class="bg-white p-8 rounded-2xl shadow-xl border-t-4 border-blue-700">
+            <h2 class="text-3xl font-bold mb-2 text-slate-800 text-center">Tvé výsledky</h2>
+            <div class="flex justify-center items-baseline gap-4 my-6">
+                <div id="final-score" class="text-6xl font-black text-blue-700">0%</div>
+                <div id="final-detail" class="text-xl font-bold text-slate-400"></div>
+            </div>
+            <p id="final-msg" class="text-center text-slate-600 mb-6"></p>
+
+            <h3 class="font-bold text-slate-800 border-b pb-2 mb-3">Přehled po jednotlivých textech</h3>
+            <div id="result-list" class="grid grid-cols-1 gap-2"></div>
+
+            <div id="analysis" class="grid grid-cols-1 gap-3 mt-6"></div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
+                <button id="retry-wrong-btn" onclick="retryWrong()" class="bg-blue-700 text-white px-6 py-4 rounded-xl font-bold hover:bg-blue-800 transition-all shadow-lg">
+                    Opakovat jen texty s chybou
+                </button>
+                <button onclick="startExercise()" class="bg-slate-800 text-white px-6 py-4 rounded-xl font-bold hover:bg-slate-700 transition-all shadow-lg">
+                    Zkusit vše znovu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* Zápis volby: {správná|chybná}. Pořadí variant se při zobrazení náhodně prohodí.
+   FR a CZ verze musí mít stejný počet a pořadí míst k doplnění. */
+const TEXTS = [
+{
+    id: 1,
+    frTitle: "La cuillère dans le thé", czTitle: "Lžička v čaji",
+    fr: "Si l'on laisse une cuillère en métal dans une tasse de thé chaud, son extrémité hors du liquide {devient vite chaude|reste froide}. Le transfert thermique dans le métal se fait par {conduction|convection} : les particules dont l'agitation thermique est plus grande transmettent de l'énergie à leurs voisines sans que la matière {se déplace|se dilate}. Les métaux sont d'excellents conducteurs thermiques surtout grâce à leurs {électrons libres|atomes lourds}. Une cuillère en bois reste froide au bout, car le bois est un {isolant|conducteur} thermique.",
+    cz: "Necháme-li v hrnku horkého čaje kovovou lžičku, její konec nad hladinou se brzy {ohřeje|nezmění teplotu}. Teplo se kovem šíří {vedením|prouděním}: částice s intenzivnějším tepelným pohybem předávají energii sousedním částicím, aniž by se látka {přemísťovala|rozpínala}. Kovy jsou výborné tepelné vodiče hlavně díky {volným elektronům|velké hmotnosti atomů}. Dřevěná lžička zůstane na konci chladná, protože dřevo je tepelný {izolant|vodič}."
+},
+{
+    id: 2,
+    frTitle: "La bouteille isotherme", czTitle: "Termoska",
+    fr: "Une bouteille isotherme (vase de Dewar) possède une double paroi en verre. Entre les deux parois se trouve {le vide|de l'eau}. En l'absence presque totale de particules, les transferts thermiques par {conduction et convection|rayonnement} y sont pratiquement impossibles. Le transfert restant, par rayonnement, est limité par des parois {argentées|d'un noir mat}, qui {réfléchissent|absorbent} le rayonnement thermique. Le bouchon est fait d'un matériau de {faible|forte} conductivité thermique.",
+    cz: "Termoska (Dewarova nádoba) má dvě skleněné stěny a mezi nimi je {vakuum|voda}. Protože tam téměř nejsou částice, je přenos tepla {vedením a prouděním|zářením} prakticky vyloučen. Zbývající přenos tepla zářením omezují {postříbřené|matně černé} povrchy stěn, které tepelné záření {odrážejí|pohlcují}. Uzávěr je z materiálu s {malou|velkou} tepelnou vodivostí."
+},
+{
+    id: 3,
+    frTitle: "Le chauffage d'une pièce", czTitle: "Topení v místnosti",
+    fr: "L'air chauffé près du radiateur se dilate, sa masse volumique {diminue|augmente} et il {monte|descend}. Près du plafond et de la fenêtre froide, il se refroidit et redescend vers le sol : il se forme {un courant de convection|un pont thermique}. On installe généralement le radiateur {en bas, sous la fenêtre|juste sous le plafond}, pour que l'air chaud ascendant réchauffe l'air froid qui descend le long de la vitre. La convection ne peut se produire que dans les {fluides|solides}.",
+    cz: "Vzduch ohřátý u radiátoru se rozpíná, jeho hustota se {zmenšuje|zvětšuje}, a proto {stoupá|klesá}. U stropu a u studeného okna se ochladí a klesá zpět k podlaze, takže v místnosti vzniká {konvekční proudění|tepelný most}. Radiátor se obvykle umisťuje {nízko pod okno|těsně pod strop}, aby stoupající teplý vzduch ohříval chladný vzduch klesající podél skla. Proudění může vzniknout jen v {tekutinách|pevných látkách}."
+},
+{
+    id: 4,
+    frTitle: "La brise de mer", czTitle: "Mořská bríza",
+    fr: "Par une journée ensoleillée, la terre se réchauffe {plus vite|plus lentement} que la mer, car l'eau a une capacité thermique massique {plus grande|plus petite}. L'air chaud au-dessus de la terre s'élève et il est remplacé par de l'air plus frais venant {de la mer|de l'intérieur des terres}. La nuit, la terre se refroidit plus vite et le sens du vent {s'inverse|reste le même}. La brise est un exemple de transfert thermique par {convection|conduction} à grande échelle.",
+    cz: "Za slunečného dne se pevnina ohřívá {rychleji|pomaleji} než moře, protože voda má {větší|menší} měrnou tepelnou kapacitu. Teplý vzduch nad pevninou stoupá a na jeho místo proudí chladnější vzduch {od moře|z vnitrozemí}. V noci pevnina vychladne rychleji a směr větru se {obrátí|nezmění}. Bríza je příkladem přenosu tepla {prouděním|vedením} ve velkém měřítku."
+},
+{
+    id: 5,
+    frTitle: "La serre", czTitle: "Skleník",
+    fr: "Le rayonnement solaire est maximal dans le domaine {visible|ultraviolet} et traverse en grande partie le verre. Le sol et les plantes réchauffés émettent à leur tour un rayonnement {infrarouge|visible}, que le verre {laisse peu passer|laisse passer sans pertes}. Mais si une serre reste chaude, c'est surtout parce que ses parois empêchent l'air chaud de s'échapper : les pertes par {convection|rayonnement} sont ainsi fortement réduites. En été, on ouvre les fenêtres de toit pour que l'air chaud puisse {sortir par le haut|redescendre vers le sol}.",
+    cz: "Sluneční záření má maximum intenzity ve {viditelné|ultrafialové} oblasti a sklem z velké části prochází. Ohřátá půda a rostliny samy vyzařují záření {infračervené|viditelné}, které sklo {propouští jen málo|propouští beze ztrát}. Hlavním důvodem, proč je ve skleníku teplo, je však to, že stěny brání ohřátému vzduchu v úniku, a tím výrazně omezují tepelné ztráty {prouděním|zářením}. Střešní okna se v létě otevírají, aby horký vzduch mohl {odejít horem|klesnout k zemi}."
+},
+{
+    id: 6,
+    frTitle: "Plumes, fourrure et vêtements", czTitle: "Peří, srst a oblečení",
+    fr: "Les plumes et la fourrure conservent la chaleur, car leurs fibres retiennent {de l'air|de la graisse}, qui est un très mauvais {conducteur|isolant} thermique. Cet air ne doit pas pouvoir {circuler|se réchauffer} librement, sinon il emporterait la chaleur. Par grand froid, les oiseaux {gonflent|aplatissent} leur plumage pour épaissir cette couche d'air. Un vêtement mouillé tient {moins|plus} chaud, car l'eau conduit la chaleur environ {vingt fois mieux|vingt fois moins bien} que l'air.",
+    cz: "Peří i srst udržují teplo, protože mezi vlákny zadržují {vzduch|tuk}, který je velmi špatným tepelným {vodičem|izolantem}. Tento vzduch přitom nesmí volně {proudit|se ohřívat}, jinak by teplo odnášel. Ptáci v mrazu peří {načechrají|přitisknou k tělu}, aby vrstva vzduchu byla silnější. Mokré oblečení hřeje {méně|více}, protože voda vede teplo asi {dvacetkrát lépe|dvacetkrát hůře} než vzduch."
+},
+{
+    id: 7,
+    frTitle: "Une nuit claire", czTitle: "Jasná noc",
+    fr: "Par une nuit sans nuages, le sol se refroidit surtout par {rayonnement|convection} vers l'espace. Une couche de nuages absorbe une grande partie de ce rayonnement {infrarouge|ultraviolet} et en réémet une partie vers le sol. C'est pourquoi, au petit matin, il fait plus {froid|chaud} après une nuit claire qu'après une nuit couverte. Une voiture garée {sous un arbre|sur un parking à découvert} est moins givrée, car le feuillage l'empêche de rayonner directement vers le ciel froid.",
+    cz: "Za jasné noci se zemský povrch ochlazuje hlavně {zářením|prouděním} do vesmíru. Vrstva mraků velkou část tohoto {infračerveného|ultrafialového} záření pohltí a část ho vyzáří zpět k zemi. Proto je ráno po jasné noci {chladněji|tepleji} než po zatažené. Auto zaparkované {pod stromem|na otevřeném parkovišti} bývá méně namrzlé, protože mu koruna stromu brání vyzařovat přímo k chladné obloze."
+},
+{
+    id: 8,
+    frTitle: "Fenêtres et ponts thermiques", czTitle: "Okna a tepelné mosty",
+    fr: "Entre les vitres d'un double vitrage se trouve une fine lame {d'air ou d'argon|d'eau}. Les gaz sont de {mauvais|bons} conducteurs thermiques. L'espace entre les vitres ne doit cependant pas être trop {large|étroit}, sinon le gaz se mettrait à {circuler|se condenser} et transporterait la chaleur. Un cadre métallique continu de l'intérieur vers l'extérieur forme un {pont|bouclier} thermique.",
+    cz: "Mezi tabulemi dvojskla je tenká vrstva {vzduchu nebo argonu|vody}. Plyny jsou {špatné|dobré} vodiče tepla. Mezera však nesmí být příliš {široká|úzká}, jinak by v ní plyn začal {proudit|kondenzovat} a přenášet teplo. Kovový rám vedoucí bez přerušení z interiéru ven vytváří tepelný {most|štít}."
+},
+{
+    id: 9,
+    frTitle: "Le Soleil et le capteur solaire", czTitle: "Slunce a sluneční kolektor",
+    fr: "L'énergie du Soleil parvient à la Terre uniquement par {rayonnement|conduction}, car entre les deux règne {un vide presque parfait|une couche d'air continue}. La plaque d'un capteur solaire est {noire|blanche}, car une telle surface {absorbe|réfléchit} bien le rayonnement. La puissance rayonnée par un corps noir est proportionnelle à sa température thermodynamique élevée à la puissance {quatre|deux} (loi de Stefan-Boltzmann).",
+    cz: "Energie se ze Slunce k Zemi dostává pouze {zářením|vedením}, protože mezi nimi je {téměř dokonalé vakuum|souvislá vrstva vzduchu}. Deska slunečního kolektoru je {černá|bílá}, protože taková plocha záření dobře {pohlcuje|odráží}. Výkon vyzařovaný černým tělesem je úměrný {čtvrté|druhé} mocnině jeho termodynamické teploty (Stefanův–Boltzmannův zákon)."
+},
+{
+    id: 10,
+    frTitle: "Le refroidissement d'un processeur", czTitle: "Chladič procesoru",
+    fr: "La chaleur produite par le processeur est évacuée par un dissipateur thermique, le plus souvent {en aluminium ou en cuivre|en plastique}. L'énergie le traverse par {conduction|rayonnement} jusqu'aux fines ailettes, dont la surface est la plus {grande|petite} possible. Le ventilateur crée autour des ailettes {une convection forcée|un rayonnement thermique}. La pâte thermique comble les irrégularités des surfaces en contact, où resterait sinon {de l'air|du métal}, mauvais conducteur thermique.",
+    cz: "Teplo z procesoru odvádí chladič, nejčastěji {z hliníku nebo mědi|z plastu}. V jeho materiálu se teplo šíří {vedením|zářením} až do tenkých žeber s co {největším|nejmenším} povrchem. Ventilátor kolem žeber vytváří {nucené proudění|tepelné záření}. Teplovodivá pasta vyplní nerovnosti stykových ploch, ve kterých by jinak zůstal {vzduch|kov}, tedy špatný vodič tepla."
+},
+{
+    id: 11,
+    frTitle: "La cuisson dans une casserole", czTitle: "Vaření v hrnci",
+    fr: "Le fond d'une casserole est en métal, car le métal {conduit bien|isole bien} la chaleur. L'eau près du fond se réchauffe et monte, tandis que l'eau plus froide descend : il se forme {un courant de convection|un pont thermique}. Il est donc plus efficace de chauffer un liquide {par le bas|par le haut}. Les poignées sont en plastique ou en bois, car ce sont des {isolants|conducteurs} thermiques. Le couvercle réduit les pertes thermiques, car il empêche la vapeur et l'air chaud d'emporter l'énergie par {convection|rayonnement}.",
+    cz: "Dno hrnce je z kovu, protože kov teplo {dobře vede|dobře izoluje}. Voda u dna se ohřívá a stoupá, zatímco chladnější voda klesá, takže v hrnci vzniká {konvekční proudění|tepelný most}. Kapalinu je proto výhodnější ohřívat {zespodu|shora}. Úchyty bývají z plastu nebo dřeva, protože jsou to tepelné {izolanty|vodiče}. Poklička snižuje tepelné ztráty, protože brání páře a teplému vzduchu odnášet teplo {prouděním|zářením}."
+}
+];
+
+const GAP_RE = /\{([^{}|]+)\|([^{}|]+)\}/g;
+
+/* Typografie: FR – nezlomitelná mezera před : ; ! ?  CZ – po jednopísmenných předložkách a spojkách */
+function typo(str, lang) {
+    if (lang === 'fr') return str.replace(/ ([:;!?])/g, '\u00a0$1');
+    return str.replace(/(^|[\s({|])([vkszouiaVKSZOUIA]) /g, '$1$2\u00a0');
+}
+
+let queue = [];          // pořadí textů v tomto kole
+let pos = 0;             // index aktuálního textu ve frontě
+let results = {};        // id -> {correct, total, translated}
+let cur = null;          // stav aktuálního textu
+let totalCorrect = 0, totalAnswered = 0;
+
+function shuffle(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+
+function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function countGaps(s) { return (s.match(GAP_RE) || []).length; }
+
+function show(id) {
+    ['start-screen', 'text-screen', 'result-screen'].forEach(s =>
+        document.getElementById(s).classList.toggle('hidden-el', s !== id));
+    window.scrollTo({ top: 0 });
+}
+
+function startExercise() { runRound(TEXTS.map(t => t.id)); }
+
+function retryWrong() {
+    const ids = queue.filter(id => results[id].correct < results[id].total);
+    if (ids.length) runRound(ids);
+}
+
+function runRound(ids) {
+    queue = shuffle(ids.slice());
+    pos = 0; results = {}; totalCorrect = 0; totalAnswered = 0;
+    show('text-screen');
+    renderText();
+}
+
+function renderText() {
+    const t = TEXTS.find(x => x.id === queue[pos]);
+    const total = countGaps(t.fr);
+    cur = { text: t, total: total, answered: 0, correct: 0, translated: false, okFirst: [] };
+
+    document.getElementById('progress-text').textContent = `Text ${pos + 1} / ${queue.length}`;
+    document.getElementById('progress-bar').style.width = `${(pos / queue.length) * 100}%`;
+    document.getElementById('text-title').textContent = t.frTitle;
+    updateScore();
+
+    let g = 0;
+    const html = escapeHtml(typo(t.fr, 'fr')).replace(GAP_RE, (m, ok, bad) => {
+        const opts = shuffle([{ v: ok, c: 1 }, { v: bad, c: 0 }]);
+        cur.okFirst.push(opts[0].c === 1);   // pořadí si zapamatujeme pro český překlad
+        const btns = opts.map(o =>
+            `<button type="button" class="opt" data-gap="${g}" data-correct="${o.c}" onclick="choose(this)">${o.v}</button>`);
+        g++;
+        return `<span class="gap" data-gap-wrap="${g - 1}">${btns[0]}<span class="sep">/</span>${btns[1]}</span>`;
+    });
+    const p = document.getElementById('passage');
+    p.innerHTML = html;
+    p.classList.remove('fade-in'); void p.offsetWidth; p.classList.add('fade-in');
+
+    document.getElementById('translation-box').classList.add('hidden-el');
+    document.getElementById('translate-btn').textContent = '🔄 Traduction / CZ';
+    document.getElementById('translation-title').textContent = t.czTitle;
+    renderTranslation(false);
+
+    document.getElementById('next-btn').classList.add('hidden-el');
+    document.getElementById('next-btn').textContent =
+        pos === queue.length - 1 ? 'Výsledky / Résultats' : 'Další / Suivant';
+    updateRemaining();
+}
+
+/* V překladu se do vyřešení textu zobrazí obě varianty neutrálně (ve stejném pořadí jako ve FR textu);
+   po vyřešení je správná varianta zvýrazněna. */
+function renderTranslation(solved) {
+    let g = 0;
+    const html = escapeHtml(typo(cur.text.cz, 'cz')).replace(GAP_RE, (m, ok, bad) => {
+        const okFirst = cur.okFirst[g++];
+        if (solved) return `<span class="tr-gap"><b>${ok}</b></span>`;
+        const pair = okFirst ? [ok, bad] : [bad, ok];   // stejné pořadí jako ve francouzském textu
+        return `<span class="tr-gap">(${pair[0]} / ${pair[1]})</span>`;
+    });
+    document.getElementById('translation-text').innerHTML = html;
+}
+
+function toggleTranslation() {
+    const box = document.getElementById('translation-box');
+    const hidden = box.classList.toggle('hidden-el');
+    document.getElementById('translate-btn').textContent = hidden ? '🔄 Traduction / CZ' : '✖ Masquer';
+    if (!hidden && cur.answered < cur.total) cur.translated = true;
+}
+
+function choose(btn) {
+    const gap = btn.dataset.gap;
+    const pair = document.querySelectorAll(`.opt[data-gap="${gap}"]`);
+    if (pair[0].disabled) return;
+    pair.forEach(b => b.disabled = true);
+
+    const isOk = btn.dataset.correct === '1';
+    const other = [...pair].find(b => b !== btn);
+    if (isOk) {
+        btn.classList.add('ok');
+        other.classList.add('dead');
+        cur.correct++; totalCorrect++;
+    } else {
+        btn.classList.add('bad');
+        other.classList.add('ok');
+    }
+    cur.answered++; totalAnswered++;
+    updateScore(); updateRemaining();
+
+    if (cur.answered === cur.total) {
+        results[cur.text.id] = { correct: cur.correct, total: cur.total, translated: cur.translated };
+        renderTranslation(true);
+        document.getElementById('progress-bar').style.width = `${((pos + 1) / queue.length) * 100}%`;
+        const nb = document.getElementById('next-btn');
+        nb.classList.remove('hidden-el');
+        nb.focus({ preventScroll: true });
+    }
+}
+
+function updateScore() {
+    document.getElementById('score-text').textContent = `Správně: ${totalCorrect} / ${totalAnswered}`;
+}
+
+function updateRemaining() {
+    const r = cur.total - cur.answered;
+    document.getElementById('remaining-text').textContent = r > 0
+        ? `Zbývá doplnit: ${r} z ${cur.total}`
+        : `Text dokončen: ${cur.correct} / ${cur.total} správně`;
+}
+
+function nextText() {
+    pos++;
+    if (pos < queue.length) renderText();
+    else showResults();
+}
+
+function showResults() {
+    show('result-screen');
+    const ids = queue.slice();
+    const sumC = ids.reduce((s, id) => s + results[id].correct, 0);
+    const sumT = ids.reduce((s, id) => s + results[id].total, 0);
+    const pct = sumT ? Math.round(100 * sumC / sumT) : 0;
+    const nTrans = ids.filter(id => results[id].translated).length;
+    const wrongIds = ids.filter(id => results[id].correct < results[id].total);
+
+    document.getElementById('final-score').textContent = pct + '%';
+    document.getElementById('final-detail').textContent = `${sumC} / ${sumT}`;
+    document.getElementById('final-msg').textContent =
+        pct >= 90 ? 'Výborně! Přenos tepla i francouzské termíny ovládáš.' :
+        pct >= 75 ? 'Velmi dobře – jen několik drobných chyb.' :
+        pct >= 50 ? 'Slušný základ, ale některé jevy je potřeba zopakovat.' :
+                    'Projdi si znovu teorii k přenosu tepla a zkus texty ještě jednou.';
+
+    document.getElementById('result-list').innerHTML = ids
+        .slice().sort((a, b) => a - b)
+        .map(id => {
+            const t = TEXTS.find(x => x.id === id), r = results[id];
+            const full = r.correct === r.total;
+            return `
+            <div class="flex items-center justify-between gap-3 p-3 rounded-lg border ${full ? 'bg-emerald-50 border-emerald-200' : 'bg-red-50 border-red-200'}">
+                <div>
+                    <div class="font-semibold text-slate-800">${t.frTitle}</div>
+                    <div class="text-xs text-slate-500">${t.czTitle}${r.translated ? ' · použit překlad' : ''}</div>
+                </div>
+                <div class="font-bold ${full ? 'text-emerald-700' : 'text-red-700'} whitespace-nowrap">${r.correct} / ${r.total}</div>
+            </div>`;
+        }).join('');
+
+    const tips = [];
+    if (nTrans === 0) tips.push({ icon: '🇫🇷', title: 'Práce s francouzštinou', desc: 'Všechny texty jsi zvládl/a bez překladu – výborně.' });
+    else tips.push({ icon: nTrans <= 3 ? '📖' : '🔁', title: 'Práce s francouzštinou',
+        desc: `Překlad jsi použil/a u ${nTrans} z ${ids.length} textů. ${nTrans > 3 ? 'Zkus text nejprve přečíst francouzsky a překlad otevřít až v případě nejistoty.' : 'Odborné termíny ti převážně nedělají potíže.'}` });
+    if (wrongIds.length) tips.push({ icon: '💡', title: 'Doporučení',
+        desc: `Chyby se objevily u ${wrongIds.length} ${wrongIds.length === 1 ? 'textu' : 'textů'}. Tlačítkem níže je můžeš zopakovat (pořadí variant se znovu zamíchá).` });
+    else tips.push({ icon: '🎯', title: 'Doporučení', desc: 'Bez chyby! Můžeš pokračovat testem k celé kapitole.' });
+
+    document.getElementById('analysis').innerHTML = tips.map(i => `
+        <div class="flex items-start gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 fade-in">
+            <span class="text-2xl">${i.icon}</span>
+            <div>
+                <h4 class="font-bold text-sm text-slate-800">${i.title}</h4>
+                <p class="text-xs text-slate-600 leading-relaxed">${i.desc}</p>
+            </div>
+        </div>`).join('');
+
+    document.getElementById('retry-wrong-btn').classList.toggle('hidden-el', wrongIds.length === 0);
+}
+
+document.getElementById('n-texts').textContent = TEXTS.length;
+
+/* Kontrola konzistence dat (FR a CZ musí mít stejný počet míst) */
+TEXTS.forEach(t => {
+    if (countGaps(t.fr) !== countGaps(t.cz))
+        console.error(`Text ${t.id}: nesouhlasí počet míst FR (${countGaps(t.fr)}) a CZ (${countGaps(t.cz)})`);
+});
+</script>
+</body>
+</html>
